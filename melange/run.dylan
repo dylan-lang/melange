@@ -1,14 +1,10 @@
-module: dylan-user
-author: Nick Kramer
+module: define-interface
 copyright: see below
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 //
-// Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
-// Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
+// Copyright (c) 1994, 1995, 1996, 1997  Carnegie Mellon University
+// Copyright (c) 1998 - 2003  Gwydion Dylan Maintainers
 // All rights reserved.
 // 
 // Use and copying of this software and preparation of derivative
@@ -32,33 +28,4 @@ copyright: see below
 //
 //======================================================================
 
-//======================================================================
-//
-// Copyright (c) 1997  Carnegie Mellon University
-// Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
-// All rights reserved.
-//
-//======================================================================
-
-define library make-exports
-  use dylan;
-  use io;
-  use system;
-  use table-extensions;
-  use string-extensions;
-  use regular-expressions;
-end library make-exports;
-
-define module make-exports
-  use dylan;
-  use extensions;
-  use streams;
-  use file-system;
-  use standard-io;
-  use print;
-  use pprint;
-  use format;
-  use table-extensions;
-  use substring-search;
-  use regular-expressions;
-end module make-exports;
+main(application-name(), application-arguments());
