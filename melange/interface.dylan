@@ -498,7 +498,7 @@ define method process-parse-state
     full-names[index] := full-name;
   end for;
   
-  let defines = make(<equal-table>);
+  let defines = make(<string-table>);
   for (i from 0 below $default-defines.size by 2)
     defines[$default-defines[i]] := $default-defines[i + 1];
   end for;
@@ -887,19 +887,13 @@ define method main (program, args)
     end case;
 
   // Handle -I.
-  #if (compiled-for-win32)
      // translate \ to /, because \ does bad things when inside a
      // string literal, like c-include("d:\foo\bar.h")
-     include-dirs := map(rcurry(translate, "\\\\", "/"), include-dirs);
-  #endif
+  include-dirs := map(rcurry(translate, "\\\\", "/"), include-dirs);
   for (dir in include-dirs)
     push(include-path, dir);
   end for;
-  #if (MacOS)
-  	push(include-path, "");
-  #else
-  	push(include-path, "./");
-  #endif
+  push(include-path, "./");
   
   // Handle --framework.
   for (dir in framework-dirs)

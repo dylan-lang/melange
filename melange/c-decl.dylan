@@ -438,7 +438,7 @@ define method canonical-name (decl :: <enum-declaration>)
 end method canonical-name;
 
 define method make-enum-slot
-    (name :: <string>, value :: false-or(<abstract-integer>),
+    (name :: <string>, value :: false-or(<integer>),
      prev :: false-or(<enum-slot-declaration>), state :: <parse-state>)
  => (result :: <enum-slot-declaration>);
   if (element(state.objects, name, default: #f))

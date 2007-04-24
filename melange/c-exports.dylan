@@ -42,10 +42,10 @@ copyright: see below
 define library melange-c
   use dylan;
   use common-dylan;
+  use big-integers;
   use string-extensions;
   use collection-extensions;
   use regular-expressions;
-  use table-extensions;
   use system;
   use io;
 
@@ -104,9 +104,7 @@ end module;
 define module multistring-match
   use common-dylan;
   export
-#if (~mindy)
     multistring-checker-definer, multistring-positioner-definer,
-#endif
     make-multistring-positioner, make-multistring-checker
 end module multistring-match;
 
@@ -115,6 +113,7 @@ define module c-lexer
     exclude: { format, format-to-string, 
                string-to-integer, integer-to-string, split, position };
   use format;
+  use big-integers;
   use table-extensions;
   use self-organizing-list;
   use string-conversions;
@@ -150,8 +149,9 @@ end module c-lexer;
 define module portability
   use dylan;
   use c-lexer, import: {include-path, *handle-c++-comments*, *framework-paths*};
-  use system, import: {getenv};  // win32 only
-  use regular-expressions;       // win32 only			  
+  use operating-system, import: {environment-variable};  // win32 only
+  use regular-expressions;       // win32 only
+  use common-extensions;
   export
     $default-defines,
     $enum-size,
@@ -165,7 +165,7 @@ end module portability;
 
 define module c-parse
   use common-dylan, exclude: { format-to-string };
-  use extensions, import: { <extended-integer> };
+  use big-integers;
   use self-organizing-list;
   use c-lexer;
   use streams;
@@ -190,7 +190,8 @@ end module c-parse;
 
 define module c-declarations
   use common-dylan, exclude: { format-to-string, split };
-  use table-extensions, rename: { table => make-table };
+  use big-integers;
+  use dylan-extensions;
   use regular-expressions;
   use streams;
   use file-system;

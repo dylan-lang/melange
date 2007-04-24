@@ -72,18 +72,20 @@ define constant $default-defines
       "__stdcall", "",
       "inline", "",
       "_inline", "",
-      "__inline", ""];
+      "__inline", "",
+      "__extension__", "",
+      "__builtin_va_list", "void*"];
 
 // Set up the search path for .h files
 begin
-  let include-env-variable = getenv("include") | "";
+  let include-env-variable = environment-variable("include") | "";
 
   // Translate backslashes to front slashes, because if we try to use
   // backslashes in string literals (esp. inside of a "c-include"
   // statement), it does bad things.
   let include-env-variable = translate(include-env-variable, "\\\\", "/");
 
-  let (#rest include-dirs) = split(";", include-env-variable);
+  let include-dirs = split(include-env-variable, ';');
   for (dir in include-dirs)
     push-last(include-path, dir);
   end for;

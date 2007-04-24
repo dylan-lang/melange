@@ -703,7 +703,7 @@ end function describe-action;
 define function add-action (state :: <state>, action :: <list>) => ();
   local method add-token-action
 	    (token :: <token>, action-kind :: <action-kind>, 
-	     action-datum :: type-union(<false>, <state>, <production>))
+	     action-datum :: type-union(singleton(#f), <state>, <production>))
 	  // ### I'm not sure <state> is a possibility, but <false> and 
 	  // <production> certainly are
 	  let old-action = find(token, state.state-actions, key: head);
@@ -927,9 +927,6 @@ define function dump-constant (thing :: <object>, ofile :: <stream>) => ();
     type-union(<symbol>, <integer>, <string>) =>
       print(thing, ofile);
   end select;
-#if (compiled-for-cygnus)
-  force-output(ofile); // cygnus dies if the buffer gets too big
-#endif
 end function dump-constant;
 
 define function emit-production
@@ -991,9 +988,6 @@ define function emit-production
   format(ofile, "         end);\n");
   format(ofile, "end method production-%D;\n\n", 
 	 production.production-number);
-#if (compiled-for-cygnus)
-  force-output(ofile);
-#endif
 end function emit-production;
 
 define function encode-actions (actions :: <list>, grammar :: <grammar>)
@@ -1030,9 +1024,6 @@ define function emit-parser
   end;
   format(ofile, "define constant $action-table\n"
 	   "  = #[");
-#if (compiled-for-cygnus)
-  force-output(ofile);
-#endif
 
   for (state in grammar.grammar-all-states, index from 0)
     unless (index = state.state-number)
@@ -1102,9 +1093,6 @@ define function emit-parser
        end method, 
        grammar.grammar-entry-points, 
        grammar.grammar-start-states);
-#if (compiled-for-cygnus)
-  force-output(ofile);
-#endif
 end function emit-parser;
 
 
@@ -1179,9 +1167,6 @@ define function emit-log-file (grammar :: <grammar>, file :: <stream>) => ();
       new-line(file);
     end;
   end for;
-#if (compiled-for-cygnus)
-  force-output(file);
-#endif
 end function emit-log-file;
 
 
@@ -1197,9 +1182,6 @@ define function grovel-header (ifile :: <stream>, ofile :: <stream>) => ();
       write-line(ofile, line);
     end while;
   end block;
-#if (compiled-for-cygnus)
-  force-output(ofile);
-#endif
 end function grovel-header;
 
 define function parse-grammar (grammar :: <grammar>, ifile :: <stream>) => ();
@@ -1357,9 +1339,6 @@ define function grovel-trailer (ifile :: <stream>, ofile :: <stream>) => ();
       write-line(ofile, line);
     end while;
   end block;
-#if (compiled-for-cygnus)
-  force-output(ofile);
-#endif
 end function grovel-trailer;
 
 define function grovel-file
@@ -1408,7 +1387,7 @@ define method main (ignored, #rest args)
 	 "\tIf no output-file is specified, output defaults to standard\n"
 	 "\toutput.  If no log-file is specified, a log is not outputted.\n");
     force-output(*standard-error*);
-    exit(exit-code: 1);
+    exit-application(1);
   end if;
   let input = args.first;
   let output = if (args.size > 1) args.second else #f end if;
@@ -1416,7 +1395,7 @@ define method main (ignored, #rest args)
   format(*standard-error*, "Creating parser...\n");
   force-output(*standard-error*); // ### Do we need to force output on stderr?
   grovel-file(input, output, log);
-  exit(exit-code: 0);
+  exit-application(0);
 end method main;
 
 
@@ -1490,3 +1469,5 @@ define inline function assoc (item :: <object>, alist :: <list>,
     #f;
   end block;
 end function assoc;
+
+apply(main, application-name(), application-arguments());

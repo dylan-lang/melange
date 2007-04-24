@@ -115,7 +115,7 @@ end method initialize;
 // equal-hash isn't defined for general objects, even
 // though \= is defined for them.
 //
-define class <my-sequence-table> (<value-table>)
+define class <my-sequence-table> (<table>)
 end class <my-sequence-table>;
 
 define sealed inline method table-protocol (ht :: <my-sequence-table>)

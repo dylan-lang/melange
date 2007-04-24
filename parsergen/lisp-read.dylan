@@ -44,6 +44,21 @@ copyright: see below
 // don't really know Lisp very well.  (Token classes like
 // <macro-thingy> ought to give that away pretty quick)
 
+// isalnum
+//
+define inline function alphanumeric? (c :: <character>) => answer :: <boolean>;
+  (c >= 'a' & c <= 'z')  |  (c >= 'A' & c <= 'Z')  |  (c >= '0' & c <= '9');
+end function alphanumeric?;
+
+// isspace
+//
+define inline function whitespace? (c :: <character>) => answer :: <boolean>;
+  select (c)
+    ' ', '\t', '\n', '\f', '\r' => #t;       
+                        // Space, tab, newline, formfeed, carriage return
+    otherwise => #f;
+  end select;
+end function whitespace?;
 
 
 define abstract class <token> (<object>)
@@ -252,11 +267,6 @@ define method lex-comment (input :: <stream>) => ();
   // form before the Dylan version of the form.  This, of course, is
   // better than not translating the comment at all, which is our
   // other choice...
-  #if (lisp2dylan)
-    write(*standard-output*, "/" "/");  // If I type "//", it screws up
-                                        // the emacs mode
-    write-line(*standard-output*, line);
-  #endif
 end method lex-comment;
 
 define method lex-string (input :: <stream>) => string :: <string-literal>;

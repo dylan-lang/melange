@@ -172,7 +172,6 @@ end class;
 // Specific token types
 //----------------------------------------------------------------------
 
-#if (~mindy)
 define macro token-definer
   { define token ?:name :: ?super:expression = ?value:expression }
     => { define class ?name (?super)
@@ -274,269 +273,6 @@ define /* exported */ token <alien-name-token> :: <token> = 78;
 define /* exported */ token <macro-parse-token> :: <token> = 79;
 define /* exported */ token <cpp-parse-token> :: <token> = 80;
 define /* exported */ token <machine-token> :: <token> = 81;
-#else
-// The mindy declarations have to be a lot clumsier since we don't have macros.
-
-// Magic tokens
-define class <eof-token> (<simple-token>) 
-  inherited slot token-id = 0;
-end class;
-define class <error-token> (<simple-token>) 
-  inherited slot token-id = 1;
-end class;
-define class <begin-include-token> (<simple-token>) 
-  inherited slot token-id = 2;
-end class;
-define class <end-include-token> (<ei-token>) 
-  inherited slot token-id = 3;
-end class;
-define class <identifier-token> (<name-token>) 
-  inherited slot token-id = 4;
-end class;
-define class <type-name-token>  (<name-token>) 
-  inherited slot token-id = 5;
-end class;
-// literals
-define class <integer-token> (<literal-token>) 
-  inherited slot token-id = 6;
-end class;
-define class <character-token> (<literal-token>) 
-  inherited slot token-id = 7;
-end class;
-define class <string-literal-token> (<literal-token>) 
-  inherited slot token-id = 8;
-end class;
-define class <cpp-token> (<literal-token>) 
-  inherited slot token-id = 9;
-end class;
-// A whole bunch of reserved words
-define class <struct-token> (<reserved-word-token>) 
-  inherited slot token-id = 10;
-end class;
-define class <typedef-token> (<reserved-word-token>) 
-  inherited slot token-id = 11;
-end class;
-define class <short-token> (<type-specifier-token>) 
-  inherited slot token-id = 12;
-end class;
-define class <long-token> (<type-specifier-token>) 
-  inherited slot token-id = 13;
-end class;
-define class <int-token> (<type-specifier-token>) 
-  inherited slot token-id = 14;
-end class;
-define class <char-token> (<type-specifier-token>) 
-  inherited slot token-id = 15;
-end class;
-define class <signed-token> (<type-specifier-token>) 
-  inherited slot token-id = 16;
-end class;
-define class <unsigned-token> (<type-specifier-token>) 
-  inherited slot token-id = 17;
-end class;
-define class <float-token> (<type-specifier-token>) 
-  inherited slot token-id = 18;
-end class;
-define class <double-token> (<type-specifier-token>) 
-  inherited slot token-id = 19;
-end class;
-// "const" and "volatile" will be preprocessed away by the cpp code.  They
-// were being used in too many different odd places by various different
-// compilers.  
-//
-// define class <const-token> (<reserved-word-token>) end class;
-// define class <volatile-token> (<reserved-word-token>) end class;
-define class <void-token> (<type-specifier-token>) 
-  inherited slot token-id = 20;
-end class;
-define class <inline-token> (<reserved-word-token>) 
-  inherited slot token-id = 21;
-end class;
-define class <extern-token> (<reserved-word-token>) 
-  inherited slot token-id = 22;
-end class;
-define class <static-token> (<reserved-word-token>) 
-  inherited slot token-id = 23;
-end class;
-define class <auto-token> (<reserved-word-token>) 
-  inherited slot token-id = 24;
-end class;
-define class <register-token> (<reserved-word-token>) 
-  inherited slot token-id = 25;
-end class;
-define class <dummy-token> (<reserved-word-token>) 
-  inherited slot token-id = 26;
-end class;
-define class <union-token> (<reserved-word-token>) 
-  inherited slot token-id = 27;
-end class;
-define class <enum-token> (<reserved-word-token>) 
-  inherited slot token-id = 28;
-end class;
-define class <constant-token> (<reserved-word-token>) 
-  inherited slot token-id = 29;
-end class;
-define class <mul-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 30;
-end class;
-define class <div-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 31;
-end class;
-define class <mod-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 32;
-end class;
-define class <add-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 33;
-end class;
-define class <sub-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 34;
-end class;
-define class <left-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 35;
-end class;
-define class <right-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 36;
-end class;
-define class <and-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 37;
-end class;
-define class <xor-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 38;
-end class;
-define class <or-assign-token> (<reserved-word-token>) 
-  inherited slot token-id = 39;
-end class;
-// A whole bunch of puctuation
-define class <ellipsis-token> (<punctuation-token>) 
-  inherited slot token-id = 40;
-end class;
-define class <sizeof-token> (<punctuation-token>) 
-  inherited slot token-id = 41;
-end class;
-define class <dec-op-token> (<punctuation-token>) 
-  inherited slot token-id = 42;
-end class;
-define class <inc-op-token> (<punctuation-token>) 
-  inherited slot token-id = 43;
-end class;
-define class <ptr-op-token> (<punctuation-token>) 
-  inherited slot token-id = 44;
-end class;
-define class <semicolon-token> (<punctuation-token>) 
-  inherited slot token-id = 45;
-end class;
-define class <comma-token> (<punctuation-token>) 
-  inherited slot token-id = 46;
-end class;
-define class <dot-token> (<punctuation-token>) 
-  inherited slot token-id = 47;
-end class;
-define class <lparen-token> (<punctuation-token>) 
-  inherited slot token-id = 48;
-end class;
-define class <rparen-token> (<punctuation-token>) 
-  inherited slot token-id = 49;
-end class;
-define class <lbracket-token> (<punctuation-token>) 
-  inherited slot token-id = 50;
-end class;
-define class <rbracket-token> (<punctuation-token>) 
-  inherited slot token-id = 51;
-end class;
-define class <ampersand-token> (<punctuation-token>) 
-  inherited slot token-id = 52;
-end class;
-define class <star-token> (<punctuation-token>) 
-  inherited slot token-id = 53;
-end class;
-define class <carat-token> (<punctuation-token>) 
-  inherited slot token-id = 54;
-end class;
-define class <bar-token> (<punctuation-token>) 
-  inherited slot token-id = 55;
-end class;
-define class <percent-token> (<punctuation-token>) 
-  inherited slot token-id = 56;
-end class;
-define class <slash-token> (<punctuation-token>) 
-  inherited slot token-id = 57;
-end class;
-define class <plus-token> (<punctuation-token>) 
-  inherited slot token-id = 58;
-end class;
-define class <minus-token> (<punctuation-token>) 
-  inherited slot token-id = 59;
-end class;
-define class <tilde-token> (<punctuation-token>) 
-  inherited slot token-id = 60;
-end class;
-define class <bang-token> (<punctuation-token>) 
-  inherited slot token-id = 61;
-end class;
-define class <lt-token> (<punctuation-token>) 
-  inherited slot token-id = 62;
-end class;
-define class <gt-token> (<punctuation-token>) 
-  inherited slot token-id = 63;
-end class;
-define class <question-token> (<punctuation-token>) 
-  inherited slot token-id = 64;
-end class;
-define class <colon-token> (<punctuation-token>) 
-  inherited slot token-id = 65;
-end class;
-define class <eq-op-token> (<punctuation-token>) 
-  inherited slot token-id = 66;
-end class;
-define class <le-op-token> (<punctuation-token>) 
-  inherited slot token-id = 67;
-end class;
-define class <ge-op-token> (<punctuation-token>) 
-  inherited slot token-id = 68;
-end class;
-define class <ne-op-token> (<punctuation-token>) 
-  inherited slot token-id = 69;
-end class;
-define class <and-op-token> (<punctuation-token>) 
-  inherited slot token-id = 70;
-end class;
-define class <or-op-token> (<punctuation-token>) 
-  inherited slot token-id = 71;
-end class;
-define class <pound-pound-token> (<punctuation-token>) 
-  inherited slot token-id = 72;
-end class;
-define class <left-op-token> (<punctuation-token>) 
-  inherited slot token-id = 73;
-end class;
-define class <right-op-token> (<punctuation-token>) 
-  inherited slot token-id = 74;
-end class;
-define class <assign-token> (<punctuation-token>) 
-  inherited slot token-id = 75;
-end class;
-define class <lcurly-token> (<punctuation-token>) 
-  inherited slot token-id = 76;
-end class;
-define class <rcurly-token> (<punctuation-token>) 
-  inherited slot token-id = 77;
-end class;
-// "Magic" tokens which provide alternate entry points to the parser
-define class <alien-name-token> (<token>) 
-  inherited slot token-id = 78;
-end class;
-define class <macro-parse-token> (<token>) 
-  inherited slot token-id = 79;
-end class;
-define class <cpp-parse-token> (<token>) 
-  inherited slot token-id = 80;
-end class;
-// An extra token to handle Solaris's "#machine(foo)" construct
-define class <machine-token> (<token>) 
-  inherited slot token-id = 81;
-end class;
-
-#endif
 
 //----------------------------------------------------------------------
 // Support code
@@ -573,7 +309,7 @@ end method value;
 // Integer tokens can be in one of three different radices.  Figure out which
 // and then compute an integer value.
 //
-define method value (token :: <integer-token>) => (result :: <abstract-integer>);
+define method value (token :: <integer-token>) => (result :: <integer>);
   let string = token.string-value;
   // Strip trailing markers from string.
   while (member?(string.last, "uUlL"))
@@ -581,14 +317,31 @@ define method value (token :: <integer-token>) => (result :: <abstract-integer>)
   end while;
 
   case
-    string.first ~= '0' => string-to-integer(string);
+    string.first ~= '0' => my-string-to-integer(string);
     string.size == 1 => 0;
     string.second.digit? =>
-      string-to-integer(copy-sequence(string, start: 1), base: 8);
+      my-string-to-integer(copy-sequence(string, start: 1), base: 8);
     otherwise =>
-      string-to-integer(copy-sequence(string, start: 2), base: 16);
+      my-string-to-integer(copy-sequence(string, start: 2), base: 16);
   end case;
 end method value;
+
+define method my-string-to-integer (string :: <sequence>, #key base = 10)
+ => (int :: <integer>);
+  let number = 0;
+  let sign = if (string[0] == '-')  -1  else  1  end if;
+  let start-index = if (sign = -1)  1  else  0  end if;
+  for (i from start-index below string.size)
+    let digit = digit-to-integer(string[i]);
+    if (digit >= base)
+      error("\"%s\" isn't in base %d\n", string, base);
+    else
+      number := number * base  + digit;
+    end if;
+  end for;
+  sign * number;
+end method my-string-to-integer;
+
 
 // Both string and character literals allow you to use '\\' to get certain
 // non-alphanumeric characters.  This routine translates the second character
@@ -706,149 +459,7 @@ end method;
 //
 define constant $long-string-component-size = 16384;
 
-#if (~mindy)
 define constant <long-byte-string> = <byte-string>;
-#else
-// <long-byte-string> -- private class.
-//
-// This class represents arbitrary length strings of <byte-character>.  We
-// introduce it because Mindy cannot support <byte-string>s above a certain
-// length.  It is also an interesting test for built in assumptions concerning
-// strings.
-//
-define sealed class <long-byte-string> (<string>, <vector>)
-  sealed slot size :: <integer> = 0, init-keyword: #"size";
-  slot components :: <simple-object-vector> /* of <byte-string> */ = #[];
-end class <long-byte-string>;
-
-define sealed inline method initialize
-    (value :: <long-byte-string>, #key fill = ' ')
-  if (value.size > 0)
-    let (max-component, final-size)
-      = floor/(value.size, $long-string-component-size);
-    value.components := make(<simple-object-vector>, size: max-component + 1);
-    for (i from 0 below max-component)
-      value.components[i] := make(<byte-string>,
-				  size: $long-string-component-size,
-				  fill: fill);
-    end for;
-    value.components[max-component]
-      := make(<byte-string>, size: final-size, fill: fill);
-  end if;
-end method initialize;
-
-// type-for-copy -- method on imported generic.
-//
-// We copy <long-byte-string>s as <byte-string>s because we will want to pass
-// pieces of the string out to restrictive functions such as "write" and
-// "format".  Ideally, these should not be so narrow-minded.
-//
-define sealed inline method type-for-copy 
-    (string :: <long-byte-string>) => (result :: <type>);
-  <byte-string>;
-end method type-for-copy;
-  
-// copy-sequence -- method on imported generic.
-//
-// Relying on the "standard" definition of copy-sequence makes melange run 20
-// times slower.  It's worth spending a few lines on a 20-fold speedup.
-//
-define sealed method copy-sequence
-    (vector :: <long-byte-string>, #key start :: <integer> = 0, end: last)
- => (result :: <byte-string>);
-  let last :: <integer> = last | size(vector);
-  let sz :: <integer> = last - start;
-  let (start-component, start-index)
-    = floor/(start, $long-string-component-size);
-  if (start-index + sz < $long-string-component-size)
-    let subseq :: <byte-string> = vector.components[start-component];
-    copy-sequence(subseq, start: start-index, end: start-index + sz);
-  else
-    let result :: <byte-string> = make(<byte-string>, size: sz);
-    for (from-index :: <integer> from start below last,
-	 to-index :: <integer> from 0)
-      element(result, to-index) := element(vector, from-index);
-    end for;
-    result;
-  end if;
-end method copy-sequence;
-
-define sealed inline method element
-    (string :: <long-byte-string>, key :: <integer>,
-     #key default = $not-supplied)
- => (result :: <byte-character>);
-  if (key >= 0 & key < string.size)
-    let (component, index) = floor/(key, $long-string-component-size);
-    let substr :: <byte-string> =  string.components[component];
-    substr[index];
-  elseif (default == $not-supplied)
-    error("No such element in %=: %=", string, key);
-  else
-    default;
-  end if;
-end method element;
-
-define sealed inline method element-setter
-    (value :: <byte-character>, string :: <long-byte-string>, key :: <integer>)
- => (value :: <byte-character>);
-   if (key >= 0 & key < string.size)
-    let (component, index) = floor/(key, $long-string-component-size);
-    let substr :: <byte-string> =  string.components[component];
-    substr[index] := value;
-   else
-     error("No such element in %=: %=", string, key);
-   end if;
-end method element-setter;
-
-// forward-iteration-protocol -- method on imported generic.
-//
-// This method is identical to the one in "array.dylan", except that it
-// is more tightly specialized to a single sealed class.  If you need to 
-// make a general change, you should probably grep for "outlined-iterator" 
-// and change all matching locations.
-//
-define inline method forward-iteration-protocol
-    (array :: <long-byte-string>)
-    => (initial-state :: <integer>,
-	limit :: <integer>,
-	next-state :: <function>,
-	finished-state? :: <function>,
-	current-key :: <function>,
-	current-element :: <function>,
-	current-element-setter :: <function>,
-	copy-state :: <function>);
-  values(0,
-	 array.size,
-	 method (array :: <long-byte-string>, state :: <integer>)
-	     => new-state :: <integer>;
-	   state + 1;
-	 end,
-	 method (array :: <long-byte-string>, state :: <integer>,
-		 limit :: <integer>)
-	     => done? :: <boolean>;
-	   // We use >= instead of == so that the constraint propagation
-	   // stuff can tell that state is < limit if this returns #f.
-	   state >= limit;
-	 end,
-	 method (array :: <long-byte-string>, state :: <integer>)
-	     => key :: <integer>;
-	   state;
-	 end,
-	 method (array :: <long-byte-string>, state :: <integer>)
-	     => element :: <object>;
-	   element(array, state);
-	 end,
-	 method (new-value :: <object>, array :: <long-byte-string>,
-		 state :: <integer>)
-	     => new-value :: <object>;
-	   element(array, state) := new-value;
-	 end,
-	 method (array :: <long-byte-string>, state :: <integer>)
-	     => state-copy :: <integer>;
-	   state;
-	 end);
-end;
-#endif
 
 //========================================================================
 // "Simple" operations on tokenizers
@@ -1168,22 +779,11 @@ define function try-identifier
   end if;
 end function try-identifier;
 
-#if (~mindy)
 define multistring-checker match-punctuation
   ("-=", "*=", "/=", "%=", "+=", "<=", ">=", "&=", "^=", "|=", "==", "!=",
    "++", "--", "->", "...", ">>", ">>=", "<<", "<<=", "||", "&&", "##", 
    ";", ",", "(", ")", ".", "&", "*", "+", "~", "!", "/", "%", "<", ">", "^",
    "|", "?", ":", "=", "{", "}", "-", "[", "]");
-#else
-define constant match-punctuation
-  = make-multistring-checker("-=", "*=", "/=", "%=", "+=", "<=", ">=", "&=",
-			     "^=", "|=", "==", "!=",
-			     "++", "--", "->", "...", ">>", ">>=", "<<",
-			     "<<=", "||", "&&", "##",
-			     ";", ",", "(", ")", ".", "&", "*", "+", "~",
-			     "!", "/", "%", "<", ">", "^", "|", "?", ":",
-			     "=", "{", "}", "-", "[", "]");
-#endif
 
 // Attempts to match "punctuation".  Returns a token if the match is succesful
 // and #f otherwise.
@@ -1207,12 +807,7 @@ define constant match-comment-end = make-substring-positioner("*/");
 //
 define /* xported */ variable *handle-c++-comments* :: <boolean> = #f;
 
-#if (~mindy)
 define multistring-checker comment-matcher("/*", "//", "\\\n", "\\\r\n");
-#else
-define constant comment-matcher
-  = make-multistring-checker("/*", "//", "\\\n", "\\\r\n");
-#endif
 
 // Skip over whitespace characters (including newlines) and comments.
 //

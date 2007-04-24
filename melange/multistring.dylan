@@ -59,7 +59,6 @@ copyright: see below
 //
 //----------------------------------------------------------------------
 
-#if (~mindy)
 // multistring-checker-definer -- exported macro.
 //
 // By implementing this as a macro, we get better type checking and dispatch.
@@ -114,7 +113,6 @@ define macro multistring-positioner-definer
     { } => { }
     { inline } => { inline }
 end macro;
-#endif
 
 // make-multistring-positioner -- exported function.
 //

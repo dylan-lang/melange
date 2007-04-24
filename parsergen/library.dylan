@@ -28,6 +28,7 @@ module: dylan-user
 //======================================================================
 
 define library parsergen
+  use common-dylan;
   use dylan;
   use io;
   use system;
@@ -36,11 +37,10 @@ define library parsergen
 end library parsergen;
 
 define module lisp-read
-  use dylan;
+  use common-dylan;
+  use dylan-extensions;
   use streams;
   use print;
-  use extensions;
-  use character-type;
   use standard-io;
   export
     <token>, <identifier>, <string-literal>, <character-literal>,
@@ -50,14 +50,13 @@ define module lisp-read
 end module lisp-read;
 
 define module parsergen
-  use dylan;
-  use extensions;
+  use common-dylan;
+  use dylan-extensions;
   use streams;
   use print;
   use format;
   use standard-io;
   use file-system;
   use regular-expressions;
-  use %hash-tables;
   use lisp-read, import: { lisp-read };
 end module parsergen;

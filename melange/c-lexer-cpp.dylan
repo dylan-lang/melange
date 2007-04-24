@@ -76,7 +76,7 @@ define variable *frameworks* :: <table> = make( <table> );
 define method file-is-header?(path :: <pathname>)
  => (header? :: <boolean>)
   let path = as(<file-system-locator>, path);
-  path.file-exists? & path.link-target.file-type = #"file";
+  path.file-exists? & path.file-type = #"file";
 end;
 
 // These routines support finding frameworks at run time
@@ -337,14 +337,7 @@ end method framework-include;
 define /* exported */ function file-in-include-path (name :: <string>,
                                                      #key skip-to)
  => (full-name :: false-or(<string>));
- 
- 	#if (MacOS)
- 		// Convert UNIX paths to Mac paths
- 		name := regexp-replace( name, "\\.\\./", "::" );
- 		name := regexp-replace( name, "\\./", ":" ); 
- 		name := regexp-replace( name, "/", ":" );
- 	#endif
- 
+  
   if (first(name) == '/')
     if(name.file-is-header?) name else #f end;
   else
@@ -361,15 +354,7 @@ define /* exported */ function file-in-include-path (name :: <string>,
         
       for (dir in search-path)
         block ()
-        #if (MacOS)
-                let full-name = if( (dir ~= "") & (dir ~= ":") )
-                                                        concatenate(dir, ":", name);
-                                                else
-                                                        name;
-                                                end if;
-        #else
                 let full-name = concatenate(dir, "/", name);
-        #endif
                 if(full-name.file-is-header?) return(full-name) end;
         end block;
       finally
@@ -455,11 +440,7 @@ define method quote-include( state, contents, quote-start, quote-end )
                                 end: quote-end - 1);
     let absolute-name = "";
     // if (name is not an absolute path) [drive/UNC optional on win32 systems]
-#if (compiled-for-win32)
     if (regexp-position(name, "((.:)|\\\\)?(\\\\|/)"))
-#else
-    if (first(name) == '/')
-#endif
         absolute-name := name;
     else
         // Turn the a relative pathname into an absolute pathname by
@@ -473,15 +454,7 @@ define method quote-include( state, contents, quote-start, quote-end )
         // again, I suspect Melange will have crapped out long
         // before now if a user tried that.
         absolute-name := regexp-replace(state.file-name, 
-                                        #if (compiled-for-x86-win32)
                                             "[^\\\\/]+$", 
-                                        #else
-                                            #if (MacOS)
-                                                    "[^:]+$", 
-                                            #else
-                                                    "[^/]+$", 
-                                            #endif
-                                        #endif
                                             name);
     end if;
     
@@ -631,19 +604,10 @@ end method cpp-define;
 //  = make-regexp-positioner("^#[ \t]*(define|undef|include|ifdef|ifndef|if"
 //			     "|else|elif|line|endif|error|pragma)\\b",
 //			   byte-characters-only: #t, case-sensitive: #t);
-#if (~mindy)
 define multistring-checker preprocessor-match
   ("define", "undef", "include", "include_next", "ifdef", "ifndef", "if",
    "else", "elif", "line", "endif", "error", "warning", "pragma");
 define multistring-positioner do-skip-matcher("#", "/*");
-#else
-define constant preprocessor-match
-  = make-multistring-checker("define", "undef", "include", "include_next",
-			     "ifdef", "ifndef", "if", "else", "elif", "line",
-			     "endif", "error", "warning", "pragma");
-define constant do-skip-matcher
-  = make-multistring-positioner("#", "/*");
-#endif
 
 //define constant do-skip-matcher
 //  = make-regexp-positioner("#|/\\*",

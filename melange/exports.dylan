@@ -80,7 +80,6 @@ copyright: see below
 
 define library melange
   use common-dylan;
-  use table-extensions;
   use string-extensions;
   use collection-extensions;
   use regular-expressions;
@@ -127,7 +126,6 @@ end module int-lexer;
 
 define module int-parse
   use common-dylan, exclude: { format-to-string, position };
-  use table-extensions;
   use self-organizing-list;
   use c-lexer, import: {include-path, file-in-include-path};
   use streams;
@@ -155,7 +153,6 @@ end module name-mappers;
 define module define-interface
   // From Dylan
   use common-dylan, exclude: { format-to-string, split, position };
-  use table-extensions;
 /*
   use %hash-tables;
 #if (~mindy)
