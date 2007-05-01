@@ -137,8 +137,10 @@ define method process-interface-file
 	end method try-define;
   try-define(0);
   force-output(out-stream);
-  if (verbose) write-line(*standard-error*, "") end if;
-  force-output(*standard-error*);
+  if (verbose)
+    write-line(*standard-error*, "")
+    force-output(*standard-error*);
+  end if;
 end method process-interface-file;
 
 //----------------------------------------------------------------------
@@ -353,13 +355,14 @@ define method process-clause
     let body = option.tail;
     select (tag)
       #"superclass" =>
-	let supers
-	  = if (member?("<statically-typed-pointer>", body, test: \=))
-	      body
-	    else
-	      concatenate(body, #("<statically-typed-pointer>"));
-	    end if;
-	decl.superclasses := supers;
+//  This should be done in the back end instead
+//	let supers
+//	  = if (member?("<statically-typed-pointer>", body, test: \=))
+//	      body
+//	    else
+//	      concatenate(body, #("<statically-typed-pointer>"));
+//	    end if;
+	decl.superclasses := body;
     end select;
   end for;
 end method process-clause;
@@ -543,35 +546,14 @@ define method process-parse-state
 				  state.container-options.file-import-modes);
   let (#rest opts) = merge-container-options(state.container-options);
   for (decl in decls) 
-		apply(apply-options, decl, opts) 
-	end for;
-  let written-names = make(<written-name-record>);
-  if (target-switch ~= #"all")
-    melange-target := target-switch;
-    let load-string = write-file-load(full-names,
-				      state.object-files, decls, out-stream);
-    write-mindy-includes(state.mindy-include-file, decls);
-    do(rcurry(write-declaration, written-names, load-string, out-stream),
-       decls);
-  else
-    format(out-stream, "#if (mindy)\n");
-    melange-target := #"mindy";
-    let load-string = write-file-load(full-names,
-				      state.object-files, decls, out-stream);
-    write-mindy-includes(state.mindy-include-file, decls);
-    let written-names = make(<written-name-record>);
-    do(rcurry(write-declaration, written-names, load-string, out-stream),
-       decls);
-    format(out-stream, "#else\n");
-    melange-target := #"d2c";
-    let load-string = write-file-load(full-names,
-				      state.object-files, decls, out-stream);
-    write-mindy-includes(state.mindy-include-file, decls);
-    do(rcurry(write-declaration, written-names, load-string, out-stream),
-       decls);
-    format(out-stream, "#endif\n");
-  end if;
-  write-module-stream(written-names, module-stream, module-line);
+    apply(apply-options, decl, opts) 
+  end for;
+  let back-end = make-backend-for-target(target-switch, out-stream);
+  write-file-load(full-names,
+                  state.object-files, decls, out-stream);
+  write-mindy-includes(state.mindy-include-file, decls);
+  do(rcurry(write-declaration, back-end), decls);
+  write-module-stream(back-end.written-names, module-stream, module-line);
 end method process-parse-state;
 
 // Write an export module file
@@ -579,7 +561,7 @@ end method process-parse-state;
 define method write-module-stream
     (written-name-record :: <written-name-record>, module-stream :: false-or(<stream>),
      module-line :: false-or(<string>)) => ()
-	let names :: <sequence> = written-names( written-name-record );
+	let names :: <sequence> = all-written-names( written-name-record );
   if(module-stream & names.size > 0)
     format(module-stream, "module: dylan-user\n\n");
     if(module-line)
@@ -796,7 +778,7 @@ define method main (program, args)
 			    long-options: #("d2c"));
   add-option-parser-by-type(*argp*,
 			    <simple-option-parser>,
-			    long-options: #("mindy"));
+			    long-options: #("c-ffi"));
   add-option-parser-by-type(*argp*,
 			    <parameter-option-parser>,
 			    long-options: #("target"),
@@ -847,7 +829,7 @@ define method main (program, args)
   let verbose? = option-value-by-long-name(*argp*, "verbose");
   let headers? = option-value-by-long-name(*argp*, "headers");
   let d2c? = option-value-by-long-name(*argp*, "d2c");
-  let mindy? = option-value-by-long-name(*argp*, "mindy");
+  let c-ffi? = option-value-by-long-name(*argp*, "c-ffi");
   let target = option-value-by-long-name(*argp*, "target");
   let module-file = option-value-by-long-name(*argp*, "module-file");
   let include-dirs = option-value-by-long-name(*argp*, "includedir");
@@ -873,15 +855,15 @@ define method main (program, args)
   end if;
 
   // Handle --mindy, --d2c, -T.
-  if (size(choose(identity, list(d2c?, mindy?, target))) > 1)
+  if (size(choose(identity, list(d2c?, c-ffi?, target))) > 1)
     format(*standard-error*,
-	   "melange: only one of --d2c, --mindy or -T may be specified.\n");
+	   "melange: only one of --d2c, --c-ffi or -T may be specified.\n");
     show-usage-and-exit();
   end if;
   target-switch :=
     case
       d2c? => #"d2c";
-      mindy? => #"mindy";
+      c-ffi? => #"c-ffi";
       target => as(<symbol>, target);
       otherwise => target-switch;
     end case;

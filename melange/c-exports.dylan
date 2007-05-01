@@ -237,12 +237,12 @@ define module c-declarations
 
     // "Write declaration phase"
     <written-name-record>,
-		written-names,
+		all-written-names,
     write-declaration, 
     write-file-load, write-mindy-includes,
 
     // Miscellaneous
     getter, setter, sealed-string, excluded?,
     declarations, *inhibit-struct-accessors?*,
-    melange-target;
+    melange-target, make-backend-for-target, written-names;
 end module c-declarations;

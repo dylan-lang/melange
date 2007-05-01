@@ -57,6 +57,25 @@ copyright: see below
 //   for, defaults to Mindy.
 define variable melange-target :: one-of(#"mindy", #"d2c") = #"mindy";
 
+define abstract class <back-end> (<object>)
+  constant slot stream :: <stream>, required-init-keyword: stream:;
+  constant slot written-names :: <written-name-record> = make(<written-name-record>);
+end;
+
+define class <d2c-back-end> (<back-end>)
+end;
+
+define class <c-ffi-back-end> (<back-end>)
+end;
+
+define method make-backend-for-target (target == #"d2c", stream :: <stream>)
+  make(<d2c-back-end>, stream: stream)
+end;
+
+define method make-backend-for-target (target == #"c-ffi", stream :: <stream>)
+  make(<c-ffi-back-end>, stream: stream)
+end;
+
 //------------------------------------------------------------------------
 // Mindy/d2c incompatibility fixes
 //------------------------------------------------------------------------
@@ -94,7 +113,7 @@ define generic write-mindy-includes
 //
 define generic write-file-load
     (include-files :: <sequence>,
-     object-file :: false-or(<sequence>),
+     object-files :: false-or(<sequence>),
      decls :: <sequence>,
      stream :: <stream>)
  => (load-string :: <string>);
@@ -108,8 +127,7 @@ define generic write-file-load
 // Most of the code in this file goes to support this single operations.
 //
 define generic write-declaration
-    (decl :: <declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>) => ();
+    (decl :: <declaration>, back-end :: <back-end>) => ();
 
 
 //------------------------------------------------------------------------
@@ -122,7 +140,7 @@ define class <written-name-record> (<object>)
     = make(<table>);
 end class <written-name-record>;
 
-define method written-names( record :: <written-name-record> )
+define method all-written-names( record :: <written-name-record> )
 => ( names :: <collection> )
 	key-sequence( record.written-name-table );
 end method written-names;
@@ -500,20 +518,18 @@ end method d2c-arg;
 define variable *inhibit-struct-accessors?* = #f;
 
 define method write-declaration
-    (decl :: <struct-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <struct-declaration>, back-end :: <d2c-back-end>)
  => ();
+   let stream = back-end.stream;
   if (~decl.equated?)
     let supers = decl.superclasses | #("<statically-typed-pointer>");
     format(stream, "define %s class %s (%s) end;\n\n",
 	   class-sealing(),
 	   decl.dylan-name,
 	   as(<byte-string>, apply(join, ", ", supers)));
-    register-written-name(written-names, decl.dylan-name, decl);
-    if (melange-target == #"d2c")
-      format(stream, "define sealed domain make (singleton(%s));\n\n",
-	     decl.dylan-name)
-    end if;
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
+    format(stream, "define sealed domain make (singleton(%s));\n\n",
+           decl.dylan-name);
 
     local method slot-accessors
 	      (end-offset :: <integer>, c-slot :: <declaration>)
@@ -522,7 +538,7 @@ define method write-declaration
 	      = aligned-slot-position(end-offset, c-slot.type);
             unless(c-slot.excluded?)
               write-c-accessor-method(decl, c-slot,
-                                      start-offset, written-names, stream);
+                                      start-offset, back-end.written-names, stream);
             end unless;
 	    end-offset;
 	  end method slot-accessors;
@@ -555,27 +571,25 @@ end method write-declaration;
 // are calculated differently.
 //
 define method write-declaration
-    (decl :: <union-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <union-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   if (~decl.equated?)
     let supers = decl.superclasses | #("<statically-typed-pointer>");
     format(stream, "define %s class %s (%s) end;\n\n",
 	   class-sealing(),
 	   decl.dylan-name,
 	   as(<byte-string>, apply(join, ", ", supers)));
-    register-written-name(written-names, decl.dylan-name, decl);
-    if (melange-target == #"d2c")
-      format(stream, "define sealed domain make (singleton(%s));\n\n",
-	     decl.dylan-name)
-    end if;
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
+    format(stream, "define sealed domain make (singleton(%s));\n\n",
+           decl.dylan-name);
 
     // This may still be an "incomplete type".  If so, we define the class, but
     // don't write any slot accessors.
     if (~ *inhibit-struct-accessors?* & decl.members)
       for (c-slot in decl.coalesced-members)
 	if (~c-slot.excluded?)
-	  write-c-accessor-method(decl, c-slot, 0, written-names,
+	  write-c-accessor-method(decl, c-slot, 0, back-end.written-names,
 				  stream);
 	end if;
       end for;
@@ -603,9 +617,9 @@ end method write-declaration;
 // values are written for each literal.
 //
 define method write-declaration
-    (decl :: <enum-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <enum-declaration>, back-end :: <back-end>)
  => ();
+  let stream = back-end.stream;
   if (~decl.equated?)
     let type-name = decl.dylan-name;
     
@@ -619,28 +633,27 @@ define method write-declaration
       format(stream,
 	     "define constant %s = limited(<integer>, min: %d, max: %d);\n",
 	     type-name, min-enum, max-enum);
-      register-written-name(written-names, type-name, decl);
+      register-written-name(back-end.written-names, type-name, decl);
 
       for (literal in decl.members)
 	let name = literal.dylan-name;
 	let int-value = literal.constant-value;
 	format(stream, "define constant %s :: %s = %d;\n",
 	       name, type-name, int-value);
-	register-written-name(written-names, name, decl, subname?: #t);
+	register-written-name(back-end.written-names, name, decl, subname?: #t);
       finally
 	new-line(stream);
       end for;
     else
       format(stream, "define constant %s = <integer>;\n\n",
 	     type-name);
-      register-written-name(written-names, type-name, decl);
+      register-written-name(back-end.written-names, type-name, decl);
     end if;
   end if;
 end method write-declaration;
 
 define method write-declaration
-    (decl :: <enum-slot-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <enum-slot-declaration>, back-end :: <back-end>)
  => ();
   // The routine for <enum-declaration> will already have written these, so we
   // need do nothing.
@@ -652,34 +665,24 @@ end method write-declaration;
 // if appropriate (see comments for "write-c-accessor-method" above).
 //
 define method write-declaration
-    (decl :: <variable-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <variable-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   let name = decl.dylan-name;
   let raw-name = anonymous-name();
   let real-type = true-type(decl.type);
-
-  if(melange-target = #"mindy")
-    // First get the address of the c object...
-    format(stream, "define constant %s = find-c-pointer(\"%s\"%s);\n",
-	   raw-name, decl.simple-name, load-string);
-  end if;
 
   // Write a getter method (with an empty parameter list)
   format(stream, "define %s method %s () => (result :: %s);\n  %s;\n"
 	   "end method %s;\n\n",
 	 decl.sealed-string, decl.getter, decl.mapped-name,
 	 import-value(decl,
-		      select (melange-target)
-			#"mindy" => c-accessor(decl.type,
-					       0, raw-name, decl.type-name);
-			#"d2c" => concatenate("as(", decl.type-name,
-					      ", c-variable(",
-					      decl.type.d2c-type-tag, " \"&",
-					      decl.simple-name, "\"))");
-		      end select),
+                      concatenate("as(", decl.type-name,
+                                  ", c-variable(",
+                                  decl.type.d2c-type-tag, " \"&",
+                                  decl.simple-name, "\"))")),
 	 decl.getter);
-  register-written-name(written-names, decl.getter, decl);
+  register-written-name(back-end.written-names, decl.getter, decl);
 
   // Write a setter method
   if (~decl.read-only 
@@ -690,14 +693,11 @@ define method write-declaration
 	     "  %s := %s;\n  value;\nend method %s;\n\n",
 	   decl.sealed-string, decl.setter, decl.type.mapped-name,
 	   decl.mapped-name,
-	   select (melange-target)
-	     #"mindy" => c-accessor(decl.type, 0, raw-name, decl.type-name);
-	     #"d2c" => concatenate("c-variable(",
-				   decl.type.d2c-type-tag, " \"&",
-				   decl.simple-name, "\")");
-	   end select,
+           concatenate("c-variable(",
+                       decl.type.d2c-type-tag, " \"&",
+                       decl.simple-name, "\")"),
 	   export-value(decl, "value"), decl.setter);
-    register-written-name(written-names, decl.setter, decl);
+    register-written-name(back-end.written-names, decl.setter, decl);
   end if;
 end method write-declaration;
 
@@ -728,30 +728,15 @@ end method split-parameters;
 // straightforward, but rather long and tedious.
 //
 define method write-declaration
-    (decl :: <function-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <function-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   let raw-name = anonymous-name();
   let (in-params, out-params) = split-parameters(decl.type);
   let params = decl.type.parameters;
 
-  if (melange-target = #"mindy")
-    // First get the raw c function ...
-    if (decl.type.result.type == void-type)
-      format(stream, "define constant %s = find-c-function(\"%s\"%s);\n",
-	     raw-name, decl.simple-name, load-string)
-    else
-      format(stream,
-	     "define constant %s\n  = constrain-c-function("
-	       "find-c-function(\"%s\"%s), #(), #t, list(%s));\n",
-	     raw-name, decl.simple-name, load-string,
-	     decl.type.result.type-name);
-    end if;
-  end if;
-
-  // ... then create a more robust method as a wrapper.
   format(stream, "define function %s\n    (", decl.dylan-name);
-  register-written-name(written-names, decl.dylan-name, decl);
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
   for (arg in in-params, count from 1)
     if (count > 1) write(stream, ", ") end if;
     case
@@ -790,68 +775,42 @@ define method write-declaration
     write(stream, "  ");
   end if;
 
-  select(melange-target)
-    #"mindy" =>
-      begin
-	if (~params.empty? & instance?(last(params), <varargs-declaration>))
-	  format(stream, "apply(%s, ", raw-name);
-	else
-	  format(stream, "%s(", raw-name);
-	end if;
-	for (count from 1, arg in params)
-	  if (count > 1) write(stream, ", ") end if;
-	  if (instance?(arg, <varargs-declaration>))
-	    write(stream, arg.dylan-name);
-	  elseif (arg.direction == #"in-out" | arg.direction == #"out")
-	    format(stream, "%s-ptr", arg.dylan-name);
-	  else
-	    write(stream, export-value(arg, arg.dylan-name));
-	  end if;
-	end for;
-	format(stream, ");\n");
-      end;
-    #"d2c" =>
-      begin
-	if (~params.empty? & instance?(last(params), <varargs-declaration>))
-	  format(stream, "if (~empty?(%s))\n"
-		   "    error(\"Variable arguments not yet supported\");\n"
-		   "  else\n    ", last(params).dylan-name);
-	  format(stream, "call-out(\"%s\", %s", decl.simple-name,
-		 decl.type.result.type.d2c-type-tag);
-	  for (count from 1, arg in params)
-	    if (instance?(arg, <varargs-declaration>))
-	      // print nothing (values needed by Mindy)
-	      values();
-	    elseif (arg.direction == #"in-out" | arg.direction == #"out")
-		format(stream, ", ptr: %s-ptr.raw-value", arg.dylan-name);
-	    else
-	      format(stream, ", %s",
-		     d2c-arg(arg.type, export-value(arg, arg.dylan-name)));
-	    end if;
-	  end for;
-	  format(stream, ");\n");
-	  format(stream, "  end if;\n");
-	else
-	  format(stream, "call-out(\"%s\", %s", decl.simple-name,
-		 decl.type.result.type.d2c-type-tag);
-	  for (count from 1, arg in params)
-	    if (arg.direction == #"in-out" | arg.direction == #"out")
-		format(stream, ", ptr: %s-ptr.raw-value", arg.dylan-name);
-	    else
-	      format(stream, ", %s",
-		     d2c-arg(arg.type, export-value(arg, arg.dylan-name)));
-	    end if;
-	  end for;
-	  format(stream, ");\n");
-	end if;
-      end;
-  end select;
+  if (~params.empty? & instance?(last(params), <varargs-declaration>))
+    format(stream, "if (~empty?(%s))\n"
+           "    error(\"Variable arguments not yet supported\");\n"
+           "  else\n    ", last(params).dylan-name);
+    format(stream, "call-out(\"%s\", %s", decl.simple-name,
+           decl.type.result.type.d2c-type-tag);
+    for (count from 1, arg in params)
+      if (instance?(arg, <varargs-declaration>))
+        // print nothing (values needed by Mindy)
+        values();
+      elseif (arg.direction == #"in-out" | arg.direction == #"out")
+        format(stream, ", ptr: %s-ptr.raw-value", arg.dylan-name);
+      else
+        format(stream, ", %s",
+               d2c-arg(arg.type, export-value(arg, arg.dylan-name)));
+      end if;
+    end for;
+    format(stream, ");\n");
+    format(stream, "  end if;\n");
+  else
+    format(stream, "call-out(\"%s\", %s", decl.simple-name,
+           decl.type.result.type.d2c-type-tag);
+    for (count from 1, arg in params)
+      if (arg.direction == #"in-out" | arg.direction == #"out")
+        format(stream, ", ptr: %s-ptr.raw-value", arg.dylan-name);
+      else
+        format(stream, ", %s",
+               d2c-arg(arg.type, export-value(arg, arg.dylan-name)));
+      end if;
+    end for;
+    format(stream, ");\n");
+  end if;
 
-  if(melange-target = #"d2c")
-    if (instance?(result-type.true-type, <pointer-rep-types>))
-      format(stream, "  let result-value = make(%s, pointer: result-value);\n",
-	     result-type.dylan-name);
-    end if;
+  if (instance?(result-type.true-type, <pointer-rep-types>))
+    format(stream, "  let result-value = make(%s, pointer: result-value);\n",
+           result-type.dylan-name);
   end if;
 
   for (arg in out-params)
@@ -884,14 +843,13 @@ end method write-declaration;
 // callback and callout support.
 
 define method write-declaration
-    (decl :: <function-type-declaration>,
-     written-names :: <written-name-record>, load-string :: <string>,
-     stream :: <stream>)
+    (decl :: <function-type-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   if (~decl.equated?)
     format(stream, "define %s class %s (<function-pointer>) end;\n\n",
 	   class-sealing(), decl.dylan-name);
-    register-written-name(written-names, decl.dylan-name, decl);
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
   end if;
 
   // XXX - Hack alert. Because we haven't integrated the local name mapper
@@ -910,31 +868,19 @@ define method write-declaration
     
     let maker = get-name(decl.callback-maker-name, "make");
     let caller = get-name(decl.callout-function-name, "call");
-    select (melange-target)
-      #"d2c" =>
-	format(stream, "/* binding for %s goes here */\n\n", maker);
-	format(stream, "/* binding for %s goes here */\n\n", caller);    
-      #"mindy" =>
-	format(stream, "/* skipping bindings for %s, %s */\n\n",
-	       maker, caller);
-	signal(make(<simple-warning>,
-		    format-string:
-		      "melange: skipping mindy bindings for %s, %s",
-		    format-arguments: list(maker, caller)));
-      otherwise =>
-	error("melange: so, you wrote a new compiler?");
-    end select;
-    register-written-name(written-names, maker, decl);
-    register-written-name(written-names, caller, decl);
+    format(stream, "/* binding for %s goes here */\n\n", maker);
+    format(stream, "/* binding for %s goes here */\n\n", caller);    
+    register-written-name(back-end.written-names, maker, decl);
+    register-written-name(back-end.written-names, caller, decl);
   end if;
 end method write-declaration;
 
 // Vectors likely still need some work.  Fake it for now.
 //
 define method write-declaration
-    (decl :: <vector-declaration>,  written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <vector-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   if (~decl.equated?)
     // Create a new class -- we must insure that the class is a subclass of
     // both the appropriate pointer class and of <c-vector>.  
@@ -945,21 +891,19 @@ define method write-declaration
 	   class-sealing(),
 	   decl.dylan-name,
 	   as(<byte-string>, apply(join, ", ", supers)));
-    register-written-name(written-names, decl.dylan-name, decl);
-    if (melange-target == #"d2c")
-      format(stream, "define sealed domain make (singleton(%s));\n\n",
-	     decl.dylan-name);
-      // Douglas Auclair:  we'll trust the C code for its size declarations. 
-      // Instead of querying an instance (which may need memory 
-      // (de)allocation), we'll trustingly ask the class its size 
-      // (particularly if it's anonymous). 
-      if (decl.length) 
-  	  format(stream, "define inline method content-size (value == %s) " 
-	  	   " => (result :: <integer>);\n" 
-		   "  %=;\nend method content-size;\n\n", 
-	         decl.dylan-name, decl.length); 
-      end if; 
-    end if;
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
+    format(stream, "define sealed domain make (singleton(%s));\n\n",
+           decl.dylan-name);
+    // Douglas Auclair:  we'll trust the C code for its size declarations. 
+    // Instead of querying an instance (which may need memory 
+    // (de)allocation), we'll trustingly ask the class its size 
+    // (particularly if it's anonymous). 
+    if (decl.length) 
+      format(stream, "define inline method content-size (value == %s) " 
+             " => (result :: <integer>);\n" 
+             "  %=;\nend method content-size;\n\n", 
+             decl.dylan-name, decl.length); 
+    end if; 
   end if;
 end method write-declaration;
 
@@ -969,16 +913,16 @@ end method write-declaration;
 // if it occurs. 
 //
 define method write-declaration
-    (decl :: <typedef-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <typedef-declaration>, back-end :: <back-end>)
  => ();
+  let stream = back-end.stream;
   // We must special case this one since there are so many declarations of the
   // form "typedef struct foo foo".
   if (~decl.equated? 
         & decl.simple-name ~= decl.type.simple-name)
     format(stream, "define constant %s = %s;\n\n",
 	   decl.dylan-name, decl.type.dylan-name);
-    register-written-name(written-names, decl.dylan-name, decl);
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
   end if;
 end method write-declaration;
 
@@ -999,9 +943,9 @@ end method write-declaration;
 // aliasing and compute the appropriate sort of name.
 //
 define method write-declaration
-    (decl :: <macro-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <macro-declaration>, back-end :: <back-end>)
  => ();
+  let stream = back-end.stream;
   let raw-value = decl.constant-value;
   let value = select (raw-value by instance?)
 		<declaration> => raw-value.dylan-name;
@@ -1012,7 +956,7 @@ define method write-declaration
 		<character> => "1"; // for #define FOO\n, suggested by dauclair
 	      end select;
   unless(decl.dylan-name = value)
-    unless(register-written-name(written-names, decl.dylan-name, decl))
+    unless(register-written-name(back-end.written-names, decl.dylan-name, decl))
       format(stream, "define constant %s = %s;\n\n", decl.dylan-name, value);
     end unless;
   end unless;
@@ -1037,9 +981,9 @@ end method escape-characters;
 // pretty strightforward.
 //
 define method write-declaration
-    (decl :: <pointer-declaration>, written-names :: <written-name-record>,
-     load-string :: <string>, stream :: <stream>)
+    (decl :: <pointer-declaration>, back-end :: <d2c-back-end>)
  => ();
+  let stream = back-end.stream;
   if (decl.equated? | decl.simple-name = decl.referent.simple-name)
     values();
   else 
@@ -1053,11 +997,9 @@ define method write-declaration
 	   class-sealing(),
 	   decl.dylan-name,
 	   as(<byte-string>, apply(join, ", ", supers)));
-    register-written-name(written-names, decl.dylan-name, decl);
-    if (melange-target == #"d2c")
-      format(stream, "define sealed domain make (singleton(%s));\n\n",
-	     decl.dylan-name)
-    end if;
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
+    format(stream, "define sealed domain make (singleton(%s));\n\n",
+           decl.dylan-name);
     unless(target-type.true-type.abstract-type?)
       format(stream,
              "define inline method pointer-value\n"

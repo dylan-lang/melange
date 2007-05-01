@@ -11,4 +11,5 @@ files:	c-exports
 	alignment
 	c-decl-state
 	c-decl-write
+	c-decl-write-c-ffi
 	c-decl
