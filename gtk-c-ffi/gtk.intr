@@ -296,239 +296,385 @@ define interface
     map-argument: { 2 => <object> };
   struct "struct _GObject",
     superclasses: {<GTypeInstance>};
+  struct "struct _GInitiallyUnowned",
+    superclasses: {<_GObject>};
+  struct "struct _GTypeModule",
+    superclasses: {<_GObject>, <_GTypePlugin>};
+  struct "struct _AtkGObjectAccessible",
+    superclasses: {<_AtkObject>};
+  struct "struct _AtkHyperlink",
+    superclasses: {<_GObject>, <_AtkAction>};
+  struct "struct _AtkNoOpObject",
+    superclasses: {<_AtkObject>, <_AtkComponent>, <_AtkAction>, <_AtkEditableText>, <_AtkHypertext>, <_AtkImage>, <_AtkSelection>, <_AtkTable>, <_AtkText>, <_AtkValue>};
+  struct "struct _AtkNoOpObjectFactory",
+    superclasses: {<_AtkObjectFactory>};
+  struct "struct _AtkObject",
+    superclasses: {<_GObject>};
+  struct "struct _AtkObjectFactory",
+    superclasses: {<_GObject>};
+  struct "struct _AtkRegistry",
+    superclasses: {<_GObject>};
+  struct "struct _AtkRelation",
+    superclasses: {<_GObject>};
+  struct "struct _AtkRelationSet",
+    superclasses: {<_GObject>};
+  struct "struct _AtkStateSet",
+    superclasses: {<_GObject>};
+  struct "struct _AtkUtil",
+    superclasses: {<_GObject>};
+  struct "struct _PangoContext",
+    superclasses: {<_GObject>};
+  struct "struct _PangoFontFamily",
+    superclasses: {<_GObject>};
+  struct "struct _PangoFontFace",
+    superclasses: {<_GObject>};
+  struct "struct _PangoFont",
+    superclasses: {<_GObject>};
+  struct "struct _PangoFontMap",
+    superclasses: {<_GObject>};
+  struct "struct _PangoFontset",
+    superclasses: {<_GObject>};
+  struct "struct _PangoLayout",
+    superclasses: {<_GObject>};
+  struct "struct _PangoRenderer",
+    superclasses: {<_GObject>};
+  struct "struct _GdkPixbuf",
+    superclasses: {<_GObject>};
+  struct "struct _GdkPixbufSimpleAnim",
+    superclasses: {<_GdkPixbufAnimation>};
+  struct "struct _GdkPixbufSimpleAnimIter",
+    superclasses: {<_GdkPixbufAnimationIter>};
+  struct "struct _GdkPixbufAnimation",
+    superclasses: {<_GObject>};
+  struct "struct _GdkPixbufAnimationIter",
+    superclasses: {<_GObject>};
+  struct "struct _GdkPixbufLoader",
+    superclasses: {<_GObject>};
+  struct "struct _GdkDisplay",
+    superclasses: {<_GObject>};
+  struct "struct _GdkColormap",
+    superclasses: {<_GObject>};
+  struct "struct _GdkDrawable",
+    superclasses: {<_GObject>};
+  struct "struct _GdkDragContext",
+    superclasses: {<_GObject>};
+  struct "struct _GdkGC",
+    superclasses: {<_GObject>};
+  struct "struct _GdkDisplayManager",
+    superclasses: {<_GObject>};
+  struct "struct _GdkImage",
+    superclasses: {<_GObject>};
+  struct "struct _GdkDevice",
+    superclasses: {<_GObject>};
+  struct "struct _GdkKeymap",
+    superclasses: {<_GObject>};
+  struct "struct _GdkPangoRenderer",
+    superclasses: {<_PangoRenderer>};
+  struct "struct _GdkPixmap",
+    superclasses: {<_GdkDrawable>};
+  struct "struct _GdkScreen",
+    superclasses: {<_GObject>};
+  struct "struct _GdkVisual",
+    superclasses: {<_GObject>};
+  struct "struct _GdkWindow",
+    superclasses: {<_GdkDrawable>};
+  struct "struct _GtkAboutDialog",
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
+  struct "struct _GtkActionGroup",
+    superclasses: {<_GObject>};
   struct "struct _GtkAccelGroup",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkAccelLabel",
-    superclasses: {<GtkLabel>, <AtkImplementorIface>};
+    superclasses: {<_GtkLabel>, <_AtkImplementorIface>};
+  struct "struct _GtkAccelMap",
+    superclasses: {<_GObject>};
   struct "struct _GtkAccessible",
-    superclasses: {<AtkObject>};
-  struct "struct _GtkAdjustment",
-    superclasses: {<GtkObject>};
-  struct "struct _GtkAlignment",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
-  struct "struct _GtkArrow",
-    superclasses: {<GtkMisc>, <AtkImplementorIface>};
+    superclasses: {<_AtkObject>};
+  struct "struct _GtkAction",
+    superclasses: {<_GObject>};
   struct "struct _GtkAspectFrame",
-    superclasses: {<GtkFrame>, <AtkImplementorIface>};
-  struct "struct _GtkBin",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
-  struct "struct _GtkBox",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkFrame>, <_AtkImplementorIface>};
+  struct "struct _GtkAdjustment",
+    superclasses: {<_GtkObject>};
+  struct "struct _GtkAlignment",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkArrow",
+    superclasses: {<_GtkMisc>, <_AtkImplementorIface>};
+  struct "struct _GtkAspectFrame",
+    superclasses: {<_GtkFrame>, <_AtkImplementorIface>};
   struct "struct _GtkButtonBox",
-    superclasses: {<GtkBox>, <AtkImplementorIface>};
-  struct "struct _GtkButton",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
+    superclasses: {<_GtkBox>, <_AtkImplementorIface>};
+  struct "struct _GtkBin",
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkCalendar",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkBox",
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkButtonBox",
+    superclasses: {<_GtkBox>, <_AtkImplementorIface>};
+  struct "struct _GtkButton",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkCellRendererCombo",
+    superclasses: {<_GtkCellRendererText>};
   struct "struct _GtkCellRenderer",
-    superclasses: {<GtkObject>};
+    superclasses: {<_GtkObject>};
+  struct "struct _GtkCellRendererProgress",
+    superclasses: {<_GtkCellRenderer>};
   struct "struct _GtkCellRendererPixbuf",
-    superclasses: {<GtkCellRenderer>};
-  struct "struct _GtkCellRendererText",
-    superclasses: {<GtkCellRenderer>};
-  struct "struct _GtkCellRendererToggle",
-    superclasses: {<GtkCellRenderer>};
-  struct "struct _GtkCheckButton",
-    superclasses: {<GtkToggleButton>, <AtkImplementorIface>};
-  struct "struct _GtkCheckMenuItem",
-    superclasses: {<GtkMenuItem>, <AtkImplementorIface>};
-  struct "struct _GtkCList",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
-  struct "struct _GtkColorSelectionDialog",
-    superclasses: {<GtkDialog>, <AtkImplementorIface>};
-  struct "struct _GtkColorSelection",
-    superclasses: {<GtkVBox>, <AtkImplementorIface>};
-  struct "struct _GtkCombo",
-    superclasses: {<GtkHBox>, <AtkImplementorIface>};
-  struct "struct _GtkContainer",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkCTree",
-    superclasses: {<GtkCList>, <AtkImplementorIface>};
-  struct "struct _GtkCurve",
-    superclasses: {<GtkDrawingArea>, <AtkImplementorIface>};
-  struct "struct _GtkDialog",
-    superclasses: {<GtkWindow>, <AtkImplementorIface>};
-  struct "struct _GtkDrawingArea",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkEntry",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>, <GtkEditable>, <GtkCellEditable>};
-  struct "struct _GtkEventBox",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
-  struct "struct _GtkFileSelection",
-    superclasses: {<GtkDialog>, <AtkImplementorIface>};
-  struct "struct _GtkFixed",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
-  struct "struct _GtkFontSelectionDialog",
-    superclasses: {<GtkDialog>, <AtkImplementorIface>};
-  struct "struct _GtkFontSelection",
-    superclasses: {<GtkVBox>, <AtkImplementorIface>};
-  struct "struct _GtkFrame",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
-  struct "struct _GtkGammaCurve",
-    superclasses: {<GtkVBox>, <AtkImplementorIface>};
+    superclasses: {<_GtkCellRenderer>};
   struct "struct _GtkHandleBox",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
-  struct "struct _GtkHBox",
-    superclasses: {<GtkBox>, <AtkImplementorIface>};
-  struct "struct _GtkHButtonBox",
-    superclasses: {<GtkButtonBox>, <AtkImplementorIface>};
-  struct "struct _GtkHPaned",
-    superclasses: {<GtkPaned>, <AtkImplementorIface>};
-  struct "struct _GtkHRuler",
-    superclasses: {<GtkRuler>, <AtkImplementorIface>};
-  struct "struct _GtkHScale",
-    superclasses: {<GtkScale>, <AtkImplementorIface>};
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkCellRendererText",
+    superclasses: {<_GtkCellRenderer>};
+  struct "struct _GtkCellRendererToggle",
+    superclasses: {<_GtkCellRenderer>};
+  struct "struct _GtkCellView",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>, <_GtkCellLayout>};
+  struct "struct _GtkCheckButton",
+    superclasses: {<_GtkToggleButton>, <_AtkImplementorIface>};
+  struct "struct _GtkCheckMenuItem",
+    superclasses: {<_GtkMenuItem>, <_AtkImplementorIface>};
+  struct "struct _GtkCList",
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkClipboard",
+    superclasses: {<_GObject>};
+  struct "struct _GtkColorButton",
+    superclasses: {<_GtkButton>, <_AtkImplementorIface>};
+  struct "struct _GtkColorSelection",
+    superclasses: {<_GtkVBox>, <_AtkImplementorIface>};
+  struct "struct _GtkColorSelectionDialog",
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
+  struct "struct _GtkCombo",
+    superclasses: {<_GtkHBox>, <_AtkImplementorIface>};
+  struct "struct _GtkComboBox",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>};
+  struct "struct _GtkComboBoxEntry",
+    superclasses: {<_GtkComboBox>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>};
+  struct "struct _GtkContainer",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkCTree",
+    superclasses: {<_GtkCList>, <_AtkImplementorIface>};
+  struct "struct _GtkCurve",
+    superclasses: {<_GtkDrawingArea>, <_AtkImplementorIface>};
+  struct "struct _GtkDialog",
+    superclasses: {<_GtkWindow>, <_AtkImplementorIface>};
+  struct "struct _GtkDrawingArea",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkEntry",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>, <_GtkCellEditable>, <_GtkEditable>};
+  struct "struct _GtkEntryCompletion",
+    superclasses: {<_GObject>, <_GtkCellLayout>};
+  struct "struct _GtkEventBox",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkExpander",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkFileChooserButton",
+    superclasses: {<_GtkHBox>, <_AtkImplementorIface>, <_GtkFileChooser>};
+  struct "struct _GtkFileChooserDialog",
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>, <_GtkFileChooser>};
+  struct "struct _GtkFileChooserWidget",
+    superclasses: {<_GtkVBox>, <_AtkImplementorIface>, <_GtkFileChooser>, <_GtkFileChooserEmbed>};
+  struct "struct _GtkFileFilter",
+    superclasses: {<_GtkObject>};
+  struct "struct _GtkFileSelection",
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
+  struct "struct _GtkFixed",
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkFontButton",
+    superclasses: {<_GtkButton>, <_AtkImplementorIface>};
+  struct "struct _GtkFontSelection",
+    superclasses: {<_GtkVBox>, <_AtkImplementorIface>};
+  struct "struct _GtkFontSelectionDialog",
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
+  struct "struct _GtkFrame",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkGammaCurve",
+    superclasses: {<_GtkVBox>, <_AtkImplementorIface>};
   struct "struct _GtkHScrollbar",
-    superclasses: {<GtkScrollbar>, <AtkImplementorIface>};
-  struct "struct _GtkHSeparator",
-    superclasses: {<GtkSeparator>, <AtkImplementorIface>};
+    superclasses: {<_GtkScrollbar>, <_AtkImplementorIface>};
+  struct "struct _GtkHButtonBox",
+    superclasses: {<_GtkButtonBox>, <_AtkImplementorIface>};
+  struct "struct _GtkHBox",
+    superclasses: {<_GtkBox>, <_AtkImplementorIface>};
+  struct "struct _GtkHPaned",
+    superclasses: {<_GtkPaned>, <_AtkImplementorIface>};
+  struct "struct _GtkHRuler",
+    superclasses: {<_GtkRuler>, <_AtkImplementorIface>};
+  struct "struct _GtkHScale",
+    superclasses: {<_GtkScale>, <_AtkImplementorIface>};
   struct "struct _GtkIconFactory",
-    superclasses: {<GObject>};
-  struct "struct _GtkIMContext",
-    superclasses: {<GObject>};
-  struct "struct _GtkIMContextSimple",
-    superclasses: {<GtkIMContext>};
-  struct "struct _GtkIMMulticontext",
-    superclasses: {<GtkIMContext>};
-  struct "struct _GtkImage",
-    superclasses: {<GtkMisc>, <AtkImplementorIface>};
+    superclasses: {<_GObject>};
+  struct "struct _GtkHSeparator",
+    superclasses: {<_GtkSeparator>, <_AtkImplementorIface>};
   struct "struct _GtkImageMenuItem",
-    superclasses: {<GtkMenuItem>, <AtkImplementorIface>};
+    superclasses: {<_GtkMenuItem>, <_AtkImplementorIface>};
+  struct "struct _GtkIconTheme",
+    superclasses: {<_GObject>};
+  struct "struct _GtkIconView",
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>, <_GtkCellLayout>};
+  struct "struct _GtkImage",
+    superclasses: {<_GtkMisc>, <_AtkImplementorIface>};
+  struct "struct _GtkIMContextSimple",
+    superclasses: {<_GtkIMContext>};
+  struct "struct _GtkIMContext",
+    superclasses: {<_GObject>};
+  struct "struct _GtkIMMulticontext",
+    superclasses: {<_GtkIMContext>};
+  struct "struct _GtkRadioToolButton",
+    superclasses: {<_GtkToggleToolButton>, <_AtkImplementorIface>};
   struct "struct _GtkInputDialog",
-    superclasses: {<GtkDialog>, <AtkImplementorIface>};
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
   struct "struct _GtkInvisible",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkItemFactory",
-    superclasses: {<GtkObject>};
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
   struct "struct _GtkItem",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkItemFactory",
+    superclasses: {<_GtkObject>};
   struct "struct _GtkLabel",
-    superclasses: {<GtkMisc>, <AtkImplementorIface>};
+    superclasses: {<_GtkMisc>, <_AtkImplementorIface>};
   struct "struct _GtkLayout",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkList",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkListItem",
-    superclasses: {<GtkItem>, <AtkImplementorIface>};
+    superclasses: {<_GtkItem>, <_AtkImplementorIface>};
   struct "struct _GtkListStore",
-    superclasses: {<GObject>, <GtkTreeModel>, <GtkTreeDragSource>, <GtkTreeDragDest>, <GtkTreeSortable>};
-  struct "struct _GtkMenuBar",
-    superclasses: {<GtkMenuShell>, <AtkImplementorIface>};
+    superclasses: {<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeDragDest>, <_GtkTreeSortable>};
   struct "struct _GtkMenu",
-    superclasses: {<GtkMenuShell>, <AtkImplementorIface>};
+    superclasses: {<_GtkMenuShell>, <_AtkImplementorIface>};
+  struct "struct _GtkMenuBar",
+    superclasses: {<_GtkMenuShell>, <_AtkImplementorIface>};
   struct "struct _GtkMenuItem",
-    superclasses: {<GtkItem>, <AtkImplementorIface>};
+    superclasses: {<_GtkItem>, <_AtkImplementorIface>};
   struct "struct _GtkMenuShell",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkMenuToolButton",
+    superclasses: {<_GtkToolButton>, <_AtkImplementorIface>};
   struct "struct _GtkMessageDialog",
-    superclasses: {<GtkDialog>, <AtkImplementorIface>};
+    superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
   struct "struct _GtkMisc",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
   struct "struct _GtkNotebook",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkObject",
-    superclasses: {<GObject>};
+    superclasses: {<_GInitiallyUnowned>};
   struct "struct _GtkOptionMenu",
-    superclasses: {<GtkButton>, <AtkImplementorIface>};
+    superclasses: {<_GtkButton>, <_AtkImplementorIface>};
   struct "struct _GtkPaned",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkPixmap",
-    superclasses: {<GtkMisc>, <AtkImplementorIface>};
+    superclasses: {<_GtkMisc>, <_AtkImplementorIface>};
   struct "struct _GtkPlug",
-    superclasses: {<GtkWindow>, <AtkImplementorIface>};
+    superclasses: {<_GtkWindow>, <_AtkImplementorIface>};
   struct "struct _GtkPreview",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkProgressBar",
-    superclasses: {<GtkProgress>, <AtkImplementorIface>};
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
   struct "struct _GtkProgress",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkProgressBar",
+    superclasses: {<_GtkProgress>, <_AtkImplementorIface>};
+  struct "struct _GtkRadioAction",
+    superclasses: {<_GtkToggleAction>};
   struct "struct _GtkRadioButton",
-    superclasses: {<GtkCheckButton>, <AtkImplementorIface>};
+    superclasses: {<_GtkCheckButton>, <_AtkImplementorIface>};
   struct "struct _GtkRadioMenuItem",
-    superclasses: {<GtkCheckMenuItem>, <AtkImplementorIface>};
-  struct "struct _GtkRange",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkRcStyle",
-    superclasses: {<GObject>};
-  struct "struct _GtkRuler",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
-  struct "struct _GtkScale",
-    superclasses: {<GtkRange>, <AtkImplementorIface>};
+    superclasses: {<_GtkCheckMenuItem>, <_AtkImplementorIface>};
   struct "struct _GtkScrollbar",
-    superclasses: {<GtkRange>, <AtkImplementorIface>};
-  struct "struct _GtkScrolledWindow",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
-  struct "struct _GtkSeparator",
-    superclasses: {<GtkWidget>, <AtkImplementorIface>};
+    superclasses: {<_GtkRange>, <_AtkImplementorIface>};
+  struct "struct _GtkRange",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkRcStyle",
+    superclasses: {<_GObject>};
+  struct "struct _GtkRuler",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkScale",
+    superclasses: {<_GtkRange>, <_AtkImplementorIface>};
   struct "struct _GtkSeparatorMenuItem",
-    superclasses: {<GtkMenuItem>, <AtkImplementorIface>};
+    superclasses: {<_GtkMenuItem>, <_AtkImplementorIface>};
+  struct "struct _GtkScrolledWindow",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
+  struct "struct _GtkSeparator",
+    superclasses: {<_GtkWidget>, <_AtkImplementorIface>};
+  struct "struct _GtkSeparatorToolItem",
+    superclasses: {<_GtkToolItem>, <_AtkImplementorIface>};
   struct "struct _GtkSettings",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkSizeGroup",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkSocket",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkSpinButton",
-    superclasses: {<GtkEntry>, <AtkImplementorIface>, <GtkEditable>, <GtkCellEditable>};
+    superclasses: {<_GtkEntry>, <_AtkImplementorIface>, <_GtkCellEditable>, <_GtkEditable>};
   struct "struct _GtkStatusbar",
-    superclasses: {<GtkHBox>, <AtkImplementorIface>};
+    superclasses: {<_GtkHBox>, <_AtkImplementorIface>};
   struct "struct _GtkStyle",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTable",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkTearoffMenuItem",
-    superclasses: {<GtkMenuItem>, <AtkImplementorIface>};
+    superclasses: {<_GtkMenuItem>, <_AtkImplementorIface>};
   struct "struct _GtkTextBuffer",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTextChildAnchor",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTextMark",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTextTag",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTextTagTable",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTextView",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkTipsQuery",
-    superclasses: {<GtkLabel>, <AtkImplementorIface>};
+    superclasses: {<_GtkLabel>, <_AtkImplementorIface>};
+  struct "struct _GtkToggleAction",
+    superclasses: {<_GtkAction>};
   struct "struct _GtkToggleButton",
-    superclasses: {<GtkButton>, <AtkImplementorIface>};
+    superclasses: {<_GtkButton>, <_AtkImplementorIface>};
+  struct "struct _GtkToggleToolButton",
+    superclasses: {<_GtkToolButton>, <_AtkImplementorIface>};
   struct "struct _GtkToolbar",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkToolButton",
+    superclasses: {<_GtkToolItem>, <_AtkImplementorIface>};
+  struct "struct _GtkToolItem",
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
   struct "struct _GtkTooltips",
-    superclasses: {<GtkObject>};
+    superclasses: {<_GtkObject>};
+  struct "struct _GtkTreeModelFilter",
+    superclasses: {<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>};
   struct "struct _GtkTreeModelSort",
-    superclasses: {<GObject>, <GtkTreeModel>, <GtkTreeSortable>};
+    superclasses: {<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeSortable>};
   struct "struct _GtkTreeSelection",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
   struct "struct _GtkTreeStore",
-    superclasses: {<GObject>, <GtkTreeModel>, <GtkTreeDragSource>, <GtkTreeDragDest>, <GtkTreeSortable>};
-  struct "struct _GtkTreeViewColumn",
-    superclasses: {<GtkObject>};
+    superclasses: {<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeDragDest>, <_GtkTreeSortable>};
   struct "struct _GtkTreeView",
-    superclasses: {<GtkContainer>, <AtkImplementorIface>};
-  struct "struct _GtkVBox",
-    superclasses: {<GtkBox>, <AtkImplementorIface>};
+    superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
+  struct "struct _GtkTreeViewColumn",
+    superclasses: {<_GtkObject>, <_GtkCellLayout>};
+  struct "struct _GtkUIManager",
+    superclasses: {<_GObject>};
   struct "struct _GtkVButtonBox",
-    superclasses: {<GtkButtonBox>, <AtkImplementorIface>};
+    superclasses: {<_GtkButtonBox>, <_AtkImplementorIface>};
+  struct "struct _GtkVBox",
+    superclasses: {<_GtkBox>, <_AtkImplementorIface>};
   struct "struct _GtkViewport",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
   struct "struct _GtkVPaned",
-    superclasses: {<GtkPaned>, <AtkImplementorIface>};
+    superclasses: {<_GtkPaned>, <_AtkImplementorIface>};
   struct "struct _GtkVRuler",
-    superclasses: {<GtkRuler>, <AtkImplementorIface>};
+    superclasses: {<_GtkRuler>, <_AtkImplementorIface>};
   struct "struct _GtkVScale",
-    superclasses: {<GtkScale>, <AtkImplementorIface>};
+    superclasses: {<_GtkScale>, <_AtkImplementorIface>};
   struct "struct _GtkVScrollbar",
-    superclasses: {<GtkScrollbar>, <AtkImplementorIface>};
+    superclasses: {<_GtkScrollbar>, <_AtkImplementorIface>};
   struct "struct _GtkVSeparator",
-    superclasses: {<GtkSeparator>, <AtkImplementorIface>};
+    superclasses: {<_GtkSeparator>, <_AtkImplementorIface>};
   struct "struct _GtkWidget",
-    superclasses: {<GtkObject>, <AtkImplementorIface>};
+    superclasses: {<_GtkObject>, <_AtkImplementorIface>};
   struct "struct _GtkWindow",
-    superclasses: {<GtkBin>, <AtkImplementorIface>};
+    superclasses: {<_GtkBin>, <_AtkImplementorIface>};
   struct "struct _GtkWindowGroup",
-    superclasses: {<GObject>};
+    superclasses: {<_GObject>};
 end interface;
 
