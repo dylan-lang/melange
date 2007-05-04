@@ -13,6 +13,14 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
          decl.dylan-name, as(<byte-string>, apply(join, ", ", supers)));
 end;
 
+define method write-declaration (decl :: <union-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
+  let supers = decl.superclasses | #("<C-void*>");
+  format(back-end.stream, "define C-subtype %s (%s) end;\n",
+         decl.dylan-name, as(<byte-string>, apply(join, ", ", supers)));
+end;
+
 define method write-declaration (decl :: <pointer-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   unless (decl.dylan-name = decl.referent.dylan-name)
@@ -36,7 +44,7 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
                #"out" => "output";
                #"in-out" => "input output";
              end,
-             param.simple-name, param.type-name)
+             param.dylan-name, param.type-name)
     end;
   end;
   let result-type = decl.type.result.type;
@@ -47,3 +55,45 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   format(stream, "end;\n\n");
 end;
 
+define method write-declaration (decl :: <function-type-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  let stream = back-end.stream;
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
+
+  format(stream, "define constant %s = <C-function-pointer>;\n", decl.dylan-name);
+end;
+
+define method write-declaration (decl :: <vector-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  let stream = back-end.stream;
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
+
+    format(stream, "define constant %s = %s;\n",
+           decl.dylan-name, decl.pointer-equiv.dylan-name);
+end;
+
+define method write-declaration
+    (decl :: <enum-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  let stream = back-end.stream;
+  if (~decl.equated?)
+    let type-name = decl.dylan-name;
+    
+    // This may still be an "incomplete type".  If so, we just define the class
+    // as a synonym for <integer>
+    format(stream, "define constant %s = <C-int>;\n", type-name);
+    register-written-name(back-end.written-names, type-name, decl);
+    if (decl.members)
+
+      for (literal in decl.members)
+	let name = literal.dylan-name;
+	let int-value = literal.constant-value;
+	format(stream, "define constant %s = %d;\n", name, int-value);
+	register-written-name(back-end.written-names, name, decl, subname?: #t);
+      finally
+	new-line(stream);
+      end for;
+    end if;
+  end if;
+end method write-declaration;
+  

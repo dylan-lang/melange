@@ -617,7 +617,7 @@ end method write-declaration;
 // values are written for each literal.
 //
 define method write-declaration
-    (decl :: <enum-declaration>, back-end :: <back-end>)
+    (decl :: <enum-declaration>, back-end :: <d2c-back-end>)
  => ();
   let stream = back-end.stream;
   if (~decl.equated?)

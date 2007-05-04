@@ -3,19 +3,8 @@ Synopsis:  Hello World in GTK2
 Author:    Andreas Bogk, Hannes Mehnert
 Copyright: (c) 2007 Dylan Hackers
 
-define C-pointer-type <C-string**> => <C-string*>;
-
-define constant <gulong> = <C-unsigned-long>;
-define constant <GType> = <gulong>;
-
-define C-function g-type-name
-  input parameter g-type :: <GType>;
-  result name :: <C-string>;
-  c-name: "g_type_name";
-end;
-
 define C-function g-type-from-instance
-  input parameter instance :: <GTypeInstance>;
+  input parameter instance :: <_GTypeInstance>;
   result type :: <GType>;
   c-name: "g_type_from_instance";
 end;
@@ -42,7 +31,7 @@ end;
 define function find-gtype-by-name(name :: <string>)
   block(return)
     for(i in $all-gtype-instances)
-      if(as-uppercase(i.debug-name) = as-uppercase(concatenate("<", name, ">")))
+      if(as-uppercase(i.debug-name) = as-uppercase(concatenate("<_", name, ">")))
         return(i)
       end if;
     finally
@@ -64,48 +53,7 @@ end method find-gtype;
 
 define constant $gtype-table = make(<table>);
 
-define constant <GtkWindowType> = limited(<integer>, min: 0, max: 1);
-define constant $GTK-WINDOW-TOPLEVEL :: <GtkWindowType> = 0;
-define constant $GTK-WINDOW-POPUP :: <GtkWindowType> = 1;
-
-define C-subtype <GTypeInstance> (<C-void*>) end;
-define C-subtype <GObject> (<GTypeInstance>) end;
-define C-subtype <GtkWidget> (<GObject>) end;
-define C-subtype <GtkContainer> (<GtkWidget>) end;
-define C-subtype <GtkWindow> (<GtkContainer>) end;
-define C-subtype <GtkLabel> (<GtkWidget>) end;
-
-
-define constant $all-gtype-instances = all-subclasses(<GTypeInstance>);
-
-define C-function gtk-init
-  input parameter argc :: <C-int*>;
-  input parameter argv :: <C-string**>;
-  c-name: "gtk_init";
-end;
-
-define C-function gtk-window-new
-  input parameter window-type :: <C-int>;
-  result window :: <GtkWidget>;
-  c-name: "gtk_window_new";
-end;
-
-define C-function gtk-label-new
-  input parameter string :: <C-string>;
-  result label :: <GtkLabel>;
-  c-name: "gtk_label_new";
-end;
-
-define C-function gtk-widget-show
-  input parameter widget :: <GtkWidget>;
-  c-name: "gtk_widget_show";
-end;
-
-define C-function gtk-container-add
-  input parameter container :: <GtkContainer>;
-  input parameter widget :: <GtkWidget>;
-  c-name: "gtk_container_add";
-end;
+define constant $all-gtype-instances = all-subclasses(<_GTypeInstance>);
 
 define function initialize-gtk
     () => ()
@@ -113,20 +61,16 @@ define function initialize-gtk
   with-c-string (string = name)
     let string* = make(<C-string*>, element-count: 1);
     string*[0] := string;
-    let string** = make(<C-string**>);
+    let string** = make(<char***>);
     string**[0] := string*;
     let int* = make(<C-int*>);
     int*[0] := 1;
-    gtk-init(int*, string**);
+    %gtk-init(int*, string**);
     destroy(string*);
     destroy(string**);
     destroy(int*)
   end
 end function initialize-gtk;
-
-define C-function gtk-main
-  c-name: "gtk_main";
-end;
 
 define method main () => ()
   format-out("Hello, world!\n");

@@ -9,4 +9,5 @@ define library gtk-hello-world
   use io;
   use system;
   use c-ffi;
+  use gtk-c-ffi;
 end library gtk-hello-world;

@@ -10,4 +10,5 @@ define module gtk-hello-world
   use streams;
   use c-ffi;
   use dylan-extensions, import: { debug-name };
+  use gtk-internal;
 end module gtk-hello-world;

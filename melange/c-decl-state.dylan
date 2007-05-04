@@ -104,7 +104,7 @@ define method initialize (value :: <parse-file-state>, #key)
   value.pointers := make(<object-table>);
   value.vectors := make(<my-sequence-table>);
   value.pointers[void-type] := make(<pointer-declaration>, referent: void-type,
-				    dylan-name: "<machine-pointer>",
+				    dylan-name: "<C-void*>",
 				    equated: #t,
 				    name: "statically-typed-pointer");
   exclude-decl(value.pointers[void-type]);

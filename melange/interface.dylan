@@ -138,7 +138,7 @@ define method process-interface-file
   try-define(0);
   force-output(out-stream);
   if (verbose)
-    write-line(*standard-error*, "")
+    write-line(*standard-error*, "");
     force-output(*standard-error*);
   end if;
 end method process-interface-file;

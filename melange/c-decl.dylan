@@ -885,69 +885,69 @@ define constant void-type = make(<predefined-type-declaration>,
 define constant int-type = make(<signed-integer-type-declaration>,
 				accessor: "signed-long-at",
 				name: "int",
-				dylan-name: "<integer>",
+				dylan-name: "<C-signed-int>",
                                 size: $integer-size);
 define constant unsigned-int-type = make(<unsigned-integer-type-declaration>,
 					 accessor: "unsigned-long-at",
 					 name: "unsigned-int",
-					 dylan-name: "<integer>",
+					 dylan-name: "<C-unsigned-int>",
 					 size: $integer-size);
 define constant short-type = make(<signed-integer-type-declaration>,
 				  accessor: "signed-short-at",
 				  name: "short",
-				  dylan-name: "<integer>",
+				  dylan-name: "<C-signed-short>",
 				  size: $short-int-size);
 define constant unsigned-short-type = make(<unsigned-integer-type-declaration>,
 					   accessor: "unsigned-short-at",
 					   name: "unsigned-short",
-					   dylan-name: "<integer>",
+					   dylan-name: "<C-unsigned-short>",
 					   size: $short-int-size);
 define constant long-type = make(<signed-integer-type-declaration>,
 				 accessor: "signed-long-at",
 				 name: "long",
-				 dylan-name: "<integer>",
+				 dylan-name: "<C-signed-long>",
 				 size: $long-int-size);
 define constant unsigned-long-type = make(<unsigned-integer-type-declaration>,
 					  accessor: "unsigned-long-at",
 					  name: "unsigned-long",
-					  dylan-name: "<integer>",
+					  dylan-name: "<C-unsigned-long>",
 					  size: $long-int-size);
 // "long long" is an idiom supported by gcc, so we'll recognize it, without
 // actually supporting access.
 define constant longlong-type = make(<signed-integer-type-declaration>,
 				     accessor: "longlong-at",
 				     name: "long-long",
-				     dylan-name: "<double-integer>",
+				     dylan-name: "<C-signed-long>", //XXX: broken!
 				     size: $long-int-size * 2);
 define constant unsigned-longlong-type = make(<unsigned-integer-type-declaration>,
 					      accessor: "unsigned-longlong-at",
 					      name: "unsigned-long-long",
-					      dylan-name: "<double-integer>",
+					      dylan-name: "<C-unsigned-long>", // XXX: broken too!
 					      size: $longlong-int-size);
 define constant char-type = make(<signed-integer-type-declaration>,
 				 accessor: "signed-byte-at",
 				 name: "char",
-				 dylan-name: "<integer>",
+				 dylan-name: "<C-signed-char>",
 				 size: $char-size);
 define constant unsigned-char-type = make(<unsigned-integer-type-declaration>,
 					  accessor: "unsigned-byte-at",
 					  name: "unsigned-char",
-					  dylan-name: "<integer>",
+					  dylan-name: "<C-unsigned-char>",
 					  size: $char-size);
 define constant float-type = make(<float-type-declaration>,
 				  accessor: "float-at",
 				  name: "float",
-				  dylan-name: "<single-float>",
+				  dylan-name: "<C-float>",
 				  size: $float-size);
 define constant double-type = make(<float-type-declaration>,
 				   accessor: "double-at",
 				   name: "double",
-				   dylan-name: "<double-float>",
+				   dylan-name: "<C-double>",
 				   size: $double-float-size);
 define constant long-double-type = make(<float-type-declaration>,
 					accessor: "long-double-at",
 					name: "long-double",
-					dylan-name: "<extended-float>",
+					dylan-name: "<C-extended>", // XXX: more brokenness
 					size: $long-double-size);
 
 define method compute-closure 
