@@ -295,9 +295,7 @@ define interface
   function "g_closure_new_simple",
     map-argument: { 2 => <object> };
   struct "struct _GObject",
-    superclasses: {<GTypeInstance>};
-  struct "struct _GInitiallyUnowned",
-    superclasses: {<_GObject>};
+    superclasses: {<_GTypeInstance>};
   struct "struct _GTypeModule",
     superclasses: {<_GObject>, <_GTypePlugin>};
   struct "struct _AtkGObjectAccessible",
@@ -342,8 +340,6 @@ define interface
     superclasses: {<_GObject>};
   struct "struct _GdkPixbufSimpleAnim",
     superclasses: {<_GdkPixbufAnimation>};
-  struct "struct _GdkPixbufSimpleAnimIter",
-    superclasses: {<_GdkPixbufAnimationIter>};
   struct "struct _GdkPixbufAnimation",
     superclasses: {<_GObject>};
   struct "struct _GdkPixbufAnimationIter",
@@ -370,14 +366,10 @@ define interface
     superclasses: {<_GObject>};
   struct "struct _GdkPangoRenderer",
     superclasses: {<_PangoRenderer>};
-  struct "struct _GdkPixmap",
-    superclasses: {<_GdkDrawable>};
   struct "struct _GdkScreen",
     superclasses: {<_GObject>};
   struct "struct _GdkVisual",
     superclasses: {<_GObject>};
-  struct "struct _GdkWindow",
-    superclasses: {<_GdkDrawable>};
   struct "struct _GtkAboutDialog",
     superclasses: {<_GtkDialog>, <_AtkImplementorIface>};
   struct "struct _GtkActionGroup",
@@ -557,7 +549,7 @@ define interface
   struct "struct _GtkNotebook",
     superclasses: {<_GtkContainer>, <_AtkImplementorIface>};
   struct "struct _GtkObject",
-    superclasses: {<_GInitiallyUnowned>};
+    superclasses: {<_GObject>};
   struct "struct _GtkOptionMenu",
     superclasses: {<_GtkButton>, <_AtkImplementorIface>};
   struct "struct _GtkPaned",

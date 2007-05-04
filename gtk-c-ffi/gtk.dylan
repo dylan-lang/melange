@@ -54,20 +54,20 @@ define constant <GdkByteOrder> = <C-int>;
 define constant $GDK-LSB-FIRST = 0;
 define constant $GDK-MSB-FIRST = 1;
 
-define C-subtype <_GdkVisual> (<C-void*>) end;
+define C-subtype <_GdkVisual> (<_GObject>) end;
 define constant <GdkVisual> = <_GdkVisual>;
 
 define constant <gpointer> = <C-void*>;
 
-define C-subtype <_GdkColormap> (<C-void*>) end;
+define C-subtype <_GdkColormap> (<_GObject>) end;
 define constant <GdkColormap> = <_GdkColormap>;
 
-define C-subtype <_GdkGC> (<C-void*>) end;
+define C-subtype <_GdkGC> (<_GObject>) end;
 define constant <GdkGC> = <_GdkGC>;
 
 define C-pointer-type <GdkGC*> => <GdkGC>;
 define constant <GdkGC<@5>> = <GdkGC*>;
-define C-subtype <_GdkDrawable> (<C-void*>) end;
+define C-subtype <_GdkDrawable> (<_GObject>) end;
 define constant <GdkPixmap> = <_GdkDrawable>;
 
 define C-pointer-type <GdkPixmap*> => <GdkPixmap>;
@@ -95,10 +95,10 @@ define constant <GArray> = <_GArray>;
 define C-subtype <_GSList> (<C-void*>) end;
 define constant <GSList> = <_GSList>;
 
-define C-subtype <_GtkRcStyle> (<GObject>) end;
+define C-subtype <_GtkRcStyle> (<_GObject>) end;
 define constant <GtkRcStyle> = <_GtkRcStyle>;
 
-define C-subtype <_GtkStyle> (<GObject>) end;
+define C-subtype <_GtkStyle> (<_GObject>) end;
 define constant <GtkStyle> = <_GtkStyle>;
 
 define C-subtype <_GtkRequisition> (<C-void*>) end;
@@ -125,7 +125,7 @@ define constant <GtkWindow> = <_GtkWindow>;
 define C-subtype <_GtkWindowGeometryInfo> (<C-void*>) end;
 define constant <GtkWindowGeometryInfo> = <_GtkWindowGeometryInfo>;
 
-define C-subtype <_GtkWindowGroup> (<GObject>) end;
+define C-subtype <_GtkWindowGroup> (<_GObject>) end;
 define constant <GtkWindowGroup> = <_GtkWindowGroup>;
 
 define constant <GdkModifierType> = <C-int>;
@@ -152,7 +152,7 @@ define constant <GdkGC<@32>> = <GdkGC*>;
 define C-subtype <_cairo-font-options> (<C-void*>) end;
 define constant <cairo-font-options-t> = <_cairo-font-options>;
 
-define C-subtype <_GdkScreen> (<C-void*>) end;
+define C-subtype <_GdkScreen> (<_GObject>) end;
 define constant <GdkScreen> = <_GdkScreen>;
 
 define C-subtype <_GtkWindow> (<_GtkBin>, <_AtkImplementorIface>) end;
@@ -353,7 +353,7 @@ define constant <GdkDeviceAxis> = <_GdkDeviceAxis>;
 define C-subtype <_GdkDeviceKey> (<C-void*>) end;
 define constant <GdkDeviceKey> = <_GdkDeviceKey>;
 
-define C-subtype <_GdkDevice> (<C-void*>) end;
+define C-subtype <_GdkDevice> (<_GObject>) end;
 define constant <GdkDevice> = <_GdkDevice>;
 
 define C-subtype <_GdkEventMotion> (<C-void*>) end;
@@ -450,7 +450,7 @@ define constant $GDK-ACTION-LINK = 8;
 define constant $GDK-ACTION-PRIVATE = 16;
 define constant $GDK-ACTION-ASK = 32;
 
-define C-subtype <_GdkDragContext> (<C-void*>) end;
+define C-subtype <_GdkDragContext> (<_GObject>) end;
 define constant <GdkDragContext> = <_GdkDragContext>;
 
 define constant <gshort> = <C-signed-short>;
@@ -526,7 +526,7 @@ define constant <anonymous-2575> = <C-function-pointer>;
 define C-subtype <_GdkDisplayPointerHooks> (<C-void*>) end;
 define constant <GdkDisplayPointerHooks> = <_GdkDisplayPointerHooks>;
 
-define C-subtype <_GdkDisplay> (<C-void*>) end;
+define C-subtype <_GdkDisplay> (<_GObject>) end;
 define constant <GdkDisplay> = <_GdkDisplay>;
 
 define C-subtype <_GtkSelectionData> (<C-void*>) end;
@@ -642,7 +642,7 @@ define constant $ATK-ROLE-LAST-DEFINED = 88;
 define C-subtype <_GPtrArray> (<C-void*>) end;
 define constant <GPtrArray> = <_GPtrArray>;
 
-define C-subtype <_AtkRelationSet> (<C-void*>) end;
+define C-subtype <_AtkRelationSet> (<_GObject>) end;
 define constant <AtkRelationSet> = <_AtkRelationSet>;
 
 define constant <AtkLayer> = <C-int>;
@@ -655,7 +655,7 @@ define constant $ATK-LAYER-POPUP = 5;
 define constant $ATK-LAYER-OVERLAY = 6;
 define constant $ATK-LAYER-WINDOW = 7;
 
-define C-subtype <_AtkObject> (<C-void*>) end;
+define C-subtype <_AtkObject> (<_GObject>) end;
 define constant <AtkObject> = <_AtkObject>;
 
 define constant <anonymous-3694> = <C-function-pointer>;
@@ -778,7 +778,7 @@ define constant <GQuark> = <guint32>;
 define C-subtype <_GtkAccelGroupEntry> (<C-void*>) end;
 define constant <GtkAccelGroupEntry> = <_GtkAccelGroupEntry>;
 
-define C-subtype <_GtkAccelGroup> (<GObject>) end;
+define C-subtype <_GtkAccelGroup> (<_GObject>) end;
 define constant <GtkAccelGroup> = <_GtkAccelGroup>;
 
 define C-function gtk-window-add-accel-group
@@ -1096,7 +1096,7 @@ define C-function gtk-window-get-icon-list
   c-name: "gtk_window_get_icon_list";
 end;
 
-define C-subtype <_GdkPixbuf> (<C-void*>) end;
+define C-subtype <_GdkPixbuf> (<_GObject>) end;
 define constant <GdkPixbuf> = <_GdkPixbuf>;
 
 define C-function gtk-window-set-icon
@@ -1464,7 +1464,7 @@ define constant <GdkBitmap> = <_GdkDrawable>;
 define C-subtype <_GtkWidgetShapeInfo> (<C-void*>) end;
 define constant <GtkWidgetShapeInfo> = <_GtkWidgetShapeInfo>;
 
-define C-subtype <_GtkClipboard> (<C-void*>) end;
+define C-subtype <_GtkClipboard> (<_GObject>) end;
 define constant <GtkClipboard> = <_GtkClipboard>;
 
 define C-function gtk-widget-get-type
@@ -1703,7 +1703,7 @@ define C-function gtk-widget-activate
   c-name: "gtk_widget_activate";
 end;
 
-define C-subtype <_GtkAdjustment> (<GtkObject>) end;
+define C-subtype <_GtkAdjustment> (<_GtkObject>) end;
 define constant <GtkAdjustment> = <_GtkAdjustment>;
 
 define C-function gtk-widget-set-scroll-adjustments
@@ -1964,7 +1964,7 @@ define constant <GtkSettingsPropertyValue> = <_GtkSettingsPropertyValue>;
 define C-subtype <_GtkRcContext> (<C-void*>) end;
 define constant <GtkRcContext> = <_GtkRcContext>;
 
-define C-subtype <_GtkSettings> (<GObject>) end;
+define C-subtype <_GtkSettings> (<_GObject>) end;
 define constant <GtkSettings> = <_GtkSettings>;
 
 define C-function gtk-widget-get-settings
@@ -2092,7 +2092,7 @@ define C-function gtk-widget-modify-font
   c-name: "gtk_widget_modify_font";
 end;
 
-define C-subtype <_PangoContext> (<C-void*>) end;
+define C-subtype <_PangoContext> (<_GObject>) end;
 define constant <PangoContext> = <_PangoContext>;
 
 define C-function gtk-widget-create-pango-context
@@ -2107,7 +2107,7 @@ define C-function gtk-widget-get-pango-context
   c-name: "gtk_widget_get_pango_context";
 end;
 
-define C-subtype <_PangoLayout> (<C-void*>) end;
+define C-subtype <_PangoLayout> (<_GObject>) end;
 define constant <PangoLayout> = <_PangoLayout>;
 
 define C-function gtk-widget-create-pango-layout
@@ -2377,7 +2377,7 @@ define constant <anonymous-3583> = <C-function-pointer>;
 define constant <anonymous-3584> = <C-function-pointer>;
 define constant <anonymous-3585> = <C-function-pointer>;
 define constant <anonymous-3586> = <C-function-pointer>;
-define C-subtype <_AtkStateSet> (<C-void*>) end;
+define C-subtype <_AtkStateSet> (<_GObject>) end;
 define constant <AtkStateSet> = <_AtkStateSet>;
 
 define constant <anonymous-3587> = <C-function-pointer>;
@@ -11384,7 +11384,7 @@ define C-function g-type-plugin-complete-interface-info
   c-name: "g_type_plugin_complete_interface_info";
 end;
 
-define C-subtype <_GTypeModule> (<C-void*>) end;
+define C-subtype <_GTypeModule> (<_GObject>, <_GTypePlugin>) end;
 define constant <GTypeModule> = <_GTypeModule>;
 
 define constant <anonymous-1741> = <C-function-pointer>;
@@ -13324,7 +13324,7 @@ define C-function gtk-settings-set-double-property
   c-name: "gtk_settings_set_double_property";
 end;
 
-define C-subtype <_GtkIconFactory> (<GObject>) end;
+define C-subtype <_GtkIconFactory> (<_GObject>) end;
 define constant <GtkIconFactory> = <_GtkIconFactory>;
 
 define constant <anonymous-3503> = <C-function-pointer>;
@@ -14798,10 +14798,10 @@ define C-function pango-font-metrics-get-strikethrough-thickness
   c-name: "pango_font_metrics_get_strikethrough_thickness";
 end;
 
-define C-subtype <_PangoFontFamily> (<C-void*>) end;
+define C-subtype <_PangoFontFamily> (<_GObject>) end;
 define constant <PangoFontFamily> = <_PangoFontFamily>;
 
-define C-subtype <_PangoFontFace> (<C-void*>) end;
+define C-subtype <_PangoFontFace> (<_GObject>) end;
 define constant <PangoFontFace> = <_PangoFontFace>;
 
 define C-function pango-font-family-get-type
@@ -14860,7 +14860,7 @@ define C-function pango-font-get-type
   c-name: "pango_font_get_type";
 end;
 
-define C-subtype <_PangoFont> (<C-void*>) end;
+define C-subtype <_PangoFont> (<_GObject>) end;
 define constant <PangoFont> = <_PangoFont>;
 
 define C-function pango-font-describe
@@ -14919,7 +14919,7 @@ define C-function pango-font-get-glyph-extents
   c-name: "pango_font_get_glyph_extents";
 end;
 
-define C-subtype <_PangoFontMap> (<C-void*>) end;
+define C-subtype <_PangoFontMap> (<_GObject>) end;
 define constant <PangoFontMap> = <_PangoFontMap>;
 
 define C-function pango-font-get-font-map
@@ -15448,7 +15448,7 @@ define constant $PANGO-UNDERLINE-ERROR = 4;
 define C-subtype <_PangoRendererPrivate> (<C-void*>) end;
 define constant <PangoRendererPrivate> = <_PangoRendererPrivate>;
 
-define C-subtype <_PangoRenderer> (<C-void*>) end;
+define C-subtype <_PangoRenderer> (<_GObject>) end;
 define constant <PangoRenderer> = <_PangoRenderer>;
 
 define constant <PangoGlyphUnit> = <gint32>;
@@ -16764,7 +16764,7 @@ define C-function pango-context-load-font
   c-name: "pango_context_load_font";
 end;
 
-define C-subtype <_PangoFontset> (<C-void*>) end;
+define C-subtype <_PangoFontset> (<_GObject>) end;
 define constant <PangoFontset> = <_PangoFontset>;
 
 define C-function pango-context-load-fontset
@@ -17824,7 +17824,7 @@ define constant $GDK-IMAGE-NORMAL = 0;
 define constant $GDK-IMAGE-SHARED = 1;
 define constant $GDK-IMAGE-FASTEST = 2;
 
-define C-subtype <_GdkImage> (<C-void*>) end;
+define C-subtype <_GdkImage> (<_GObject>) end;
 define constant <GdkImage> = <_GdkImage>;
 
 define constant <anonymous-2669> = <C-function-pointer>;
@@ -20990,7 +20990,7 @@ define C-function gdk-pixbuf-rotation-get-type
   c-name: "gdk_pixbuf_rotation_get_type";
 end;
 
-define C-subtype <_GdkPixbufLoader> (<C-void*>) end;
+define C-subtype <_GdkPixbufLoader> (<_GObject>) end;
 define constant <GdkPixbufLoader> = <_GdkPixbufLoader>;
 
 define constant <anonymous-2432> = <C-function-pointer>;
@@ -21046,7 +21046,7 @@ define C-function gdk-pixbuf-loader-get-pixbuf
   c-name: "gdk_pixbuf_loader_get_pixbuf";
 end;
 
-define C-subtype <_GdkPixbufAnimation> (<C-void*>) end;
+define C-subtype <_GdkPixbufAnimation> (<_GObject>) end;
 define constant <GdkPixbufAnimation> = <_GdkPixbufAnimation>;
 
 define C-function gdk-pixbuf-loader-get-animation
@@ -21138,7 +21138,7 @@ define C-function gdk-pixbuf-get-file-info
   c-name: "gdk_pixbuf_get_file_info";
 end;
 
-define C-subtype <_GdkPixbufAnimationIter> (<C-void*>) end;
+define C-subtype <_GdkPixbufAnimationIter> (<_GObject>) end;
 define constant <GdkPixbufAnimationIter> = <_GdkPixbufAnimationIter>;
 
 define C-function gdk-pixbuf-animation-get-type
@@ -21582,7 +21582,7 @@ define constant g-module-open = g-module-open-utf8;
 
 define constant g-module-name = g-module-name-utf8;
 
-define C-subtype <_GdkPixbufSimpleAnim> (<C-void*>) end;
+define C-subtype <_GdkPixbufSimpleAnim> (<_GdkPixbufAnimation>) end;
 define constant <GdkPixbufSimpleAnim> = <_GdkPixbufSimpleAnim>;
 
 define C-subtype <_GdkPixbufSimpleAnimClass> (<C-void*>) end;
@@ -23244,7 +23244,7 @@ end;
 define C-subtype <_GdkPangoRendererPrivate> (<C-void*>) end;
 define constant <GdkPangoRendererPrivate> = <_GdkPangoRendererPrivate>;
 
-define C-subtype <_GdkPangoRenderer> (<C-void*>) end;
+define C-subtype <_GdkPangoRenderer> (<_PangoRenderer>) end;
 define constant <GdkPangoRenderer> = <_GdkPangoRenderer>;
 
 define C-subtype <_GdkPangoRendererClass> (<C-void*>) end;
@@ -23348,7 +23348,7 @@ define C-function gdk-pango-attr-embossed-new
   c-name: "gdk_pango_attr_embossed_new";
 end;
 
-define C-subtype <_GdkDisplayManager> (<C-void*>) end;
+define C-subtype <_GdkDisplayManager> (<_GObject>) end;
 define constant <GdkDisplayManager> = <_GdkDisplayManager>;
 
 define constant <anonymous-2836> = <C-function-pointer>;
@@ -23386,7 +23386,7 @@ end;
 define C-subtype <_GdkKeymapKey> (<C-void*>) end;
 define constant <GdkKeymapKey> = <_GdkKeymapKey>;
 
-define C-subtype <_GdkKeymap> (<C-void*>) end;
+define C-subtype <_GdkKeymap> (<_GObject>) end;
 define constant <GdkKeymap> = <_GdkKeymap>;
 
 define constant <anonymous-2817> = <C-function-pointer>;
@@ -25543,10 +25543,10 @@ define constant gtk-container-children = gtk-container-get-children;
 
 define constant gtk-container-border-width = gtk-container-set-border-width;
 
-define C-subtype <_GtkSeparator> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkSeparator> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkSeparator> = <_GtkSeparator>;
 
-define C-subtype <_GtkVSeparator> (<GtkSeparator>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVSeparator> (<_GtkSeparator>, <_AtkImplementorIface>) end;
 define constant <GtkVSeparator> = <_GtkVSeparator>;
 
 define C-subtype <_GtkSeparatorClass> (<C-void*>) end;
@@ -25576,13 +25576,13 @@ define constant <GtkRangeLayout> = <_GtkRangeLayout>;
 define C-subtype <_GtkRangeStepTimer> (<C-void*>) end;
 define constant <GtkRangeStepTimer> = <_GtkRangeStepTimer>;
 
-define C-subtype <_GtkRange> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkRange> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkRange> = <_GtkRange>;
 
-define C-subtype <_GtkScrollbar> (<GtkRange>, <AtkImplementorIface>) end;
+define C-subtype <_GtkScrollbar> (<_GtkRange>, <_AtkImplementorIface>) end;
 define constant <GtkScrollbar> = <_GtkScrollbar>;
 
-define C-subtype <_GtkVScrollbar> (<GtkScrollbar>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVScrollbar> (<_GtkScrollbar>, <_AtkImplementorIface>) end;
 define constant <GtkVScrollbar> = <_GtkVScrollbar>;
 
 define constant <anonymous-5607> = <C-function-pointer>;
@@ -25713,10 +25713,10 @@ define C-function gtk-range-get-value
   c-name: "gtk_range_get_value";
 end;
 
-define C-subtype <_GtkScale> (<GtkRange>, <AtkImplementorIface>) end;
+define C-subtype <_GtkScale> (<_GtkRange>, <_AtkImplementorIface>) end;
 define constant <GtkScale> = <_GtkScale>;
 
-define C-subtype <_GtkVScale> (<GtkScale>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVScale> (<_GtkScale>, <_AtkImplementorIface>) end;
 define constant <GtkVScale> = <_GtkVScale>;
 
 define constant <anonymous-6580> = <C-function-pointer>;
@@ -25809,10 +25809,10 @@ define constant <gint<@5>> = <gint*>;
 define C-subtype <_GtkRulerMetric> (<C-void*>) end;
 define constant <GtkRulerMetric> = <_GtkRulerMetric>;
 
-define C-subtype <_GtkRuler> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkRuler> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkRuler> = <_GtkRuler>;
 
-define C-subtype <_GtkVRuler> (<GtkRuler>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVRuler> (<_GtkRuler>, <_AtkImplementorIface>) end;
 define constant <GtkVRuler> = <_GtkVRuler>;
 
 define constant <anonymous-6563> = <C-function-pointer>;
@@ -25885,10 +25885,10 @@ end;
 define C-subtype <_GtkPanedPrivate> (<C-void*>) end;
 define constant <GtkPanedPrivate> = <_GtkPanedPrivate>;
 
-define C-subtype <_GtkPaned> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkPaned> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkPaned> = <_GtkPaned>;
 
-define C-subtype <_GtkVPaned> (<GtkPaned>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVPaned> (<_GtkPaned>, <_AtkImplementorIface>) end;
 define constant <GtkVPaned> = <_GtkVPaned>;
 
 define constant <anonymous-6541> = <C-function-pointer>;
@@ -25982,7 +25982,7 @@ define C-function gtk-paned-compute-position
   c-name: "gtk_paned_compute_position";
 end;
 
-define C-subtype <_GtkViewport> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkViewport> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkViewport> = <_GtkViewport>;
 
 define constant <anonymous-7616> = <C-function-pointer>;
@@ -26047,10 +26047,10 @@ define constant $GTK-BINARY-AGE = 1011;
 
 define constant $GTK-INTERFACE-AGE = 11;
 
-define C-subtype <_GtkBox> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkBox> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkBox> = <_GtkBox>;
 
-define C-subtype <_GtkVBox> (<GtkBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVBox> (<_GtkBox>, <_AtkImplementorIface>) end;
 define constant <GtkVBox> = <_GtkVBox>;
 
 define C-subtype <_GtkBoxClass> (<C-void*>) end;
@@ -26161,10 +26161,10 @@ define C-function gtk-box-set-child-packing
   c-name: "gtk_box_set_child_packing";
 end;
 
-define C-subtype <_GtkButtonBox> (<GtkBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkButtonBox> (<_GtkBox>, <_AtkImplementorIface>) end;
 define constant <GtkButtonBox> = <_GtkButtonBox>;
 
-define C-subtype <_GtkVButtonBox> (<GtkButtonBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkVButtonBox> (<_GtkButtonBox>, <_AtkImplementorIface>) end;
 define constant <GtkVButtonBox> = <_GtkVButtonBox>;
 
 define C-subtype <_GtkButtonBoxClass> (<C-void*>) end;
@@ -26267,7 +26267,7 @@ define constant $GTK-BUTTONBOX-DEFAULT = -1;
 define C-subtype <_GtkUIManagerPrivate> (<C-void*>) end;
 define constant <GtkUIManagerPrivate> = <_GtkUIManagerPrivate>;
 
-define C-subtype <_GtkUIManager> (<C-void*>) end;
+define C-subtype <_GtkUIManager> (<_GObject>) end;
 define constant <GtkUIManager> = <_GtkUIManager>;
 
 define constant <anonymous-8173> = <C-function-pointer>;
@@ -26275,7 +26275,7 @@ define constant <anonymous-8174> = <C-function-pointer>;
 define C-subtype <_GtkActionPrivate> (<C-void*>) end;
 define constant <GtkActionPrivate> = <_GtkActionPrivate>;
 
-define C-subtype <_GtkAction> (<C-void*>) end;
+define C-subtype <_GtkAction> (<_GObject>) end;
 define constant <GtkAction> = <_GtkAction>;
 
 define constant <anonymous-8175> = <C-function-pointer>;
@@ -26326,7 +26326,7 @@ end;
 define C-subtype <_GtkActionGroupPrivate> (<C-void*>) end;
 define constant <GtkActionGroupPrivate> = <_GtkActionGroupPrivate>;
 
-define C-subtype <_GtkActionGroup> (<C-void*>) end;
+define C-subtype <_GtkActionGroup> (<_GObject>) end;
 define constant <GtkActionGroup> = <_GtkActionGroup>;
 
 define C-function gtk-ui-manager-insert-action-group
@@ -26606,7 +26606,7 @@ define constant <GtkItemFactoryCallback> = <anonymous-4673>;
 define constant <anonymous-4674> = <C-function-pointer>;
 define constant <GtkItemFactoryCallback1> = <anonymous-4674>;
 
-define C-subtype <_GtkItemFactory> (<GtkObject>) end;
+define C-subtype <_GtkItemFactory> (<_GtkObject>) end;
 define constant <GtkItemFactory> = <_GtkItemFactory>;
 
 define constant <anonymous-4675> = <C-function-pointer>;
@@ -26971,7 +26971,7 @@ define constant $GTK-TREE-VIEW-COLUMN-FIXED = 2;
 define C-subtype <_GtkCellEditable> (<C-void*>) end;
 define constant <GtkCellEditable> = <_GtkCellEditable>;
 
-define C-subtype <_GtkTreeViewColumn> (<GtkObject>) end;
+define C-subtype <_GtkTreeViewColumn> (<_GtkObject>, <_GtkCellLayout>) end;
 define constant <GtkTreeViewColumn> = <_GtkTreeViewColumn>;
 
 define constant <anonymous-5122> = <C-function-pointer>;
@@ -26982,7 +26982,7 @@ define constant <anonymous-5126> = <C-function-pointer>;
 define C-subtype <_GtkTreeViewColumnClass> (<C-void*>) end;
 define constant <GtkTreeViewColumnClass> = <_GtkTreeViewColumnClass>;
 
-define C-subtype <_GtkCellRenderer> (<GtkObject>) end;
+define C-subtype <_GtkCellRenderer> (<_GtkObject>) end;
 define constant <GtkCellRenderer> = <_GtkCellRenderer>;
 
 define C-subtype <_GtkTreeModel> (<C-void*>) end;
@@ -27929,7 +27929,7 @@ define constant $GTK-TREE-VIEW-DROP-INTO-OR-AFTER = 3;
 define C-subtype <_GtkTreeViewPrivate> (<C-void*>) end;
 define constant <GtkTreeViewPrivate> = <_GtkTreeViewPrivate>;
 
-define C-subtype <_GtkTreeView> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkTreeView> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTreeView> = <_GtkTreeView>;
 
 define constant <anonymous-6068> = <C-function-pointer>;
@@ -27961,7 +27961,7 @@ define constant <GtkTreeSelection> = <_GtkTreeSelection>;
 define constant <anonymous-8118> = <C-function-pointer>;
 define constant <GtkTreeSelectionFunc> = <anonymous-8118>;
 
-define C-subtype <_GtkTreeSelection> (<GObject>) end;
+define C-subtype <_GtkTreeSelection> (<_GObject>) end;
 define constant <anonymous-8120> = <C-function-pointer>;
 define constant <anonymous-8121> = <C-function-pointer>;
 define constant <anonymous-8122> = <C-function-pointer>;
@@ -28440,10 +28440,10 @@ define C-function gtk-tree-view-set-search-equal-func
   c-name: "gtk_tree_view_set_search_equal_func";
 end;
 
-define C-subtype <_GtkIMContext> (<GObject>) end;
+define C-subtype <_GtkIMContext> (<_GObject>) end;
 define constant <GtkIMContext> = <_GtkIMContext>;
 
-define C-subtype <_GtkEntry> (<GtkWidget>, <AtkImplementorIface>, <GtkEditable>, <GtkCellEditable>) end;
+define C-subtype <_GtkEntry> (<_GtkWidget>, <_AtkImplementorIface>, <_GtkCellEditable>, <_GtkEditable>) end;
 define constant <GtkEntry> = <_GtkEntry>;
 
 define C-function gtk-tree-view-get-search-entry
@@ -28569,13 +28569,13 @@ define C-function gtk-tree-view-set-enable-tree-lines
   c-name: "gtk_tree_view_set_enable_tree_lines";
 end;
 
-define C-subtype <_GtkMenuShell> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMenuShell> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkMenuShell> = <_GtkMenuShell>;
 
 define constant <anonymous-4154> = <C-function-pointer>;
 define constant <GtkMenuPositionFunc> = <anonymous-4154>;
 
-define C-subtype <_GtkMenu> (<GtkMenuShell>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMenu> (<_GtkMenuShell>, <_AtkImplementorIface>) end;
 define constant <GtkMenu> = <_GtkMenu>;
 
 define constant <anonymous-6022> = <C-function-pointer>;
@@ -28728,7 +28728,7 @@ end;
 define C-subtype <_GtkEntryCompletionPrivate> (<C-void*>) end;
 define constant <GtkEntryCompletionPrivate> = <_GtkEntryCompletionPrivate>;
 
-define C-subtype <_GtkEntryCompletion> (<C-void*>) end;
+define C-subtype <_GtkEntryCompletion> (<_GObject>, <_GtkCellLayout>) end;
 define constant <GtkEntryCompletion> = <_GtkEntryCompletion>;
 
 define C-function gtk-entry-set-completion
@@ -28953,7 +28953,7 @@ define constant <GtkTreeModelFilterModifyFunc> = <anonymous-5958>;
 define C-subtype <_GtkTreeModelFilterPrivate> (<C-void*>) end;
 define constant <GtkTreeModelFilterPrivate> = <_GtkTreeModelFilterPrivate>;
 
-define C-subtype <_GtkTreeModelFilter> (<C-void*>) end;
+define C-subtype <_GtkTreeModelFilter> (<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>) end;
 define constant <GtkTreeModelFilter> = <_GtkTreeModelFilter>;
 
 define constant <anonymous-5959> = <C-function-pointer>;
@@ -29044,7 +29044,7 @@ define C-function gtk-tree-model-filter-clear-cache
   c-name: "gtk_tree_model_filter_clear_cache";
 end;
 
-define C-subtype <_GtkListStore> (<GObject>, <GtkTreeModel>, <GtkTreeDragSource>, <GtkTreeDragDest>, <GtkTreeSortable>) end;
+define C-subtype <_GtkListStore> (<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeDragDest>, <_GtkTreeSortable>) end;
 define constant <GtkListStore> = <_GtkListStore>;
 
 define constant <anonymous-5932> = <C-function-pointer>;
@@ -29925,7 +29925,7 @@ define C-function gtk-target-list-add-text-targets
   c-name: "gtk_target_list_add_text_targets";
 end;
 
-define C-subtype <_GtkTextTagTable> (<GObject>) end;
+define C-subtype <_GtkTextTagTable> (<_GObject>) end;
 define constant <GtkTextTagTable> = <_GtkTextTagTable>;
 
 define C-subtype <_GtkTextBTree> (<C-void*>) end;
@@ -29934,7 +29934,7 @@ define constant <GtkTextBTree> = <_GtkTextBTree>;
 define C-subtype <_GtkTextLogAttrCache> (<C-void*>) end;
 define constant <GtkTextLogAttrCache> = <_GtkTextLogAttrCache>;
 
-define C-subtype <_GtkTextBuffer> (<GObject>) end;
+define C-subtype <_GtkTextBuffer> (<_GObject>) end;
 define constant <GtkTextBuffer> = <_GtkTextBuffer>;
 
 define C-function gtk-target-list-add-rich-text-targets
@@ -30298,7 +30298,7 @@ define C-function gtk-text-iter-get-marks
   c-name: "gtk_text_iter_get_marks";
 end;
 
-define C-subtype <_GtkTextChildAnchor> (<GObject>) end;
+define C-subtype <_GtkTextChildAnchor> (<_GObject>) end;
 define constant <GtkTextChildAnchor> = <_GtkTextChildAnchor>;
 
 define C-function gtk-text-iter-get-child-anchor
@@ -30320,7 +30320,7 @@ define constant <GtkTextAppearance> = <_GtkTextAppearance>;
 define C-subtype <_GtkTextAttributes> (<C-void*>) end;
 define constant <GtkTextAttributes> = <_GtkTextAttributes>;
 
-define C-subtype <_GtkTextTag> (<GObject>) end;
+define C-subtype <_GtkTextTag> (<_GObject>) end;
 define constant <GtkTextTag> = <_GtkTextTag>;
 
 define C-function gtk-text-iter-begins-tag
@@ -30904,7 +30904,7 @@ define C-function gtk-text-attributes-get-type
   c-name: "gtk_text_attributes_get_type";
 end;
 
-define C-subtype <_GtkTreeStore> (<GObject>, <GtkTreeModel>, <GtkTreeDragSource>, <GtkTreeDragDest>, <GtkTreeSortable>) end;
+define C-subtype <_GtkTreeStore> (<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeDragDest>, <_GtkTreeSortable>) end;
 define constant <GtkTreeStore> = <_GtkTreeStore>;
 
 define constant <anonymous-8146> = <C-function-pointer>;
@@ -31210,7 +31210,7 @@ define C-function gtk-tree-selection-unselect-range
   c-name: "gtk_tree_selection_unselect_range";
 end;
 
-define C-subtype <_GtkTreeModelSort> (<GObject>, <GtkTreeModel>, <GtkTreeSortable>) end;
+define C-subtype <_GtkTreeModelSort> (<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>, <_GtkTreeSortable>) end;
 define constant <GtkTreeModelSort> = <_GtkTreeModelSort>;
 
 define constant <anonymous-8104> = <C-function-pointer>;
@@ -31368,7 +31368,7 @@ define constant <GtkTooltips> = <_GtkTooltips>;
 define C-subtype <_GtkTooltipsData> (<C-void*>) end;
 define constant <GtkTooltipsData> = <_GtkTooltipsData>;
 
-define C-subtype <_GtkTooltips> (<GtkObject>) end;
+define C-subtype <_GtkTooltips> (<_GtkObject>) end;
 define constant <anonymous-6928> = <C-function-pointer>;
 define constant <anonymous-6929> = <C-function-pointer>;
 define constant <anonymous-6930> = <C-function-pointer>;
@@ -31433,7 +31433,7 @@ end;
 define C-subtype <_GtkToolItemPrivate> (<C-void*>) end;
 define constant <GtkToolItemPrivate> = <_GtkToolItemPrivate>;
 
-define C-subtype <_GtkToolItem> (<C-void*>) end;
+define C-subtype <_GtkToolItem> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkToolItem> = <_GtkToolItem>;
 
 define constant <anonymous-6942> = <C-function-pointer>;
@@ -31585,10 +31585,10 @@ define C-function gtk-tool-item-rebuild-menu
   c-name: "gtk_tool_item_rebuild_menu";
 end;
 
-define C-subtype <_GtkItem> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkItem> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkItem> = <_GtkItem>;
 
-define C-subtype <_GtkMenuItem> (<GtkItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMenuItem> (<_GtkItem>, <_AtkImplementorIface>) end;
 define constant <GtkMenuItem> = <_GtkMenuItem>;
 
 define constant <anonymous-5293> = <C-function-pointer>;
@@ -31719,7 +31719,7 @@ end;
 define C-subtype <_GtkToolButtonPrivate> (<C-void*>) end;
 define constant <GtkToolButtonPrivate> = <_GtkToolButtonPrivate>;
 
-define C-subtype <_GtkToolButton> (<C-void*>) end;
+define C-subtype <_GtkToolButton> (<_GtkToolItem>, <_AtkImplementorIface>) end;
 define constant <GtkToolButton> = <_GtkToolButton>;
 
 define constant <anonymous-6973> = <C-function-pointer>;
@@ -31834,7 +31834,7 @@ define constant <GtkToolbarSpaceStyle> = <C-int>;
 define constant $GTK-TOOLBAR-SPACE-EMPTY = 0;
 define constant $GTK-TOOLBAR-SPACE-LINE = 1;
 
-define C-subtype <_GtkToolbar> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkToolbar> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkToolbar> = <_GtkToolbar>;
 
 define constant <anonymous-8045> = <C-function-pointer>;
@@ -32557,10 +32557,10 @@ define constant gtk-marshal-NONE--UINT-POINTER-UINT-UINT-ENUM = gtk-marshal-VOID
 
 define constant gtk-marshal-NONE--UINT-STRING = gtk-marshal-VOID--UINT-STRING;
 
-define C-subtype <_GtkMisc> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMisc> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkMisc> = <_GtkMisc>;
 
-define C-subtype <_GtkPixmap> (<GtkMisc>, <AtkImplementorIface>) end;
+define C-subtype <_GtkPixmap> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkPixmap> = <_GtkPixmap>;
 
 define C-subtype <_GtkMiscClass> (<C-void*>) end;
@@ -32638,7 +32638,7 @@ end;
 define C-subtype <_GtkToggleToolButtonPrivate> (<C-void*>) end;
 define constant <GtkToggleToolButtonPrivate> = <_GtkToggleToolButtonPrivate>;
 
-define C-subtype <_GtkToggleToolButton> (<C-void*>) end;
+define C-subtype <_GtkToggleToolButton> (<_GtkToolButton>, <_AtkImplementorIface>) end;
 define constant <GtkToggleToolButton> = <_GtkToggleToolButton>;
 
 define constant <anonymous-7467> = <C-function-pointer>;
@@ -32677,10 +32677,10 @@ define C-function gtk-toggle-tool-button-get-active
   c-name: "gtk_toggle_tool_button_get_active";
 end;
 
-define C-subtype <_GtkButton> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkButton> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkButton> = <_GtkButton>;
 
-define C-subtype <_GtkToggleButton> (<GtkButton>, <AtkImplementorIface>) end;
+define C-subtype <_GtkToggleButton> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkToggleButton> = <_GtkToggleButton>;
 
 define constant <anonymous-4883> = <C-function-pointer>;
@@ -32952,7 +32952,7 @@ define C-subtype <_GtkImageIconNameData> (<C-void*>) end;
 define constant <GtkImageIconNameData> = <_GtkImageIconNameData>;
 
 define C-subtype <anonymous-4838> (<C-void*>) end;
-define C-subtype <_GtkImage> (<GtkMisc>, <AtkImplementorIface>) end;
+define C-subtype <_GtkImage> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkImage> = <_GtkImage>;
 
 define constant <anonymous-4839> = <C-function-pointer>;
@@ -33172,7 +33172,7 @@ define constant gtk-image-set-from-file = gtk-image-set-from-file-utf8;
 define C-subtype <_GtkToggleActionPrivate> (<C-void*>) end;
 define constant <GtkToggleActionPrivate> = <_GtkToggleActionPrivate>;
 
-define C-subtype <_GtkToggleAction> (<C-void*>) end;
+define C-subtype <_GtkToggleAction> (<_GtkAction>) end;
 define constant <GtkToggleAction> = <_GtkToggleAction>;
 
 define constant <anonymous-7418> = <C-function-pointer>;
@@ -33229,10 +33229,10 @@ end;
 define C-subtype <_GtkLabelSelectionInfo> (<C-void*>) end;
 define constant <GtkLabelSelectionInfo> = <_GtkLabelSelectionInfo>;
 
-define C-subtype <_GtkLabel> (<GtkMisc>, <AtkImplementorIface>) end;
+define C-subtype <_GtkLabel> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkLabel> = <_GtkLabel>;
 
-define C-subtype <_GtkTipsQuery> (<GtkLabel>, <AtkImplementorIface>) end;
+define C-subtype <_GtkTipsQuery> (<_GtkLabel>, <_AtkImplementorIface>) end;
 define constant <GtkTipsQuery> = <_GtkTipsQuery>;
 
 define constant <anonymous-4199> = <C-function-pointer>;
@@ -33572,13 +33572,13 @@ define C-subtype <_GtkTextLayout> (<C-void*>) end;
 define C-subtype <_GtkTextWindow> (<C-void*>) end;
 define constant <GtkTextWindow> = <_GtkTextWindow>;
 
-define C-subtype <_GtkTextMark> (<GObject>) end;
+define C-subtype <_GtkTextMark> (<_GObject>) end;
 define constant <GtkTextMark> = <_GtkTextMark>;
 
 define C-subtype <_GtkTextPendingScroll> (<C-void*>) end;
 define constant <GtkTextPendingScroll> = <_GtkTextPendingScroll>;
 
-define C-subtype <_GtkTextView> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkTextView> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTextView> = <_GtkTextView>;
 
 define constant <anonymous-7947> = <C-function-pointer>;
@@ -34867,7 +34867,7 @@ define C-function gtk-text-buffer-deserialize
   c-name: "gtk_text_buffer_deserialize";
 end;
 
-define C-subtype <_GtkTearoffMenuItem> (<GtkMenuItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkTearoffMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkTearoffMenuItem> = <_GtkTearoffMenuItem>;
 
 define constant <anonymous-7804> = <C-function-pointer>;
@@ -34890,7 +34890,7 @@ end;
 define C-subtype <_GtkTableRowCol> (<C-void*>) end;
 define constant <GtkTableRowCol> = <_GtkTableRowCol>;
 
-define C-subtype <_GtkTable> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkTable> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTable> = <_GtkTable>;
 
 define C-subtype <_GtkTableClass> (<C-void*>) end;
@@ -35404,10 +35404,10 @@ define C-function gtk-status-icon-get-geometry
   c-name: "gtk_status_icon_get_geometry";
 end;
 
-define C-subtype <_GtkHBox> (<GtkBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHBox> (<_GtkBox>, <_AtkImplementorIface>) end;
 define constant <GtkHBox> = <_GtkHBox>;
 
-define C-subtype <_GtkStatusbar> (<GtkHBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkStatusbar> (<_GtkHBox>, <_AtkImplementorIface>) end;
 define constant <GtkStatusbar> = <_GtkStatusbar>;
 
 define C-subtype <_GtkHBoxClass> (<C-void*>) end;
@@ -35497,7 +35497,7 @@ define constant $GTK-SPIN-HOME = 4;
 define constant $GTK-SPIN-END = 5;
 define constant $GTK-SPIN-USER-DEFINED = 6;
 
-define C-subtype <_GtkSpinButton> (<GtkEntry>, <AtkImplementorIface>, <GtkEditable>, <GtkCellEditable>) end;
+define C-subtype <_GtkSpinButton> (<_GtkEntry>, <_AtkImplementorIface>, <_GtkCellEditable>, <_GtkEditable>) end;
 define constant <GtkSpinButton> = <_GtkSpinButton>;
 
 define constant <anonymous-7695> = <C-function-pointer>;
@@ -35674,7 +35674,7 @@ define constant $GTK-INPUT-ERROR = -1;
 
 define constant gtk-spin-button-get-value-as-float = gtk-spin-button-get-value;
 
-define C-subtype <_GtkSocket> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkSocket> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkSocket> = <_GtkSocket>;
 
 define constant <anonymous-7147> = <C-function-pointer>;
@@ -35714,7 +35714,7 @@ define C-function gtk-socket-steal
   c-name: "gtk_socket_steal";
 end;
 
-define C-subtype <_GtkSizeGroup> (<GObject>) end;
+define C-subtype <_GtkSizeGroup> (<_GObject>) end;
 define constant <GtkSizeGroup> = <_GtkSizeGroup>;
 
 define constant <anonymous-7667> = <C-function-pointer>;
@@ -35786,7 +35786,7 @@ end;
 define C-subtype <_GtkSeparatorToolItemPrivate> (<C-void*>) end;
 define constant <GtkSeparatorToolItemPrivate> = <_GtkSeparatorToolItemPrivate>;
 
-define C-subtype <_GtkSeparatorToolItem> (<C-void*>) end;
+define C-subtype <_GtkSeparatorToolItem> (<_GtkToolItem>, <_AtkImplementorIface>) end;
 define constant <GtkSeparatorToolItem> = <_GtkSeparatorToolItem>;
 
 define constant <anonymous-7656> = <C-function-pointer>;
@@ -35818,7 +35818,7 @@ define C-function gtk-separator-tool-item-set-draw
   c-name: "gtk_separator_tool_item_set_draw";
 end;
 
-define C-subtype <_GtkSeparatorMenuItem> (<GtkMenuItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkSeparatorMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkSeparatorMenuItem> = <_GtkSeparatorMenuItem>;
 
 define C-subtype <_GtkSeparatorMenuItemClass> (<C-void*>) end;
@@ -35834,7 +35834,7 @@ define C-function gtk-separator-menu-item-new
   c-name: "gtk_separator_menu_item_new";
 end;
 
-define C-subtype <_GtkScrolledWindow> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkScrolledWindow> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkScrolledWindow> = <_GtkScrolledWindow>;
 
 define constant <anonymous-7631> = <C-function-pointer>;
@@ -35944,7 +35944,7 @@ define C-function gtk-scrolled-window-add-with-viewport
   c-name: "gtk_scrolled_window_add_with_viewport";
 end;
 
-define C-subtype <_GtkHScrollbar> (<GtkScrollbar>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHScrollbar> (<_GtkScrollbar>, <_AtkImplementorIface>) end;
 define constant <GtkHScrollbar> = <_GtkHScrollbar>;
 
 define C-subtype <_GtkHScrollbarClass> (<C-void*>) end;
@@ -36654,7 +36654,7 @@ define C-function gtk-recent-chooser-menu-set-show-numbers
   c-name: "gtk_recent_chooser_menu_set_show_numbers";
 end;
 
-define C-subtype <_GtkDialog> (<GtkWindow>, <AtkImplementorIface>) end;
+define C-subtype <_GtkDialog> (<_GtkWindow>, <_AtkImplementorIface>) end;
 define constant <GtkDialog> = <_GtkDialog>;
 
 define C-subtype <_GtkRecentChooserDialogPrivate> (<C-void*>) end;
@@ -36818,7 +36818,7 @@ define C-function gtk-dialog-run
   c-name: "gtk_dialog_run";
 end;
 
-define C-subtype <_GtkRadioToolButton> (<C-void*>) end;
+define C-subtype <_GtkRadioToolButton> (<_GtkToggleToolButton>, <_AtkImplementorIface>) end;
 define constant <GtkRadioToolButton> = <_GtkRadioToolButton>;
 
 define constant <anonymous-7477> = <C-function-pointer>;
@@ -36871,10 +36871,10 @@ define C-function gtk-radio-tool-button-set-group
   c-name: "gtk_radio_tool_button_set_group";
 end;
 
-define C-subtype <_GtkCheckMenuItem> (<GtkMenuItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCheckMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkCheckMenuItem> = <_GtkCheckMenuItem>;
 
-define C-subtype <_GtkRadioMenuItem> (<GtkCheckMenuItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkRadioMenuItem> (<_GtkCheckMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkRadioMenuItem> = <_GtkRadioMenuItem>;
 
 define constant <anonymous-5341> = <C-function-pointer>;
@@ -37023,10 +37023,10 @@ end;
 
 define constant gtk-check-menu-item-set-state = gtk-check-menu-item-set-active;
 
-define C-subtype <_GtkCheckButton> (<GtkToggleButton>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCheckButton> (<_GtkToggleButton>, <_AtkImplementorIface>) end;
 define constant <GtkCheckButton> = <_GtkCheckButton>;
 
-define C-subtype <_GtkRadioButton> (<GtkCheckButton>, <AtkImplementorIface>) end;
+define C-subtype <_GtkRadioButton> (<_GtkCheckButton>, <_AtkImplementorIface>) end;
 define constant <GtkRadioButton> = <_GtkRadioButton>;
 
 define constant <anonymous-5283> = <C-function-pointer>;
@@ -37128,7 +37128,7 @@ end;
 define C-subtype <_GtkRadioActionPrivate> (<C-void*>) end;
 define constant <GtkRadioActionPrivate> = <_GtkRadioActionPrivate>;
 
-define C-subtype <_GtkRadioAction> (<C-void*>) end;
+define C-subtype <_GtkRadioAction> (<_GtkToggleAction>) end;
 define constant <GtkRadioAction> = <_GtkRadioAction>;
 
 define constant <anonymous-7430> = <C-function-pointer>;
@@ -37178,7 +37178,7 @@ define C-function gtk-radio-action-set-current-value
   c-name: "gtk_radio_action_set_current_value";
 end;
 
-define C-subtype <_GtkProgress> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkProgress> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkProgress> = <_GtkProgress>;
 
 define constant <GtkProgressBarStyle> = <C-int>;
@@ -37191,7 +37191,7 @@ define constant $GTK-PROGRESS-RIGHT-TO-LEFT = 1;
 define constant $GTK-PROGRESS-BOTTOM-TO-TOP = 2;
 define constant $GTK-PROGRESS-TOP-TO-BOTTOM = 3;
 
-define C-subtype <_GtkProgressBar> (<GtkProgress>, <AtkImplementorIface>) end;
+define C-subtype <_GtkProgressBar> (<_GtkProgress>, <_AtkImplementorIface>) end;
 define constant <GtkProgressBar> = <_GtkProgressBar>;
 
 define constant <anonymous-7369> = <C-function-pointer>;
@@ -38781,7 +38781,7 @@ define constant $GTK-PRIORITY-DEFAULT = 200;
 
 define constant $GTK-PRIORITY-LOW = 300;
 
-define C-subtype <_GtkPreview> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkPreview> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkPreview> = <_GtkPreview>;
 
 define C-subtype <_GtkPreviewInfo> (<C-void*>) end;
@@ -38894,7 +38894,7 @@ define C-function gtk-preview-reset
   c-name: "gtk_preview_reset";
 end;
 
-define C-subtype <_GtkPlug> (<GtkWindow>, <AtkImplementorIface>) end;
+define C-subtype <_GtkPlug> (<_GtkWindow>, <_AtkImplementorIface>) end;
 define constant <GtkPlug> = <_GtkPlug>;
 
 define constant <anonymous-7159> = <C-function-pointer>;
@@ -38942,7 +38942,7 @@ define C-function gtk-plug-get-id
   c-name: "gtk_plug_get_id";
 end;
 
-define C-subtype <_GtkOptionMenu> (<GtkButton>, <AtkImplementorIface>) end;
+define C-subtype <_GtkOptionMenu> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkOptionMenu> = <_GtkOptionMenu>;
 
 define constant <anonymous-7123> = <C-function-pointer>;
@@ -39042,7 +39042,7 @@ define constant $GTK-NOTEBOOK-TAB-LAST = 1;
 define C-subtype <_GtkNotebookPage> (<C-void*>) end;
 define constant <GtkNotebookPage> = <_GtkNotebookPage>;
 
-define C-subtype <_GtkNotebook> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkNotebook> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkNotebook> = <_GtkNotebook>;
 
 define constant <anonymous-7041> = <C-function-pointer>;
@@ -39406,7 +39406,7 @@ define constant $GTK-BUTTONS-CANCEL = 3;
 define constant $GTK-BUTTONS-YES-NO = 4;
 define constant $GTK-BUTTONS-OK-CANCEL = 5;
 
-define C-subtype <_GtkMessageDialog> (<GtkDialog>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMessageDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkMessageDialog> = <_GtkMessageDialog>;
 
 define constant <anonymous-7007> = <C-function-pointer>;
@@ -39468,7 +39468,7 @@ end;
 define C-subtype <_GtkMenuToolButtonPrivate> (<C-void*>) end;
 define constant <GtkMenuToolButtonPrivate> = <_GtkMenuToolButtonPrivate>;
 
-define C-subtype <_GtkMenuToolButton> (<C-void*>) end;
+define C-subtype <_GtkMenuToolButton> (<_GtkToolButton>, <_AtkImplementorIface>) end;
 define constant <GtkMenuToolButton> = <_GtkMenuToolButton>;
 
 define constant <anonymous-6994> = <C-function-pointer>;
@@ -39517,7 +39517,7 @@ define C-function gtk-menu-tool-button-set-arrow-tooltip
   c-name: "gtk_menu_tool_button_set_arrow_tooltip";
 end;
 
-define C-subtype <_GtkMenuBar> (<GtkMenuShell>, <AtkImplementorIface>) end;
+define C-subtype <_GtkMenuBar> (<_GtkMenuShell>, <_AtkImplementorIface>) end;
 define constant <GtkMenuBar> = <_GtkMenuBar>;
 
 define constant <anonymous-6913> = <C-function-pointer>;
@@ -39561,7 +39561,7 @@ define C-function gtk-menu-bar-set-child-pack-direction
   c-name: "gtk_menu_bar_set_child_pack_direction";
 end;
 
-define C-subtype <_GtkListItem> (<GtkItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkListItem> (<_GtkItem>, <_AtkImplementorIface>) end;
 define constant <GtkListItem> = <_GtkListItem>;
 
 define constant <anonymous-6816> = <C-function-pointer>;
@@ -39603,7 +39603,7 @@ define C-function gtk-list-item-deselect
   c-name: "gtk_list_item_deselect";
 end;
 
-define C-subtype <_GtkList> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkList> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkList> = <_GtkList>;
 
 define constant <anonymous-6834> = <C-function-pointer>;
@@ -39819,7 +39819,7 @@ define C-function gtk-link-button-set-uri-hook
   c-name: "gtk_link_button_set_uri_hook";
 end;
 
-define C-subtype <_GtkLayout> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkLayout> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkLayout> = <_GtkLayout>;
 
 define constant <anonymous-6788> = <C-function-pointer>;
@@ -39906,7 +39906,7 @@ define C-function gtk-layout-thaw
   c-name: "gtk_layout_thaw";
 end;
 
-define C-subtype <_GtkInvisible> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkInvisible> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkInvisible> = <_GtkInvisible>;
 
 define constant <anonymous-6779> = <C-function-pointer>;
@@ -39945,7 +39945,7 @@ define C-function gtk-invisible-get-screen
 end;
 
 define constant <GtkWidget<@7>> = <GtkWidget*>;
-define C-subtype <_GtkInputDialog> (<GtkDialog>, <AtkImplementorIface>) end;
+define C-subtype <_GtkInputDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkInputDialog> = <_GtkInputDialog>;
 
 define constant <anonymous-6771> = <C-function-pointer>;
@@ -39970,7 +39970,7 @@ end;
 define C-subtype <_GtkIMMulticontextPrivate> (<C-void*>) end;
 define constant <GtkIMMulticontextPrivate> = <_GtkIMMulticontextPrivate>;
 
-define C-subtype <_GtkIMMulticontext> (<GtkIMContext>) end;
+define C-subtype <_GtkIMMulticontext> (<_GtkIMContext>) end;
 define constant <GtkIMMulticontext> = <_GtkIMMulticontext>;
 
 define constant <anonymous-6764> = <C-function-pointer>;
@@ -39997,7 +39997,7 @@ define C-function gtk-im-multicontext-append-menuitems
 end;
 
 define constant <guint<@8>> = <guint*>;
-define C-subtype <_GtkIMContextSimple> (<GtkIMContext>) end;
+define C-subtype <_GtkIMContextSimple> (<_GtkIMContext>) end;
 define constant <GtkIMContextSimple> = <_GtkIMContextSimple>;
 
 define C-subtype <_GtkIMContextSimpleClass> (<C-void*>) end;
@@ -40023,7 +40023,7 @@ end;
 
 define constant $GTK-MAX-COMPOSE-LEN = 7;
 
-define C-subtype <_GtkImageMenuItem> (<GtkMenuItem>, <AtkImplementorIface>) end;
+define C-subtype <_GtkImageMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkImageMenuItem> = <_GtkImageMenuItem>;
 
 define C-subtype <_GtkImageMenuItemClass> (<C-void*>) end;
@@ -40073,7 +40073,7 @@ end;
 define C-subtype <_GtkIconViewPrivate> (<C-void*>) end;
 define constant <GtkIconViewPrivate> = <_GtkIconViewPrivate>;
 
-define C-subtype <_GtkIconView> (<C-void*>) end;
+define C-subtype <_GtkIconView> (<_GtkContainer>, <_AtkImplementorIface>, <_GtkCellLayout>) end;
 define constant <GtkIconView> = <_GtkIconView>;
 
 define constant <anonymous-6692> = <C-function-pointer>;
@@ -40436,7 +40436,7 @@ define constant <GtkIconInfo> = <_GtkIconInfo>;
 define C-subtype <_GtkIconThemePrivate> (<C-void*>) end;
 define constant <GtkIconThemePrivate> = <_GtkIconThemePrivate>;
 
-define C-subtype <_GtkIconTheme> (<C-void*>) end;
+define C-subtype <_GtkIconTheme> (<_GObject>) end;
 define constant <GtkIconTheme> = <_GtkIconTheme>;
 
 define constant <anonymous-6655> = <C-function-pointer>;
@@ -40937,7 +40937,7 @@ define constant gtk-icon-source-set-filename = gtk-icon-source-set-filename-utf8
 
 define constant gtk-icon-source-get-filename = gtk-icon-source-get-filename-utf8;
 
-define C-subtype <_GtkHSeparator> (<GtkSeparator>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHSeparator> (<_GtkSeparator>, <_AtkImplementorIface>) end;
 define constant <GtkHSeparator> = <_GtkHSeparator>;
 
 define C-subtype <_GtkHSeparatorClass> (<C-void*>) end;
@@ -40953,7 +40953,7 @@ define C-function gtk-hseparator-new
   c-name: "gtk_hseparator_new";
 end;
 
-define C-subtype <_GtkHScale> (<GtkScale>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHScale> (<_GtkScale>, <_AtkImplementorIface>) end;
 define constant <GtkHScale> = <_GtkHScale>;
 
 define C-subtype <_GtkHScaleClass> (<C-void*>) end;
@@ -40978,7 +40978,7 @@ define C-function gtk-hscale-new-with-range
   c-name: "gtk_hscale_new_with_range";
 end;
 
-define C-subtype <_GtkHRuler> (<GtkRuler>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHRuler> (<_GtkRuler>, <_AtkImplementorIface>) end;
 define constant <GtkHRuler> = <_GtkHRuler>;
 
 define C-subtype <_GtkHRulerClass> (<C-void*>) end;
@@ -40994,7 +40994,7 @@ define C-function gtk-hruler-new
   c-name: "gtk_hruler_new";
 end;
 
-define C-subtype <_GtkHPaned> (<GtkPaned>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHPaned> (<_GtkPaned>, <_AtkImplementorIface>) end;
 define constant <GtkHPaned> = <_GtkHPaned>;
 
 define C-subtype <_GtkHPanedClass> (<C-void*>) end;
@@ -41010,7 +41010,7 @@ define C-function gtk-hpaned-new
   c-name: "gtk_hpaned_new";
 end;
 
-define C-subtype <_GtkHButtonBox> (<GtkButtonBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHButtonBox> (<_GtkButtonBox>, <_AtkImplementorIface>) end;
 define constant <GtkHButtonBox> = <_GtkHButtonBox>;
 
 define C-subtype <_GtkHButtonBoxClass> (<C-void*>) end;
@@ -41046,7 +41046,7 @@ define C-function gtk-hbutton-box-set-layout-default
   c-name: "gtk_hbutton_box_set_layout_default";
 end;
 
-define C-subtype <_GtkHandleBox> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkHandleBox> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkHandleBox> = <_GtkHandleBox>;
 
 define constant <anonymous-6512> = <C-function-pointer>;
@@ -41119,7 +41119,7 @@ define C-function gtk-gc-release
 end;
 
 define constant <GtkWidget<@5>> = <GtkWidget*>;
-define C-subtype <_GtkGammaCurve> (<GtkVBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkGammaCurve> (<_GtkVBox>, <_AtkImplementorIface>) end;
 define constant <GtkGammaCurve> = <_GtkGammaCurve>;
 
 define constant <anonymous-6498> = <C-function-pointer>;
@@ -41139,7 +41139,7 @@ define C-function gtk-gamma-curve-new
   c-name: "gtk_gamma_curve_new";
 end;
 
-define C-subtype <_GtkFrame> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkFrame> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkFrame> = <_GtkFrame>;
 
 define constant <anonymous-4744> = <C-function-pointer>;
@@ -41207,7 +41207,7 @@ define C-function gtk-frame-get-shadow-type
   c-name: "gtk_frame_get_shadow_type";
 end;
 
-define C-subtype <_GtkFontSelection> (<GtkVBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkFontSelection> (<_GtkVBox>, <_AtkImplementorIface>) end;
 define constant <GtkFontSelection> = <_GtkFontSelection>;
 
 define constant <anonymous-6476> = <C-function-pointer>;
@@ -41217,7 +41217,7 @@ define constant <anonymous-6479> = <C-function-pointer>;
 define C-subtype <_GtkFontSelectionClass> (<C-void*>) end;
 define constant <GtkFontSelectionClass> = <_GtkFontSelectionClass>;
 
-define C-subtype <_GtkFontSelectionDialog> (<GtkDialog>, <AtkImplementorIface>) end;
+define C-subtype <_GtkFontSelectionDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkFontSelectionDialog> = <_GtkFontSelectionDialog>;
 
 define constant <anonymous-6480> = <C-function-pointer>;
@@ -41313,7 +41313,7 @@ end;
 define C-subtype <_GtkFontButtonPrivate> (<C-void*>) end;
 define constant <GtkFontButtonPrivate> = <_GtkFontButtonPrivate>;
 
-define C-subtype <_GtkFontButton> (<C-void*>) end;
+define C-subtype <_GtkFontButton> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkFontButton> = <_GtkFontButton>;
 
 define constant <anonymous-6456> = <C-function-pointer>;
@@ -41416,7 +41416,7 @@ end;
 define C-subtype <_GtkFileChooserWidgetPrivate> (<C-void*>) end;
 define constant <GtkFileChooserWidgetPrivate> = <_GtkFileChooserWidgetPrivate>;
 
-define C-subtype <_GtkFileChooserWidget> (<C-void*>) end;
+define C-subtype <_GtkFileChooserWidget> (<_GtkVBox>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserWidget> = <_GtkFileChooserWidget>;
 
 define C-subtype <_GtkFileChooserWidgetClass> (<C-void*>) end;
@@ -41695,7 +41695,7 @@ define C-function gtk-file-chooser-get-extra-widget
   c-name: "gtk_file_chooser_get_extra_widget";
 end;
 
-define C-subtype <_GtkFileFilter> (<C-void*>) end;
+define C-subtype <_GtkFileFilter> (<_GtkObject>) end;
 define constant <GtkFileFilter> = <_GtkFileFilter>;
 
 define C-function gtk-file-chooser-add-filter
@@ -41870,7 +41870,7 @@ end;
 define C-subtype <_GtkFileChooserDialogPrivate> (<C-void*>) end;
 define constant <GtkFileChooserDialogPrivate> = <_GtkFileChooserDialogPrivate>;
 
-define C-subtype <_GtkFileChooserDialog> (<C-void*>) end;
+define C-subtype <_GtkFileChooserDialog> (<_GtkDialog>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserDialog> = <_GtkFileChooserDialog>;
 
 define C-subtype <_GtkFileChooserDialogClass> (<C-void*>) end;
@@ -41903,7 +41903,7 @@ end;
 define C-subtype <_GtkFileChooserButtonPrivate> (<C-void*>) end;
 define constant <GtkFileChooserButtonPrivate> = <_GtkFileChooserButtonPrivate>;
 
-define C-subtype <_GtkFileChooserButton> (<C-void*>) end;
+define C-subtype <_GtkFileChooserButton> (<_GtkHBox>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserButton> = <_GtkFileChooserButton>;
 
 define C-subtype <_GtkFileChooserButtonClass> (<C-void*>) end;
@@ -41971,7 +41971,7 @@ define C-function gtk-file-chooser-button-set-focus-on-click
   c-name: "gtk_file_chooser_button_set_focus_on_click";
 end;
 
-define C-subtype <_GtkFixed> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkFixed> = <_GtkFixed>;
 
 define C-subtype <_GtkFixedClass> (<C-void*>) end;
@@ -42018,7 +42018,7 @@ define C-function gtk-fixed-get-has-window
   c-name: "gtk_fixed_get_has_window";
 end;
 
-define C-subtype <_GtkFileSelection> (<GtkDialog>, <AtkImplementorIface>) end;
+define C-subtype <_GtkFileSelection> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkFileSelection> = <_GtkFileSelection>;
 
 define constant <anonymous-6355> = <C-function-pointer>;
@@ -42094,7 +42094,7 @@ define constant gtk-file-selection-get-selections = gtk-file-selection-get-selec
 define C-subtype <_GtkExpanderPrivate> (<C-void*>) end;
 define constant <GtkExpanderPrivate> = <_GtkExpanderPrivate>;
 
-define C-subtype <_GtkExpander> (<C-void*>) end;
+define C-subtype <_GtkExpander> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkExpander> = <_GtkExpander>;
 
 define constant <anonymous-6339> = <C-function-pointer>;
@@ -42190,7 +42190,7 @@ define C-function gtk-expander-get-label-widget
   c-name: "gtk_expander_get_label_widget";
 end;
 
-define C-subtype <_GtkEventBox> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkEventBox> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkEventBox> = <_GtkEventBox>;
 
 define C-subtype <_GtkEventBoxClass> (<C-void*>) end;
@@ -42230,7 +42230,7 @@ define C-function gtk-event-box-set-above-child
   c-name: "gtk_event_box_set_above_child";
 end;
 
-define C-subtype <_GtkDrawingArea> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkDrawingArea> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkDrawingArea> = <_GtkDrawingArea>;
 
 define constant <anonymous-6313> = <C-function-pointer>;
@@ -42258,7 +42258,7 @@ define C-function gtk-drawing-area-size
 end;
 
 define constant <gfloat<@2>> = <gfloat*>;
-define C-subtype <_GtkCurve> (<GtkDrawingArea>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCurve> (<_GtkDrawingArea>, <_AtkImplementorIface>) end;
 define constant <GtkCurve> = <_GtkCurve>;
 
 define constant <anonymous-6320> = <C-function-pointer>;
@@ -42361,7 +42361,7 @@ define constant $GTK-CLIST-DRAG-BEFORE = 1;
 define constant $GTK-CLIST-DRAG-INTO = 2;
 define constant $GTK-CLIST-DRAG-AFTER = 3;
 
-define C-subtype <_GtkCList> (<GtkContainer>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCList> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkCList> = <_GtkCList>;
 
 define constant <GtkCTree> = <_GtkCTree>;
@@ -42372,7 +42372,7 @@ define constant <GtkCTreeNode> = <_GtkCTreeNode>;
 define constant <anonymous-6233> = <C-function-pointer>;
 define constant <GtkCTreeCompareDragFunc> = <anonymous-6233>;
 
-define C-subtype <_GtkCTree> (<GtkCList>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCTree> (<_GtkCList>, <_AtkImplementorIface>) end;
 define constant <anonymous-5645> = <C-function-pointer>;
 define constant <anonymous-5646> = <C-function-pointer>;
 define constant <anonymous-5647> = <C-function-pointer>;
@@ -43504,7 +43504,7 @@ define C-function gtk-clist-set-auto-sort
   c-name: "gtk_clist_set_auto_sort";
 end;
 
-define C-subtype <_GtkAlignment> (<GtkBin>, <AtkImplementorIface>) end;
+define C-subtype <_GtkAlignment> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkAlignment> = <_GtkAlignment>;
 
 define C-subtype <_GtkAlignmentClass> (<C-void*>) end;
@@ -43557,13 +43557,13 @@ end;
 define C-subtype <_GtkComboBoxPrivate> (<C-void*>) end;
 define constant <GtkComboBoxPrivate> = <_GtkComboBoxPrivate>;
 
-define C-subtype <_GtkComboBox> (<C-void*>) end;
+define C-subtype <_GtkComboBox> (<_GtkBin>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>) end;
 define constant <GtkComboBox> = <_GtkComboBox>;
 
 define C-subtype <_GtkComboBoxEntryPrivate> (<C-void*>) end;
 define constant <GtkComboBoxEntryPrivate> = <_GtkComboBoxEntryPrivate>;
 
-define C-subtype <_GtkComboBoxEntry> (<C-void*>) end;
+define C-subtype <_GtkComboBoxEntry> (<_GtkComboBox>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>) end;
 define constant <GtkComboBoxEntry> = <_GtkComboBoxEntry>;
 
 define constant <anonymous-6179> = <C-function-pointer>;
@@ -43806,7 +43806,7 @@ define C-function gtk-combo-box-get-popup-accessible
   c-name: "gtk_combo_box_get_popup_accessible";
 end;
 
-define C-subtype <_GtkCombo> (<GtkHBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCombo> (<_GtkHBox>, <_AtkImplementorIface>) end;
 define constant <GtkCombo> = <_GtkCombo>;
 
 define constant <anonymous-5820> = <C-function-pointer>;
@@ -43869,7 +43869,7 @@ define C-function gtk-combo-disable-activate
   c-name: "gtk_combo_disable_activate";
 end;
 
-define C-subtype <_GtkColorSelectionDialog> (<GtkDialog>, <AtkImplementorIface>) end;
+define C-subtype <_GtkColorSelectionDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkColorSelectionDialog> = <_GtkColorSelectionDialog>;
 
 define constant <anonymous-5807> = <C-function-pointer>;
@@ -43890,7 +43890,7 @@ define C-function gtk-color-selection-dialog-new
   c-name: "gtk_color_selection_dialog_new";
 end;
 
-define C-subtype <_GtkColorSelection> (<GtkVBox>, <AtkImplementorIface>) end;
+define C-subtype <_GtkColorSelection> (<_GtkVBox>, <_AtkImplementorIface>) end;
 define constant <GtkColorSelection> = <_GtkColorSelection>;
 
 define constant <anonymous-5780> = <C-function-pointer>;
@@ -44044,7 +44044,7 @@ end;
 define C-subtype <_GtkColorButtonPrivate> (<C-void*>) end;
 define constant <GtkColorButtonPrivate> = <_GtkColorButtonPrivate>;
 
-define C-subtype <_GtkColorButton> (<C-void*>) end;
+define C-subtype <_GtkColorButton> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkColorButton> = <_GtkColorButton>;
 
 define constant <anonymous-5760> = <C-function-pointer>;
@@ -44122,7 +44122,7 @@ end;
 define C-subtype <_GtkCellViewPrivate> (<C-void*>) end;
 define constant <GtkCellViewPrivate> = <_GtkCellViewPrivate>;
 
-define C-subtype <_GtkCellView> (<C-void*>) end;
+define C-subtype <_GtkCellView> (<_GtkWidget>, <_AtkImplementorIface>, <_GtkCellLayout>) end;
 define constant <GtkCellView> = <_GtkCellView>;
 
 define C-subtype <_GtkCellViewClass> (<C-void*>) end;
@@ -44194,7 +44194,7 @@ define C-function gtk-cell-view-get-cell-renderers
   c-name: "gtk_cell_view_get_cell_renderers";
 end;
 
-define C-subtype <_GtkCellRendererToggle> (<GtkCellRenderer>) end;
+define C-subtype <_GtkCellRendererToggle> (<_GtkCellRenderer>) end;
 define constant <GtkCellRendererToggle> = <_GtkCellRendererToggle>;
 
 define constant <anonymous-5242> = <C-function-pointer>;
@@ -44239,7 +44239,7 @@ define C-function gtk-cell-renderer-toggle-set-active
   c-name: "gtk_cell_renderer_toggle_set_active";
 end;
 
-define C-subtype <_GtkCellRendererText> (<GtkCellRenderer>) end;
+define C-subtype <_GtkCellRendererText> (<_GtkCellRenderer>) end;
 define constant <GtkCellRendererText> = <_GtkCellRendererText>;
 
 define constant <anonymous-5205> = <C-function-pointer>;
@@ -44288,7 +44288,7 @@ end;
 define C-subtype <_GtkCellRendererProgressPrivate> (<C-void*>) end;
 define constant <GtkCellRendererProgressPrivate> = <_GtkCellRendererProgressPrivate>;
 
-define C-subtype <_GtkCellRendererProgress> (<C-void*>) end;
+define C-subtype <_GtkCellRendererProgress> (<_GtkCellRenderer>) end;
 define constant <GtkCellRendererProgress> = <_GtkCellRendererProgress>;
 
 define constant <anonymous-5231> = <C-function-pointer>;
@@ -44308,7 +44308,7 @@ define C-function gtk-cell-renderer-progress-new
   c-name: "gtk_cell_renderer_progress_new";
 end;
 
-define C-subtype <_GtkCellRendererPixbuf> (<GtkCellRenderer>) end;
+define C-subtype <_GtkCellRendererPixbuf> (<_GtkCellRenderer>) end;
 define constant <GtkCellRendererPixbuf> = <_GtkCellRendererPixbuf>;
 
 define constant <anonymous-5225> = <C-function-pointer>;
@@ -44328,7 +44328,7 @@ define C-function gtk-cell-renderer-pixbuf-new
   c-name: "gtk_cell_renderer_pixbuf_new";
 end;
 
-define C-subtype <_GtkCellRendererCombo> (<C-void*>) end;
+define C-subtype <_GtkCellRendererCombo> (<_GtkCellRendererText>) end;
 define constant <GtkCellRendererCombo> = <_GtkCellRendererCombo>;
 
 define C-subtype <_GtkCellRendererComboClass> (<C-void*>) end;
@@ -44466,7 +44466,7 @@ define constant <anonymous-4959> = <C-function-pointer>;
 define constant <anonymous-4960> = <C-function-pointer>;
 define constant <anonymous-4961> = <C-function-pointer>;
 define constant <anonymous-4962> = <C-function-pointer>;
-define C-subtype <_GtkCalendar> (<GtkWidget>, <AtkImplementorIface>) end;
+define C-subtype <_GtkCalendar> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkCalendar> = <_GtkCalendar>;
 
 define constant <anonymous-4963> = <C-function-pointer>;
@@ -44841,7 +44841,7 @@ define C-function gtk-assistant-update-buttons-state
   c-name: "gtk_assistant_update_buttons_state";
 end;
 
-define C-subtype <_GtkAspectFrame> (<GtkFrame>, <AtkImplementorIface>) end;
+define C-subtype <_GtkAspectFrame> (<_GtkFrame>, <_AtkImplementorIface>) end;
 define constant <GtkAspectFrame> = <_GtkAspectFrame>;
 
 define C-subtype <_GtkAspectFrameClass> (<C-void*>) end;
@@ -44871,7 +44871,7 @@ define C-function gtk-aspect-frame-set
   c-name: "gtk_aspect_frame_set";
 end;
 
-define C-subtype <_GtkArrow> (<GtkMisc>, <AtkImplementorIface>) end;
+define C-subtype <_GtkArrow> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkArrow> = <_GtkArrow>;
 
 define C-subtype <_GtkArrowClass> (<C-void*>) end;
@@ -44896,7 +44896,7 @@ define C-function gtk-arrow-set
   c-name: "gtk_arrow_set";
 end;
 
-define C-subtype <_GtkAccessible> (<AtkObject>) end;
+define C-subtype <_GtkAccessible> (<_AtkObject>) end;
 define constant <GtkAccessible> = <_GtkAccessible>;
 
 define constant <anonymous-4626> = <C-function-pointer>;
@@ -44958,7 +44958,7 @@ define C-function atk-value-set-current-value
   c-name: "atk_value_set_current_value";
 end;
 
-define C-subtype <_AtkUtil> (<C-void*>) end;
+define C-subtype <_AtkUtil> (<_GObject>) end;
 define constant <AtkUtil> = <_AtkUtil>;
 
 define constant <anonymous-4302> = <C-function-pointer>;
@@ -45792,7 +45792,7 @@ define C-function atk-relation-set-contains
   c-name: "atk_relation_set_contains";
 end;
 
-define C-subtype <_AtkRelation> (<C-void*>) end;
+define C-subtype <_AtkRelation> (<_GObject>) end;
 define constant <AtkRelation> = <_AtkRelation>;
 
 define C-function atk-relation-set-remove
@@ -45887,7 +45887,7 @@ define C-function atk-relation-add-target
   c-name: "atk_relation_add_target";
 end;
 
-define C-subtype <_AtkRegistry> (<C-void*>) end;
+define C-subtype <_AtkRegistry> (<_GObject>) end;
 define C-subtype <_AtkRegistryClass> (<C-void*>) end;
 define constant <AtkRegistry> = <_AtkRegistry>;
 
@@ -45912,7 +45912,7 @@ define C-function atk-registry-get-factory-type
   c-name: "atk_registry_get_factory_type";
 end;
 
-define C-subtype <_AtkObjectFactory> (<C-void*>) end;
+define C-subtype <_AtkObjectFactory> (<_GObject>) end;
 define constant <AtkObjectFactory> = <_AtkObjectFactory>;
 
 define C-function atk-registry-get-factory
@@ -45956,7 +45956,7 @@ define C-function atk-object-factory-get-accessible-type
   c-name: "atk_object_factory_get_accessible_type";
 end;
 
-define C-subtype <_AtkNoOpObjectFactory> (<C-void*>) end;
+define C-subtype <_AtkNoOpObjectFactory> (<_AtkObjectFactory>) end;
 define constant <AtkNoOpObjectFactory> = <_AtkNoOpObjectFactory>;
 
 define C-subtype <_AtkNoOpObjectFactoryClass> (<C-void*>) end;
@@ -45972,7 +45972,7 @@ define C-function atk-no-op-object-factory-new
   c-name: "atk_no_op_object_factory_new";
 end;
 
-define C-subtype <_AtkNoOpObject> (<C-void*>) end;
+define C-subtype <_AtkNoOpObject> (<_AtkObject>, <_AtkComponent>, <_AtkAction>, <_AtkEditableText>, <_AtkHypertext>, <_AtkImage>, <_AtkSelection>, <_AtkTable>, <_AtkText>, <_AtkValue>) end;
 define constant <AtkNoOpObject> = <_AtkNoOpObject>;
 
 define C-subtype <_AtkNoOpObjectClass> (<C-void*>) end;
@@ -46042,7 +46042,7 @@ end;
 define C-subtype <_AtkHypertext> (<C-void*>) end;
 define constant <AtkHypertext> = <_AtkHypertext>;
 
-define C-subtype <_AtkHyperlink> (<C-void*>) end;
+define C-subtype <_AtkHyperlink> (<_GObject>, <_AtkAction>) end;
 define constant <AtkHyperlink> = <_AtkHyperlink>;
 
 define constant <anonymous-4460> = <C-function-pointer>;
@@ -46221,7 +46221,7 @@ define constant <anonymous-4457> = <C-function-pointer>;
 define C-subtype <_AtkHyperlinkImplIface> (<C-void*>) end;
 define constant <AtkHyperlinkImplIface> = <_AtkHyperlinkImplIface>;
 
-define C-subtype <_AtkGObjectAccessible> (<C-void*>) end;
+define C-subtype <_AtkGObjectAccessible> (<_AtkObject>) end;
 define constant <AtkGObjectAccessible> = <_AtkGObjectAccessible>;
 
 define C-subtype <_AtkGObjectAccessibleClass> (<C-void*>) end;
@@ -46513,7 +46513,7 @@ define C-function atk-component-get-alpha
   c-name: "atk_component_get_alpha";
 end;
 
-define C-subtype <_GtkAccelMap> (<C-void*>) end;
+define C-subtype <_GtkAccelMap> (<_GObject>) end;
 define constant <GtkAccelMap> = <_GtkAccelMap>;
 
 define C-subtype <_GtkAccelMapClass> (<C-void*>) end;
@@ -46611,7 +46611,7 @@ define constant gtk-accel-map-load = gtk-accel-map-load-utf8;
 
 define constant gtk-accel-map-save = gtk-accel-map-save-utf8;
 
-define C-subtype <_GtkAccelLabel> (<GtkLabel>, <AtkImplementorIface>) end;
+define C-subtype <_GtkAccelLabel> (<_GtkLabel>, <_AtkImplementorIface>) end;
 define constant <GtkAccelLabel> = <_GtkAccelLabel>;
 
 define constant <anonymous-4251> = <C-function-pointer>;
@@ -46664,7 +46664,7 @@ end;
 
 define constant gtk-accel-label-accelerator-width = gtk-accel-label-get-accel-width;
 
-define C-subtype <_GtkAboutDialog> (<C-void*>) end;
+define C-subtype <_GtkAboutDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkAboutDialog> = <_GtkAboutDialog>;
 
 define constant <anonymous-4076> = <C-function-pointer>;
