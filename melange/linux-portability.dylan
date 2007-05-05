@@ -84,7 +84,7 @@ define constant $default-defines
       "__builtin_va_list", "void*"];
   
 define constant linux-include-directories
-  = #["/usr/include"];
+  = #["/usr/include", "/usr/lib/gcc/i486-linux-gnu/4.0.3/include/", "/usr/include/linux", "/usr/include/gtk-2.0", "/usr/lib/gtk-2.0/include",  "/usr/include/atk-1.0", "/usr/include/cairo",  "/usr/include/pango-1.0", "/usr/include/glib-2.0",  "/usr/lib/glib-2.0/include"];
 
 for (dir in linux-include-directories)
   push-last(include-path, dir);

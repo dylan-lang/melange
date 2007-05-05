@@ -86,7 +86,7 @@ define variable *typedef-flag* = #f;
 //
 define generic int-value (value :: <object>, state :: <parse-state>);
 
-define method int-value (value :: <abstract-integer>, state :: <parse-state>)
+define method int-value (value :: <integer>, state :: <parse-state>)
   value;
 end method;
 
@@ -520,12 +520,12 @@ cast-expr (unary-expr)
 
 cast-expr (<lparen-token> type-name <rparen-token> cast-expr)
   let result = int-value(%4, @0);
-  if (instance?(result, <abstract-integer>)
+  if (instance?(result, <integer>)
         & instance?(%2.true-type, <integer-type-declaration>))
     // Handle casting a large unsigned value to a signed integer type.
     if (instance?(%2.true-type, <signed-integer-type-declaration>)
           & result > (2 ^ (8 * %2.type-size-slot - 1) - 1))
-      as(<integer>, result - as(<extended-integer>, 2) ^ (8 * %2.type-size-slot))
+      as(<integer>, result - as(<integer>, 2) ^ (8 * %2.type-size-slot))
     else
       result
     end if
