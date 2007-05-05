@@ -2,8 +2,8 @@ comment:	This file is generated, please don't edit
 format-version:	2
 library:	gtk-c-ffi
 files:	library
-	gtk-module-2.10-win32
-	gtk-2.10-win32
+	gtk-module-2-10-win32
+	gtk-2-10-win32
 c-libraries:	gtk-win32-2.0.lib
 	gdk-win32-2.0.lib
 	atk-1.0.lib
