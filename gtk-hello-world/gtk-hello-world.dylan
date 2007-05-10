@@ -22,6 +22,9 @@ define method make(type :: subclass(<GTypeInstance>), #rest args,
     let instance = next-method(<GTypeInstance>, address: address);
     let g-type = g-type-from-instance(instance);
     let dylan-type = find-gtype(g-type);
+    unless (dylan-type)
+      error("Unknown GType encountered. Re-run melange or implement dynamic class generation.");
+    end;
     next-method(dylan-type, address: address);
   else
     next-method();
@@ -40,14 +43,14 @@ define function find-gtype-by-name(name :: <string>)
       if(as-uppercase(i.debug-name) = as-uppercase(concatenate("<_", name, ">")))
         return(i)
       end if;
-    finally
-      error("Unknown GType %= encountered.", as(<byte-string>, name))
+//    finally
+//      error("Unknown GType %= encountered.", as(<byte-string>, name))
     end for;
   end block;
 end function find-gtype-by-name;
 
 define method find-gtype(g-type :: <integer>)
- => (type :: <class>);
+ => (type :: false-or(<class>));
   let dylan-type = element($gtype-table, g-type, default: #f);
   unless(dylan-type)
     let type-name = g-type-name(g-type);
@@ -148,7 +151,6 @@ define function initialize-gtk
 end function initialize-gtk;
 
 
-g-type-init();
 // map GTK type IDs to Dylan classes
 define table $gtype-table = {
                              $G-TYPE-CHAR         => <gchar>,
@@ -162,16 +164,66 @@ define table $gtype-table = {
                              $G-TYPE-FLOAT        => <gfloat>,
                              $G-TYPE-DOUBLE       => <gdouble>,
                              $G-TYPE-STRING       => <gstring>,
-                             $G-TYPE-POINTER      => <gpointer>,
-                             gdk-event-get-type() => <GdkEvent> 
+                             $G-TYPE-POINTER      => <gpointer>
                              };
+
+define C-struct <GdkEventAnyFoo>
+  slot gdk-event-type :: <GdkEventType>;
+  pointer-type-name: <GdkEventAny*>;
+end;
+  
+
+define function make-gdk-event(address)
+ => (instance :: <C-void*>)
+  let event = make(<GdkEventAny*>, address: address);
+  make(select(event.gdk-event-type)
+         $GDK-NOTHING           => <GdkEventAny>;
+         $GDK-DELETE            => <GdkEventAny>;
+         $GDK-DESTROY           => <GdkEventAny>;
+         $GDK-EXPOSE            => <GdkEventExpose>;
+         $GDK-MOTION-NOTIFY     => <GdkEventMotion>;
+         $GDK-BUTTON-PRESS      => <GdkEventButton>;
+         $GDK-2BUTTON-PRESS     => <GdkEventButton>;
+         $GDK-3BUTTON-PRESS     => <GdkEventButton>;
+         $GDK-BUTTON-RELEASE    => <GdkEventButton>;
+         $GDK-KEY-PRESS         => <GdkEventKey>;
+         $GDK-KEY-RELEASE       => <GdkEventKey>;
+         $GDK-ENTER-NOTIFY      => <GdkEventCrossing>;
+         $GDK-LEAVE-NOTIFY      => <GdkEventCrossing>;
+         $GDK-FOCUS-CHANGE      => <GdkEventFocus>;
+         $GDK-CONFIGURE         => <GdkEventConfigure>;
+         $GDK-MAP               => <GdkEventAny>;
+         $GDK-UNMAP             => <GdkEventAny>;
+         $GDK-PROPERTY-NOTIFY   => <GdkEventProperty>;
+         $GDK-SELECTION-CLEAR   => <GdkEventSelection>;
+         $GDK-SELECTION-REQUEST => <GdkEventSelection>;
+         $GDK-SELECTION-NOTIFY  => <GdkEventSelection>;
+         $GDK-PROXIMITY-IN      => <GdkEventProximity>;
+         $GDK-PROXIMITY-OUT     => <GdkEventProximity>;
+         $GDK-DRAG-ENTER        => <GdkEventDND>;
+         $GDK-DRAG-LEAVE        => <GdkEventDND>;
+         $GDK-DRAG-MOTION       => <GdkEventDND>;
+         $GDK-DRAG-STATUS       => <GdkEventDND>;
+         $GDK-DROP-START        => <GdkEventDND>;
+         $GDK-DROP-FINISHED     => <GdkEventDND>;
+         $GDK-CLIENT-EVENT      => <GdkEventClient>;
+         $GDK-VISIBILITY-NOTIFY => <GdkEventAny>;
+         $GDK-NO-EXPOSE         => <GdkEventNoExpose>;
+         $GDK-SCROLL            => <GdkEventScroll>;
+         $GDK-WINDOW-STATE      => <GdkEventWindowState>;
+         $GDK-SETTING           => <GdkEventSetting>;
+         $GDK-OWNER-CHANGE      => <GdkEventOwnerChange>;
+         $GDK-GRAB-BROKEN       => <GdkEventGrabBroken>;
+         otherwise              => <GdkEventAny>;
+       end, address: address);
+end;
 
 define function g-value-to-dylan(instance :: <GValue>)
  => (dylan-instance);
   let g-type = g-value-type(instance);
   if(g-type ~= $G-TYPE-INVALID)
     let dylan-type = find-gtype(g-type);
-    if(subtype?(dylan-type, <C-void*>))
+    if(dylan-type & subtype?(dylan-type, <GTypeInstance>))
       make(dylan-type, address: instance.g-value-peek-pointer.pointer-address)
     else
       select(g-type)
@@ -194,6 +246,7 @@ define function g-value-to-dylan(instance :: <GValue>)
         $G-TYPE-BOXED   => #f;
         $G-TYPE-PARAM   => #f;
         $G-TYPE-OBJECT  => #f;
+        gdk-event-get-type() => make-gdk-event(instance.g-value-peek-pointer.pointer-address);
       end select;
     end if;
   end if;
