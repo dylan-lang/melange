@@ -9,6 +9,7 @@ define module gtk-hello-world
   use format-out;
   use streams;
   use c-ffi;
-  use dylan-extensions, import: { debug-name };
+  use dylan-primitives;
+  use dylan-extensions, import: { debug-name, integer-as-raw, raw-as-integer };
   use gtk-internal;
 end module gtk-hello-world;
