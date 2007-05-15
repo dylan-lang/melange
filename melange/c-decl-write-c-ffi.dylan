@@ -8,11 +8,48 @@ end;
 define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   register-written-name(back-end.written-names, decl.dylan-name, decl);
-  let supers = decl.superclasses | #("<C-void*>");
-  format(back-end.stream, "define C-subtype %s (%s) end;\n",
-         decl.dylan-name, as(<byte-string>, apply(join, ", ", supers)));
+  if (decl.superclasses)
+    format(back-end.stream, "define C-subtype %s (%s) end;\n",
+           decl.dylan-name, apply(join, ", ", decl.superclasses));
+  else
+    let stream = back-end.stream;
+    format(stream, "define C-struct %s\n", decl.dylan-name);
+
+    decl.members 
+      & do(method(slot)
+             if (instance?(slot.type, <bitfield-declaration>))
+               format(stream, "  bitfield slot %s :: %s, width: %d;\n",
+                      slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)  
+             else
+               format(stream, "  slot %s :: %s;\n",
+                      slot.dylan-name, slot.type.true-type.type-name)
+             end;
+             register-written-name(back-end.written-names, slot.dylan-name, decl);
+             register-written-name(back-end.written-names, 
+                                   concatenate(slot.dylan-name, "-setter"), decl);
+           end, decl.members);
+    format(stream, "end;\n\n");
+  end;
 end;
 
+define method write-declaration
+    (decl :: <typedef-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  let stream = back-end.stream;
+  // We must special case this one since there are so many declarations of the
+  // form "typedef struct foo foo".
+  if (~decl.equated? 
+        & decl.simple-name ~= decl.type.simple-name)
+    if (~ instance?(decl.type, <struct-declaration>) | decl.type.superclasses)
+      format(stream, "define constant %s = %s;\n\n",
+             decl.dylan-name, decl.type.dylan-name);
+    else
+      format(stream, "define C-pointer-type %s => %s;\n\n",
+             decl.dylan-name, decl.type.dylan-name);
+    end;
+    register-written-name(back-end.written-names, decl.dylan-name, decl);
+  end if;
+end method write-declaration;
 define method write-declaration (decl :: <union-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   register-written-name(back-end.written-names, decl.dylan-name, decl);
@@ -88,8 +125,10 @@ define method write-declaration
       for (literal in decl.members)
 	let name = literal.dylan-name;
 	let int-value = literal.constant-value;
-	format(stream, "define constant %s = %d;\n", name, int-value);
-	register-written-name(back-end.written-names, name, decl, subname?: #t);
+        unless (instance?(int-value, <double-integer>))
+          format(stream, "define constant %s = %d;\n", name, int-value);
+          register-written-name(back-end.written-names, name, decl, subname?: #t);
+        end;
       finally
 	new-line(stream);
       end for;

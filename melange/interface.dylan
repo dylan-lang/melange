@@ -570,9 +570,8 @@ define method write-module-stream
       format(module-stream, "define module foo", module-line)
     end if;
     format(module-stream, 
-           "  use dylan;\n"
-           "  use extensions;\n"
-           "  use melange-support;\n"
+           "  use common-dylan;\n"
+           "  use c-ffi;\n"
            "  export");
 		// The names are returned in hash order, so we sort them before writing them
 		names := sort!( names, test: method( a, b ) as(<string>, a) < as(<string>, b) end );
@@ -612,32 +611,6 @@ define method process-define-interface
   get-token(tokenizer).position;
 end method process-define-interface;
 
-/*
-//----------------------------------------------------------------------
-// XXX - Debugging output is broken, unfortunately. This code makes
-// error and warning output go to standard error instead of standard
-// output. We need to overhaul this in the Dylan library itself.
-// XXX - Overhaul completed. This is now obsolete, but we're leaving it
-// until we start work on 2.3.
-//----------------------------------------------------------------------
-#if (~mindy)
-define class <better-debugger> (<debugger>)
-end class <better-debugger>;
-
-define method invoke-debugger
-     (debugger :: <better-debugger>, condition :: <condition>)
-  => res :: <never-returns>;
-   //fresh-line(*warning-output*);
-   condition-format(*warning-output*, "%s\n", condition);
-   force-output(*warning-output*);
-   call-out("abort", void:);
-end method invoke-debugger;
-
-*debugger* := make(<better-debugger>);
-#endif
-
-*warning-output* := *standard-error*;
-*/
 
 // establish a protection boundary against unhandled conditions,
 // returning a function that behaves just like the original function,

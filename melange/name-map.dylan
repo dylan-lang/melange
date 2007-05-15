@@ -240,3 +240,32 @@ define method map-name
   if (category == #"type") append!(buffer, "*>") end if;
   as(<byte-string>, buffer);
 end method map-name;
+
+define method map-name
+    (selector == #"gtk-name-mapping",
+     category :: <symbol>, prefix :: <string>, name :: <string>,
+     sequence-of-classes :: <sequence>)
+ => (result :: <string>);
+  let buffer = make(<stretchy-vector>);
+
+  if (category == #"type")
+    add!(buffer, '<') 
+  elseif (category == #"constant")
+    add!(buffer, '$');
+  end if;
+
+  append!(buffer, prefix);
+  for (cls in sequence-of-classes)
+    append!(buffer, copy-sequence(cls, start: 1));
+    add!(buffer, '-');
+  end for;
+
+  for (non-underline = #f then non-underline | char ~= '_',
+       char in name)
+    add!(buffer, if (non-underline & char == '_') '-' else char end if);
+  end for;
+
+  if (category == #"type") add!(buffer, '>') end if;
+  as(<byte-string>, buffer);
+end method map-name;
+

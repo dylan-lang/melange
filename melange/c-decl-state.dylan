@@ -323,7 +323,7 @@ define method process-declarator
       if (instance?(tp.true-type, <integer-type-declaration>))
 	let decl = make(<bitfield-declaration>, bits: second(declarator),
 			base: tp, name: anonymous-name(),
-			dylan-name: "<integer>");
+			dylan-name: "<C-int>");
 	process-declarator(decl, declarator.tail.tail, state);
       else
 	parse-error(state, "Bit-fields must be of an integral type.  "

@@ -167,16 +167,10 @@ define table $gtype-table = {
                              $G-TYPE-POINTER      => <gpointer>
                              };
 
-define C-struct <GdkEventAnyFoo>
-  slot gdk-event-type :: <GdkEventType>;
-  pointer-type-name: <GdkEventAny*>;
-end;
-  
-
 define function make-gdk-event(address)
  => (instance :: <C-void*>)
-  let event = make(<GdkEventAny*>, address: address);
-  make(select(event.gdk-event-type)
+  let event = make(<GdkEventAny>, address: address);
+  make(select(event.GdkEventAny-type)
          $GDK-NOTHING           => <GdkEventAny>;
          $GDK-DELETE            => <GdkEventAny>;
          $GDK-DESTROY           => <GdkEventAny>;
@@ -251,18 +245,6 @@ define function g-value-to-dylan(instance :: <GValue>)
     end if;
   end if;
 end function g-value-to-dylan;
-
-
-define function some-signal-handler (widget :: <GtkWidget>)
-  format-out("signal called\n");
-end;
-
-
-
-define C-callable-wrapper _some-signal-handler of some-signal-handler
-  parameter widget :: <GtkWidget>;
-  c-name: "_some_signal_handler";
-end;
 
 
 define method main () => ()

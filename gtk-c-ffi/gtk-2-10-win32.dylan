@@ -4,16 +4,21 @@ define constant <gulong> = <C-unsigned-long>;
 
 define constant <GType> = <gulong>;
 
-define C-subtype <_GTypeClass> (<C-void*>) end;
-define constant <GTypeClass> = <_GTypeClass>;
+define C-struct <_GTypeClass>
+  slot GTypeClass-g-type :: <C-unsigned-long>;
+end;
+
+define C-pointer-type <GTypeClass> => <_GTypeClass>;
 
 define C-subtype <_GTypeInstance> (<C-void*>) end;
 define constant <GTypeInstance> = <_GTypeInstance>;
 
 define constant <guint> = <C-unsigned-int>;
 
-define C-subtype <_GData> (<C-void*>) end;
-define constant <GData> = <_GData>;
+define C-struct <_GData>
+end;
+
+define C-pointer-type <GData> => <_GData>;
 
 define C-subtype <_GObject> (<_GTypeInstance>) end;
 define constant <GInitiallyUnowned> = <_GObject>;
@@ -29,16 +34,24 @@ define constant <guint8> = <C-unsigned-char>;
 
 define constant <gchar> = <C-signed-char>;
 
+define constant <gchar*> = <C-String>;
 //define C-pointer-type <gchar*> => <gchar>;
-define constant <gchar*> = <C-string>;
 define constant <GObject> = <_GObject>;
 
-define C-subtype <_GdkColor> (<C-void*>) end;
-define constant <GdkColor> = <_GdkColor>;
+define C-struct <_GdkColor>
+  slot GdkColor-pixel :: <C-unsigned-int>;
+  slot GdkColor-red :: <C-unsigned-short>;
+  slot GdkColor-green :: <C-unsigned-short>;
+  slot GdkColor-blue :: <C-unsigned-short>;
+end;
+
+define C-pointer-type <GdkColor> => <_GdkColor>;
 
 define constant <GdkColor<@5>> = <GdkColor>;
-define C-subtype <_PangoFontDescription> (<C-void*>) end;
-define constant <PangoFontDescription> = <_PangoFontDescription>;
+define C-struct <_PangoFontDescription>
+end;
+
+define C-pointer-type <PangoFontDescription> => <_PangoFontDescription>;
 
 define constant <gint> = <C-signed-int>;
 
@@ -76,8 +89,13 @@ define constant <GdkFontType> = <C-int>;
 define constant $GDK-FONT-FONT = 0;
 define constant $GDK-FONT-FONTSET = 1;
 
-define C-subtype <_GdkFont> (<C-void*>) end;
-define constant <GdkFont> = <_GdkFont>;
+define C-struct <_GdkFont>
+  slot GdkFont-type :: <GdkFontType>;
+  slot GdkFont-ascent :: <C-signed-int>;
+  slot GdkFont-descent :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkFont> => <_GdkFont>;
 
 define C-pointer-type <gchar**> => <gchar*>;
 define constant <gchar*<@5>> = <gchar**>;
@@ -89,11 +107,19 @@ define constant $GTK-RC-BASE = 8;
 
 define C-pointer-type <GtkRcFlags*> => <GtkRcFlags>;
 define constant <GtkRcFlags<@5>> = <GtkRcFlags*>;
-define C-subtype <_GArray> (<C-void*>) end;
-define constant <GArray> = <_GArray>;
+define C-struct <_GArray>
+  slot GArray-data :: <gchar*>;
+  slot GArray-len :: <C-unsigned-int>;
+end;
 
-define C-subtype <_GSList> (<C-void*>) end;
-define constant <GSList> = <_GSList>;
+define C-pointer-type <GArray> => <_GArray>;
+
+define C-struct <_GSList>
+  slot GSList-data :: <C-void*>;
+  slot GSList-next :: <GSList>;
+end;
+
+define C-pointer-type <GSList> => <_GSList>;
 
 define C-subtype <_GtkRcStyle> (<_GObject>) end;
 define constant <GtkRcStyle> = <_GtkRcStyle>;
@@ -101,11 +127,21 @@ define constant <GtkRcStyle> = <_GtkRcStyle>;
 define C-subtype <_GtkStyle> (<_GObject>) end;
 define constant <GtkStyle> = <_GtkStyle>;
 
-define C-subtype <_GtkRequisition> (<C-void*>) end;
-define constant <GtkRequisition> = <_GtkRequisition>;
+define C-struct <_GtkRequisition>
+  slot GtkRequisition-width :: <C-signed-int>;
+  slot GtkRequisition-height :: <C-signed-int>;
+end;
 
-define C-subtype <_GdkRectangle> (<C-void*>) end;
-define constant <GdkRectangle> = <_GdkRectangle>;
+define C-pointer-type <GtkRequisition> => <_GtkRequisition>;
+
+define C-struct <_GdkRectangle>
+  slot GdkRectangle-x :: <C-signed-int>;
+  slot GdkRectangle-y :: <C-signed-int>;
+  slot GdkRectangle-width :: <C-signed-int>;
+  slot GdkRectangle-height :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkRectangle> => <_GdkRectangle>;
 
 define constant <GtkAllocation> = <GdkRectangle>;
 
@@ -122,8 +158,10 @@ define constant <GtkBin> = <_GtkBin>;
 
 define constant <GtkWindow> = <_GtkWindow>;
 
-define C-subtype <_GtkWindowGeometryInfo> (<C-void*>) end;
-define constant <GtkWindowGeometryInfo> = <_GtkWindowGeometryInfo>;
+define C-struct <_GtkWindowGeometryInfo>
+end;
+
+define C-pointer-type <GtkWindowGeometryInfo> => <_GtkWindowGeometryInfo>;
 
 define C-subtype <_GtkWindowGroup> (<_GObject>) end;
 define constant <GtkWindowGroup> = <_GtkWindowGroup>;
@@ -149,8 +187,10 @@ define constant $GDK-META-MASK = 268435456;
 //define constant $GDK-MODIFIER-MASK = #ex000000005C001FFF;
 
 define constant <GdkGC<@32>> = <GdkGC*>;
-define C-subtype <_cairo-font-options> (<C-void*>) end;
-define constant <cairo-font-options-t> = <_cairo-font-options>;
+define C-struct <_cairo-font-options>
+end;
+
+define C-pointer-type <cairo-font-options-t> => <_cairo-font-options>;
 
 define C-subtype <_GdkScreen> (<_GObject>) end;
 define constant <GdkScreen> = <_GdkScreen>;
@@ -167,8 +207,20 @@ define constant $G-PARAM-PRIVATE = 32;
 define constant $G-PARAM-STATIC-NICK = 64;
 define constant $G-PARAM-STATIC-BLURB = 128;
 
-define C-subtype <_GParamSpec> (<C-void*>) end;
-define constant <GParamSpec> = <_GParamSpec>;
+define C-struct <_GParamSpec>
+  slot GParamSpec-g-type-instance :: <_GTypeInstance>;
+  slot GParamSpec-name :: <gchar*>;
+  slot GParamSpec-flags :: <GParamFlags>;
+  slot GParamSpec-value-type :: <C-unsigned-long>;
+  slot GParamSpec-owner-type :: <C-unsigned-long>;
+  slot GParamSpec-_nick :: <gchar*>;
+  slot GParamSpec-_blurb :: <gchar*>;
+  slot GParamSpec-qdata :: <GData>;
+  slot GParamSpec-ref-count :: <C-unsigned-int>;
+  slot GParamSpec-param-id :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GParamSpec> => <_GParamSpec>;
 
 define constant <glong> = <C-signed-long>;
 
@@ -182,11 +234,19 @@ define constant <gdouble> = <C-double>;
 
 define C-subtype <anonymous-1507> (<C-void*>) end;
 define constant <anonymous-1507<@2>> = <anonymous-1507>;
-define C-subtype <_GValue> (<C-void*>) end;
-define constant <GValue> = <_GValue>;
+define C-struct <_GValue>
+  slot GValue-g-type :: <C-unsigned-long>;
+  slot GValue-data :: <anonymous-1507<@2>>;
+end;
 
-define C-subtype <_GObjectConstructParam> (<C-void*>) end;
-define constant <GObjectConstructParam> = <_GObjectConstructParam>;
+define C-pointer-type <GValue> => <_GValue>;
+
+define C-struct <_GObjectConstructParam>
+  slot GObjectConstructParam-pspec :: <GParamSpec>;
+  slot GObjectConstructParam-value :: <GValue>;
+end;
+
+define C-pointer-type <GObjectConstructParam> => <_GObjectConstructParam>;
 
 define constant <anonymous-1653> = <C-function-pointer>;
 define constant <anonymous-1654> = <C-function-pointer>;
@@ -198,8 +258,20 @@ define constant <anonymous-1658> = <C-function-pointer>;
 define constant <anonymous-1659> = <C-function-pointer>;
 define C-pointer-type <gpointer*> => <gpointer>;
 define constant <gpointer<@8>> = <gpointer*>;
-define C-subtype <_GObjectClass> (<C-void*>) end;
-define constant <GInitiallyUnownedClass> = <_GObjectClass>;
+define C-struct <_GObjectClass>
+  slot GObjectClass-g-type-class :: <_GTypeClass>;
+  slot GObjectClass-construct-properties :: <GSList>;
+  slot GObjectClass-constructor :: <anonymous-1653>;
+  slot GObjectClass-set-property :: <anonymous-1654>;
+  slot GObjectClass-get-property :: <anonymous-1655>;
+  slot GObjectClass-dispose :: <anonymous-1656>;
+  slot GObjectClass-finalize :: <anonymous-1657>;
+  slot GObjectClass-dispatch-properties-changed :: <anonymous-1658>;
+  slot GObjectClass-notify :: <anonymous-1659>;
+  slot GObjectClass-pdummy :: <gpointer<@8>>;
+end;
+
+define C-pointer-type <GInitiallyUnownedClass> => <_GObjectClass>;
 
 define constant <GtkType> = <GType>;
 
@@ -210,16 +282,31 @@ define constant <gboolean> = <gint>;
 define constant <anonymous-3344> = <C-function-pointer>;
 define constant <GtkSignalFunc> = <anonymous-3344>;
 
-define C-subtype <anonymous-3345> (<C-void*>) end;
+define C-struct <anonymous-3345>
+  slot nonymous-3345-f :: <anonymous-3344>;
+  slot nonymous-3345-d :: <C-void*>;
+end;
+
 define C-subtype <anonymous-3346> (<C-void*>) end;
-define C-subtype <_GtkArg> (<C-void*>) end;
-define constant <GtkArg> = <_GtkArg>;
+define C-struct <_GtkArg>
+  slot GtkArg-type :: <C-unsigned-long>;
+  slot GtkArg-name :: <gchar*>;
+  slot GtkArg-d :: <anonymous-3346>;
+end;
+
+define C-pointer-type <GtkArg> => <_GtkArg>;
 
 define constant <anonymous-3357> = <C-function-pointer>;
 define constant <anonymous-3358> = <C-function-pointer>;
 define constant <anonymous-3359> = <C-function-pointer>;
-define C-subtype <_GtkObjectClass> (<C-void*>) end;
-define constant <GtkObjectClass> = <_GtkObjectClass>;
+define C-struct <_GtkObjectClass>
+  slot GtkObjectClass-parent-class :: <_GObjectClass>;
+  slot GtkObjectClass-set-arg :: <anonymous-3357>;
+  slot GtkObjectClass-get-arg :: <anonymous-3358>;
+  slot GtkObjectClass-destroy :: <anonymous-3359>;
+end;
+
+define C-pointer-type <GtkObjectClass> => <_GtkObjectClass>;
 
 define constant <anonymous-3634> = <C-function-pointer>;
 define constant <anonymous-3635> = <C-function-pointer>;
@@ -303,25 +390,51 @@ define constant $GDK-GRAB-BROKEN = 35;
 
 define constant <gint8> = <C-signed-char>;
 
-define C-subtype <_GdkEventAny> (<C-void*>) end;
-define constant <GdkEventAny> = <_GdkEventAny>;
+define C-struct <_GdkEventAny>
+  slot GdkEventAny-type :: <GdkEventType>;
+  slot GdkEventAny-window :: <GdkWindow>;
+  slot GdkEventAny-send-event :: <C-signed-char>;
+end;
 
-define C-subtype <_GdkRegion> (<C-void*>) end;
-define constant <GdkRegion> = <_GdkRegion>;
+define C-pointer-type <GdkEventAny> => <_GdkEventAny>;
 
-define C-subtype <_GdkEventExpose> (<C-void*>) end;
-define constant <GdkEventExpose> = <_GdkEventExpose>;
+define C-struct <_GdkRegion>
+end;
 
-define C-subtype <_GdkEventNoExpose> (<C-void*>) end;
-define constant <GdkEventNoExpose> = <_GdkEventNoExpose>;
+define C-pointer-type <GdkRegion> => <_GdkRegion>;
+
+define C-struct <_GdkEventExpose>
+  slot GdkEventExpose-type :: <GdkEventType>;
+  slot GdkEventExpose-window :: <GdkWindow>;
+  slot GdkEventExpose-send-event :: <C-signed-char>;
+  slot GdkEventExpose-area :: <_GdkRectangle>;
+  slot GdkEventExpose-region :: <GdkRegion>;
+  slot GdkEventExpose-count :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkEventExpose> => <_GdkEventExpose>;
+
+define C-struct <_GdkEventNoExpose>
+  slot GdkEventNoExpose-type :: <GdkEventType>;
+  slot GdkEventNoExpose-window :: <GdkWindow>;
+  slot GdkEventNoExpose-send-event :: <C-signed-char>;
+end;
+
+define C-pointer-type <GdkEventNoExpose> => <_GdkEventNoExpose>;
 
 define constant <GdkVisibilityState> = <C-int>;
 define constant $GDK-VISIBILITY-UNOBSCURED = 0;
 define constant $GDK-VISIBILITY-PARTIAL = 1;
 define constant $GDK-VISIBILITY-FULLY-OBSCURED = 2;
 
-define C-subtype <_GdkEventVisibility> (<C-void*>) end;
-define constant <GdkEventVisibility> = <_GdkEventVisibility>;
+define C-struct <_GdkEventVisibility>
+  slot GdkEventVisibility-type :: <GdkEventType>;
+  slot GdkEventVisibility-window :: <GdkWindow>;
+  slot GdkEventVisibility-send-event :: <C-signed-char>;
+  slot GdkEventVisibility-state :: <GdkVisibilityState>;
+end;
+
+define C-pointer-type <GdkEventVisibility> => <_GdkEventVisibility>;
 
 define C-pointer-type <gdouble*> => <gdouble>;
 define constant <gint16> = <C-signed-short>;
@@ -347,20 +460,57 @@ define constant $GDK-AXIS-YTILT = 5;
 define constant $GDK-AXIS-WHEEL = 6;
 define constant $GDK-AXIS-LAST = 7;
 
-define C-subtype <_GdkDeviceAxis> (<C-void*>) end;
-define constant <GdkDeviceAxis> = <_GdkDeviceAxis>;
+define C-struct <_GdkDeviceAxis>
+  slot GdkDeviceAxis-use :: <GdkAxisUse>;
+  slot GdkDeviceAxis-min :: <C-double>;
+  slot GdkDeviceAxis-max :: <C-double>;
+end;
 
-define C-subtype <_GdkDeviceKey> (<C-void*>) end;
-define constant <GdkDeviceKey> = <_GdkDeviceKey>;
+define C-pointer-type <GdkDeviceAxis> => <_GdkDeviceAxis>;
+
+define C-struct <_GdkDeviceKey>
+  slot GdkDeviceKey-keyval :: <C-unsigned-int>;
+  slot GdkDeviceKey-modifiers :: <GdkModifierType>;
+end;
+
+define C-pointer-type <GdkDeviceKey> => <_GdkDeviceKey>;
 
 define C-subtype <_GdkDevice> (<_GObject>) end;
 define constant <GdkDevice> = <_GdkDevice>;
 
-define C-subtype <_GdkEventMotion> (<C-void*>) end;
-define constant <GdkEventMotion> = <_GdkEventMotion>;
+define C-struct <_GdkEventMotion>
+  slot GdkEventMotion-type :: <GdkEventType>;
+  slot GdkEventMotion-window :: <GdkWindow>;
+  slot GdkEventMotion-send-event :: <C-signed-char>;
+  slot GdkEventMotion-time :: <C-unsigned-int>;
+  slot GdkEventMotion-x :: <C-double>;
+  slot GdkEventMotion-y :: <C-double>;
+  slot GdkEventMotion-axes :: <gdouble*>;
+  slot GdkEventMotion-state :: <C-unsigned-int>;
+  slot GdkEventMotion-is-hint :: <C-signed-short>;
+  slot GdkEventMotion-device :: <GdkDevice>;
+  slot GdkEventMotion-x-root :: <C-double>;
+  slot GdkEventMotion-y-root :: <C-double>;
+end;
 
-define C-subtype <_GdkEventButton> (<C-void*>) end;
-define constant <GdkEventButton> = <_GdkEventButton>;
+define C-pointer-type <GdkEventMotion> => <_GdkEventMotion>;
+
+define C-struct <_GdkEventButton>
+  slot GdkEventButton-type :: <GdkEventType>;
+  slot GdkEventButton-window :: <GdkWindow>;
+  slot GdkEventButton-send-event :: <C-signed-char>;
+  slot GdkEventButton-time :: <C-unsigned-int>;
+  slot GdkEventButton-x :: <C-double>;
+  slot GdkEventButton-y :: <C-double>;
+  slot GdkEventButton-axes :: <gdouble*>;
+  slot GdkEventButton-state :: <C-unsigned-int>;
+  slot GdkEventButton-button :: <C-unsigned-int>;
+  slot GdkEventButton-device :: <GdkDevice>;
+  slot GdkEventButton-x-root :: <C-double>;
+  slot GdkEventButton-y-root :: <C-double>;
+end;
+
+define C-pointer-type <GdkEventButton> => <_GdkEventButton>;
 
 define constant <GdkScrollDirection> = <C-int>;
 define constant $GDK-SCROLL-UP = 0;
@@ -368,11 +518,37 @@ define constant $GDK-SCROLL-DOWN = 1;
 define constant $GDK-SCROLL-LEFT = 2;
 define constant $GDK-SCROLL-RIGHT = 3;
 
-define C-subtype <_GdkEventScroll> (<C-void*>) end;
-define constant <GdkEventScroll> = <_GdkEventScroll>;
+define C-struct <_GdkEventScroll>
+  slot GdkEventScroll-type :: <GdkEventType>;
+  slot GdkEventScroll-window :: <GdkWindow>;
+  slot GdkEventScroll-send-event :: <C-signed-char>;
+  slot GdkEventScroll-time :: <C-unsigned-int>;
+  slot GdkEventScroll-x :: <C-double>;
+  slot GdkEventScroll-y :: <C-double>;
+  slot GdkEventScroll-state :: <C-unsigned-int>;
+  slot GdkEventScroll-direction :: <GdkScrollDirection>;
+  slot GdkEventScroll-device :: <GdkDevice>;
+  slot GdkEventScroll-x-root :: <C-double>;
+  slot GdkEventScroll-y-root :: <C-double>;
+end;
 
-define C-subtype <_GdkEventKey> (<C-void*>) end;
-define constant <GdkEventKey> = <_GdkEventKey>;
+define C-pointer-type <GdkEventScroll> => <_GdkEventScroll>;
+
+define C-struct <_GdkEventKey>
+  slot GdkEventKey-type :: <GdkEventType>;
+  slot GdkEventKey-window :: <GdkWindow>;
+  slot GdkEventKey-send-event :: <C-signed-char>;
+  slot GdkEventKey-time :: <C-unsigned-int>;
+  slot GdkEventKey-state :: <C-unsigned-int>;
+  slot GdkEventKey-keyval :: <C-unsigned-int>;
+  slot GdkEventKey-length :: <C-signed-int>;
+  slot GdkEventKey-string :: <gchar*>;
+  slot GdkEventKey-hardware-keycode :: <C-unsigned-short>;
+  slot GdkEventKey-group :: <C-unsigned-char>;
+  bitfield slot GdkEventKey-is-modifier :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GdkEventKey> => <_GdkEventKey>;
 
 define constant <GdkCrossingMode> = <C-int>;
 define constant $GDK-CROSSING-NORMAL = 0;
@@ -387,36 +563,103 @@ define constant $GDK-NOTIFY-NONLINEAR = 3;
 define constant $GDK-NOTIFY-NONLINEAR-VIRTUAL = 4;
 define constant $GDK-NOTIFY-UNKNOWN = 5;
 
-define C-subtype <_GdkEventCrossing> (<C-void*>) end;
-define constant <GdkEventCrossing> = <_GdkEventCrossing>;
+define C-struct <_GdkEventCrossing>
+  slot GdkEventCrossing-type :: <GdkEventType>;
+  slot GdkEventCrossing-window :: <GdkWindow>;
+  slot GdkEventCrossing-send-event :: <C-signed-char>;
+  slot GdkEventCrossing-subwindow :: <GdkWindow>;
+  slot GdkEventCrossing-time :: <C-unsigned-int>;
+  slot GdkEventCrossing-x :: <C-double>;
+  slot GdkEventCrossing-y :: <C-double>;
+  slot GdkEventCrossing-x-root :: <C-double>;
+  slot GdkEventCrossing-y-root :: <C-double>;
+  slot GdkEventCrossing-mode :: <GdkCrossingMode>;
+  slot GdkEventCrossing-detail :: <GdkNotifyType>;
+  slot GdkEventCrossing-focus :: <C-signed-int>;
+  slot GdkEventCrossing-state :: <C-unsigned-int>;
+end;
 
-define C-subtype <_GdkEventFocus> (<C-void*>) end;
-define constant <GdkEventFocus> = <_GdkEventFocus>;
+define C-pointer-type <GdkEventCrossing> => <_GdkEventCrossing>;
 
-define C-subtype <_GdkEventConfigure> (<C-void*>) end;
-define constant <GdkEventConfigure> = <_GdkEventConfigure>;
+define C-struct <_GdkEventFocus>
+  slot GdkEventFocus-type :: <GdkEventType>;
+  slot GdkEventFocus-window :: <GdkWindow>;
+  slot GdkEventFocus-send-event :: <C-signed-char>;
+  slot GdkEventFocus-in :: <C-signed-short>;
+end;
 
-define C-subtype <_GdkAtom> (<C-void*>) end;
+define C-pointer-type <GdkEventFocus> => <_GdkEventFocus>;
+
+define C-struct <_GdkEventConfigure>
+  slot GdkEventConfigure-type :: <GdkEventType>;
+  slot GdkEventConfigure-window :: <GdkWindow>;
+  slot GdkEventConfigure-send-event :: <C-signed-char>;
+  slot GdkEventConfigure-x :: <C-signed-int>;
+  slot GdkEventConfigure-y :: <C-signed-int>;
+  slot GdkEventConfigure-width :: <C-signed-int>;
+  slot GdkEventConfigure-height :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkEventConfigure> => <_GdkEventConfigure>;
+
+define C-struct <_GdkAtom>
+end;
+
 define constant <GdkAtom> = <_GdkAtom>;
 
-define C-subtype <_GdkEventProperty> (<C-void*>) end;
-define constant <GdkEventProperty> = <_GdkEventProperty>;
+define C-struct <_GdkEventProperty>
+  slot GdkEventProperty-type :: <GdkEventType>;
+  slot GdkEventProperty-window :: <GdkWindow>;
+  slot GdkEventProperty-send-event :: <C-signed-char>;
+  slot GdkEventProperty-atom :: <_GdkAtom>;
+  slot GdkEventProperty-time :: <C-unsigned-int>;
+  slot GdkEventProperty-state :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GdkEventProperty> => <_GdkEventProperty>;
 
 define constant <GdkNativeWindow> = <guint32>;
 
-define C-subtype <_GdkEventSelection> (<C-void*>) end;
-define constant <GdkEventSelection> = <_GdkEventSelection>;
+define C-struct <_GdkEventSelection>
+  slot GdkEventSelection-type :: <GdkEventType>;
+  slot GdkEventSelection-window :: <GdkWindow>;
+  slot GdkEventSelection-send-event :: <C-signed-char>;
+  slot GdkEventSelection-selection :: <_GdkAtom>;
+  slot GdkEventSelection-target :: <_GdkAtom>;
+  slot GdkEventSelection-property :: <_GdkAtom>;
+  slot GdkEventSelection-time :: <C-unsigned-int>;
+  slot GdkEventSelection-requestor :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GdkEventSelection> => <_GdkEventSelection>;
 
 define constant <GdkOwnerChange> = <C-int>;
 define constant $GDK-OWNER-CHANGE-NEW-OWNER = 0;
 define constant $GDK-OWNER-CHANGE-DESTROY = 1;
 define constant $GDK-OWNER-CHANGE-CLOSE = 2;
 
-define C-subtype <_GdkEventOwnerChange> (<C-void*>) end;
-define constant <GdkEventOwnerChange> = <_GdkEventOwnerChange>;
+define C-struct <_GdkEventOwnerChange>
+  slot GdkEventOwnerChange-type :: <GdkEventType>;
+  slot GdkEventOwnerChange-window :: <GdkWindow>;
+  slot GdkEventOwnerChange-send-event :: <C-signed-char>;
+  slot GdkEventOwnerChange-owner :: <C-unsigned-int>;
+  slot GdkEventOwnerChange-reason :: <GdkOwnerChange>;
+  slot GdkEventOwnerChange-selection :: <_GdkAtom>;
+  slot GdkEventOwnerChange-time :: <C-unsigned-int>;
+  slot GdkEventOwnerChange-selection-time :: <C-unsigned-int>;
+end;
 
-define C-subtype <_GdkEventProximity> (<C-void*>) end;
-define constant <GdkEventProximity> = <_GdkEventProximity>;
+define C-pointer-type <GdkEventOwnerChange> => <_GdkEventOwnerChange>;
+
+define C-struct <_GdkEventProximity>
+  slot GdkEventProximity-type :: <GdkEventType>;
+  slot GdkEventProximity-window :: <GdkWindow>;
+  slot GdkEventProximity-send-event :: <C-signed-char>;
+  slot GdkEventProximity-time :: <C-unsigned-int>;
+  slot GdkEventProximity-device :: <GdkDevice>;
+end;
+
+define C-pointer-type <GdkEventProximity> => <_GdkEventProximity>;
 
 define constant <gushort> = <C-unsigned-short>;
 
@@ -427,8 +670,16 @@ define constant <short<@10>> = <short*>;
 define C-pointer-type <long*> => <C-signed-long>;
 define constant <long<@5>> = <long*>;
 define C-subtype <anonymous-2545> (<C-void*>) end;
-define C-subtype <_GdkEventClient> (<C-void*>) end;
-define constant <GdkEventClient> = <_GdkEventClient>;
+define C-struct <_GdkEventClient>
+  slot GdkEventClient-type :: <GdkEventType>;
+  slot GdkEventClient-window :: <GdkWindow>;
+  slot GdkEventClient-send-event :: <C-signed-char>;
+  slot GdkEventClient-message-type :: <_GdkAtom>;
+  slot GdkEventClient-data-format :: <C-unsigned-short>;
+  slot GdkEventClient-data :: <anonymous-2545>;
+end;
+
+define C-pointer-type <GdkEventClient> => <_GdkEventClient>;
 
 define constant <GdkDragProtocol> = <C-int>;
 define constant $GDK-DRAG-PROTO-MOTIF = 0;
@@ -439,8 +690,13 @@ define constant $GDK-DRAG-PROTO-WIN32-DROPFILES = 4;
 define constant $GDK-DRAG-PROTO-OLE2 = 5;
 define constant $GDK-DRAG-PROTO-LOCAL = 6;
 
-define C-subtype <_GList> (<C-void*>) end;
-define constant <GList> = <_GList>;
+define C-struct <_GList>
+  slot GList-data :: <C-void*>;
+  slot GList-next :: <GList>;
+  slot GList-prev :: <GList>;
+end;
+
+define C-pointer-type <GList> => <_GList>;
 
 define constant <GdkDragAction> = <C-int>;
 define constant $GDK-ACTION-DEFAULT = 1;
@@ -455,8 +711,17 @@ define constant <GdkDragContext> = <_GdkDragContext>;
 
 define constant <gshort> = <C-signed-short>;
 
-define C-subtype <_GdkEventDND> (<C-void*>) end;
-define constant <GdkEventDND> = <_GdkEventDND>;
+define C-struct <_GdkEventDND>
+  slot GdkEventDND-type :: <GdkEventType>;
+  slot GdkEventDND-window :: <GdkWindow>;
+  slot GdkEventDND-send-event :: <C-signed-char>;
+  slot GdkEventDND-context :: <GdkDragContext>;
+  slot GdkEventDND-time :: <C-unsigned-int>;
+  slot GdkEventDND-x-root :: <C-signed-short>;
+  slot GdkEventDND-y-root :: <C-signed-short>;
+end;
+
+define C-pointer-type <GdkEventDND> => <_GdkEventDND>;
 
 define constant <GdkWindowState> = <C-int>;
 define constant $GDK-WINDOW-STATE-WITHDRAWN = 1;
@@ -467,19 +732,41 @@ define constant $GDK-WINDOW-STATE-FULLSCREEN = 16;
 define constant $GDK-WINDOW-STATE-ABOVE = 32;
 define constant $GDK-WINDOW-STATE-BELOW = 64;
 
-define C-subtype <_GdkEventWindowState> (<C-void*>) end;
-define constant <GdkEventWindowState> = <_GdkEventWindowState>;
+define C-struct <_GdkEventWindowState>
+  slot GdkEventWindowState-type :: <GdkEventType>;
+  slot GdkEventWindowState-window :: <GdkWindow>;
+  slot GdkEventWindowState-send-event :: <C-signed-char>;
+  slot GdkEventWindowState-changed-mask :: <GdkWindowState>;
+  slot GdkEventWindowState-new-window-state :: <GdkWindowState>;
+end;
+
+define C-pointer-type <GdkEventWindowState> => <_GdkEventWindowState>;
 
 define constant <GdkSettingAction> = <C-int>;
 define constant $GDK-SETTING-ACTION-NEW = 0;
 define constant $GDK-SETTING-ACTION-CHANGED = 1;
 define constant $GDK-SETTING-ACTION-DELETED = 2;
 
-define C-subtype <_GdkEventSetting> (<C-void*>) end;
-define constant <GdkEventSetting> = <_GdkEventSetting>;
+define C-struct <_GdkEventSetting>
+  slot GdkEventSetting-type :: <GdkEventType>;
+  slot GdkEventSetting-window :: <GdkWindow>;
+  slot GdkEventSetting-send-event :: <C-signed-char>;
+  slot GdkEventSetting-action :: <GdkSettingAction>;
+  slot GdkEventSetting-name :: <char*>;
+end;
 
-define C-subtype <_GdkEventGrabBroken> (<C-void*>) end;
-define constant <GdkEventGrabBroken> = <_GdkEventGrabBroken>;
+define C-pointer-type <GdkEventSetting> => <_GdkEventSetting>;
+
+define C-struct <_GdkEventGrabBroken>
+  slot GdkEventGrabBroken-type :: <GdkEventType>;
+  slot GdkEventGrabBroken-window :: <GdkWindow>;
+  slot GdkEventGrabBroken-send-event :: <C-signed-char>;
+  slot GdkEventGrabBroken-keyboard :: <C-signed-int>;
+  slot GdkEventGrabBroken-implicit :: <C-signed-int>;
+  slot GdkEventGrabBroken-grab-window :: <GdkWindow>;
+end;
+
+define C-pointer-type <GdkEventGrabBroken> => <_GdkEventGrabBroken>;
 
 define C-subtype <_GdkEvent> (<C-void*>) end;
 define constant <GdkEvent> = <_GdkEvent>;
@@ -523,14 +810,28 @@ define C-pointer-type <GdkModifierType*> => <GdkModifierType>;
 define constant <anonymous-2573> = <C-function-pointer>;
 define constant <anonymous-2574> = <C-function-pointer>;
 define constant <anonymous-2575> = <C-function-pointer>;
-define C-subtype <_GdkDisplayPointerHooks> (<C-void*>) end;
-define constant <GdkDisplayPointerHooks> = <_GdkDisplayPointerHooks>;
+define C-struct <_GdkDisplayPointerHooks>
+  slot GdkDisplayPointerHooks-get-pointer :: <anonymous-2573>;
+  slot GdkDisplayPointerHooks-window-get-pointer :: <anonymous-2574>;
+  slot GdkDisplayPointerHooks-window-at-pointer :: <anonymous-2575>;
+end;
+
+define C-pointer-type <GdkDisplayPointerHooks> => <_GdkDisplayPointerHooks>;
 
 define C-subtype <_GdkDisplay> (<_GObject>) end;
 define constant <GdkDisplay> = <_GdkDisplay>;
 
-define C-subtype <_GtkSelectionData> (<C-void*>) end;
-define constant <GtkSelectionData> = <_GtkSelectionData>;
+define C-struct <_GtkSelectionData>
+  slot GtkSelectionData-selection :: <_GdkAtom>;
+  slot GtkSelectionData-target :: <_GdkAtom>;
+  slot GtkSelectionData-type :: <_GdkAtom>;
+  slot GtkSelectionData-format :: <C-signed-int>;
+  slot GtkSelectionData-data :: <guchar*>;
+  slot GtkSelectionData-length :: <C-signed-int>;
+  slot GtkSelectionData-display :: <GdkDisplay>;
+end;
+
+define C-pointer-type <GtkSelectionData> => <_GtkSelectionData>;
 
 define constant <anonymous-3682> = <C-function-pointer>;
 define constant <anonymous-3683> = <C-function-pointer>;
@@ -639,8 +940,12 @@ define constant $ATK-ROLE-LINK = 86;
 define constant $ATK-ROLE-INPUT-METHOD-WINDOW = 87;
 define constant $ATK-ROLE-LAST-DEFINED = 88;
 
-define C-subtype <_GPtrArray> (<C-void*>) end;
-define constant <GPtrArray> = <_GPtrArray>;
+define C-struct <_GPtrArray>
+  slot GPtrArray-pdata :: <gpointer*>;
+  slot GPtrArray-len :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GPtrArray> => <_GPtrArray>;
 
 define C-subtype <_AtkRelationSet> (<_GObject>) end;
 define constant <AtkRelationSet> = <_AtkRelationSet>;
@@ -667,8 +972,82 @@ define constant <anonymous-3699> = <C-function-pointer>;
 define constant <anonymous-3700> = <C-function-pointer>;
 define constant <anonymous-3701> = <C-function-pointer>;
 define constant <anonymous-3702> = <C-function-pointer>;
-define C-subtype <_GtkWidgetClass> (<C-void*>) end;
-define constant <GtkWidgetClass> = <_GtkWidgetClass>;
+define C-struct <_GtkWidgetClass>
+  slot GtkWidgetClass-parent-class :: <_GtkObjectClass>;
+  slot GtkWidgetClass-activate-signal :: <C-unsigned-int>;
+  slot GtkWidgetClass-set-scroll-adjustments-signal :: <C-unsigned-int>;
+  slot GtkWidgetClass-dispatch-child-properties-changed :: <anonymous-3634>;
+  slot GtkWidgetClass-show :: <anonymous-3635>;
+  slot GtkWidgetClass-show-all :: <anonymous-3636>;
+  slot GtkWidgetClass-hide :: <anonymous-3637>;
+  slot GtkWidgetClass-hide-all :: <anonymous-3638>;
+  slot GtkWidgetClass-map :: <anonymous-3639>;
+  slot GtkWidgetClass-unmap :: <anonymous-3640>;
+  slot GtkWidgetClass-realize :: <anonymous-3641>;
+  slot GtkWidgetClass-unrealize :: <anonymous-3642>;
+  slot GtkWidgetClass-size-request :: <anonymous-3643>;
+  slot GtkWidgetClass-size-allocate :: <anonymous-3644>;
+  slot GtkWidgetClass-state-changed :: <anonymous-3645>;
+  slot GtkWidgetClass-parent-set :: <anonymous-3646>;
+  slot GtkWidgetClass-hierarchy-changed :: <anonymous-3647>;
+  slot GtkWidgetClass-style-set :: <anonymous-3648>;
+  slot GtkWidgetClass-direction-changed :: <anonymous-3649>;
+  slot GtkWidgetClass-grab-notify :: <anonymous-3650>;
+  slot GtkWidgetClass-child-notify :: <anonymous-3651>;
+  slot GtkWidgetClass-mnemonic-activate :: <anonymous-3652>;
+  slot GtkWidgetClass-grab-focus :: <anonymous-3653>;
+  slot GtkWidgetClass-focus :: <anonymous-3654>;
+  slot GtkWidgetClass-event :: <anonymous-3655>;
+  slot GtkWidgetClass-button-press-event :: <anonymous-3656>;
+  slot GtkWidgetClass-button-release-event :: <anonymous-3657>;
+  slot GtkWidgetClass-scroll-event :: <anonymous-3658>;
+  slot GtkWidgetClass-motion-notify-event :: <anonymous-3659>;
+  slot GtkWidgetClass-delete-event :: <anonymous-3660>;
+  slot GtkWidgetClass-destroy-event :: <anonymous-3661>;
+  slot GtkWidgetClass-expose-event :: <anonymous-3662>;
+  slot GtkWidgetClass-key-press-event :: <anonymous-3663>;
+  slot GtkWidgetClass-key-release-event :: <anonymous-3664>;
+  slot GtkWidgetClass-enter-notify-event :: <anonymous-3665>;
+  slot GtkWidgetClass-leave-notify-event :: <anonymous-3666>;
+  slot GtkWidgetClass-configure-event :: <anonymous-3667>;
+  slot GtkWidgetClass-focus-in-event :: <anonymous-3668>;
+  slot GtkWidgetClass-focus-out-event :: <anonymous-3669>;
+  slot GtkWidgetClass-map-event :: <anonymous-3670>;
+  slot GtkWidgetClass-unmap-event :: <anonymous-3671>;
+  slot GtkWidgetClass-property-notify-event :: <anonymous-3672>;
+  slot GtkWidgetClass-selection-clear-event :: <anonymous-3673>;
+  slot GtkWidgetClass-selection-request-event :: <anonymous-3674>;
+  slot GtkWidgetClass-selection-notify-event :: <anonymous-3675>;
+  slot GtkWidgetClass-proximity-in-event :: <anonymous-3676>;
+  slot GtkWidgetClass-proximity-out-event :: <anonymous-3677>;
+  slot GtkWidgetClass-visibility-notify-event :: <anonymous-3678>;
+  slot GtkWidgetClass-client-event :: <anonymous-3679>;
+  slot GtkWidgetClass-no-expose-event :: <anonymous-3680>;
+  slot GtkWidgetClass-window-state-event :: <anonymous-3681>;
+  slot GtkWidgetClass-selection-get :: <anonymous-3682>;
+  slot GtkWidgetClass-selection-received :: <anonymous-3683>;
+  slot GtkWidgetClass-drag-begin :: <anonymous-3684>;
+  slot GtkWidgetClass-drag-end :: <anonymous-3685>;
+  slot GtkWidgetClass-drag-data-get :: <anonymous-3686>;
+  slot GtkWidgetClass-drag-data-delete :: <anonymous-3687>;
+  slot GtkWidgetClass-drag-leave :: <anonymous-3688>;
+  slot GtkWidgetClass-drag-motion :: <anonymous-3689>;
+  slot GtkWidgetClass-drag-drop :: <anonymous-3690>;
+  slot GtkWidgetClass-drag-data-received :: <anonymous-3691>;
+  slot GtkWidgetClass-popup-menu :: <anonymous-3692>;
+  slot GtkWidgetClass-show-help :: <anonymous-3693>;
+  slot GtkWidgetClass-get-accessible :: <anonymous-3694>;
+  slot GtkWidgetClass-screen-changed :: <anonymous-3695>;
+  slot GtkWidgetClass-can-activate-accel :: <anonymous-3696>;
+  slot GtkWidgetClass-grab-broken-event :: <anonymous-3697>;
+  slot GtkWidgetClass-composited-changed :: <anonymous-3698>;
+  slot GtkWidgetClass-_gtk-reserved4 :: <anonymous-3699>;
+  slot GtkWidgetClass-_gtk-reserved5 :: <anonymous-3700>;
+  slot GtkWidgetClass-_gtk-reserved6 :: <anonymous-3701>;
+  slot GtkWidgetClass-_gtk-reserved7 :: <anonymous-3702>;
+end;
+
+define C-pointer-type <GtkWidgetClass> => <_GtkWidgetClass>;
 
 define constant <anonymous-3852> = <C-function-pointer>;
 define constant <anonymous-3853> = <C-function-pointer>;
@@ -686,11 +1065,30 @@ define constant <anonymous-3861> = <C-function-pointer>;
 define constant <anonymous-3862> = <C-function-pointer>;
 define constant <anonymous-3863> = <C-function-pointer>;
 define constant <anonymous-3864> = <C-function-pointer>;
-define C-subtype <_GtkContainerClass> (<C-void*>) end;
-define constant <GtkContainerClass> = <_GtkContainerClass>;
+define C-struct <_GtkContainerClass>
+  slot GtkContainerClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkContainerClass-add :: <anonymous-3852>;
+  slot GtkContainerClass-remove :: <anonymous-3853>;
+  slot GtkContainerClass-check-resize :: <anonymous-3854>;
+  slot GtkContainerClass-forall :: <anonymous-3855>;
+  slot GtkContainerClass-set-focus-child :: <anonymous-3856>;
+  slot GtkContainerClass-child-type :: <anonymous-3857>;
+  slot GtkContainerClass-composite-name :: <anonymous-3858>;
+  slot GtkContainerClass-set-child-property :: <anonymous-3859>;
+  slot GtkContainerClass-get-child-property :: <anonymous-3860>;
+  slot GtkContainerClass-_gtk-reserved1 :: <anonymous-3861>;
+  slot GtkContainerClass-_gtk-reserved2 :: <anonymous-3862>;
+  slot GtkContainerClass-_gtk-reserved3 :: <anonymous-3863>;
+  slot GtkContainerClass-_gtk-reserved4 :: <anonymous-3864>;
+end;
 
-define C-subtype <_GtkBinClass> (<C-void*>) end;
-define constant <GtkBinClass> = <_GtkBinClass>;
+define C-pointer-type <GtkContainerClass> => <_GtkContainerClass>;
+
+define C-struct <_GtkBinClass>
+  slot GtkBinClass-parent-class :: <_GtkContainerClass>;
+end;
+
+define C-pointer-type <GtkBinClass> => <_GtkBinClass>;
 
 define constant <anonymous-3926> = <C-function-pointer>;
 define constant <anonymous-3927> = <C-function-pointer>;
@@ -702,17 +1100,37 @@ define constant <anonymous-3932> = <C-function-pointer>;
 define constant <anonymous-3933> = <C-function-pointer>;
 define constant <anonymous-3934> = <C-function-pointer>;
 define constant <anonymous-3935> = <C-function-pointer>;
-define C-subtype <_GtkWindowClass> (<C-void*>) end;
-define constant <GtkWindowClass> = <_GtkWindowClass>;
+define C-struct <_GtkWindowClass>
+  slot GtkWindowClass-parent-class :: <_GtkBinClass>;
+  slot GtkWindowClass-set-focus :: <anonymous-3926>;
+  slot GtkWindowClass-frame-event :: <anonymous-3927>;
+  slot GtkWindowClass-activate-focus :: <anonymous-3928>;
+  slot GtkWindowClass-activate-default :: <anonymous-3929>;
+  slot GtkWindowClass-move-focus :: <anonymous-3930>;
+  slot GtkWindowClass-keys-changed :: <anonymous-3931>;
+  slot GtkWindowClass-_gtk-reserved1 :: <anonymous-3932>;
+  slot GtkWindowClass-_gtk-reserved2 :: <anonymous-3933>;
+  slot GtkWindowClass-_gtk-reserved3 :: <anonymous-3934>;
+  slot GtkWindowClass-_gtk-reserved4 :: <anonymous-3935>;
+end;
 
-define constant <GObjectClass> = <_GObjectClass>;
+define C-pointer-type <GtkWindowClass> => <_GtkWindowClass>;
+
+define C-pointer-type <GObjectClass> => <_GObjectClass>;
 
 define constant <anonymous-3936> = <C-function-pointer>;
 define constant <anonymous-3937> = <C-function-pointer>;
 define constant <anonymous-3938> = <C-function-pointer>;
 define constant <anonymous-3939> = <C-function-pointer>;
-define C-subtype <_GtkWindowGroupClass> (<C-void*>) end;
-define constant <GtkWindowGroupClass> = <_GtkWindowGroupClass>;
+define C-struct <_GtkWindowGroupClass>
+  slot GtkWindowGroupClass-parent-class :: <_GObjectClass>;
+  slot GtkWindowGroupClass-_gtk-reserved1 :: <anonymous-3936>;
+  slot GtkWindowGroupClass-_gtk-reserved2 :: <anonymous-3937>;
+  slot GtkWindowGroupClass-_gtk-reserved3 :: <anonymous-3938>;
+  slot GtkWindowGroupClass-_gtk-reserved4 :: <anonymous-3939>;
+end;
+
+define C-pointer-type <GtkWindowGroupClass> => <_GtkWindowGroupClass>;
 
 define C-function gtk-window-get-type
   result res :: <GType>;
@@ -760,23 +1178,52 @@ define C-function gtk-window-get-role
   c-name: "gtk_window_get_role";
 end;
 
-define C-subtype <_GtkAccelKey> (<C-void*>) end;
-define constant <GtkAccelKey> = <_GtkAccelKey>;
+define C-struct <_GtkAccelKey>
+  slot GtkAccelKey-accel-key :: <C-unsigned-int>;
+  slot GtkAccelKey-accel-mods :: <GdkModifierType>;
+  bitfield slot GtkAccelKey-accel-flags :: <C-int>, width: 16;
+end;
+
+define C-pointer-type <GtkAccelKey> => <_GtkAccelKey>;
 
 define constant <anonymous-1573> = <C-function-pointer>;
 define constant <anonymous-1561> = <C-function-pointer>;
 define constant <GClosureNotify> = <anonymous-1561>;
 
-define C-subtype <_GClosureNotifyData> (<C-void*>) end;
-define constant <GClosureNotifyData> = <_GClosureNotifyData>;
+define C-struct <_GClosureNotifyData>
+  slot GClosureNotifyData-data :: <C-void*>;
+  slot GClosureNotifyData-notify :: <anonymous-1561>;
+end;
 
-define C-subtype <_GClosure> (<C-void*>) end;
-define constant <GClosure> = <_GClosure>;
+define C-pointer-type <GClosureNotifyData> => <_GClosureNotifyData>;
+
+define C-struct <_GClosure>
+  bitfield slot GClosure-ref-count :: <C-int>, width: 15;
+  bitfield slot GClosure-meta-marshal :: <C-int>, width: 1;
+  bitfield slot GClosure-n-guards :: <C-int>, width: 1;
+  bitfield slot GClosure-n-fnotifiers :: <C-int>, width: 2;
+  bitfield slot GClosure-n-inotifiers :: <C-int>, width: 8;
+  bitfield slot GClosure-in-inotify :: <C-int>, width: 1;
+  bitfield slot GClosure-floating :: <C-int>, width: 1;
+  bitfield slot GClosure-derivative-flag :: <C-int>, width: 1;
+  bitfield slot GClosure-in-marshal :: <C-int>, width: 1;
+  bitfield slot GClosure-is-invalid :: <C-int>, width: 1;
+  slot GClosure-marshal :: <anonymous-1573>;
+  slot GClosure-data :: <C-void*>;
+  slot GClosure-notifiers :: <GClosureNotifyData>;
+end;
+
+define C-pointer-type <GClosure> => <_GClosure>;
 
 define constant <GQuark> = <guint32>;
 
-define C-subtype <_GtkAccelGroupEntry> (<C-void*>) end;
-define constant <GtkAccelGroupEntry> = <_GtkAccelGroupEntry>;
+define C-struct <_GtkAccelGroupEntry>
+  slot GtkAccelGroupEntry-key :: <_GtkAccelKey>;
+  slot GtkAccelGroupEntry-closure :: <GClosure>;
+  slot GtkAccelGroupEntry-accel-path-quark :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkAccelGroupEntry> => <_GtkAccelGroupEntry>;
 
 define C-subtype <_GtkAccelGroup> (<_GObject>) end;
 define constant <GtkAccelGroup> = <_GtkAccelGroup>;
@@ -984,8 +1431,21 @@ define C-function gtk-window-get-gravity
   c-name: "gtk_window_get_gravity";
 end;
 
-define C-subtype <_GdkGeometry> (<C-void*>) end;
-define constant <GdkGeometry> = <_GdkGeometry>;
+define C-struct <_GdkGeometry>
+  slot GdkGeometry-min-width :: <C-signed-int>;
+  slot GdkGeometry-min-height :: <C-signed-int>;
+  slot GdkGeometry-max-width :: <C-signed-int>;
+  slot GdkGeometry-max-height :: <C-signed-int>;
+  slot GdkGeometry-base-width :: <C-signed-int>;
+  slot GdkGeometry-base-height :: <C-signed-int>;
+  slot GdkGeometry-width-inc :: <C-signed-int>;
+  slot GdkGeometry-height-inc :: <C-signed-int>;
+  slot GdkGeometry-min-aspect :: <C-double>;
+  slot GdkGeometry-max-aspect :: <C-double>;
+  slot GdkGeometry-win-gravity :: <GdkGravity>;
+end;
+
+define C-pointer-type <GdkGeometry> => <_GdkGeometry>;
 
 define constant <GdkWindowHints> = <C-int>;
 define constant $GDK-HINT-POS = 1;
@@ -1111,8 +1571,13 @@ define C-function gtk-window-set-icon-name
   c-name: "gtk_window_set_icon_name";
 end;
 
-define C-subtype <_GError> (<C-void*>) end;
-define constant <GError> = <_GError>;
+define C-struct <_GError>
+  slot GError-domain :: <C-unsigned-int>;
+  slot GError-code :: <C-signed-int>;
+  slot GError-message :: <gchar*>;
+end;
+
+define C-pointer-type <GError> => <_GError>;
 
 define C-pointer-type <GError*> => <GError>;
 define C-function gtk-window-set-icon-from-file-utf8
@@ -1456,13 +1921,26 @@ define constant $GTK-RECEIVES-DEFAULT = 1048576;
 define constant $GTK-DOUBLE-BUFFERED = 2097152;
 define constant $GTK-NO-SHOW-ALL = 4194304;
 
-define C-subtype <_GtkWidgetAuxInfo> (<C-void*>) end;
-define constant <GtkWidgetAuxInfo> = <_GtkWidgetAuxInfo>;
+define C-struct <_GtkWidgetAuxInfo>
+  slot GtkWidgetAuxInfo-x :: <C-signed-int>;
+  slot GtkWidgetAuxInfo-y :: <C-signed-int>;
+  slot GtkWidgetAuxInfo-width :: <C-signed-int>;
+  slot GtkWidgetAuxInfo-height :: <C-signed-int>;
+  bitfield slot GtkWidgetAuxInfo-x-set :: <C-int>, width: 1;
+  bitfield slot GtkWidgetAuxInfo-y-set :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkWidgetAuxInfo> => <_GtkWidgetAuxInfo>;
 
 define constant <GdkBitmap> = <_GdkDrawable>;
 
-define C-subtype <_GtkWidgetShapeInfo> (<C-void*>) end;
-define constant <GtkWidgetShapeInfo> = <_GtkWidgetShapeInfo>;
+define C-struct <_GtkWidgetShapeInfo>
+  slot GtkWidgetShapeInfo-offset-x :: <C-signed-short>;
+  slot GtkWidgetShapeInfo-offset-y :: <C-signed-short>;
+  slot GtkWidgetShapeInfo-shape-mask :: <GdkBitmap>;
+end;
+
+define C-pointer-type <GtkWidgetShapeInfo> => <_GtkWidgetShapeInfo>;
 
 define C-subtype <_GtkClipboard> (<_GObject>) end;
 define constant <GtkClipboard> = <_GtkClipboard>;
@@ -1958,11 +2436,15 @@ define C-function gtk-widget-get-root-window
   c-name: "gtk_widget_get_root_window";
 end;
 
-define C-subtype <_GtkSettingsPropertyValue> (<C-void*>) end;
-define constant <GtkSettingsPropertyValue> = <_GtkSettingsPropertyValue>;
+define C-struct <_GtkSettingsPropertyValue>
+end;
 
-define C-subtype <_GtkRcContext> (<C-void*>) end;
-define constant <GtkRcContext> = <_GtkRcContext>;
+define C-pointer-type <GtkSettingsPropertyValue> => <_GtkSettingsPropertyValue>;
+
+define C-struct <_GtkRcContext>
+end;
+
+define C-pointer-type <GtkRcContext> => <_GtkRcContext>;
 
 define C-subtype <_GtkSettings> (<_GObject>) end;
 define constant <GtkSettings> = <_GtkSettings>;
@@ -2177,8 +2659,13 @@ end;
 
 define constant <gsize> = <C-unsigned-int>;
 
-define C-subtype <_GString> (<C-void*>) end;
-define constant <GString> = <_GString>;
+define C-struct <_GString>
+  slot GString-str :: <gchar*>;
+  slot GString-len :: <C-unsigned-int>;
+  slot GString-allocated-len :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GString> => <_GString>;
 
 define constant <anonymous-3397> = <C-function-pointer>;
 define constant <GtkRcPropertyParser> = <anonymous-3397>;
@@ -2354,14 +2841,24 @@ end;
 
 define constant <AtkAttributeSet> = <GSList>;
 
-define C-subtype <_AtkAttribute> (<C-void*>) end;
-define constant <AtkAttribute> = <_AtkAttribute>;
+define C-struct <_AtkAttribute>
+  slot AtkAttribute-name :: <gchar*>;
+  slot AtkAttribute-value :: <gchar*>;
+end;
 
-define C-subtype <_AtkImplementor> (<C-void*>) end;
-define constant <AtkImplementor> = <_AtkImplementor>;
+define C-pointer-type <AtkAttribute> => <_AtkAttribute>;
 
-define C-subtype <_GTypeInterface> (<C-void*>) end;
-define constant <GTypeInterface> = <_GTypeInterface>;
+define C-struct <_AtkImplementor>
+end;
+
+define C-pointer-type <AtkImplementor> => <_AtkImplementor>;
+
+define C-struct <_GTypeInterface>
+  slot GTypeInterface-g-type :: <C-unsigned-long>;
+  slot GTypeInterface-g-instance-type :: <C-unsigned-long>;
+end;
+
+define C-pointer-type <GTypeInterface> => <_GTypeInterface>;
 
 define constant <anonymous-3603> = <C-function-pointer>;
 define C-subtype <_AtkImplementorIface> (<C-void*>) end;
@@ -2385,8 +2882,13 @@ define constant <anonymous-3588> = <C-function-pointer>;
 define constant <anonymous-3589> = <C-function-pointer>;
 define constant <anonymous-3590> = <C-function-pointer>;
 define constant <anonymous-3591> = <C-function-pointer>;
-define C-subtype <_AtkPropertyValues> (<C-void*>) end;
-define constant <AtkPropertyValues> = <_AtkPropertyValues>;
+define C-struct <_AtkPropertyValues>
+  slot AtkPropertyValues-property-name :: <gchar*>;
+  slot AtkPropertyValues-old-value :: <_GValue>;
+  slot AtkPropertyValues-new-value :: <_GValue>;
+end;
+
+define C-pointer-type <AtkPropertyValues> => <_AtkPropertyValues>;
 
 define constant <anonymous-3576> = <C-function-pointer>;
 define constant <AtkPropertyChangeHandler> = <anonymous-3576>;
@@ -2405,8 +2907,38 @@ define constant <anonymous-3601> = <C-function-pointer>;
 define constant <anonymous-3575> = <C-function-pointer>;
 define constant <AtkFunction> = <anonymous-3575>;
 
-define C-subtype <_AtkObjectClass> (<C-void*>) end;
-define constant <AtkObjectClass> = <_AtkObjectClass>;
+define C-struct <_AtkObjectClass>
+  slot AtkObjectClass-parent :: <_GObjectClass>;
+  slot AtkObjectClass-get-name :: <anonymous-3577>;
+  slot AtkObjectClass-get-description :: <anonymous-3578>;
+  slot AtkObjectClass-get-parent :: <anonymous-3579>;
+  slot AtkObjectClass-get-n-children :: <anonymous-3580>;
+  slot AtkObjectClass-ref-child :: <anonymous-3581>;
+  slot AtkObjectClass-get-index-in-parent :: <anonymous-3582>;
+  slot AtkObjectClass-ref-relation-set :: <anonymous-3583>;
+  slot AtkObjectClass-get-role :: <anonymous-3584>;
+  slot AtkObjectClass-get-layer :: <anonymous-3585>;
+  slot AtkObjectClass-get-mdi-zorder :: <anonymous-3586>;
+  slot AtkObjectClass-ref-state-set :: <anonymous-3587>;
+  slot AtkObjectClass-set-name :: <anonymous-3588>;
+  slot AtkObjectClass-set-description :: <anonymous-3589>;
+  slot AtkObjectClass-set-parent :: <anonymous-3590>;
+  slot AtkObjectClass-set-role :: <anonymous-3591>;
+  slot AtkObjectClass-connect-property-change-handler :: <anonymous-3592>;
+  slot AtkObjectClass-remove-property-change-handler :: <anonymous-3593>;
+  slot AtkObjectClass-initialize :: <anonymous-3594>;
+  slot AtkObjectClass-children-changed :: <anonymous-3595>;
+  slot AtkObjectClass-focus-event :: <anonymous-3596>;
+  slot AtkObjectClass-property-change :: <anonymous-3597>;
+  slot AtkObjectClass-state-change :: <anonymous-3598>;
+  slot AtkObjectClass-visible-data-changed :: <anonymous-3599>;
+  slot AtkObjectClass-active-descendant-changed :: <anonymous-3600>;
+  slot AtkObjectClass-get-attributes :: <anonymous-3601>;
+  slot AtkObjectClass-pad1 :: <anonymous-3575>;
+  slot AtkObjectClass-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkObjectClass> => <_AtkObjectClass>;
 
 define C-function atk-object-get-type
   result res :: <GType>;
@@ -2951,8 +3483,10 @@ define constant $G-VALUE-NOCOPY-CONTENTS = 134217728;
 define C-subtype <_GTypeCValue> (<C-void*>) end;
 define constant <GTypeCValue> = <_GTypeCValue>;
 
-define C-subtype <_GTypePlugin> (<C-void*>) end;
-define constant <GTypePlugin> = <_GTypePlugin>;
+define C-struct <_GTypePlugin>
+end;
+
+define C-pointer-type <GTypePlugin> => <_GTypePlugin>;
 
 define constant <anonymous-1415> = <C-function-pointer>;
 define constant <GBaseInitFunc> = <anonymous-1415>;
@@ -2977,11 +3511,33 @@ define constant <anonymous-1428> = <C-function-pointer>;
 define constant <anonymous-1429> = <C-function-pointer>;
 define constant <anonymous-1430> = <C-function-pointer>;
 define constant <anonymous-1431> = <C-function-pointer>;
-define C-subtype <_GTypeValueTable> (<C-void*>) end;
-define constant <GTypeValueTable> = <_GTypeValueTable>;
+define C-struct <_GTypeValueTable>
+  slot GTypeValueTable-value-init :: <anonymous-1426>;
+  slot GTypeValueTable-value-free :: <anonymous-1427>;
+  slot GTypeValueTable-value-copy :: <anonymous-1428>;
+  slot GTypeValueTable-value-peek-pointer :: <anonymous-1429>;
+  slot GTypeValueTable-collect-format :: <gchar*>;
+  slot GTypeValueTable-collect-value :: <anonymous-1430>;
+  slot GTypeValueTable-lcopy-format :: <gchar*>;
+  slot GTypeValueTable-lcopy-value :: <anonymous-1431>;
+end;
 
-define C-subtype <_GTypeInfo> (<C-void*>) end;
-define constant <GTypeInfo> = <_GTypeInfo>;
+define C-pointer-type <GTypeValueTable> => <_GTypeValueTable>;
+
+define C-struct <_GTypeInfo>
+  slot GTypeInfo-class-size :: <C-unsigned-short>;
+  slot GTypeInfo-base-init :: <anonymous-1415>;
+  slot GTypeInfo-base-finalize :: <anonymous-1416>;
+  slot GTypeInfo-class-init :: <anonymous-1417>;
+  slot GTypeInfo-class-finalize :: <anonymous-1418>;
+  slot GTypeInfo-class-data :: <C-void*>;
+  slot GTypeInfo-instance-size :: <C-unsigned-short>;
+  slot GTypeInfo-n-preallocs :: <C-unsigned-short>;
+  slot GTypeInfo-instance-init :: <anonymous-1419>;
+  slot GTypeInfo-value-table :: <GTypeValueTable>;
+end;
+
+define C-pointer-type <GTypeInfo> => <_GTypeInfo>;
 
 define constant <GTypeFundamentalFlags> = <C-int>;
 define constant $G-TYPE-FLAG-CLASSED = 1;
@@ -2989,8 +3545,11 @@ define constant $G-TYPE-FLAG-INSTANTIATABLE = 2;
 define constant $G-TYPE-FLAG-DERIVABLE = 4;
 define constant $G-TYPE-FLAG-DEEP-DERIVABLE = 8;
 
-define C-subtype <_GTypeFundamentalInfo> (<C-void*>) end;
-define constant <GTypeFundamentalInfo> = <_GTypeFundamentalInfo>;
+define C-struct <_GTypeFundamentalInfo>
+  slot GTypeFundamentalInfo-type-flags :: <GTypeFundamentalFlags>;
+end;
+
+define C-pointer-type <GTypeFundamentalInfo> => <_GTypeFundamentalInfo>;
 
 define constant <anonymous-1420> = <C-function-pointer>;
 define constant <GInterfaceInitFunc> = <anonymous-1420>;
@@ -2998,11 +3557,22 @@ define constant <GInterfaceInitFunc> = <anonymous-1420>;
 define constant <anonymous-1421> = <C-function-pointer>;
 define constant <GInterfaceFinalizeFunc> = <anonymous-1421>;
 
-define C-subtype <_GInterfaceInfo> (<C-void*>) end;
-define constant <GInterfaceInfo> = <_GInterfaceInfo>;
+define C-struct <_GInterfaceInfo>
+  slot GInterfaceInfo-interface-init :: <anonymous-1420>;
+  slot GInterfaceInfo-interface-finalize :: <anonymous-1421>;
+  slot GInterfaceInfo-interface-data :: <C-void*>;
+end;
 
-define C-subtype <_GTypeQuery> (<C-void*>) end;
-define constant <GTypeQuery> = <_GTypeQuery>;
+define C-pointer-type <GInterfaceInfo> => <_GInterfaceInfo>;
+
+define C-struct <_GTypeQuery>
+  slot GTypeQuery-type :: <C-unsigned-long>;
+  slot GTypeQuery-type-name :: <gchar*>;
+  slot GTypeQuery-class-size :: <C-unsigned-int>;
+  slot GTypeQuery-instance-size :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GTypeQuery> => <_GTypeQuery>;
 
 define constant <GTypeDebugFlags> = <C-int>;
 define constant $G-TYPE-DEBUG-NONE = 0;
@@ -3525,16 +4095,31 @@ define constant <GFreeFunc> = <anonymous-216>;
 define constant <anonymous-217> = <C-function-pointer>;
 define constant <GTranslateFunc> = <anonymous-217>;
 
-define C-subtype <anonymous-226> (<C-void*>) end;
+define C-struct <anonymous-226>
+  bitfield slot nonymous-226-mantissa-low :: <C-int>, width: 32;
+  bitfield slot nonymous-226-mantissa-high :: <C-int>, width: 20;
+  bitfield slot nonymous-226-biased-exponent :: <C-int>, width: 11;
+  bitfield slot nonymous-226-sign :: <C-int>, width: 1;
+end;
+
 define C-subtype <_GDoubleIEEE754> (<C-void*>) end;
 define constant <GDoubleIEEE754> = <_GDoubleIEEE754>;
 
-define C-subtype <anonymous-221> (<C-void*>) end;
+define C-struct <anonymous-221>
+  bitfield slot nonymous-221-mantissa :: <C-int>, width: 23;
+  bitfield slot nonymous-221-biased-exponent :: <C-int>, width: 8;
+  bitfield slot nonymous-221-sign :: <C-int>, width: 1;
+end;
+
 define C-subtype <_GFloatIEEE754> (<C-void*>) end;
 define constant <GFloatIEEE754> = <_GFloatIEEE754>;
 
-define C-subtype <_GTimeVal> (<C-void*>) end;
-define constant <GTimeVal> = <_GTimeVal>;
+define C-struct <_GTimeVal>
+  slot GTimeVal-tv-sec :: <C-signed-long>;
+  slot GTimeVal-tv-usec :: <C-signed-long>;
+end;
+
+define C-pointer-type <GTimeVal> => <_GTimeVal>;
 
 define constant $G-MAXUINT8 = 255;
 
@@ -3558,7 +4143,9 @@ define constant <gint32> = <C-signed-int>;
 
 define constant <gssize> = <C-signed-int>;
 
-define C-subtype <_GMutex> (<C-void*>) end;
+define C-struct <_GMutex>
+end;
+
 define constant <GStaticMutex> = <_GMutex>;
 
 define constant <char<@4>> = <char*>;
@@ -3970,8 +4557,12 @@ define C-function g-get-language-names
   c-name: "g_get_language_names";
 end;
 
-define C-subtype <_GDebugKey> (<C-void*>) end;
-define constant <GDebugKey> = <_GDebugKey>;
+define C-struct <_GDebugKey>
+  slot GDebugKey-key :: <gchar*>;
+  slot GDebugKey-value :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GDebugKey> => <_GDebugKey>;
 
 define C-function g-parse-debug-string
   input parameter arg1 :: <gchar*>;
@@ -4096,9 +4687,12 @@ define C-function g-bit-storage
   c-name: "g_bit_storage";
 end;
 
-define constant <GTrashStack> = <_GTrashStack>;
+define C-pointer-type <GTrashStack> => <_GTrashStack>;
 
-define C-subtype <_GTrashStack> (<C-void*>) end;
+define C-struct <_GTrashStack>
+  slot GTrashStack-next :: <GTrashStack>;
+end;
+
 define C-pointer-type <GTrashStack*> => <GTrashStack>;
 define C-function g-trash-stack-push
   input parameter arg1 :: <GTrashStack*>;
@@ -4727,8 +5321,10 @@ define C-function g-intern-static-string
   c-name: "g_intern_static_string";
 end;
 
-define C-subtype <_GTree> (<C-void*>) end;
-define constant <GTree> = <_GTree>;
+define C-struct <_GTree>
+end;
+
+define C-pointer-type <GTree> => <_GTree>;
 
 define constant <anonymous-1357> = <C-function-pointer>;
 define constant <GTraverseFunc> = <anonymous-1357>;
@@ -4845,9 +5441,16 @@ define C-function g-tree-nnodes
   c-name: "g_tree_nnodes";
 end;
 
-define constant <GNode> = <_GNode>;
+define C-pointer-type <GNode> => <_GNode>;
 
-define C-subtype <_GNode> (<C-void*>) end;
+define C-struct <_GNode>
+  slot GNode-data :: <C-void*>;
+  slot GNode-next :: <GNode>;
+  slot GNode-prev :: <GNode>;
+  slot GNode-parent :: <GNode>;
+  slot GNode-children :: <GNode>;
+end;
+
 define constant <GTraverseFlags> = <C-int>;
 define constant $G-TRAVERSE-LEAVES = 1;
 define constant $G-TRAVERSE-NON-LEAVES = 2;
@@ -5058,8 +5661,16 @@ define constant <anonymous-455> = <C-function-pointer>;
 define constant <anonymous-456> = <C-function-pointer>;
 define constant <anonymous-457> = <C-function-pointer>;
 define constant <anonymous-458> = <C-function-pointer>;
-define C-subtype <_GMemVTable> (<C-void*>) end;
-define constant <GMemVTable> = <_GMemVTable>;
+define C-struct <_GMemVTable>
+  slot GMemVTable-malloc :: <anonymous-453>;
+  slot GMemVTable-realloc :: <anonymous-454>;
+  slot GMemVTable-free :: <anonymous-455>;
+  slot GMemVTable-calloc :: <anonymous-456>;
+  slot GMemVTable-try-malloc :: <anonymous-457>;
+  slot GMemVTable-try-realloc :: <anonymous-458>;
+end;
+
+define C-pointer-type <GMemVTable> => <_GMemVTable>;
 
 define C-function g-malloc
   input parameter arg1 :: <gulong>;
@@ -5120,11 +5731,15 @@ define C-function g-mem-profile
   c-name: "g_mem_profile";
 end;
 
-define C-subtype <_GAllocator> (<C-void*>) end;
-define constant <GAllocator> = <_GAllocator>;
+define C-struct <_GAllocator>
+end;
 
-define C-subtype <_GMemChunk> (<C-void*>) end;
-define constant <GMemChunk> = <_GMemChunk>;
+define C-pointer-type <GAllocator> => <_GAllocator>;
+
+define C-struct <_GMemChunk>
+end;
+
+define C-pointer-type <GMemChunk> => <_GMemChunk>;
 
 define C-function g-mem-chunk-new
   input parameter arg1 :: <gchar*>;
@@ -5259,8 +5874,10 @@ define C-function g-slice-get-config-state
   c-name: "g_slice_get_config_state";
 end;
 
-define C-subtype <_GTimer> (<C-void*>) end;
-define constant <GTimer> = <_GTimer>;
+define C-struct <_GTimer>
+end;
+
+define C-pointer-type <GTimer> => <_GTimer>;
 
 define C-function g-timer-new
   result res :: <GTimer>;
@@ -5326,8 +5943,13 @@ end;
 
 define constant $G-USEC-PER-SEC = 1000000;
 
-define C-subtype <_GThreadPool> (<C-void*>) end;
-define constant <GThreadPool> = <_GThreadPool>;
+define C-struct <_GThreadPool>
+  slot GThreadPool-func :: <anonymous-213>;
+  slot GThreadPool-user-data :: <C-void*>;
+  slot GThreadPool-exclusive :: <C-signed-int>;
+end;
+
+define C-pointer-type <GThreadPool> => <_GThreadPool>;
 
 define C-function g-thread-pool-new
   input parameter arg1 :: <GFunc>;
@@ -5431,19 +6053,32 @@ define constant $G-THREAD-PRIORITY-NORMAL = 1;
 define constant $G-THREAD-PRIORITY-HIGH = 2;
 define constant $G-THREAD-PRIORITY-URGENT = 3;
 
-define C-subtype <_GThread> (<C-void*>) end;
-define constant <GThread> = <_GThread>;
+define C-struct <_GThread>
+  slot GThread-func :: <anonymous-291>;
+  slot GThread-data :: <C-void*>;
+  slot GThread-joinable :: <C-signed-int>;
+  slot GThread-priority :: <GThreadPriority>;
+end;
 
-define constant <GMutex> = <_GMutex>;
+define C-pointer-type <GThread> => <_GThread>;
 
-define C-subtype <_GCond> (<C-void*>) end;
-define constant <GCond> = <_GCond>;
+define C-pointer-type <GMutex> => <_GMutex>;
 
-define C-subtype <_GPrivate> (<C-void*>) end;
-define constant <GPrivate> = <_GPrivate>;
+define C-struct <_GCond>
+end;
 
-define C-subtype <_GStaticPrivate> (<C-void*>) end;
-define constant <GStaticPrivate> = <_GStaticPrivate>;
+define C-pointer-type <GCond> => <_GCond>;
+
+define C-struct <_GPrivate>
+end;
+
+define C-pointer-type <GPrivate> => <_GPrivate>;
+
+define C-struct <_GStaticPrivate>
+  slot GStaticPrivate-index :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GStaticPrivate> => <_GStaticPrivate>;
 
 define constant <anonymous-293> = <C-function-pointer>;
 define constant <anonymous-294> = <C-function-pointer>;
@@ -5466,8 +6101,31 @@ define constant <anonymous-310> = <C-function-pointer>;
 define constant <anonymous-311> = <C-function-pointer>;
 define constant <anonymous-312> = <C-function-pointer>;
 define constant <anonymous-313> = <C-function-pointer>;
-define C-subtype <_GThreadFunctions> (<C-void*>) end;
-define constant <GThreadFunctions> = <_GThreadFunctions>;
+define C-struct <_GThreadFunctions>
+  slot GThreadFunctions-mutex-new :: <anonymous-293>;
+  slot GThreadFunctions-mutex-lock :: <anonymous-294>;
+  slot GThreadFunctions-mutex-trylock :: <anonymous-295>;
+  slot GThreadFunctions-mutex-unlock :: <anonymous-296>;
+  slot GThreadFunctions-mutex-free :: <anonymous-297>;
+  slot GThreadFunctions-cond-new :: <anonymous-298>;
+  slot GThreadFunctions-cond-signal :: <anonymous-299>;
+  slot GThreadFunctions-cond-broadcast :: <anonymous-300>;
+  slot GThreadFunctions-cond-wait :: <anonymous-301>;
+  slot GThreadFunctions-cond-timed-wait :: <anonymous-302>;
+  slot GThreadFunctions-cond-free :: <anonymous-303>;
+  slot GThreadFunctions-private-new :: <anonymous-304>;
+  slot GThreadFunctions-private-get :: <anonymous-305>;
+  slot GThreadFunctions-private-set :: <anonymous-306>;
+  slot GThreadFunctions-thread-create :: <anonymous-307>;
+  slot GThreadFunctions-thread-yield :: <anonymous-308>;
+  slot GThreadFunctions-thread-join :: <anonymous-309>;
+  slot GThreadFunctions-thread-exit :: <anonymous-310>;
+  slot GThreadFunctions-thread-set-priority :: <anonymous-311>;
+  slot GThreadFunctions-thread-self :: <anonymous-312>;
+  slot GThreadFunctions-thread-equal :: <anonymous-313>;
+end;
+
+define C-pointer-type <GThreadFunctions> => <_GThreadFunctions>;
 
  /* Ignoring declaration for {instance of <variable-declaration>} "g-thread-functions-for-glib-use"*/
  /* Ignoring declaration for {instance of <variable-declaration>} "g-thread-use-default-impl"*/
@@ -5549,8 +6207,13 @@ define C-function g-static-private-free
   c-name: "g_static_private_free";
 end;
 
-define C-subtype <_GStaticRecMutex> (<C-void*>) end;
-define constant <GStaticRecMutex> = <_GStaticRecMutex>;
+define C-struct <_GStaticRecMutex>
+  slot GStaticRecMutex-mutex :: <_GMutex>;
+  slot GStaticRecMutex-depth :: <C-unsigned-int>;
+  slot GStaticRecMutex-owner :: <_GSystemThread>;
+end;
+
+define C-pointer-type <GStaticRecMutex> => <_GStaticRecMutex>;
 
 define C-function g-static-rec-mutex-init
   input parameter arg1 :: <GStaticRecMutex>;
@@ -5590,8 +6253,17 @@ define C-function g-static-rec-mutex-free
   c-name: "g_static_rec_mutex_free";
 end;
 
-define C-subtype <_GStaticRWLock> (<C-void*>) end;
-define constant <GStaticRWLock> = <_GStaticRWLock>;
+define C-struct <_GStaticRWLock>
+  slot GStaticRWLock-mutex :: <_GMutex>;
+  slot GStaticRWLock-read-cond :: <GCond>;
+  slot GStaticRWLock-write-cond :: <GCond>;
+  slot GStaticRWLock-read-counter :: <C-unsigned-int>;
+  slot GStaticRWLock-have-writer :: <C-signed-int>;
+  slot GStaticRWLock-want-to-read :: <C-unsigned-int>;
+  slot GStaticRWLock-want-to-write :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GStaticRWLock> => <_GStaticRWLock>;
 
 define C-function g-static-rw-lock-init
   input parameter arg1 :: <GStaticRWLock>;
@@ -5646,8 +6318,12 @@ define constant $G-ONCE-STATUS-NOTCALLED = 0;
 define constant $G-ONCE-STATUS-PROGRESS = 1;
 define constant $G-ONCE-STATUS-READY = 2;
 
-define C-subtype <_GOnce> (<C-void*>) end;
-define constant <GOnce> = <_GOnce>;
+define C-struct <_GOnce>
+  slot GOnce-status :: <GOnceStatus>;
+  slot GOnce-retval :: <C-void*>;
+end;
+
+define C-pointer-type <GOnce> => <_GOnce>;
 
 define C-function g-once-impl
   input parameter arg1 :: <GOnce>;
@@ -5712,8 +6388,10 @@ define C-function g-atomic-pointer-set
   c-name: "g_atomic_pointer_set";
 end;
 
-define C-subtype <_GStringChunk> (<C-void*>) end;
-define constant <GStringChunk> = <_GStringChunk>;
+define C-struct <_GStringChunk>
+end;
+
+define C-pointer-type <GStringChunk> => <_GStringChunk>;
 
 define C-function g-string-chunk-new
   input parameter arg1 :: <gsize>;
@@ -6657,8 +7335,37 @@ define C-function g-shell-parse-argv
   c-name: "g_shell_parse_argv";
 end;
 
-define C-subtype <_GScannerConfig> (<C-void*>) end;
-define constant <GScannerConfig> = <_GScannerConfig>;
+define C-struct <_GScannerConfig>
+  slot GScannerConfig-cset-skip-characters :: <gchar*>;
+  slot GScannerConfig-cset-identifier-first :: <gchar*>;
+  slot GScannerConfig-cset-identifier-nth :: <gchar*>;
+  slot GScannerConfig-cpair-comment-single :: <gchar*>;
+  bitfield slot GScannerConfig-case-sensitive :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-skip-comment-multi :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-skip-comment-single :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-comment-multi :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-identifier :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-identifier-1char :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-identifier-NULL :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-symbols :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-binary :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-octal :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-float :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-hex :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-hex-dollar :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-string-sq :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scan-string-dq :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-numbers-2-int :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-int-2-float :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-identifier-2-string :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-char-2-token :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-symbol-2-token :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-scope-0-fallback :: <C-int>, width: 1;
+  bitfield slot GScannerConfig-store-int64 :: <C-int>, width: 1;
+  slot GScannerConfig-padding-dummy :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GScannerConfig> => <_GScannerConfig>;
 
 define constant <GTokenType> = <C-int>;
 define constant $G-TOKEN-EOF = 0;
@@ -6689,15 +7396,40 @@ define constant $G-TOKEN-LAST = 270;
 define C-subtype <_GTokenValue> (<C-void*>) end;
 define constant <GTokenValue> = <_GTokenValue>;
 
-define C-subtype <_GHashTable> (<C-void*>) end;
-define constant <GHashTable> = <_GHashTable>;
+define C-struct <_GHashTable>
+end;
 
-define constant <GScanner> = <_GScanner>;
+define C-pointer-type <GHashTable> => <_GHashTable>;
+
+define C-pointer-type <GScanner> => <_GScanner>;
 
 define constant <anonymous-1220> = <C-function-pointer>;
 define constant <GScannerMsgFunc> = <anonymous-1220>;
 
-define C-subtype <_GScanner> (<C-void*>) end;
+define C-struct <_GScanner>
+  slot GScanner-user-data :: <C-void*>;
+  slot GScanner-max-parse-errors :: <C-unsigned-int>;
+  slot GScanner-parse-errors :: <C-unsigned-int>;
+  slot GScanner-input-name :: <gchar*>;
+  slot GScanner-qdata :: <GData>;
+  slot GScanner-config :: <GScannerConfig>;
+  slot GScanner-token :: <GTokenType>;
+  slot GScanner-value :: <_GTokenValue>;
+  slot GScanner-line :: <C-unsigned-int>;
+  slot GScanner-position :: <C-unsigned-int>;
+  slot GScanner-next-token :: <GTokenType>;
+  slot GScanner-next-value :: <_GTokenValue>;
+  slot GScanner-next-line :: <C-unsigned-int>;
+  slot GScanner-next-position :: <C-unsigned-int>;
+  slot GScanner-symbol-table :: <GHashTable>;
+  slot GScanner-input-fd :: <C-signed-int>;
+  slot GScanner-text :: <gchar*>;
+  slot GScanner-text-end :: <gchar*>;
+  slot GScanner-buffer :: <gchar*>;
+  slot GScanner-scope-id :: <C-unsigned-int>;
+  slot GScanner-msg-handler :: <anonymous-1220>;
+end;
+
 define constant <GErrorType> = <C-int>;
 define constant $G-ERR-UNKNOWN = 0;
 define constant $G-ERR-UNEXP-EOF = 1;
@@ -7107,11 +7839,16 @@ end;
 
 define constant $G-DATALIST-FLAGS-MASK = 3;
 
-define C-subtype <_GRelation> (<C-void*>) end;
-define constant <GRelation> = <_GRelation>;
+define C-struct <_GRelation>
+end;
 
-define C-subtype <_GTuples> (<C-void*>) end;
-define constant <GTuples> = <_GTuples>;
+define C-pointer-type <GRelation> => <_GRelation>;
+
+define C-struct <_GTuples>
+  slot GTuples-len :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GTuples> => <_GTuples>;
 
 define C-function g-relation-new
   input parameter arg1 :: <gint>;
@@ -7185,8 +7922,10 @@ define C-function g-tuples-index
   c-name: "g_tuples_index";
 end;
 
-define C-subtype <_GRand> (<C-void*>) end;
-define constant <GRand> = <_GRand>;
+define C-struct <_GRand>
+end;
+
+define C-pointer-type <GRand> => <_GRand>;
 
 define C-function g-rand-new-with-seed
   input parameter arg1 :: <guint32>;
@@ -7287,8 +8026,13 @@ define C-function g-random-double-range
   c-name: "g_random_double_range";
 end;
 
-define C-subtype <_GQueue> (<C-void*>) end;
-define constant <GQueue> = <_GQueue>;
+define C-struct <_GQueue>
+  slot GQueue-head :: <GList>;
+  slot GQueue-tail :: <GList>;
+  slot GQueue-length :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GQueue> => <_GQueue>;
 
 define C-function g-queue-new
   result res :: <GQueue>;
@@ -7751,8 +8495,10 @@ define C-function g-spaced-primes-closest
   c-name: "g_spaced_primes_closest";
 end;
 
-define C-subtype <_GPatternSpec> (<C-void*>) end;
-define constant <GPatternSpec> = <_GPatternSpec>;
+define C-struct <_GPatternSpec>
+end;
+
+define C-pointer-type <GPatternSpec> => <_GPatternSpec>;
 
 define C-function g-pattern-spec-new
   input parameter arg1 :: <gchar*>;
@@ -7795,11 +8541,15 @@ define C-function g-pattern-match-simple
   c-name: "g_pattern_match_simple";
 end;
 
-define C-subtype <_GOptionContext> (<C-void*>) end;
-define constant <GOptionContext> = <_GOptionContext>;
+define C-struct <_GOptionContext>
+end;
 
-define C-subtype <_GOptionGroup> (<C-void*>) end;
-define constant <GOptionGroup> = <_GOptionGroup>;
+define C-pointer-type <GOptionContext> => <_GOptionContext>;
+
+define C-struct <_GOptionGroup>
+end;
+
+define C-pointer-type <GOptionGroup> => <_GOptionGroup>;
 
 define constant <GOptionArg> = <C-int>;
 define constant $G-OPTION-ARG-NONE = 0;
@@ -7812,8 +8562,17 @@ define constant $G-OPTION-ARG-FILENAME-ARRAY = 6;
 define constant $G-OPTION-ARG-DOUBLE = 7;
 define constant $G-OPTION-ARG-INT64 = 8;
 
-define C-subtype <_GOptionEntry> (<C-void*>) end;
-define constant <GOptionEntry> = <_GOptionEntry>;
+define C-struct <_GOptionEntry>
+  slot GOptionEntry-long-name :: <gchar*>;
+  slot GOptionEntry-short-name :: <C-signed-char>;
+  slot GOptionEntry-flags :: <C-signed-int>;
+  slot GOptionEntry-arg :: <GOptionArg>;
+  slot GOptionEntry-arg-data :: <C-void*>;
+  slot GOptionEntry-description :: <gchar*>;
+  slot GOptionEntry-arg-description :: <gchar*>;
+end;
+
+define C-pointer-type <GOptionEntry> => <_GOptionEntry>;
 
 define constant <GOptionFlags> = <C-int>;
 define constant $G-OPTION-FLAG-HIDDEN = 1;
@@ -8153,16 +8912,25 @@ define constant <GMarkupParseFlags> = <C-int>;
 define constant $G-MARKUP-DO-NOT-USE-THIS-UNSUPPORTED-FLAG = 1;
 define constant $G-MARKUP-TREAT-CDATA-AS-TEXT = 2;
 
-define C-subtype <_GMarkupParseContext> (<C-void*>) end;
-define constant <GMarkupParseContext> = <_GMarkupParseContext>;
+define C-struct <_GMarkupParseContext>
+end;
+
+define C-pointer-type <GMarkupParseContext> => <_GMarkupParseContext>;
 
 define constant <anonymous-1044> = <C-function-pointer>;
 define constant <anonymous-1045> = <C-function-pointer>;
 define constant <anonymous-1046> = <C-function-pointer>;
 define constant <anonymous-1047> = <C-function-pointer>;
 define constant <anonymous-1048> = <C-function-pointer>;
-define C-subtype <_GMarkupParser> (<C-void*>) end;
-define constant <GMarkupParser> = <_GMarkupParser>;
+define C-struct <_GMarkupParser>
+  slot GMarkupParser-start-element :: <anonymous-1044>;
+  slot GMarkupParser-end-element :: <anonymous-1045>;
+  slot GMarkupParser-text :: <anonymous-1046>;
+  slot GMarkupParser-passthrough :: <anonymous-1047>;
+  slot GMarkupParser-error :: <anonymous-1048>;
+end;
+
+define C-pointer-type <GMarkupParser> => <_GMarkupParser>;
 
 define C-function g-markup-parse-context-new
   input parameter arg1 :: <GMarkupParser>;
@@ -8227,8 +8995,10 @@ define C-function g-markup-vprintf-escaped
   c-name: "g_markup_vprintf_escaped";
 end;
 
-define C-subtype <_GMappedFile> (<C-void*>) end;
-define constant <GMappedFile> = <_GMappedFile>;
+define C-struct <_GMappedFile>
+end;
+
+define C-pointer-type <GMappedFile> => <_GMappedFile>;
 
 define C-function g-mapped-file-new
   input parameter arg1 :: <gchar*>;
@@ -8255,23 +9025,32 @@ define C-function g-mapped-file-free
   c-name: "g_mapped_file_free";
 end;
 
-define C-subtype <_GMainContext> (<C-void*>) end;
-define constant <GMainContext> = <_GMainContext>;
+define C-struct <_GMainContext>
+end;
 
-define C-subtype <_GMainLoop> (<C-void*>) end;
-define constant <GMainLoop> = <_GMainLoop>;
+define C-pointer-type <GMainContext> => <_GMainContext>;
+
+define C-struct <_GMainLoop>
+end;
+
+define C-pointer-type <GMainLoop> => <_GMainLoop>;
 
 define constant <anonymous-722> = <C-function-pointer>;
 define constant <anonymous-723> = <C-function-pointer>;
-define constant <GSource> = <_GSource>;
+define C-pointer-type <GSource> => <_GSource>;
 
 define constant <anonymous-720> = <C-function-pointer>;
 define constant <GSourceFunc> = <anonymous-720>;
 
 define C-pointer-type <GSourceFunc*> => <GSourceFunc>;
 define constant <anonymous-724> = <C-function-pointer>;
-define C-subtype <_GSourceCallbackFuncs> (<C-void*>) end;
-define constant <GSourceCallbackFuncs> = <_GSourceCallbackFuncs>;
+define C-struct <_GSourceCallbackFuncs>
+  slot GSourceCallbackFuncs-ref :: <anonymous-722>;
+  slot GSourceCallbackFuncs-unref :: <anonymous-723>;
+  slot GSourceCallbackFuncs-get :: <anonymous-724>;
+end;
+
+define C-pointer-type <GSourceCallbackFuncs> => <_GSourceCallbackFuncs>;
 
 define constant <anonymous-726> = <C-function-pointer>;
 define constant <anonymous-727> = <C-function-pointer>;
@@ -8280,15 +9059,43 @@ define constant <anonymous-729> = <C-function-pointer>;
 define constant <anonymous-725> = <C-function-pointer>;
 define constant <GSourceDummyMarshal> = <anonymous-725>;
 
-define C-subtype <_GSourceFuncs> (<C-void*>) end;
-define constant <GSourceFuncs> = <_GSourceFuncs>;
+define C-struct <_GSourceFuncs>
+  slot GSourceFuncs-prepare :: <anonymous-726>;
+  slot GSourceFuncs-check :: <anonymous-727>;
+  slot GSourceFuncs-dispatch :: <anonymous-728>;
+  slot GSourceFuncs-finalize :: <anonymous-729>;
+  slot GSourceFuncs-closure-callback :: <anonymous-720>;
+  slot GSourceFuncs-closure-marshal :: <anonymous-725>;
+end;
 
-define C-subtype <_GSource> (<C-void*>) end;
+define C-pointer-type <GSourceFuncs> => <_GSourceFuncs>;
+
+define C-struct <_GSource>
+  slot GSource-callback-data :: <C-void*>;
+  slot GSource-callback-funcs :: <GSourceCallbackFuncs>;
+  slot GSource-source-funcs :: <GSourceFuncs>;
+  slot GSource-ref-count :: <C-unsigned-int>;
+  slot GSource-context :: <GMainContext>;
+  slot GSource-priority :: <C-signed-int>;
+  slot GSource-flags :: <C-unsigned-int>;
+  slot GSource-source-id :: <C-unsigned-int>;
+  slot GSource-poll-fds :: <GSList>;
+  slot GSource-prev :: <GSource>;
+  slot GSource-next :: <GSource>;
+  slot GSource-reserved1 :: <C-void*>;
+  slot GSource-reserved2 :: <C-void*>;
+end;
+
 define constant <anonymous-721> = <C-function-pointer>;
 define constant <GChildWatchFunc> = <anonymous-721>;
 
-define C-subtype <_GPollFD> (<C-void*>) end;
-define constant <GPollFD> = <_GPollFD>;
+define C-struct <_GPollFD>
+  slot GPollFD-fd :: <C-signed-int>;
+  slot GPollFD-events :: <C-unsigned-short>;
+  slot GPollFD-revents :: <C-unsigned-short>;
+end;
+
+define C-pointer-type <GPollFD> => <_GPollFD>;
 
 define constant <anonymous-730> = <C-function-pointer>;
 define constant <GPollFunc> = <anonymous-730>;
@@ -8721,8 +9528,10 @@ define C-function g-key-file-error-quark
   c-name: "g_key_file_error_quark";
 end;
 
-define C-subtype <_GKeyFile> (<C-void*>) end;
-define constant <GKeyFile> = <_GKeyFile>;
+define C-struct <_GKeyFile>
+end;
+
+define C-pointer-type <GKeyFile> => <_GKeyFile>;
 
 define constant <GKeyFileFlags> = <C-int>;
 define constant $G-KEY-FILE-NONE = 0;
@@ -9073,7 +9882,7 @@ define constant $G-IO-STATUS-NORMAL = 1;
 define constant $G-IO-STATUS-EOF = 2;
 define constant $G-IO-STATUS-AGAIN = 3;
 
-define constant <GIOChannel> = <_GIOChannel>;
+define C-pointer-type <GIOChannel> => <_GIOChannel>;
 
 define constant <anonymous-943> = <C-function-pointer>;
 define constant <anonymous-944> = <C-function-pointer>;
@@ -9106,14 +9915,48 @@ define constant $G-IO-FLAG-SET-MASK = 3;
 
 define constant <anonymous-949> = <C-function-pointer>;
 define constant <anonymous-950> = <C-function-pointer>;
-define C-subtype <_GIOFuncs> (<C-void*>) end;
-define constant <GIOFuncs> = <_GIOFuncs>;
+define C-struct <_GIOFuncs>
+  slot GIOFuncs-io-read :: <anonymous-943>;
+  slot GIOFuncs-io-write :: <anonymous-944>;
+  slot GIOFuncs-io-seek :: <anonymous-945>;
+  slot GIOFuncs-io-close :: <anonymous-946>;
+  slot GIOFuncs-io-create-watch :: <anonymous-947>;
+  slot GIOFuncs-io-free :: <anonymous-948>;
+  slot GIOFuncs-io-set-flags :: <anonymous-949>;
+  slot GIOFuncs-io-get-flags :: <anonymous-950>;
+end;
 
-define C-subtype <_GIConv> (<C-void*>) end;
+define C-pointer-type <GIOFuncs> => <_GIOFuncs>;
+
+define C-struct <_GIConv>
+end;
+
 define constant <GIConv> = <_GIConv>;
 
 define constant <gchar<@6>> = <gchar*>;
-define C-subtype <_GIOChannel> (<C-void*>) end;
+define C-struct <_GIOChannel>
+  slot GIOChannel-ref-count :: <C-signed-int>;
+  slot GIOChannel-funcs :: <GIOFuncs>;
+  slot GIOChannel-encoding :: <gchar*>;
+  slot GIOChannel-read-cd :: <_GIConv>;
+  slot GIOChannel-write-cd :: <_GIConv>;
+  slot GIOChannel-line-term :: <gchar*>;
+  slot GIOChannel-line-term-len :: <C-unsigned-int>;
+  slot GIOChannel-buf-size :: <C-unsigned-int>;
+  slot GIOChannel-read-buf :: <GString>;
+  slot GIOChannel-encoded-read-buf :: <GString>;
+  slot GIOChannel-write-buf :: <GString>;
+  slot GIOChannel-partial-write-buf :: <gchar<@6>>;
+  bitfield slot GIOChannel-use-buffer :: <C-int>, width: 1;
+  bitfield slot GIOChannel-do-encode :: <C-int>, width: 1;
+  bitfield slot GIOChannel-close-on-unref :: <C-int>, width: 1;
+  bitfield slot GIOChannel-is-readable :: <C-int>, width: 1;
+  bitfield slot GIOChannel-is-writeable :: <C-int>, width: 1;
+  bitfield slot GIOChannel-is-seekable :: <C-int>, width: 1;
+  slot GIOChannel-reserved1 :: <C-void*>;
+  slot GIOChannel-reserved2 :: <C-void*>;
+end;
+
 define constant <GIOError> = <C-int>;
 define constant $G-IO-ERROR-NONE = 0;
 define constant $G-IO-ERROR-AGAIN = 1;
@@ -9615,16 +10458,35 @@ define constant g-filename-from-uri = g-filename-from-uri-utf8;
 
 define constant g-filename-to-uri = g-filename-to-uri-utf8;
 
-define constant <GHook> = <_GHook>;
+define C-pointer-type <GHook> => <_GHook>;
 
-define C-subtype <_GHook> (<C-void*>) end;
-define constant <GHookList> = <_GHookList>;
+define C-struct <_GHook>
+  slot GHook-data :: <C-void*>;
+  slot GHook-next :: <GHook>;
+  slot GHook-prev :: <GHook>;
+  slot GHook-ref-count :: <C-unsigned-int>;
+  slot GHook-hook-id :: <C-unsigned-long>;
+  slot GHook-flags :: <C-unsigned-int>;
+  slot GHook-func :: <C-void*>;
+  slot GHook-destroy :: <anonymous-212>;
+end;
+
+define C-pointer-type <GHookList> => <_GHookList>;
 
 define constant <anonymous-664> = <C-function-pointer>;
 define constant <GHookFinalizeFunc> = <anonymous-664>;
 
 define constant <gpointer<@2>> = <gpointer*>;
-define C-subtype <_GHookList> (<C-void*>) end;
+define C-struct <_GHookList>
+  slot GHookList-seq-id :: <C-unsigned-long>;
+  bitfield slot GHookList-hook-size :: <C-int>, width: 16;
+  bitfield slot GHookList-is-setup :: <C-int>, width: 1;
+  slot GHookList-hooks :: <GHook>;
+  slot GHookList-dummy3 :: <C-void*>;
+  slot GHookList-finalize-hook :: <anonymous-664>;
+  slot GHookList-dummy :: <gpointer<@2>>;
+end;
+
 define constant <anonymous-658> = <C-function-pointer>;
 define constant <GHookCompareFunc> = <anonymous-658>;
 
@@ -9942,8 +10804,10 @@ define constant g-mkstemp = g-mkstemp-utf8;
 
 define constant g-file-open-tmp = g-file-open-tmp-utf8;
 
-define C-subtype <_GDir> (<C-void*>) end;
-define constant <GDir> = <_GDir>;
+define C-struct <_GDir>
+end;
+
+define C-pointer-type <GDir> => <_GDir>;
 
 define C-function g-dir-open-utf8
   input parameter arg1 :: <gchar*>;
@@ -9979,8 +10843,16 @@ define constant <GDateYear> = <guint16>;
 
 define constant <GDateDay> = <guint8>;
 
-define C-subtype <_GDate> (<C-void*>) end;
-define constant <GDate> = <_GDate>;
+define C-struct <_GDate>
+  bitfield slot GDate-julian-days :: <C-int>, width: 32;
+  bitfield slot GDate-julian :: <C-int>, width: 1;
+  bitfield slot GDate-dmy :: <C-int>, width: 1;
+  bitfield slot GDate-day :: <C-int>, width: 6;
+  bitfield slot GDate-month :: <C-int>, width: 4;
+  bitfield slot GDate-year :: <C-int>, width: 16;
+end;
+
+define C-pointer-type <GDate> => <_GDate>;
 
 define constant <GDateDMY> = <C-int>;
 define constant $G-DATE-DAY = 0;
@@ -10285,7 +11157,18 @@ define C-function g-date-compare
   c-name: "g_date_compare";
 end;
 
-define C-subtype <tm> (<C-void*>) end;
+define C-struct <tm>
+  slot m-tm-sec :: <C-signed-int>;
+  slot m-tm-min :: <C-signed-int>;
+  slot m-tm-hour :: <C-signed-int>;
+  slot m-tm-mday :: <C-signed-int>;
+  slot m-tm-mon :: <C-signed-int>;
+  slot m-tm-year :: <C-signed-int>;
+  slot m-tm-wday :: <C-signed-int>;
+  slot m-tm-yday :: <C-signed-int>;
+  slot m-tm-isdst :: <C-signed-int>;
+end;
+
 define C-function g-date-to-struct-tm
   input parameter arg1 :: <GDate>;
   input parameter arg2 :: <tm>;
@@ -10362,8 +11245,15 @@ define constant <GCompletionFunc> = <anonymous-514>;
 define constant <anonymous-515> = <C-function-pointer>;
 define constant <GCompletionStrncmpFunc> = <anonymous-515>;
 
-define C-subtype <_GCompletion> (<C-void*>) end;
-define constant <GCompletion> = <_GCompletion>;
+define C-struct <_GCompletion>
+  slot GCompletion-items :: <GList>;
+  slot GCompletion-func :: <anonymous-514>;
+  slot GCompletion-prefix :: <gchar*>;
+  slot GCompletion-cache :: <GList>;
+  slot GCompletion-strncmp-func :: <anonymous-515>;
+end;
+
+define C-pointer-type <GCompletion> => <_GCompletion>;
 
 define C-function g-completion-new
   input parameter arg1 :: <GCompletionFunc>;
@@ -10415,8 +11305,10 @@ define C-function g-completion-free
   c-name: "g_completion_free";
 end;
 
-define C-subtype <_GCache> (<C-void*>) end;
-define constant <GCache> = <_GCache>;
+define C-struct <_GCache>
+end;
+
+define C-pointer-type <GCache> => <_GCache>;
 
 define constant <anonymous-505> = <C-function-pointer>;
 define constant <GCacheNewFunc> = <anonymous-505>;
@@ -10486,8 +11378,10 @@ define C-function g-bookmark-file-error-quark
   c-name: "g_bookmark_file_error_quark";
 end;
 
-define C-subtype <_GBookmarkFile> (<C-void*>) end;
-define constant <GBookmarkFile> = <_GBookmarkFile>;
+define C-struct <_GBookmarkFile>
+end;
+
+define C-pointer-type <GBookmarkFile> => <_GBookmarkFile>;
 
 define C-function g-bookmark-file-new
   result res :: <GBookmarkFile>;
@@ -10857,8 +11751,10 @@ define C-function g-on-error-stack-trace
   c-name: "g_on_error_stack_trace";
 end;
 
-define C-subtype <_GAsyncQueue> (<C-void*>) end;
-define constant <GAsyncQueue> = <_GAsyncQueue>;
+define C-struct <_GAsyncQueue>
+end;
+
+define C-pointer-type <GAsyncQueue> => <_GAsyncQueue>;
 
 define C-function g-async-queue-new
   result res :: <GAsyncQueue>;
@@ -10989,8 +11885,12 @@ define C-function g-async-queue-sort-unlocked
 end;
 
 define C-pointer-type <guint8*> => <guint8>;
-define C-subtype <_GByteArray> (<C-void*>) end;
-define constant <GByteArray> = <_GByteArray>;
+define C-struct <_GByteArray>
+  slot GByteArray-data :: <guint8*>;
+  slot GByteArray-len :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GByteArray> => <_GByteArray>;
 
 define C-function g-array-new
   input parameter arg1 :: <gboolean>;
@@ -11245,8 +12145,13 @@ define C-function g-byte-array-sort-with-data
 end;
 
 define C-pointer-type <int*> => <C-signed-int>;
-define C-subtype <_heapinfo> (<C-void*>) end;
-define constant <_HEAPINFO> = <_heapinfo>;
+define C-struct <_heapinfo>
+  slot heapinfo-_pentry :: <int*>;
+  slot heapinfo-_size :: <C-unsigned-int>;
+  slot heapinfo-_useflag :: <C-signed-int>;
+end;
+
+define C-pointer-type <_HEAPINFO> => <_heapinfo>;
 
  /* Ignoring declaration for {instance of <variable-declaration>} "_amblksiz"*/
 //define constant $_HEAP-MAXREQ = #ex00000000FFFFFFE0;
@@ -11267,8 +12172,13 @@ define constant $_FREEENTRY = 0;
 
 define constant $_USEDENTRY = 1;
 
-define C-subtype <_GValueArray> (<C-void*>) end;
-define constant <GValueArray> = <_GValueArray>;
+define C-struct <_GValueArray>
+  slot GValueArray-n-values :: <C-unsigned-int>;
+  slot GValueArray-values :: <GValue>;
+  slot GValueArray-n-prealloced :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GValueArray> => <_GValueArray>;
 
 define C-function g-value-array-get-nth
   input parameter arg1 :: <GValueArray>;
@@ -11350,8 +12260,15 @@ define constant <GTypePluginCompleteTypeInfo> = <anonymous-1757>;
 define constant <anonymous-1758> = <C-function-pointer>;
 define constant <GTypePluginCompleteInterfaceInfo> = <anonymous-1758>;
 
-define C-subtype <_GTypePluginClass> (<C-void*>) end;
-define constant <GTypePluginClass> = <_GTypePluginClass>;
+define C-struct <_GTypePluginClass>
+  slot GTypePluginClass-base-iface :: <_GTypeInterface>;
+  slot GTypePluginClass-use-plugin :: <anonymous-1755>;
+  slot GTypePluginClass-unuse-plugin :: <anonymous-1756>;
+  slot GTypePluginClass-complete-type-info :: <anonymous-1757>;
+  slot GTypePluginClass-complete-interface-info :: <anonymous-1758>;
+end;
+
+define C-pointer-type <GTypePluginClass> => <_GTypePluginClass>;
 
 define C-function g-type-plugin-get-type
   result res :: <GType>;
@@ -11393,8 +12310,17 @@ define constant <anonymous-1743> = <C-function-pointer>;
 define constant <anonymous-1744> = <C-function-pointer>;
 define constant <anonymous-1745> = <C-function-pointer>;
 define constant <anonymous-1746> = <C-function-pointer>;
-define C-subtype <_GTypeModuleClass> (<C-void*>) end;
-define constant <GTypeModuleClass> = <_GTypeModuleClass>;
+define C-struct <_GTypeModuleClass>
+  slot GTypeModuleClass-parent-class :: <_GObjectClass>;
+  slot GTypeModuleClass-load :: <anonymous-1741>;
+  slot GTypeModuleClass-unload :: <anonymous-1742>;
+  slot GTypeModuleClass-reserved1 :: <anonymous-1743>;
+  slot GTypeModuleClass-reserved2 :: <anonymous-1744>;
+  slot GTypeModuleClass-reserved3 :: <anonymous-1745>;
+  slot GTypeModuleClass-reserved4 :: <anonymous-1746>;
+end;
+
+define C-pointer-type <GTypeModuleClass> => <_GTypeModuleClass>;
 
 define C-function g-type-module-get-type
   result res :: <GType>;
@@ -11436,8 +12362,13 @@ define C-function g-type-module-add-interface
   c-name: "g_type_module_add_interface";
 end;
 
-define C-subtype <_GEnumValue> (<C-void*>) end;
-define constant <GEnumValue> = <_GEnumValue>;
+define C-struct <_GEnumValue>
+  slot GEnumValue-value :: <C-signed-int>;
+  slot GEnumValue-value-name :: <gchar*>;
+  slot GEnumValue-value-nick :: <gchar*>;
+end;
+
+define C-pointer-type <GEnumValue> => <_GEnumValue>;
 
 define C-function g-type-module-register-enum
   input parameter arg1 :: <GTypeModule>;
@@ -11447,8 +12378,13 @@ define C-function g-type-module-register-enum
   c-name: "g_type_module_register_enum";
 end;
 
-define C-subtype <_GFlagsValue> (<C-void*>) end;
-define constant <GFlagsValue> = <_GFlagsValue>;
+define C-struct <_GFlagsValue>
+  slot GFlagsValue-value :: <C-unsigned-int>;
+  slot GFlagsValue-value-name :: <gchar*>;
+  slot GFlagsValue-value-nick :: <gchar*>;
+end;
+
+define C-pointer-type <GFlagsValue> => <_GFlagsValue>;
 
 define C-function g-type-module-register-flags
   input parameter arg1 :: <GTypeModule>;
@@ -11458,11 +12394,24 @@ define C-function g-type-module-register-flags
   c-name: "g_type_module_register_flags";
 end;
 
-define C-subtype <_GEnumClass> (<C-void*>) end;
-define constant <GEnumClass> = <_GEnumClass>;
+define C-struct <_GEnumClass>
+  slot GEnumClass-g-type-class :: <_GTypeClass>;
+  slot GEnumClass-minimum :: <C-signed-int>;
+  slot GEnumClass-maximum :: <C-signed-int>;
+  slot GEnumClass-n-values :: <C-unsigned-int>;
+  slot GEnumClass-values :: <GEnumValue>;
+end;
 
-define C-subtype <_GFlagsClass> (<C-void*>) end;
-define constant <GFlagsClass> = <_GFlagsClass>;
+define C-pointer-type <GEnumClass> => <_GEnumClass>;
+
+define C-struct <_GFlagsClass>
+  slot GFlagsClass-g-type-class :: <_GTypeClass>;
+  slot GFlagsClass-mask :: <C-unsigned-int>;
+  slot GFlagsClass-n-values :: <C-unsigned-int>;
+  slot GFlagsClass-values :: <GFlagsValue>;
+end;
+
+define C-pointer-type <GFlagsClass> => <_GFlagsClass>;
 
 define C-function g-enum-get-value
   input parameter arg1 :: <GEnumClass>;
@@ -11630,8 +12579,12 @@ define C-function g-object-new
   c-name: "g_object_new";
 end;
 
-define C-subtype <_GParameter> (<C-void*>) end;
-define constant <GParameter> = <_GParameter>;
+define C-struct <_GParameter>
+  slot GParameter-name :: <gchar*>;
+  slot GParameter-value :: <_GValue>;
+end;
+
+define C-pointer-type <GParameter> => <_GParameter>;
 
 define C-function g-object-newv
   input parameter arg1 :: <GType>;
@@ -11942,11 +12895,25 @@ define constant $G-SIGNAL-DETAILED = 16;
 define constant $G-SIGNAL-ACTION = 32;
 define constant $G-SIGNAL-NO-HOOKS = 64;
 
-define C-subtype <_GSignalQuery> (<C-void*>) end;
-define constant <GSignalQuery> = <_GSignalQuery>;
+define C-struct <_GSignalQuery>
+  slot GSignalQuery-signal-id :: <C-unsigned-int>;
+  slot GSignalQuery-signal-name :: <gchar*>;
+  slot GSignalQuery-itype :: <C-unsigned-long>;
+  slot GSignalQuery-signal-flags :: <GSignalFlags>;
+  slot GSignalQuery-return-type :: <C-unsigned-long>;
+  slot GSignalQuery-n-params :: <C-unsigned-int>;
+  slot GSignalQuery-param-types :: <GType*>;
+end;
 
-define C-subtype <_GSignalInvocationHint> (<C-void*>) end;
-define constant <GSignalInvocationHint> = <_GSignalInvocationHint>;
+define C-pointer-type <GSignalQuery> => <_GSignalQuery>;
+
+define C-struct <_GSignalInvocationHint>
+  slot GSignalInvocationHint-signal-id :: <C-unsigned-int>;
+  slot GSignalInvocationHint-detail :: <C-unsigned-int>;
+  slot GSignalInvocationHint-run-type :: <GSignalFlags>;
+end;
+
+define C-pointer-type <GSignalInvocationHint> => <_GSignalInvocationHint>;
 
 define constant <anonymous-1562> = <C-function-pointer>;
 define constant <GClosureMarshal> = <anonymous-1562>;
@@ -12464,11 +13431,22 @@ define constant <anonymous-1521> = <C-function-pointer>;
 define constant <anonymous-1522> = <C-function-pointer>;
 define constant <anonymous-1523> = <C-function-pointer>;
 define constant <gpointer<@4>> = <gpointer*>;
-define C-subtype <_GParamSpecClass> (<C-void*>) end;
-define constant <GParamSpecClass> = <_GParamSpecClass>;
+define C-struct <_GParamSpecClass>
+  slot GParamSpecClass-g-type-class :: <_GTypeClass>;
+  slot GParamSpecClass-value-type :: <C-unsigned-long>;
+  slot GParamSpecClass-finalize :: <anonymous-1520>;
+  slot GParamSpecClass-value-set-default :: <anonymous-1521>;
+  slot GParamSpecClass-value-validate :: <anonymous-1522>;
+  slot GParamSpecClass-values-cmp :: <anonymous-1523>;
+  slot GParamSpecClass-dummy :: <gpointer<@4>>;
+end;
 
-define C-subtype <_GParamSpecPool> (<C-void*>) end;
-define constant <GParamSpecPool> = <_GParamSpecPool>;
+define C-pointer-type <GParamSpecClass> => <_GParamSpecClass>;
+
+define C-struct <_GParamSpecPool>
+end;
+
+define C-pointer-type <GParamSpecPool> => <_GParamSpecPool>;
 
 define C-function g-param-spec-ref
   input parameter arg1 :: <GParamSpec>;
@@ -12617,8 +13595,18 @@ define constant <anonymous-1547> = <C-function-pointer>;
 define constant <anonymous-1548> = <C-function-pointer>;
 define constant <anonymous-1549> = <C-function-pointer>;
 define constant <anonymous-1550> = <C-function-pointer>;
-define C-subtype <_GParamSpecTypeInfo> (<C-void*>) end;
-define constant <GParamSpecTypeInfo> = <_GParamSpecTypeInfo>;
+define C-struct <_GParamSpecTypeInfo>
+  slot GParamSpecTypeInfo-instance-size :: <C-unsigned-short>;
+  slot GParamSpecTypeInfo-n-preallocs :: <C-unsigned-short>;
+  slot GParamSpecTypeInfo-instance-init :: <anonymous-1546>;
+  slot GParamSpecTypeInfo-value-type :: <C-unsigned-long>;
+  slot GParamSpecTypeInfo-finalize :: <anonymous-1547>;
+  slot GParamSpecTypeInfo-value-set-default :: <anonymous-1548>;
+  slot GParamSpecTypeInfo-value-validate :: <anonymous-1549>;
+  slot GParamSpecTypeInfo-values-cmp :: <anonymous-1550>;
+end;
+
+define C-pointer-type <GParamSpecTypeInfo> => <_GParamSpecTypeInfo>;
 
 define C-function g-param-type-register-static
   input parameter arg1 :: <gchar*>;
@@ -12686,8 +13674,12 @@ define constant $G-PARAM-MASK = 255;
 
 define constant $G-PARAM-USER-SHIFT = 8;
 
-define C-subtype <_GCClosure> (<C-void*>) end;
-define constant <GCClosure> = <_GCClosure>;
+define C-struct <_GCClosure>
+  slot GCClosure-closure :: <_GClosure>;
+  slot GCClosure-callback :: <C-void*>;
+end;
+
+define C-pointer-type <GCClosure> => <_GCClosure>;
 
 define C-function g-cclosure-new
   input parameter arg1 :: <GCallback>;
@@ -12815,71 +13807,185 @@ define C-function g-io-condition-get-type
   c-name: "g_io_condition_get_type";
 end;
 
-define C-subtype <_GParamSpecChar> (<C-void*>) end;
-define constant <GParamSpecChar> = <_GParamSpecChar>;
+define C-struct <_GParamSpecChar>
+  slot GParamSpecChar-parent-instance :: <_GParamSpec>;
+  slot GParamSpecChar-minimum :: <C-signed-char>;
+  slot GParamSpecChar-maximum :: <C-signed-char>;
+  slot GParamSpecChar-default-value :: <C-signed-char>;
+end;
 
-define C-subtype <_GParamSpecUChar> (<C-void*>) end;
-define constant <GParamSpecUChar> = <_GParamSpecUChar>;
+define C-pointer-type <GParamSpecChar> => <_GParamSpecChar>;
 
-define C-subtype <_GParamSpecBoolean> (<C-void*>) end;
-define constant <GParamSpecBoolean> = <_GParamSpecBoolean>;
+define C-struct <_GParamSpecUChar>
+  slot GParamSpecUChar-parent-instance :: <_GParamSpec>;
+  slot GParamSpecUChar-minimum :: <C-unsigned-char>;
+  slot GParamSpecUChar-maximum :: <C-unsigned-char>;
+  slot GParamSpecUChar-default-value :: <C-unsigned-char>;
+end;
 
-define C-subtype <_GParamSpecInt> (<C-void*>) end;
-define constant <GParamSpecInt> = <_GParamSpecInt>;
+define C-pointer-type <GParamSpecUChar> => <_GParamSpecUChar>;
 
-define C-subtype <_GParamSpecUInt> (<C-void*>) end;
-define constant <GParamSpecUInt> = <_GParamSpecUInt>;
+define C-struct <_GParamSpecBoolean>
+  slot GParamSpecBoolean-parent-instance :: <_GParamSpec>;
+  slot GParamSpecBoolean-default-value :: <C-signed-int>;
+end;
 
-define C-subtype <_GParamSpecLong> (<C-void*>) end;
-define constant <GParamSpecLong> = <_GParamSpecLong>;
+define C-pointer-type <GParamSpecBoolean> => <_GParamSpecBoolean>;
 
-define C-subtype <_GParamSpecULong> (<C-void*>) end;
-define constant <GParamSpecULong> = <_GParamSpecULong>;
+define C-struct <_GParamSpecInt>
+  slot GParamSpecInt-parent-instance :: <_GParamSpec>;
+  slot GParamSpecInt-minimum :: <C-signed-int>;
+  slot GParamSpecInt-maximum :: <C-signed-int>;
+  slot GParamSpecInt-default-value :: <C-signed-int>;
+end;
 
-define C-subtype <_GParamSpecInt64> (<C-void*>) end;
-define constant <GParamSpecInt64> = <_GParamSpecInt64>;
+define C-pointer-type <GParamSpecInt> => <_GParamSpecInt>;
 
-define C-subtype <_GParamSpecUInt64> (<C-void*>) end;
-define constant <GParamSpecUInt64> = <_GParamSpecUInt64>;
+define C-struct <_GParamSpecUInt>
+  slot GParamSpecUInt-parent-instance :: <_GParamSpec>;
+  slot GParamSpecUInt-minimum :: <C-unsigned-int>;
+  slot GParamSpecUInt-maximum :: <C-unsigned-int>;
+  slot GParamSpecUInt-default-value :: <C-unsigned-int>;
+end;
 
-define C-subtype <_GParamSpecUnichar> (<C-void*>) end;
-define constant <GParamSpecUnichar> = <_GParamSpecUnichar>;
+define C-pointer-type <GParamSpecUInt> => <_GParamSpecUInt>;
 
-define C-subtype <_GParamSpecEnum> (<C-void*>) end;
-define constant <GParamSpecEnum> = <_GParamSpecEnum>;
+define C-struct <_GParamSpecLong>
+  slot GParamSpecLong-parent-instance :: <_GParamSpec>;
+  slot GParamSpecLong-minimum :: <C-signed-long>;
+  slot GParamSpecLong-maximum :: <C-signed-long>;
+  slot GParamSpecLong-default-value :: <C-signed-long>;
+end;
 
-define C-subtype <_GParamSpecFlags> (<C-void*>) end;
-define constant <GParamSpecFlags> = <_GParamSpecFlags>;
+define C-pointer-type <GParamSpecLong> => <_GParamSpecLong>;
 
-define C-subtype <_GParamSpecFloat> (<C-void*>) end;
-define constant <GParamSpecFloat> = <_GParamSpecFloat>;
+define C-struct <_GParamSpecULong>
+  slot GParamSpecULong-parent-instance :: <_GParamSpec>;
+  slot GParamSpecULong-minimum :: <C-unsigned-long>;
+  slot GParamSpecULong-maximum :: <C-unsigned-long>;
+  slot GParamSpecULong-default-value :: <C-unsigned-long>;
+end;
 
-define C-subtype <_GParamSpecDouble> (<C-void*>) end;
-define constant <GParamSpecDouble> = <_GParamSpecDouble>;
+define C-pointer-type <GParamSpecULong> => <_GParamSpecULong>;
 
-define C-subtype <_GParamSpecString> (<C-void*>) end;
-define constant <GParamSpecString> = <_GParamSpecString>;
+define C-struct <_GParamSpecInt64>
+  slot GParamSpecInt64-parent-instance :: <_GParamSpec>;
+  slot GParamSpecInt64-minimum :: <C-signed-long>;
+  slot GParamSpecInt64-maximum :: <C-signed-long>;
+  slot GParamSpecInt64-default-value :: <C-signed-long>;
+end;
 
-define C-subtype <_GParamSpecParam> (<C-void*>) end;
-define constant <GParamSpecParam> = <_GParamSpecParam>;
+define C-pointer-type <GParamSpecInt64> => <_GParamSpecInt64>;
 
-define C-subtype <_GParamSpecBoxed> (<C-void*>) end;
-define constant <GParamSpecBoxed> = <_GParamSpecBoxed>;
+define C-struct <_GParamSpecUInt64>
+  slot GParamSpecUInt64-parent-instance :: <_GParamSpec>;
+  slot GParamSpecUInt64-minimum :: <C-unsigned-long>;
+  slot GParamSpecUInt64-maximum :: <C-unsigned-long>;
+  slot GParamSpecUInt64-default-value :: <C-unsigned-long>;
+end;
 
-define C-subtype <_GParamSpecPointer> (<C-void*>) end;
-define constant <GParamSpecPointer> = <_GParamSpecPointer>;
+define C-pointer-type <GParamSpecUInt64> => <_GParamSpecUInt64>;
 
-define C-subtype <_GParamSpecValueArray> (<C-void*>) end;
-define constant <GParamSpecValueArray> = <_GParamSpecValueArray>;
+define C-struct <_GParamSpecUnichar>
+  slot GParamSpecUnichar-parent-instance :: <_GParamSpec>;
+  slot GParamSpecUnichar-default-value :: <C-unsigned-int>;
+end;
 
-define C-subtype <_GParamSpecObject> (<C-void*>) end;
-define constant <GParamSpecObject> = <_GParamSpecObject>;
+define C-pointer-type <GParamSpecUnichar> => <_GParamSpecUnichar>;
 
-define C-subtype <_GParamSpecOverride> (<C-void*>) end;
-define constant <GParamSpecOverride> = <_GParamSpecOverride>;
+define C-struct <_GParamSpecEnum>
+  slot GParamSpecEnum-parent-instance :: <_GParamSpec>;
+  slot GParamSpecEnum-enum-class :: <GEnumClass>;
+  slot GParamSpecEnum-default-value :: <C-signed-int>;
+end;
 
-define C-subtype <_GParamSpecGType> (<C-void*>) end;
-define constant <GParamSpecGType> = <_GParamSpecGType>;
+define C-pointer-type <GParamSpecEnum> => <_GParamSpecEnum>;
+
+define C-struct <_GParamSpecFlags>
+  slot GParamSpecFlags-parent-instance :: <_GParamSpec>;
+  slot GParamSpecFlags-flags-class :: <GFlagsClass>;
+  slot GParamSpecFlags-default-value :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GParamSpecFlags> => <_GParamSpecFlags>;
+
+define C-struct <_GParamSpecFloat>
+  slot GParamSpecFloat-parent-instance :: <_GParamSpec>;
+  slot GParamSpecFloat-minimum :: <C-float>;
+  slot GParamSpecFloat-maximum :: <C-float>;
+  slot GParamSpecFloat-default-value :: <C-float>;
+  slot GParamSpecFloat-epsilon :: <C-float>;
+end;
+
+define C-pointer-type <GParamSpecFloat> => <_GParamSpecFloat>;
+
+define C-struct <_GParamSpecDouble>
+  slot GParamSpecDouble-parent-instance :: <_GParamSpec>;
+  slot GParamSpecDouble-minimum :: <C-double>;
+  slot GParamSpecDouble-maximum :: <C-double>;
+  slot GParamSpecDouble-default-value :: <C-double>;
+  slot GParamSpecDouble-epsilon :: <C-double>;
+end;
+
+define C-pointer-type <GParamSpecDouble> => <_GParamSpecDouble>;
+
+define C-struct <_GParamSpecString>
+  slot GParamSpecString-parent-instance :: <_GParamSpec>;
+  slot GParamSpecString-default-value :: <gchar*>;
+  slot GParamSpecString-cset-first :: <gchar*>;
+  slot GParamSpecString-cset-nth :: <gchar*>;
+  slot GParamSpecString-substitutor :: <C-signed-char>;
+  bitfield slot GParamSpecString-null-fold-if-empty :: <C-int>, width: 1;
+  bitfield slot GParamSpecString-ensure-non-null :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GParamSpecString> => <_GParamSpecString>;
+
+define C-struct <_GParamSpecParam>
+  slot GParamSpecParam-parent-instance :: <_GParamSpec>;
+end;
+
+define C-pointer-type <GParamSpecParam> => <_GParamSpecParam>;
+
+define C-struct <_GParamSpecBoxed>
+  slot GParamSpecBoxed-parent-instance :: <_GParamSpec>;
+end;
+
+define C-pointer-type <GParamSpecBoxed> => <_GParamSpecBoxed>;
+
+define C-struct <_GParamSpecPointer>
+  slot GParamSpecPointer-parent-instance :: <_GParamSpec>;
+end;
+
+define C-pointer-type <GParamSpecPointer> => <_GParamSpecPointer>;
+
+define C-struct <_GParamSpecValueArray>
+  slot GParamSpecValueArray-parent-instance :: <_GParamSpec>;
+  slot GParamSpecValueArray-element-spec :: <GParamSpec>;
+  slot GParamSpecValueArray-fixed-n-elements :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GParamSpecValueArray> => <_GParamSpecValueArray>;
+
+define C-struct <_GParamSpecObject>
+  slot GParamSpecObject-parent-instance :: <_GParamSpec>;
+end;
+
+define C-pointer-type <GParamSpecObject> => <_GParamSpecObject>;
+
+define C-struct <_GParamSpecOverride>
+  slot GParamSpecOverride-parent-instance :: <_GParamSpec>;
+  slot GParamSpecOverride-overridden :: <GParamSpec>;
+end;
+
+define C-pointer-type <GParamSpecOverride> => <_GParamSpecOverride>;
+
+define C-struct <_GParamSpecGType>
+  slot GParamSpecGType-parent-instance :: <_GParamSpec>;
+  slot GParamSpecGType-is-a-type :: <C-unsigned-long>;
+end;
+
+define C-pointer-type <GParamSpecGType> => <_GParamSpecGType>;
 
 define C-function g-param-spec-char
   input parameter arg1 :: <gchar*>;
@@ -13220,11 +14326,18 @@ end;
 
 define constant <GStrv> = <gchar**>;
 
-define C-subtype <_GtkSettingsClass> (<C-void*>) end;
-define constant <GtkSettingsClass> = <_GtkSettingsClass>;
+define C-struct <_GtkSettingsClass>
+  slot GtkSettingsClass-parent-class :: <_GObjectClass>;
+end;
 
-define C-subtype <_GtkSettingsValue> (<C-void*>) end;
-define constant <GtkSettingsValue> = <_GtkSettingsValue>;
+define C-pointer-type <GtkSettingsClass> => <_GtkSettingsClass>;
+
+define C-struct <_GtkSettingsValue>
+  slot GtkSettingsValue-origin :: <gchar*>;
+  slot GtkSettingsValue-value :: <_GValue>;
+end;
+
+define C-pointer-type <GtkSettingsValue> => <_GtkSettingsValue>;
 
 define C-function gtk-settings-get-type
   result res :: <GType>;
@@ -13335,8 +14448,19 @@ define constant <anonymous-3507> = <C-function-pointer>;
 define constant <anonymous-3508> = <C-function-pointer>;
 define constant <anonymous-3509> = <C-function-pointer>;
 define constant <anonymous-3510> = <C-function-pointer>;
-define C-subtype <_GtkRcStyleClass> (<C-void*>) end;
-define constant <GtkRcStyleClass> = <_GtkRcStyleClass>;
+define C-struct <_GtkRcStyleClass>
+  slot GtkRcStyleClass-parent-class :: <_GObjectClass>;
+  slot GtkRcStyleClass-create-rc-style :: <anonymous-3503>;
+  slot GtkRcStyleClass-parse :: <anonymous-3504>;
+  slot GtkRcStyleClass-merge :: <anonymous-3505>;
+  slot GtkRcStyleClass-create-style :: <anonymous-3506>;
+  slot GtkRcStyleClass-_gtk-reserved1 :: <anonymous-3507>;
+  slot GtkRcStyleClass-_gtk-reserved2 :: <anonymous-3508>;
+  slot GtkRcStyleClass-_gtk-reserved3 :: <anonymous-3509>;
+  slot GtkRcStyleClass-_gtk-reserved4 :: <anonymous-3510>;
+end;
+
+define C-pointer-type <GtkRcStyleClass> => <_GtkRcStyleClass>;
 
 define C-function gtk-rc-add-default-file-utf8
   input parameter arg1 :: <gchar*>;
@@ -13556,8 +14680,14 @@ define constant gtk-rc-set-default-files = gtk-rc-set-default-files-utf8;
 
 define constant gtk-rc-parse = gtk-rc-parse-utf8;
 
-define C-subtype <_GtkBorder> (<C-void*>) end;
-define constant <GtkBorder> = <_GtkBorder>;
+define C-struct <_GtkBorder>
+  slot GtkBorder-left :: <C-signed-int>;
+  slot GtkBorder-right :: <C-signed-int>;
+  slot GtkBorder-top :: <C-signed-int>;
+  slot GtkBorder-bottom :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkBorder> => <_GtkBorder>;
 
 define constant <anonymous-3398> = <C-function-pointer>;
 define constant <anonymous-3399> = <C-function-pointer>;
@@ -13565,8 +14695,10 @@ define constant <anonymous-3400> = <C-function-pointer>;
 define constant <anonymous-3401> = <C-function-pointer>;
 define constant <anonymous-3402> = <C-function-pointer>;
 define constant <anonymous-3403> = <C-function-pointer>;
-define C-subtype <_GtkIconSource> (<C-void*>) end;
-define constant <GtkIconSource> = <_GtkIconSource>;
+define C-struct <_GtkIconSource>
+end;
+
+define C-pointer-type <GtkIconSource> => <_GtkIconSource>;
 
 define constant <anonymous-3404> = <C-function-pointer>;
 define constant <anonymous-3405> = <C-function-pointer>;
@@ -13579,8 +14711,12 @@ define constant $GTK-SHADOW-ETCHED-IN = 3;
 define constant $GTK-SHADOW-ETCHED-OUT = 4;
 
 define constant <anonymous-3407> = <C-function-pointer>;
-define C-subtype <_GdkPoint> (<C-void*>) end;
-define constant <GdkPoint> = <_GdkPoint>;
+define C-struct <_GdkPoint>
+  slot GdkPoint-x :: <C-signed-int>;
+  slot GdkPoint-y :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkPoint> => <_GdkPoint>;
 
 define constant <anonymous-3408> = <C-function-pointer>;
 define constant <GtkArrowType> = <C-int>;
@@ -13635,17 +14771,70 @@ define constant <anonymous-3434> = <C-function-pointer>;
 define constant <anonymous-3435> = <C-function-pointer>;
 define constant <anonymous-3436> = <C-function-pointer>;
 define constant <anonymous-3437> = <C-function-pointer>;
-define C-subtype <_GtkStyleClass> (<C-void*>) end;
-define constant <GtkStyleClass> = <_GtkStyleClass>;
+define C-struct <_GtkStyleClass>
+  slot GtkStyleClass-parent-class :: <_GObjectClass>;
+  slot GtkStyleClass-realize :: <anonymous-3398>;
+  slot GtkStyleClass-unrealize :: <anonymous-3399>;
+  slot GtkStyleClass-copy :: <anonymous-3400>;
+  slot GtkStyleClass-clone :: <anonymous-3401>;
+  slot GtkStyleClass-init-from-rc :: <anonymous-3402>;
+  slot GtkStyleClass-set-background :: <anonymous-3403>;
+  slot GtkStyleClass-render-icon :: <anonymous-3404>;
+  slot GtkStyleClass-draw-hline :: <anonymous-3405>;
+  slot GtkStyleClass-draw-vline :: <anonymous-3406>;
+  slot GtkStyleClass-draw-shadow :: <anonymous-3407>;
+  slot GtkStyleClass-draw-polygon :: <anonymous-3408>;
+  slot GtkStyleClass-draw-arrow :: <anonymous-3409>;
+  slot GtkStyleClass-draw-diamond :: <anonymous-3410>;
+  slot GtkStyleClass-draw-string :: <anonymous-3411>;
+  slot GtkStyleClass-draw-box :: <anonymous-3412>;
+  slot GtkStyleClass-draw-flat-box :: <anonymous-3413>;
+  slot GtkStyleClass-draw-check :: <anonymous-3414>;
+  slot GtkStyleClass-draw-option :: <anonymous-3415>;
+  slot GtkStyleClass-draw-tab :: <anonymous-3416>;
+  slot GtkStyleClass-draw-shadow-gap :: <anonymous-3417>;
+  slot GtkStyleClass-draw-box-gap :: <anonymous-3418>;
+  slot GtkStyleClass-draw-extension :: <anonymous-3419>;
+  slot GtkStyleClass-draw-focus :: <anonymous-3420>;
+  slot GtkStyleClass-draw-slider :: <anonymous-3421>;
+  slot GtkStyleClass-draw-handle :: <anonymous-3422>;
+  slot GtkStyleClass-draw-expander :: <anonymous-3423>;
+  slot GtkStyleClass-draw-layout :: <anonymous-3424>;
+  slot GtkStyleClass-draw-resize-grip :: <anonymous-3425>;
+  slot GtkStyleClass-_gtk-reserved1 :: <anonymous-3426>;
+  slot GtkStyleClass-_gtk-reserved2 :: <anonymous-3427>;
+  slot GtkStyleClass-_gtk-reserved3 :: <anonymous-3428>;
+  slot GtkStyleClass-_gtk-reserved4 :: <anonymous-3429>;
+  slot GtkStyleClass-_gtk-reserved5 :: <anonymous-3430>;
+  slot GtkStyleClass-_gtk-reserved6 :: <anonymous-3431>;
+  slot GtkStyleClass-_gtk-reserved7 :: <anonymous-3432>;
+  slot GtkStyleClass-_gtk-reserved8 :: <anonymous-3433>;
+  slot GtkStyleClass-_gtk-reserved9 :: <anonymous-3434>;
+  slot GtkStyleClass-_gtk-reserved10 :: <anonymous-3435>;
+  slot GtkStyleClass-_gtk-reserved11 :: <anonymous-3436>;
+  slot GtkStyleClass-_gtk-reserved12 :: <anonymous-3437>;
+end;
 
-define C-subtype <_GtkThemeEngine> (<C-void*>) end;
-define constant <GtkThemeEngine> = <_GtkThemeEngine>;
+define C-pointer-type <GtkStyleClass> => <_GtkStyleClass>;
 
-define C-subtype <_GtkIconSet> (<C-void*>) end;
-define constant <GtkIconSet> = <_GtkIconSet>;
+define C-struct <_GtkThemeEngine>
+end;
 
-define C-subtype <_GtkRcProperty> (<C-void*>) end;
-define constant <GtkRcProperty> = <_GtkRcProperty>;
+define C-pointer-type <GtkThemeEngine> => <_GtkThemeEngine>;
+
+define C-struct <_GtkIconSet>
+end;
+
+define C-pointer-type <GtkIconSet> => <_GtkIconSet>;
+
+define C-struct <_GtkRcProperty>
+  slot GtkRcProperty-type-name :: <C-unsigned-int>;
+  slot GtkRcProperty-property-name :: <C-unsigned-int>;
+  slot GtkRcProperty-origin :: <gchar*>;
+  slot GtkRcProperty-value :: <_GValue>;
+end;
+
+define C-pointer-type <GtkRcProperty> => <_GtkRcProperty>;
 
 define C-function gtk-style-get-type
   result res :: <GType>;
@@ -14352,8 +15541,18 @@ define C-function pango-trim-string
   c-name: "pango_trim_string";
 end;
 
-define C-subtype <_iobuf> (<C-void*>) end;
-define constant <FILE> = <_iobuf>;
+define C-struct <_iobuf>
+  slot iobuf-_ptr :: <char*>;
+  slot iobuf-_cnt :: <C-signed-int>;
+  slot iobuf-_base :: <char*>;
+  slot iobuf-_flag :: <C-signed-int>;
+  slot iobuf-_file :: <C-signed-int>;
+  slot iobuf-_charbuf :: <C-signed-int>;
+  slot iobuf-_bufsiz :: <C-signed-int>;
+  slot iobuf-_tmpfname :: <char*>;
+end;
+
+define C-pointer-type <FILE> => <_iobuf>;
 
 define C-function pango-read-line
   input parameter arg1 :: <FILE>;
@@ -14514,8 +15713,10 @@ end;
 
 define constant $PANGO-VERSION = 11601;
 
-define C-subtype <_PangoFontMetrics> (<C-void*>) end;
-define constant <PangoFontMetrics> = <_PangoFontMetrics>;
+define C-struct <_PangoFontMetrics>
+end;
+
+define C-pointer-type <PangoFontMetrics> => <_PangoFontMetrics>;
 
 define constant <PangoFontMask> = <C-int>;
 define constant $PANGO-FONT-MASK-FAMILY = 1;
@@ -14875,11 +16076,15 @@ define C-function pango-font-describe-with-absolute-size
   c-name: "pango_font_describe_with_absolute_size";
 end;
 
-define C-subtype <_PangoCoverage> (<C-void*>) end;
-define constant <PangoCoverage> = <_PangoCoverage>;
+define C-struct <_PangoCoverage>
+end;
 
-define C-subtype <_PangoLanguage> (<C-void*>) end;
-define constant <PangoLanguage> = <_PangoLanguage>;
+define C-pointer-type <PangoCoverage> => <_PangoCoverage>;
+
+define C-struct <_PangoLanguage>
+end;
+
+define C-pointer-type <PangoLanguage> => <_PangoLanguage>;
 
 define C-function pango-font-get-coverage
   input parameter arg1 :: <PangoFont>;
@@ -14888,8 +16093,10 @@ define C-function pango-font-get-coverage
   c-name: "pango_font_get_coverage";
 end;
 
-define C-subtype <_PangoEngineShape> (<C-void*>) end;
-define constant <PangoEngineShape> = <_PangoEngineShape>;
+define C-struct <_PangoEngineShape>
+end;
+
+define C-pointer-type <PangoEngineShape> => <_PangoEngineShape>;
 
 define C-function pango-font-find-shaper
   input parameter arg1 :: <PangoFont>;
@@ -14908,8 +16115,14 @@ end;
 
 define constant <PangoGlyph> = <guint32>;
 
-define C-subtype <_PangoRectangle> (<C-void*>) end;
-define constant <PangoRectangle> = <_PangoRectangle>;
+define C-struct <_PangoRectangle>
+  slot PangoRectangle-x :: <C-signed-int>;
+  slot PangoRectangle-y :: <C-signed-int>;
+  slot PangoRectangle-width :: <C-signed-int>;
+  slot PangoRectangle-height :: <C-signed-int>;
+end;
+
+define C-pointer-type <PangoRectangle> => <_PangoRectangle>;
 
 define C-function pango-font-get-glyph-extents
   input parameter arg1 :: <PangoFont>;
@@ -14928,11 +16141,26 @@ define C-function pango-font-get-font-map
   c-name: "pango_font_get_font_map";
 end;
 
-define C-subtype <_PangoLogAttr> (<C-void*>) end;
-define constant <PangoLogAttr> = <_PangoLogAttr>;
+define C-struct <_PangoLogAttr>
+  bitfield slot PangoLogAttr-is-line-break :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-mandatory-break :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-char-break :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-white :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-cursor-position :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-word-start :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-word-end :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-sentence-boundary :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-sentence-start :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-is-sentence-end :: <C-int>, width: 1;
+  bitfield slot PangoLogAttr-backspace-deletes-character :: <C-int>, width: 1;
+end;
 
-define C-subtype <_PangoEngineLang> (<C-void*>) end;
-define constant <PangoEngineLang> = <_PangoEngineLang>;
+define C-pointer-type <PangoLogAttr> => <_PangoLogAttr>;
+
+define C-struct <_PangoEngineLang>
+end;
+
+define C-pointer-type <PangoEngineLang> => <_PangoEngineLang>;
 
 define C-function pango-units-from-double
   input parameter arg1 :: <C-double>;
@@ -15014,8 +16242,16 @@ define C-function pango-gravity-to-rotation
   c-name: "pango_gravity_to_rotation";
 end;
 
-define C-subtype <_PangoMatrix> (<C-void*>) end;
-define constant <PangoMatrix> = <_PangoMatrix>;
+define C-struct <_PangoMatrix>
+  slot PangoMatrix-xx :: <C-double>;
+  slot PangoMatrix-xy :: <C-double>;
+  slot PangoMatrix-yx :: <C-double>;
+  slot PangoMatrix-yy :: <C-double>;
+  slot PangoMatrix-x0 :: <C-double>;
+  slot PangoMatrix-y0 :: <C-double>;
+end;
+
+define C-pointer-type <PangoMatrix> => <_PangoMatrix>;
 
 define C-function pango-gravity-get-for-matrix
   input parameter arg1 :: <PangoMatrix>;
@@ -15101,8 +16337,10 @@ define C-function pango-gravity-get-for-script
   c-name: "pango_gravity_get_for_script";
 end;
 
-define C-subtype <_PangoScriptIter> (<C-void*>) end;
-define constant <PangoScriptIter> = <_PangoScriptIter>;
+define C-struct <_PangoScriptIter>
+end;
+
+define C-pointer-type <PangoScriptIter> => <_PangoScriptIter>;
 
 define C-function pango-script-for-unichar
   input parameter arg1 :: <gunichar>;
@@ -15356,8 +16594,10 @@ define constant $_IOAPPEND = 512;
 
 define constant $WEOF = 65535;
 
-define C-subtype <_PangoTabArray> (<C-void*>) end;
-define constant <PangoTabArray> = <_PangoTabArray>;
+define C-struct <_PangoTabArray>
+end;
+
+define C-pointer-type <PangoTabArray> => <_PangoTabArray>;
 
 define constant <PangoTabAlign> = <C-int>;
 define constant $PANGO-TAB-LEFT = 0;
@@ -15445,25 +16685,46 @@ define constant $PANGO-UNDERLINE-DOUBLE = 2;
 define constant $PANGO-UNDERLINE-LOW = 3;
 define constant $PANGO-UNDERLINE-ERROR = 4;
 
-define C-subtype <_PangoRendererPrivate> (<C-void*>) end;
-define constant <PangoRendererPrivate> = <_PangoRendererPrivate>;
+define C-struct <_PangoRendererPrivate>
+end;
+
+define C-pointer-type <PangoRendererPrivate> => <_PangoRendererPrivate>;
 
 define C-subtype <_PangoRenderer> (<_GObject>) end;
 define constant <PangoRenderer> = <_PangoRenderer>;
 
 define constant <PangoGlyphUnit> = <gint32>;
 
-define C-subtype <_PangoGlyphGeometry> (<C-void*>) end;
-define constant <PangoGlyphGeometry> = <_PangoGlyphGeometry>;
+define C-struct <_PangoGlyphGeometry>
+  slot PangoGlyphGeometry-width :: <C-signed-int>;
+  slot PangoGlyphGeometry-x-offset :: <C-signed-int>;
+  slot PangoGlyphGeometry-y-offset :: <C-signed-int>;
+end;
 
-define C-subtype <_PangoGlyphVisAttr> (<C-void*>) end;
-define constant <PangoGlyphVisAttr> = <_PangoGlyphVisAttr>;
+define C-pointer-type <PangoGlyphGeometry> => <_PangoGlyphGeometry>;
 
-define C-subtype <_PangoGlyphInfo> (<C-void*>) end;
-define constant <PangoGlyphInfo> = <_PangoGlyphInfo>;
+define C-struct <_PangoGlyphVisAttr>
+  bitfield slot PangoGlyphVisAttr-is-cluster-start :: <C-int>, width: 1;
+end;
 
-define C-subtype <_PangoGlyphString> (<C-void*>) end;
-define constant <PangoGlyphString> = <_PangoGlyphString>;
+define C-pointer-type <PangoGlyphVisAttr> => <_PangoGlyphVisAttr>;
+
+define C-struct <_PangoGlyphInfo>
+  slot PangoGlyphInfo-glyph :: <C-unsigned-int>;
+  slot PangoGlyphInfo-geometry :: <_PangoGlyphGeometry>;
+  slot PangoGlyphInfo-attr :: <_PangoGlyphVisAttr>;
+end;
+
+define C-pointer-type <PangoGlyphInfo> => <_PangoGlyphInfo>;
+
+define C-struct <_PangoGlyphString>
+  slot PangoGlyphString-num-glyphs :: <C-signed-int>;
+  slot PangoGlyphString-glyphs :: <PangoGlyphInfo>;
+  slot PangoGlyphString-log-clusters :: <gint*>;
+  slot PangoGlyphString-space :: <C-signed-int>;
+end;
+
+define C-pointer-type <PangoGlyphString> => <_PangoGlyphString>;
 
 define constant <anonymous-2151> = <C-function-pointer>;
 define constant <PangoRenderPart> = <C-int>;
@@ -15502,17 +16763,36 @@ define constant $PANGO-ATTR-GRAVITY-HINT = 22;
 define constant <anonymous-1920> = <C-function-pointer>;
 define constant <anonymous-1921> = <C-function-pointer>;
 define constant <anonymous-1922> = <C-function-pointer>;
-define C-subtype <_PangoAttrClass> (<C-void*>) end;
-define constant <PangoAttrClass> = <_PangoAttrClass>;
+define C-struct <_PangoAttrClass>
+  slot PangoAttrClass-type :: <PangoAttrType>;
+  slot PangoAttrClass-copy :: <anonymous-1920>;
+  slot PangoAttrClass-destroy :: <anonymous-1921>;
+  slot PangoAttrClass-equal :: <anonymous-1922>;
+end;
 
-define C-subtype <_PangoAttribute> (<C-void*>) end;
-define constant <PangoAttribute> = <_PangoAttribute>;
+define C-pointer-type <PangoAttrClass> => <_PangoAttrClass>;
+
+define C-struct <_PangoAttribute>
+  slot PangoAttribute-klass :: <PangoAttrClass>;
+  slot PangoAttribute-start-index :: <C-unsigned-int>;
+  slot PangoAttribute-end-index :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <PangoAttribute> => <_PangoAttribute>;
 
 define constant <anonymous-1919> = <C-function-pointer>;
 define constant <PangoAttrDataCopyFunc> = <anonymous-1919>;
 
-define C-subtype <_PangoAttrShape> (<C-void*>) end;
-define constant <PangoAttrShape> = <_PangoAttrShape>;
+define C-struct <_PangoAttrShape>
+  slot PangoAttrShape-attr :: <_PangoAttribute>;
+  slot PangoAttrShape-ink-rect :: <_PangoRectangle>;
+  slot PangoAttrShape-logical-rect :: <_PangoRectangle>;
+  slot PangoAttrShape-data :: <C-void*>;
+  slot PangoAttrShape-copy-func :: <anonymous-1919>;
+  slot PangoAttrShape-destroy-func :: <anonymous-212>;
+end;
+
+define C-pointer-type <PangoAttrShape> => <_PangoAttrShape>;
 
 define constant <anonymous-2154> = <C-function-pointer>;
 define constant <anonymous-2155> = <C-function-pointer>;
@@ -15520,14 +16800,34 @@ define constant <anonymous-2156> = <C-function-pointer>;
 define constant <anonymous-2157> = <C-function-pointer>;
 define constant <anonymous-2158> = <C-function-pointer>;
 define constant <anonymous-2159> = <C-function-pointer>;
-define C-subtype <_PangoAnalysis> (<C-void*>) end;
-define constant <PangoAnalysis> = <_PangoAnalysis>;
+define C-struct <_PangoAnalysis>
+  slot PangoAnalysis-shape-engine :: <PangoEngineShape>;
+  slot PangoAnalysis-lang-engine :: <PangoEngineLang>;
+  slot PangoAnalysis-font :: <PangoFont>;
+  slot PangoAnalysis-level :: <C-unsigned-char>;
+  slot PangoAnalysis-gravity :: <C-unsigned-char>;
+  slot PangoAnalysis-flags :: <C-unsigned-char>;
+  slot PangoAnalysis-language :: <PangoLanguage>;
+  slot PangoAnalysis-extra-attrs :: <GSList>;
+end;
 
-define C-subtype <_PangoItem> (<C-void*>) end;
-define constant <PangoItem> = <_PangoItem>;
+define C-pointer-type <PangoAnalysis> => <_PangoAnalysis>;
 
-define C-subtype <_PangoGlyphItem> (<C-void*>) end;
-define constant <PangoGlyphItem> = <_PangoGlyphItem>;
+define C-struct <_PangoItem>
+  slot PangoItem-offset :: <C-signed-int>;
+  slot PangoItem-length :: <C-signed-int>;
+  slot PangoItem-num-chars :: <C-signed-int>;
+  slot PangoItem-analysis :: <_PangoAnalysis>;
+end;
+
+define C-pointer-type <PangoItem> => <_PangoItem>;
+
+define C-struct <_PangoGlyphItem>
+  slot PangoGlyphItem-item :: <PangoItem>;
+  slot PangoGlyphItem-glyphs :: <PangoGlyphString>;
+end;
+
+define C-pointer-type <PangoGlyphItem> => <_PangoGlyphItem>;
 
 define constant <PangoLayoutRun> = <PangoGlyphItem>;
 
@@ -15536,8 +16836,25 @@ define constant <anonymous-2161> = <C-function-pointer>;
 define constant <anonymous-2162> = <C-function-pointer>;
 define constant <anonymous-2163> = <C-function-pointer>;
 define constant <anonymous-2164> = <C-function-pointer>;
-define C-subtype <_PangoRendererClass> (<C-void*>) end;
-define constant <PangoRendererClass> = <_PangoRendererClass>;
+define C-struct <_PangoRendererClass>
+  slot PangoRendererClass-parent-class :: <_GObjectClass>;
+  slot PangoRendererClass-draw-glyphs :: <anonymous-2151>;
+  slot PangoRendererClass-draw-rectangle :: <anonymous-2152>;
+  slot PangoRendererClass-draw-error-underline :: <anonymous-2153>;
+  slot PangoRendererClass-draw-shape :: <anonymous-2154>;
+  slot PangoRendererClass-draw-trapezoid :: <anonymous-2155>;
+  slot PangoRendererClass-draw-glyph :: <anonymous-2156>;
+  slot PangoRendererClass-part-changed :: <anonymous-2157>;
+  slot PangoRendererClass-begin :: <anonymous-2158>;
+  slot PangoRendererClass-end :: <anonymous-2159>;
+  slot PangoRendererClass-prepare-run :: <anonymous-2160>;
+  slot PangoRendererClass-_pango-reserved1 :: <anonymous-2161>;
+  slot PangoRendererClass-_pango-reserved2 :: <anonymous-2162>;
+  slot PangoRendererClass-_pango-reserved3 :: <anonymous-2163>;
+  slot PangoRendererClass-_pango-reserved4 :: <anonymous-2164>;
+end;
+
+define C-pointer-type <PangoRendererClass> => <_PangoRendererClass>;
 
 define C-function pango-renderer-get-type
   result res :: <GType>;
@@ -15552,8 +16869,16 @@ define C-function pango-renderer-draw-layout
   c-name: "pango_renderer_draw_layout";
 end;
 
-define C-subtype <_PangoLayoutLine> (<C-void*>) end;
-define constant <PangoLayoutLine> = <_PangoLayoutLine>;
+define C-struct <_PangoLayoutLine>
+  slot PangoLayoutLine-layout :: <PangoLayout>;
+  slot PangoLayoutLine-start-index :: <C-signed-int>;
+  slot PangoLayoutLine-length :: <C-signed-int>;
+  slot PangoLayoutLine-runs :: <GSList>;
+  bitfield slot PangoLayoutLine-is-paragraph-start :: <C-int>, width: 1;
+  bitfield slot PangoLayoutLine-resolved-dir :: <C-int>, width: 3;
+end;
+
+define C-pointer-type <PangoLayoutLine> => <_PangoLayoutLine>;
 
 define C-function pango-renderer-draw-layout-line
   input parameter arg1 :: <PangoRenderer>;
@@ -15628,8 +16953,13 @@ define C-function pango-renderer-part-changed
   c-name: "pango_renderer_part_changed";
 end;
 
-define C-subtype <_PangoColor> (<C-void*>) end;
-define constant <PangoColor> = <_PangoColor>;
+define C-struct <_PangoColor>
+  slot PangoColor-red :: <C-unsigned-short>;
+  slot PangoColor-green :: <C-unsigned-short>;
+  slot PangoColor-blue :: <C-unsigned-short>;
+end;
+
+define C-pointer-type <PangoColor> => <_PangoColor>;
 
 define C-function pango-renderer-set-color
   input parameter arg1 :: <PangoRenderer>;
@@ -15657,8 +16987,10 @@ define C-function pango-renderer-get-matrix
   c-name: "pango_renderer_get_matrix";
 end;
 
-define C-subtype <_PangoLayoutClass> (<C-void*>) end;
-define constant <PangoLayoutClass> = <_PangoLayoutClass>;
+define C-struct <_PangoLayoutClass>
+end;
+
+define C-pointer-type <PangoLayoutClass> => <_PangoLayoutClass>;
 
 define constant <PangoAlignment> = <C-int>;
 define constant $PANGO-ALIGN-LEFT = 0;
@@ -15699,8 +17031,10 @@ define C-function pango-layout-get-context
   c-name: "pango_layout_get_context";
 end;
 
-define C-subtype <_PangoAttrList> (<C-void*>) end;
-define constant <PangoAttrList> = <_PangoAttrList>;
+define C-struct <_PangoAttrList>
+end;
+
+define C-pointer-type <PangoAttrList> => <_PangoAttrList>;
 
 define C-function pango-layout-set-attributes
   input parameter arg1 :: <PangoLayout>;
@@ -16067,8 +17401,10 @@ define C-function pango-layout-line-get-pixel-extents
   c-name: "pango_layout_line_get_pixel_extents";
 end;
 
-define C-subtype <_PangoLayoutIter> (<C-void*>) end;
-define constant <PangoLayoutIter> = <_PangoLayoutIter>;
+define C-struct <_PangoLayoutIter>
+end;
+
+define C-pointer-type <PangoLayoutIter> => <_PangoLayoutIter>;
 
 define C-function pango-layout-iter-get-type
   result res :: <GType>;
@@ -16405,29 +17741,60 @@ define C-function pango-color-to-string
   c-name: "pango_color_to_string";
 end;
 
-define C-subtype <_PangoAttrString> (<C-void*>) end;
-define constant <PangoAttrString> = <_PangoAttrString>;
+define C-struct <_PangoAttrString>
+  slot PangoAttrString-attr :: <_PangoAttribute>;
+  slot PangoAttrString-value :: <char*>;
+end;
 
-define C-subtype <_PangoAttrLanguage> (<C-void*>) end;
-define constant <PangoAttrLanguage> = <_PangoAttrLanguage>;
+define C-pointer-type <PangoAttrString> => <_PangoAttrString>;
 
-define C-subtype <_PangoAttrInt> (<C-void*>) end;
-define constant <PangoAttrInt> = <_PangoAttrInt>;
+define C-struct <_PangoAttrLanguage>
+  slot PangoAttrLanguage-attr :: <_PangoAttribute>;
+  slot PangoAttrLanguage-value :: <PangoLanguage>;
+end;
 
-define C-subtype <_PangoAttrSize> (<C-void*>) end;
-define constant <PangoAttrSize> = <_PangoAttrSize>;
+define C-pointer-type <PangoAttrLanguage> => <_PangoAttrLanguage>;
 
-define C-subtype <_PangoAttrFloat> (<C-void*>) end;
-define constant <PangoAttrFloat> = <_PangoAttrFloat>;
+define C-struct <_PangoAttrInt>
+  slot PangoAttrInt-attr :: <_PangoAttribute>;
+  slot PangoAttrInt-value :: <C-signed-int>;
+end;
 
-define C-subtype <_PangoAttrColor> (<C-void*>) end;
-define constant <PangoAttrColor> = <_PangoAttrColor>;
+define C-pointer-type <PangoAttrInt> => <_PangoAttrInt>;
 
-define C-subtype <_PangoAttrFontDesc> (<C-void*>) end;
-define constant <PangoAttrFontDesc> = <_PangoAttrFontDesc>;
+define C-struct <_PangoAttrSize>
+  slot PangoAttrSize-attr :: <_PangoAttribute>;
+  slot PangoAttrSize-size :: <C-signed-int>;
+  bitfield slot PangoAttrSize-absolute :: <C-int>, width: 1;
+end;
 
-define C-subtype <_PangoAttrIterator> (<C-void*>) end;
-define constant <PangoAttrIterator> = <_PangoAttrIterator>;
+define C-pointer-type <PangoAttrSize> => <_PangoAttrSize>;
+
+define C-struct <_PangoAttrFloat>
+  slot PangoAttrFloat-attr :: <_PangoAttribute>;
+  slot PangoAttrFloat-value :: <C-double>;
+end;
+
+define C-pointer-type <PangoAttrFloat> => <_PangoAttrFloat>;
+
+define C-struct <_PangoAttrColor>
+  slot PangoAttrColor-attr :: <_PangoAttribute>;
+  slot PangoAttrColor-color :: <_PangoColor>;
+end;
+
+define C-pointer-type <PangoAttrColor> => <_PangoAttrColor>;
+
+define C-struct <_PangoAttrFontDesc>
+  slot PangoAttrFontDesc-attr :: <_PangoAttribute>;
+  slot PangoAttrFontDesc-desc :: <PangoFontDescription>;
+end;
+
+define C-pointer-type <PangoAttrFontDesc> => <_PangoAttrFontDesc>;
+
+define C-struct <_PangoAttrIterator>
+end;
+
+define C-pointer-type <PangoAttrIterator> => <_PangoAttrIterator>;
 
 define constant <anonymous-1918> = <C-function-pointer>;
 define constant <PangoAttrFilterFunc> = <anonymous-1918>;
@@ -16734,8 +18101,10 @@ define C-function pango-parse-markup
   c-name: "pango_parse_markup";
 end;
 
-define C-subtype <_PangoContextClass> (<C-void*>) end;
-define constant <PangoContextClass> = <_PangoContextClass>;
+define C-struct <_PangoContextClass>
+end;
+
+define C-pointer-type <PangoContextClass> => <_PangoContextClass>;
 
 define C-function pango-context-get-type
   result res :: <GType>;
@@ -17518,8 +18887,12 @@ define constant $GDK-XTERM = 152;
 define constant $GDK-LAST-CURSOR = 153;
 define constant $GDK-CURSOR-IS-PIXMAP = -1;
 
-define C-subtype <_GdkCursor> (<C-void*>) end;
-define constant <GdkCursor> = <_GdkCursor>;
+define C-struct <_GdkCursor>
+  slot GdkCursor-type :: <GdkCursorType>;
+  slot GdkCursor-ref-count :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GdkCursor> => <_GdkCursor>;
 
 define C-function gdk-pointer-grab
   input parameter arg1 :: <GdkWindow>;
@@ -17700,13 +19073,33 @@ define constant $GDK-WINDOW-DIALOG = 3;
 define constant $GDK-WINDOW-TEMP = 4;
 define constant $GDK-WINDOW-FOREIGN = 5;
 
-define C-subtype <_GdkWindowAttr> (<C-void*>) end;
-define constant <GdkWindowAttr> = <_GdkWindowAttr>;
+define C-struct <_GdkWindowAttr>
+  slot GdkWindowAttr-title :: <gchar*>;
+  slot GdkWindowAttr-event-mask :: <C-signed-int>;
+  slot GdkWindowAttr-x :: <C-signed-int>;
+  slot GdkWindowAttr-y :: <C-signed-int>;
+  slot GdkWindowAttr-width :: <C-signed-int>;
+  slot GdkWindowAttr-height :: <C-signed-int>;
+  slot GdkWindowAttr-wclass :: <GdkWindowClass>;
+  slot GdkWindowAttr-visual :: <GdkVisual>;
+  slot GdkWindowAttr-colormap :: <GdkColormap>;
+  slot GdkWindowAttr-window-type :: <GdkWindowType>;
+  slot GdkWindowAttr-cursor :: <GdkCursor>;
+  slot GdkWindowAttr-wmclass-name :: <gchar*>;
+  slot GdkWindowAttr-wmclass-class :: <gchar*>;
+  slot GdkWindowAttr-override-redirect :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkWindowAttr> => <_GdkWindowAttr>;
 
 define constant <anonymous-2978> = <C-function-pointer>;
 define constant <anonymous-2979> = <C-function-pointer>;
-define C-subtype <_GdkPointerHooks> (<C-void*>) end;
-define constant <GdkPointerHooks> = <_GdkPointerHooks>;
+define C-struct <_GdkPointerHooks>
+  slot GdkPointerHooks-get-pointer :: <anonymous-2978>;
+  slot GdkPointerHooks-window-at-pointer :: <anonymous-2979>;
+end;
+
+define C-pointer-type <GdkPointerHooks> => <_GdkPointerHooks>;
 
 define constant <GdkWindowAttributesType> = <C-int>;
 define constant $GDK-WA-TITLE = 2;
@@ -17735,9 +19128,37 @@ define constant $GDK-FUNC-MINIMIZE = 8;
 define constant $GDK-FUNC-MAXIMIZE = 16;
 define constant $GDK-FUNC-CLOSE = 32;
 
-define constant <GdkWindowObject> = <_GdkWindowObject>;
+define C-pointer-type <GdkWindowObject> => <_GdkWindowObject>;
 
-define C-subtype <_GdkWindowObject> (<C-void*>) end;
+define C-struct <_GdkWindowObject>
+  slot GdkWindowObject-parent-instance :: <_GdkDrawable>;
+  slot GdkWindowObject-impl :: <GdkDrawable>;
+  slot GdkWindowObject-parent :: <GdkWindowObject>;
+  slot GdkWindowObject-user-data :: <C-void*>;
+  slot GdkWindowObject-x :: <C-signed-int>;
+  slot GdkWindowObject-y :: <C-signed-int>;
+  slot GdkWindowObject-extension-events :: <C-signed-int>;
+  slot GdkWindowObject-filters :: <GList>;
+  slot GdkWindowObject-children :: <GList>;
+  slot GdkWindowObject-bg-color :: <_GdkColor>;
+  slot GdkWindowObject-bg-pixmap :: <GdkPixmap>;
+  slot GdkWindowObject-paint-stack :: <GSList>;
+  slot GdkWindowObject-update-area :: <GdkRegion>;
+  slot GdkWindowObject-update-freeze-count :: <C-unsigned-int>;
+  slot GdkWindowObject-window-type :: <C-unsigned-char>;
+  slot GdkWindowObject-depth :: <C-unsigned-char>;
+  slot GdkWindowObject-resize-count :: <C-unsigned-char>;
+  slot GdkWindowObject-state :: <GdkWindowState>;
+  bitfield slot GdkWindowObject-guffaw-gravity :: <C-int>, width: 1;
+  bitfield slot GdkWindowObject-input-only :: <C-int>, width: 1;
+  bitfield slot GdkWindowObject-modal-hint :: <C-int>, width: 1;
+  bitfield slot GdkWindowObject-destroyed :: <C-int>, width: 2;
+  bitfield slot GdkWindowObject-accept-focus :: <C-int>, width: 1;
+  bitfield slot GdkWindowObject-focus-on-map :: <C-int>, width: 1;
+  bitfield slot GdkWindowObject-shaped :: <C-int>, width: 1;
+  slot GdkWindowObject-event-mask :: <GdkEventMask>;
+end;
+
 define constant <GdkFunction> = <C-int>;
 define constant $GDK-COPY = 0;
 define constant $GDK-INVERT = 1;
@@ -17782,8 +19203,28 @@ define constant $GDK-JOIN-MITER = 0;
 define constant $GDK-JOIN-ROUND = 1;
 define constant $GDK-JOIN-BEVEL = 2;
 
-define C-subtype <_GdkGCValues> (<C-void*>) end;
-define constant <GdkGCValues> = <_GdkGCValues>;
+define C-struct <_GdkGCValues>
+  slot GdkGCValues-foreground :: <_GdkColor>;
+  slot GdkGCValues-background :: <_GdkColor>;
+  slot GdkGCValues-font :: <GdkFont>;
+  slot GdkGCValues-function :: <GdkFunction>;
+  slot GdkGCValues-fill :: <GdkFill>;
+  slot GdkGCValues-tile :: <GdkPixmap>;
+  slot GdkGCValues-stipple :: <GdkPixmap>;
+  slot GdkGCValues-clip-mask :: <GdkPixmap>;
+  slot GdkGCValues-subwindow-mode :: <GdkSubwindowMode>;
+  slot GdkGCValues-ts-x-origin :: <C-signed-int>;
+  slot GdkGCValues-ts-y-origin :: <C-signed-int>;
+  slot GdkGCValues-clip-x-origin :: <C-signed-int>;
+  slot GdkGCValues-clip-y-origin :: <C-signed-int>;
+  slot GdkGCValues-graphics-exposures :: <C-signed-int>;
+  slot GdkGCValues-line-width :: <C-signed-int>;
+  slot GdkGCValues-line-style :: <GdkLineStyle>;
+  slot GdkGCValues-cap-style :: <GdkCapStyle>;
+  slot GdkGCValues-join-style :: <GdkJoinStyle>;
+end;
+
+define C-pointer-type <GdkGCValues> => <_GdkGCValues>;
 
 define constant <GdkGCValuesMask> = <C-int>;
 define constant $GDK-GC-FOREGROUND = 1;
@@ -17813,8 +19254,14 @@ define constant <anonymous-2662> = <C-function-pointer>;
 define constant <anonymous-2663> = <C-function-pointer>;
 define constant <anonymous-2664> = <C-function-pointer>;
 define constant <anonymous-2665> = <C-function-pointer>;
-define C-subtype <_GdkSegment> (<C-void*>) end;
-define constant <GdkSegment> = <_GdkSegment>;
+define C-struct <_GdkSegment>
+  slot GdkSegment-x1 :: <C-signed-int>;
+  slot GdkSegment-y1 :: <C-signed-int>;
+  slot GdkSegment-x2 :: <C-signed-int>;
+  slot GdkSegment-y2 :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkSegment> => <_GdkSegment>;
 
 define constant <anonymous-2666> = <C-function-pointer>;
 define constant <anonymous-2667> = <C-function-pointer>;
@@ -17846,12 +19293,22 @@ define constant $GDK-RGB-DITHER-MAX = 2;
 define constant <anonymous-2680> = <C-function-pointer>;
 define constant <anonymous-2681> = <C-function-pointer>;
 define constant <anonymous-2682> = <C-function-pointer>;
-define C-subtype <_GdkTrapezoid> (<C-void*>) end;
-define constant <GdkTrapezoid> = <_GdkTrapezoid>;
+define C-struct <_GdkTrapezoid>
+  slot GdkTrapezoid-y1 :: <C-double>;
+  slot GdkTrapezoid-x11 :: <C-double>;
+  slot GdkTrapezoid-x21 :: <C-double>;
+  slot GdkTrapezoid-y2 :: <C-double>;
+  slot GdkTrapezoid-x12 :: <C-double>;
+  slot GdkTrapezoid-x22 :: <C-double>;
+end;
+
+define C-pointer-type <GdkTrapezoid> => <_GdkTrapezoid>;
 
 define constant <anonymous-2683> = <C-function-pointer>;
-define C-subtype <_cairo-surface> (<C-void*>) end;
-define constant <cairo-surface-t> = <_cairo-surface>;
+define C-struct <_cairo-surface>
+end;
+
+define C-pointer-type <cairo-surface-t> => <_cairo-surface>;
 
 define constant <anonymous-2684> = <C-function-pointer>;
 define constant <anonymous-2685> = <C-function-pointer>;
@@ -17866,11 +19323,56 @@ define constant <anonymous-2693> = <C-function-pointer>;
 define constant <anonymous-2694> = <C-function-pointer>;
 define constant <anonymous-2695> = <C-function-pointer>;
 define constant <anonymous-2696> = <C-function-pointer>;
-define C-subtype <_GdkDrawableClass> (<C-void*>) end;
-define constant <GdkDrawableClass> = <_GdkDrawableClass>;
+define C-struct <_GdkDrawableClass>
+  slot GdkDrawableClass-parent-class :: <_GObjectClass>;
+  slot GdkDrawableClass-create-gc :: <anonymous-2658>;
+  slot GdkDrawableClass-draw-rectangle :: <anonymous-2659>;
+  slot GdkDrawableClass-draw-arc :: <anonymous-2660>;
+  slot GdkDrawableClass-draw-polygon :: <anonymous-2661>;
+  slot GdkDrawableClass-draw-text :: <anonymous-2662>;
+  slot GdkDrawableClass-draw-text-wc :: <anonymous-2663>;
+  slot GdkDrawableClass-draw-drawable :: <anonymous-2664>;
+  slot GdkDrawableClass-draw-points :: <anonymous-2665>;
+  slot GdkDrawableClass-draw-segments :: <anonymous-2666>;
+  slot GdkDrawableClass-draw-lines :: <anonymous-2667>;
+  slot GdkDrawableClass-draw-glyphs :: <anonymous-2668>;
+  slot GdkDrawableClass-draw-image :: <anonymous-2669>;
+  slot GdkDrawableClass-get-depth :: <anonymous-2670>;
+  slot GdkDrawableClass-get-size :: <anonymous-2671>;
+  slot GdkDrawableClass-set-colormap :: <anonymous-2672>;
+  slot GdkDrawableClass-get-colormap :: <anonymous-2673>;
+  slot GdkDrawableClass-get-visual :: <anonymous-2674>;
+  slot GdkDrawableClass-get-screen :: <anonymous-2675>;
+  slot GdkDrawableClass-get-image :: <anonymous-2676>;
+  slot GdkDrawableClass-get-clip-region :: <anonymous-2677>;
+  slot GdkDrawableClass-get-visible-region :: <anonymous-2678>;
+  slot GdkDrawableClass-get-composite-drawable :: <anonymous-2679>;
+  slot GdkDrawableClass-draw-pixbuf :: <anonymous-2680>;
+  slot GdkDrawableClass-_copy-to-image :: <anonymous-2681>;
+  slot GdkDrawableClass-draw-glyphs-transformed :: <anonymous-2682>;
+  slot GdkDrawableClass-draw-trapezoids :: <anonymous-2683>;
+  slot GdkDrawableClass-ref-cairo-surface :: <anonymous-2684>;
+  slot GdkDrawableClass-_gdk-reserved4 :: <anonymous-2685>;
+  slot GdkDrawableClass-_gdk-reserved5 :: <anonymous-2686>;
+  slot GdkDrawableClass-_gdk-reserved6 :: <anonymous-2687>;
+  slot GdkDrawableClass-_gdk-reserved7 :: <anonymous-2688>;
+  slot GdkDrawableClass-_gdk-reserved9 :: <anonymous-2689>;
+  slot GdkDrawableClass-_gdk-reserved10 :: <anonymous-2690>;
+  slot GdkDrawableClass-_gdk-reserved11 :: <anonymous-2691>;
+  slot GdkDrawableClass-_gdk-reserved12 :: <anonymous-2692>;
+  slot GdkDrawableClass-_gdk-reserved13 :: <anonymous-2693>;
+  slot GdkDrawableClass-_gdk-reserved14 :: <anonymous-2694>;
+  slot GdkDrawableClass-_gdk-reserved15 :: <anonymous-2695>;
+  slot GdkDrawableClass-_gdk-reserved16 :: <anonymous-2696>;
+end;
 
-define C-subtype <_GdkWindowObjectClass> (<C-void*>) end;
-define constant <GdkWindowObjectClass> = <_GdkWindowObjectClass>;
+define C-pointer-type <GdkDrawableClass> => <_GdkDrawableClass>;
+
+define C-struct <_GdkWindowObjectClass>
+  slot GdkWindowObjectClass-parent-class :: <_GdkDrawableClass>;
+end;
+
+define C-pointer-type <GdkWindowObjectClass> => <_GdkWindowObjectClass>;
 
 define C-function gdk-window-object-get-type
   result res :: <GType>;
@@ -18785,12 +20287,18 @@ end;
 
 define constant $GDK-PRIORITY-REDRAW = 120;
 
-define C-subtype <_GdkDeviceClass> (<C-void*>) end;
-define constant <GdkDeviceClass> = <_GdkDeviceClass>;
+define C-struct <_GdkDeviceClass>
+end;
+
+define C-pointer-type <GdkDeviceClass> => <_GdkDeviceClass>;
 
 define constant <gdouble<@128>> = <gdouble*>;
-define C-subtype <_GdkTimeCoord> (<C-void*>) end;
-define constant <GdkTimeCoord> = <_GdkTimeCoord>;
+define C-struct <_GdkTimeCoord>
+  slot GdkTimeCoord-time :: <C-unsigned-int>;
+  slot GdkTimeCoord-axes :: <gdouble<@128>>;
+end;
+
+define C-pointer-type <GdkTimeCoord> => <_GdkTimeCoord>;
 
 define C-function gdk-device-get-type
   result res :: <GType>;
@@ -18880,8 +20388,13 @@ end;
 
 define constant $GDK-MAX-TIMECOORD-AXES = 128;
 
-define C-subtype <_GdkSpan> (<C-void*>) end;
-define constant <GdkSpan> = <_GdkSpan>;
+define C-struct <_GdkSpan>
+  slot GdkSpan-x :: <C-signed-int>;
+  slot GdkSpan-y :: <C-signed-int>;
+  slot GdkSpan-width :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkSpan> => <_GdkSpan>;
 
 define constant <GdkStatus> = <C-int>;
 define constant $GDK-OK = 0;
@@ -18900,8 +20413,11 @@ define constant $GDK-HAVE-WCTYPE-H = 1;
 
 define constant $GDK-HAVE-BROKEN-WCTYPE = 1;
 
-define C-subtype <_GdkDragContextClass> (<C-void*>) end;
-define constant <GdkDragContextClass> = <_GdkDragContextClass>;
+define C-struct <_GdkDragContextClass>
+  slot GdkDragContextClass-parent-class :: <_GObjectClass>;
+end;
+
+define C-pointer-type <GdkDragContextClass> => <_GdkDragContextClass>;
 
 define C-function gdk-drag-context-get-type
   result res :: <GType>;
@@ -19025,8 +20541,11 @@ define C-function gdk-drag-drop-succeeded
   c-name: "gdk_drag_drop_succeeded";
 end;
 
-define C-subtype <_GdkColormapClass> (<C-void*>) end;
-define constant <GdkColormapClass> = <_GdkColormapClass>;
+define C-struct <_GdkColormapClass>
+  slot GdkColormapClass-parent-class :: <_GObjectClass>;
+end;
+
+define C-pointer-type <GdkColormapClass> => <_GdkColormapClass>;
 
 define C-function gdk-colormap-get-type
   result res :: <GType>;
@@ -19215,20 +20734,35 @@ end;
 
 define constant <cairo-bool-t> = <C-signed-int>;
 
-define C-subtype <_cairo> (<C-void*>) end;
-define constant <cairo-t> = <_cairo>;
+define C-struct <_cairo>
+end;
 
-define C-subtype <_cairo-matrix> (<C-void*>) end;
-define constant <cairo-matrix-t> = <_cairo-matrix>;
+define C-pointer-type <cairo-t> => <_cairo>;
 
-define C-subtype <_cairo-pattern> (<C-void*>) end;
-define constant <cairo-pattern-t> = <_cairo-pattern>;
+define C-struct <_cairo-matrix>
+  slot cairo_matrix-xx :: <C-double>;
+  slot cairo_matrix-yx :: <C-double>;
+  slot cairo_matrix-xy :: <C-double>;
+  slot cairo_matrix-yy :: <C-double>;
+  slot cairo_matrix-x0 :: <C-double>;
+  slot cairo_matrix-y0 :: <C-double>;
+end;
+
+define C-pointer-type <cairo-matrix-t> => <_cairo-matrix>;
+
+define C-struct <_cairo-pattern>
+end;
+
+define C-pointer-type <cairo-pattern-t> => <_cairo-pattern>;
 
 define constant <anonymous-2> = <C-function-pointer>;
 define constant <cairo-destroy-func-t> = <anonymous-2>;
 
-define C-subtype <_cairo-user-data-key> (<C-void*>) end;
-define constant <cairo-user-data-key-t> = <_cairo-user-data-key>;
+define C-struct <_cairo-user-data-key>
+  slot cairo_user_data_key-unused :: <C-signed-int>;
+end;
+
+define C-pointer-type <cairo-user-data-key-t> => <_cairo-user-data-key>;
 
 define constant <_cairo-status> = <C-int>;
 define constant $CAIRO-STATUS-SUCCESS = 0;
@@ -19714,15 +21248,39 @@ define C-function cairo-clip-preserve
   c-name: "cairo_clip_preserve";
 end;
 
-define C-subtype <_cairo-scaled-font> (<C-void*>) end;
-define constant <cairo-scaled-font-t> = <_cairo-scaled-font>;
+define C-struct <_cairo-scaled-font>
+end;
 
-define C-subtype <_cairo-font-face> (<C-void*>) end;
-define constant <cairo-font-face-t> = <_cairo-font-face>;
+define C-pointer-type <cairo-scaled-font-t> => <_cairo-scaled-font>;
 
-define C-subtype <cairo-glyph-t> (<C-void*>) end;
-define C-subtype <cairo-text-extents-t> (<C-void*>) end;
-define C-subtype <cairo-font-extents-t> (<C-void*>) end;
+define C-struct <_cairo-font-face>
+end;
+
+define C-pointer-type <cairo-font-face-t> => <_cairo-font-face>;
+
+define C-struct <cairo-glyph-t>
+  slot airo_glyph_t-index :: <C-unsigned-long>;
+  slot airo_glyph_t-x :: <C-double>;
+  slot airo_glyph_t-y :: <C-double>;
+end;
+
+define C-struct <cairo-text-extents-t>
+  slot airo_text_extents_t-x-bearing :: <C-double>;
+  slot airo_text_extents_t-y-bearing :: <C-double>;
+  slot airo_text_extents_t-width :: <C-double>;
+  slot airo_text_extents_t-height :: <C-double>;
+  slot airo_text_extents_t-x-advance :: <C-double>;
+  slot airo_text_extents_t-y-advance :: <C-double>;
+end;
+
+define C-struct <cairo-font-extents-t>
+  slot airo_font_extents_t-ascent :: <C-double>;
+  slot airo_font_extents_t-descent :: <C-double>;
+  slot airo_font_extents_t-height :: <C-double>;
+  slot airo_font_extents_t-max-x-advance :: <C-double>;
+  slot airo_font_extents_t-max-y-advance :: <C-double>;
+end;
+
 define constant <_cairo-font-slant> = <C-int>;
 define constant $CAIRO-FONT-SLANT-NORMAL = 0;
 define constant $CAIRO-FONT-SLANT-ITALIC = 1;
@@ -20164,13 +21722,26 @@ define constant $CAIRO-PATH-CLOSE-PATH = 3;
 
 define constant <cairo-path-data-type-t> = <_cairo-path-data-type>;
 
-define C-subtype <anonymous-131> (<C-void*>) end;
-define C-subtype <anonymous-132> (<C-void*>) end;
+define C-struct <anonymous-131>
+  slot nonymous-131-type :: <_cairo-path-data-type>;
+  slot nonymous-131-length :: <C-signed-int>;
+end;
+
+define C-struct <anonymous-132>
+  slot nonymous-132-x :: <C-double>;
+  slot nonymous-132-y :: <C-double>;
+end;
+
 define C-subtype <_cairo-path-data-t> (<C-void*>) end;
 define constant <cairo-path-data-t> = <_cairo-path-data-t>;
 
-define C-subtype <cairo-path> (<C-void*>) end;
-define constant <cairo-path-t> = <cairo-path>;
+define C-struct <cairo-path>
+  slot airo_path-status :: <_cairo-status>;
+  slot airo_path-data :: <cairo-path-data-t>;
+  slot airo_path-num-data :: <C-signed-int>;
+end;
+
+define C-pointer-type <cairo-path-t> => <cairo-path>;
 
 define C-function cairo-copy-path
   input parameter arg1 :: <cairo-t>;
@@ -20997,8 +22568,15 @@ define constant <anonymous-2432> = <C-function-pointer>;
 define constant <anonymous-2433> = <C-function-pointer>;
 define constant <anonymous-2434> = <C-function-pointer>;
 define constant <anonymous-2435> = <C-function-pointer>;
-define C-subtype <_GdkPixbufLoaderClass> (<C-void*>) end;
-define constant <GdkPixbufLoaderClass> = <_GdkPixbufLoaderClass>;
+define C-struct <_GdkPixbufLoaderClass>
+  slot GdkPixbufLoaderClass-parent-class :: <_GObjectClass>;
+  slot GdkPixbufLoaderClass-size-prepared :: <anonymous-2432>;
+  slot GdkPixbufLoaderClass-area-prepared :: <anonymous-2433>;
+  slot GdkPixbufLoaderClass-area-updated :: <anonymous-2434>;
+  slot GdkPixbufLoaderClass-closed :: <anonymous-2435>;
+end;
+
+define C-pointer-type <GdkPixbufLoaderClass> => <_GdkPixbufLoaderClass>;
 
 define C-function gdk-pixbuf-loader-get-type
   result res :: <GType>;
@@ -21062,8 +22640,10 @@ define C-function gdk-pixbuf-loader-close
   c-name: "gdk_pixbuf_loader_close";
 end;
 
-define C-subtype <_GdkPixbufFormat> (<C-void*>) end;
-define constant <GdkPixbufFormat> = <_GdkPixbufFormat>;
+define C-struct <_GdkPixbufFormat>
+end;
+
+define C-pointer-type <GdkPixbufFormat> => <_GdkPixbufFormat>;
 
 define C-function gdk-pixbuf-loader-get-format
   input parameter arg1 :: <GdkPixbufLoader>;
@@ -21520,8 +23100,10 @@ define constant $G-MODULE-BIND-LAZY = 1;
 define constant $G-MODULE-BIND-LOCAL = 2;
 define constant $G-MODULE-BIND-MASK = 3;
 
-define C-subtype <_GModule> (<C-void*>) end;
-define constant <GModule> = <_GModule>;
+define C-struct <_GModule>
+end;
+
+define C-pointer-type <GModule> => <_GModule>;
 
 define constant <anonymous-2411> = <C-function-pointer>;
 define constant <GModuleCheckInit> = <anonymous-2411>;
@@ -21585,8 +23167,10 @@ define constant g-module-name = g-module-name-utf8;
 define C-subtype <_GdkPixbufSimpleAnim> (<_GdkPixbufAnimation>) end;
 define constant <GdkPixbufSimpleAnim> = <_GdkPixbufSimpleAnim>;
 
-define C-subtype <_GdkPixbufSimpleAnimClass> (<C-void*>) end;
-define constant <GdkPixbufSimpleAnimClass> = <_GdkPixbufSimpleAnimClass>;
+define C-struct <_GdkPixbufSimpleAnimClass>
+end;
+
+define C-pointer-type <GdkPixbufSimpleAnimClass> => <_GdkPixbufSimpleAnimClass>;
 
 define C-function gdk-pixbuf-simple-anim-get-type
   result res :: <GType>;
@@ -21727,8 +23311,13 @@ define constant $GDK-PIXBUF-MICRO = 11;
 define constant $GDK-PIXBUF-VERSION = "2.10.11";
 
 define constant <guint32<@256>> = <guint32*>;
-define C-subtype <_GdkRgbCmap> (<C-void*>) end;
-define constant <GdkRgbCmap> = <_GdkRgbCmap>;
+define C-struct <_GdkRgbCmap>
+  slot GdkRgbCmap-colors :: <guint32<@256>>;
+  slot GdkRgbCmap-n-colors :: <C-signed-int>;
+  slot GdkRgbCmap-info-list :: <GSList>;
+end;
+
+define C-pointer-type <GdkRgbCmap> => <_GdkRgbCmap>;
 
 define C-function gdk-rgb-init
   c-name: "gdk_rgb_init";
@@ -21900,8 +23489,18 @@ define constant <anonymous-2624> = <C-function-pointer>;
 define constant <anonymous-2625> = <C-function-pointer>;
 define constant <anonymous-2626> = <C-function-pointer>;
 define constant <anonymous-2627> = <C-function-pointer>;
-define C-subtype <_GdkGCClass> (<C-void*>) end;
-define constant <GdkGCClass> = <_GdkGCClass>;
+define C-struct <_GdkGCClass>
+  slot GdkGCClass-parent-class :: <_GObjectClass>;
+  slot GdkGCClass-get-values :: <anonymous-2621>;
+  slot GdkGCClass-set-values :: <anonymous-2622>;
+  slot GdkGCClass-set-dashes :: <anonymous-2623>;
+  slot GdkGCClass-_gdk-reserved1 :: <anonymous-2624>;
+  slot GdkGCClass-_gdk-reserved2 :: <anonymous-2625>;
+  slot GdkGCClass-_gdk-reserved3 :: <anonymous-2626>;
+  slot GdkGCClass-_gdk-reserved4 :: <anonymous-2627>;
+end;
+
+define C-pointer-type <GdkGCClass> => <_GdkGCClass>;
 
 define C-function gdk-gc-get-type
   result res :: <GType>;
@@ -22094,8 +23693,10 @@ end;
 
 define constant gdk-gc-destroy = gdk-gc-unref;
 
-define C-subtype <_GdkVisualClass> (<C-void*>) end;
-define constant <GdkVisualClass> = <_GdkVisualClass>;
+define C-struct <_GdkVisualClass>
+end;
+
+define C-pointer-type <GdkVisualClass> => <_GdkVisualClass>;
 
 define C-function gdk-visual-get-type
   result res :: <GType>;
@@ -22207,8 +23808,13 @@ end;
 
 define constant <anonymous-2910> = <C-function-pointer>;
 define constant <anonymous-2911> = <C-function-pointer>;
-define C-subtype <_GdkScreenClass> (<C-void*>) end;
-define constant <GdkScreenClass> = <_GdkScreenClass>;
+define C-struct <_GdkScreenClass>
+  slot GdkScreenClass-parent-class :: <_GObjectClass>;
+  slot GdkScreenClass-size-changed :: <anonymous-2910>;
+  slot GdkScreenClass-composited-changed :: <anonymous-2911>;
+end;
+
+define C-pointer-type <GdkScreenClass> => <_GdkScreenClass>;
 
 define C-function gdk-screen-get-type
   result res :: <GType>;
@@ -22417,8 +24023,16 @@ define constant <anonymous-2569> = <C-function-pointer>;
 define constant <anonymous-2570> = <C-function-pointer>;
 define constant <anonymous-2571> = <C-function-pointer>;
 define constant <anonymous-2572> = <C-function-pointer>;
-define C-subtype <_GdkDisplayClass> (<C-void*>) end;
-define constant <GdkDisplayClass> = <_GdkDisplayClass>;
+define C-struct <_GdkDisplayClass>
+  slot GdkDisplayClass-parent-class :: <_GObjectClass>;
+  slot GdkDisplayClass-get-display-name :: <anonymous-2568>;
+  slot GdkDisplayClass-get-n-screens :: <anonymous-2569>;
+  slot GdkDisplayClass-get-screen :: <anonymous-2570>;
+  slot GdkDisplayClass-get-default-screen :: <anonymous-2571>;
+  slot GdkDisplayClass-closed :: <anonymous-2572>;
+end;
+
+define C-pointer-type <GdkDisplayClass> => <_GdkDisplayClass>;
 
 define C-function gdk-display-get-type
   result res :: <GType>;
@@ -23026,11 +24640,19 @@ define C-function gdk-free-compound-text
   c-name: "gdk_free_compound_text";
 end;
 
-define C-subtype <_GdkPixmapObject> (<C-void*>) end;
-define constant <GdkPixmapObject> = <_GdkPixmapObject>;
+define C-struct <_GdkPixmapObject>
+  slot GdkPixmapObject-parent-instance :: <_GdkDrawable>;
+  slot GdkPixmapObject-impl :: <GdkDrawable>;
+  slot GdkPixmapObject-depth :: <C-signed-int>;
+end;
 
-define C-subtype <_GdkPixmapObjectClass> (<C-void*>) end;
-define constant <GdkPixmapObjectClass> = <_GdkPixmapObjectClass>;
+define C-pointer-type <GdkPixmapObject> => <_GdkPixmapObject>;
+
+define C-struct <_GdkPixmapObjectClass>
+  slot GdkPixmapObjectClass-parent-class :: <_GdkDrawableClass>;
+end;
+
+define C-pointer-type <GdkPixmapObjectClass> => <_GdkPixmapObjectClass>;
 
 define C-function gdk-pixmap-get-type
   result res :: <GType>;
@@ -23241,14 +24863,19 @@ define C-function gdk-pixbuf-get-from-image
   c-name: "gdk_pixbuf_get_from_image";
 end;
 
-define C-subtype <_GdkPangoRendererPrivate> (<C-void*>) end;
-define constant <GdkPangoRendererPrivate> = <_GdkPangoRendererPrivate>;
+define C-struct <_GdkPangoRendererPrivate>
+end;
+
+define C-pointer-type <GdkPangoRendererPrivate> => <_GdkPangoRendererPrivate>;
 
 define C-subtype <_GdkPangoRenderer> (<_PangoRenderer>) end;
 define constant <GdkPangoRenderer> = <_GdkPangoRenderer>;
 
-define C-subtype <_GdkPangoRendererClass> (<C-void*>) end;
-define constant <GdkPangoRendererClass> = <_GdkPangoRendererClass>;
+define C-struct <_GdkPangoRendererClass>
+  slot GdkPangoRendererClass-parent-class :: <_PangoRendererClass>;
+end;
+
+define C-pointer-type <GdkPangoRendererClass> => <_GdkPangoRendererClass>;
 
 define C-function gdk-pango-renderer-get-type
   result res :: <GType>;
@@ -23330,11 +24957,19 @@ define C-function gdk-pango-layout-get-clip-region
   c-name: "gdk_pango_layout_get_clip_region";
 end;
 
-define C-subtype <_GdkPangoAttrStipple> (<C-void*>) end;
-define constant <GdkPangoAttrStipple> = <_GdkPangoAttrStipple>;
+define C-struct <_GdkPangoAttrStipple>
+  slot GdkPangoAttrStipple-attr :: <_PangoAttribute>;
+  slot GdkPangoAttrStipple-stipple :: <GdkBitmap>;
+end;
 
-define C-subtype <_GdkPangoAttrEmbossed> (<C-void*>) end;
-define constant <GdkPangoAttrEmbossed> = <_GdkPangoAttrEmbossed>;
+define C-pointer-type <GdkPangoAttrStipple> => <_GdkPangoAttrStipple>;
+
+define C-struct <_GdkPangoAttrEmbossed>
+  slot GdkPangoAttrEmbossed-attr :: <_PangoAttribute>;
+  slot GdkPangoAttrEmbossed-embossed :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkPangoAttrEmbossed> => <_GdkPangoAttrEmbossed>;
 
 define C-function gdk-pango-attr-stipple-new
   input parameter arg1 :: <GdkBitmap>;
@@ -23352,8 +24987,12 @@ define C-subtype <_GdkDisplayManager> (<_GObject>) end;
 define constant <GdkDisplayManager> = <_GdkDisplayManager>;
 
 define constant <anonymous-2836> = <C-function-pointer>;
-define C-subtype <_GdkDisplayManagerClass> (<C-void*>) end;
-define constant <GdkDisplayManagerClass> = <_GdkDisplayManagerClass>;
+define C-struct <_GdkDisplayManagerClass>
+  slot GdkDisplayManagerClass-parent-class :: <_GObjectClass>;
+  slot GdkDisplayManagerClass-display-opened :: <anonymous-2836>;
+end;
+
+define C-pointer-type <GdkDisplayManagerClass> => <_GdkDisplayManagerClass>;
 
 define C-function gdk-display-manager-get-type
   result res :: <GType>;
@@ -23383,16 +25022,26 @@ define C-function gdk-display-manager-list-displays
   c-name: "gdk_display_manager_list_displays";
 end;
 
-define C-subtype <_GdkKeymapKey> (<C-void*>) end;
-define constant <GdkKeymapKey> = <_GdkKeymapKey>;
+define C-struct <_GdkKeymapKey>
+  slot GdkKeymapKey-keycode :: <C-unsigned-int>;
+  slot GdkKeymapKey-group :: <C-signed-int>;
+  slot GdkKeymapKey-level :: <C-signed-int>;
+end;
+
+define C-pointer-type <GdkKeymapKey> => <_GdkKeymapKey>;
 
 define C-subtype <_GdkKeymap> (<_GObject>) end;
 define constant <GdkKeymap> = <_GdkKeymap>;
 
 define constant <anonymous-2817> = <C-function-pointer>;
 define constant <anonymous-2818> = <C-function-pointer>;
-define C-subtype <_GdkKeymapClass> (<C-void*>) end;
-define constant <GdkKeymapClass> = <_GdkKeymapClass>;
+define C-struct <_GdkKeymapClass>
+  slot GdkKeymapClass-parent-class :: <_GObjectClass>;
+  slot GdkKeymapClass-direction-changed :: <anonymous-2817>;
+  slot GdkKeymapClass-keys-changed :: <anonymous-2818>;
+end;
+
+define C-pointer-type <GdkKeymapClass> => <_GdkKeymapClass>;
 
 define C-function gdk-keymap-get-type
   result res :: <GType>;
@@ -23512,8 +25161,11 @@ define C-function gdk-unicode-to-keyval
   c-name: "gdk_unicode_to_keyval";
 end;
 
-define C-subtype <_GdkImageClass> (<C-void*>) end;
-define constant <GdkImageClass> = <_GdkImageClass>;
+define C-struct <_GdkImageClass>
+  slot GdkImageClass-parent-class :: <_GObjectClass>;
+end;
+
+define C-pointer-type <GdkImageClass> => <_GdkImageClass>;
 
 define C-function gdk-image-get-type
   result res :: <GType>;
@@ -24110,8 +25762,10 @@ define C-function gdk-cairo-region
   c-name: "gdk_cairo_region";
 end;
 
-define C-subtype <_PangoCairoFontMap> (<C-void*>) end;
-define constant <PangoCairoFontMap> = <_PangoCairoFontMap>;
+define C-struct <_PangoCairoFontMap>
+end;
+
+define C-pointer-type <PangoCairoFontMap> => <_PangoCairoFontMap>;
 
 define C-function pango-cairo-font-map-get-type
   result res :: <GType>;
@@ -24250,8 +25904,17 @@ define constant <anonymous-3386> = <C-function-pointer>;
 define constant <anonymous-3387> = <C-function-pointer>;
 define constant <anonymous-3388> = <C-function-pointer>;
 define constant <anonymous-3389> = <C-function-pointer>;
-define C-subtype <_GtkAdjustmentClass> (<C-void*>) end;
-define constant <GtkAdjustmentClass> = <_GtkAdjustmentClass>;
+define C-struct <_GtkAdjustmentClass>
+  slot GtkAdjustmentClass-parent-class :: <_GtkObjectClass>;
+  slot GtkAdjustmentClass-changed :: <anonymous-3384>;
+  slot GtkAdjustmentClass-value-changed :: <anonymous-3385>;
+  slot GtkAdjustmentClass-_gtk-reserved1 :: <anonymous-3386>;
+  slot GtkAdjustmentClass-_gtk-reserved2 :: <anonymous-3387>;
+  slot GtkAdjustmentClass-_gtk-reserved3 :: <anonymous-3388>;
+  slot GtkAdjustmentClass-_gtk-reserved4 :: <anonymous-3389>;
+end;
+
+define C-pointer-type <GtkAdjustmentClass> => <_GtkAdjustmentClass>;
 
 define C-function gtk-adjustment-get-type
   result res :: <GType>;
@@ -24502,8 +26165,18 @@ define constant <GtkFunction> = <anonymous-3341>;
 define constant <anonymous-3343> = <C-function-pointer>;
 define constant <GtkCallbackMarshal> = <anonymous-3343>;
 
-define C-subtype <_GtkTypeInfo> (<C-void*>) end;
-define constant <GtkTypeInfo> = <_GtkTypeInfo>;
+define C-struct <_GtkTypeInfo>
+  slot GtkTypeInfo-type-name :: <gchar*>;
+  slot GtkTypeInfo-object-size :: <C-unsigned-int>;
+  slot GtkTypeInfo-class-size :: <C-unsigned-int>;
+  slot GtkTypeInfo-class-init-func :: <anonymous-1415>;
+  slot GtkTypeInfo-object-init-func :: <anonymous-1419>;
+  slot GtkTypeInfo-reserved-1 :: <C-void*>;
+  slot GtkTypeInfo-reserved-2 :: <C-void*>;
+  slot GtkTypeInfo-base-class-init-func :: <anonymous-1415>;
+end;
+
+define C-pointer-type <GtkTypeInfo> => <_GtkTypeInfo>;
 
 define constant <GtkSignalMarshaller> = <GSignalCMarshaller>;
 
@@ -25157,8 +26830,16 @@ define constant <anonymous-3201> = <C-function-pointer>;
 define constant <anonymous-3202> = <C-function-pointer>;
 define constant <anonymous-3203> = <C-function-pointer>;
 define constant <anonymous-3204> = <C-function-pointer>;
-define C-subtype <_GtkAccelGroupClass> (<C-void*>) end;
-define constant <GtkAccelGroupClass> = <_GtkAccelGroupClass>;
+define C-struct <_GtkAccelGroupClass>
+  slot GtkAccelGroupClass-parent-class :: <_GObjectClass>;
+  slot GtkAccelGroupClass-accel-changed :: <anonymous-3200>;
+  slot GtkAccelGroupClass-_gtk-reserved1 :: <anonymous-3201>;
+  slot GtkAccelGroupClass-_gtk-reserved2 :: <anonymous-3202>;
+  slot GtkAccelGroupClass-_gtk-reserved3 :: <anonymous-3203>;
+  slot GtkAccelGroupClass-_gtk-reserved4 :: <anonymous-3204>;
+end;
+
+define C-pointer-type <GtkAccelGroupClass> => <_GtkAccelGroupClass>;
 
 define constant <anonymous-3198> = <C-function-pointer>;
 define constant <GtkAccelGroupActivate> = <anonymous-3198>;
@@ -25549,11 +27230,17 @@ define constant <GtkSeparator> = <_GtkSeparator>;
 define C-subtype <_GtkVSeparator> (<_GtkSeparator>, <_AtkImplementorIface>) end;
 define constant <GtkVSeparator> = <_GtkVSeparator>;
 
-define C-subtype <_GtkSeparatorClass> (<C-void*>) end;
-define constant <GtkSeparatorClass> = <_GtkSeparatorClass>;
+define C-struct <_GtkSeparatorClass>
+  slot GtkSeparatorClass-parent-class :: <_GtkWidgetClass>;
+end;
 
-define C-subtype <_GtkVSeparatorClass> (<C-void*>) end;
-define constant <GtkVSeparatorClass> = <_GtkVSeparatorClass>;
+define C-pointer-type <GtkSeparatorClass> => <_GtkSeparatorClass>;
+
+define C-struct <_GtkVSeparatorClass>
+  slot GtkVSeparatorClass-parent-class :: <_GtkSeparatorClass>;
+end;
+
+define C-pointer-type <GtkVSeparatorClass> => <_GtkVSeparatorClass>;
 
 define C-function gtk-vseparator-get-type
   result res :: <GType>;
@@ -25570,11 +27257,15 @@ define C-function gtk-separator-get-type
   c-name: "gtk_separator_get_type";
 end;
 
-define C-subtype <_GtkRangeLayout> (<C-void*>) end;
-define constant <GtkRangeLayout> = <_GtkRangeLayout>;
+define C-struct <_GtkRangeLayout>
+end;
 
-define C-subtype <_GtkRangeStepTimer> (<C-void*>) end;
-define constant <GtkRangeStepTimer> = <_GtkRangeStepTimer>;
+define C-pointer-type <GtkRangeLayout> => <_GtkRangeLayout>;
+
+define C-struct <_GtkRangeStepTimer>
+end;
+
+define C-pointer-type <GtkRangeStepTimer> => <_GtkRangeStepTimer>;
 
 define C-subtype <_GtkRange> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkRange> = <_GtkRange>;
@@ -25593,18 +27284,41 @@ define constant <anonymous-5611> = <C-function-pointer>;
 define constant <anonymous-5612> = <C-function-pointer>;
 define constant <anonymous-5613> = <C-function-pointer>;
 define constant <anonymous-5614> = <C-function-pointer>;
-define C-subtype <_GtkRangeClass> (<C-void*>) end;
-define constant <GtkRangeClass> = <_GtkRangeClass>;
+define C-struct <_GtkRangeClass>
+  slot GtkRangeClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkRangeClass-slider-detail :: <gchar*>;
+  slot GtkRangeClass-stepper-detail :: <gchar*>;
+  slot GtkRangeClass-value-changed :: <anonymous-5607>;
+  slot GtkRangeClass-adjust-bounds :: <anonymous-5608>;
+  slot GtkRangeClass-move-slider :: <anonymous-5609>;
+  slot GtkRangeClass-get-range-border :: <anonymous-5610>;
+  slot GtkRangeClass-change-value :: <anonymous-5611>;
+  slot GtkRangeClass-_gtk-reserved1 :: <anonymous-5612>;
+  slot GtkRangeClass-_gtk-reserved2 :: <anonymous-5613>;
+  slot GtkRangeClass-_gtk-reserved3 :: <anonymous-5614>;
+end;
+
+define C-pointer-type <GtkRangeClass> => <_GtkRangeClass>;
 
 define constant <anonymous-5631> = <C-function-pointer>;
 define constant <anonymous-5632> = <C-function-pointer>;
 define constant <anonymous-5633> = <C-function-pointer>;
 define constant <anonymous-5634> = <C-function-pointer>;
-define C-subtype <_GtkScrollbarClass> (<C-void*>) end;
-define constant <GtkScrollbarClass> = <_GtkScrollbarClass>;
+define C-struct <_GtkScrollbarClass>
+  slot GtkScrollbarClass-parent-class :: <_GtkRangeClass>;
+  slot GtkScrollbarClass-_gtk-reserved1 :: <anonymous-5631>;
+  slot GtkScrollbarClass-_gtk-reserved2 :: <anonymous-5632>;
+  slot GtkScrollbarClass-_gtk-reserved3 :: <anonymous-5633>;
+  slot GtkScrollbarClass-_gtk-reserved4 :: <anonymous-5634>;
+end;
 
-define C-subtype <_GtkVScrollbarClass> (<C-void*>) end;
-define constant <GtkVScrollbarClass> = <_GtkVScrollbarClass>;
+define C-pointer-type <GtkScrollbarClass> => <_GtkScrollbarClass>;
+
+define C-struct <_GtkVScrollbarClass>
+  slot GtkVScrollbarClass-parent-class :: <_GtkScrollbarClass>;
+end;
+
+define C-pointer-type <GtkVScrollbarClass> => <_GtkVScrollbarClass>;
 
 define C-function gtk-vscrollbar-get-type
   result res :: <GType>;
@@ -25725,11 +27439,23 @@ define constant <anonymous-6582> = <C-function-pointer>;
 define constant <anonymous-6583> = <C-function-pointer>;
 define constant <anonymous-6584> = <C-function-pointer>;
 define constant <anonymous-6585> = <C-function-pointer>;
-define C-subtype <_GtkScaleClass> (<C-void*>) end;
-define constant <GtkScaleClass> = <_GtkScaleClass>;
+define C-struct <_GtkScaleClass>
+  slot GtkScaleClass-parent-class :: <_GtkRangeClass>;
+  slot GtkScaleClass-format-value :: <anonymous-6580>;
+  slot GtkScaleClass-draw-value :: <anonymous-6581>;
+  slot GtkScaleClass-get-layout-offsets :: <anonymous-6582>;
+  slot GtkScaleClass-_gtk-reserved2 :: <anonymous-6583>;
+  slot GtkScaleClass-_gtk-reserved3 :: <anonymous-6584>;
+  slot GtkScaleClass-_gtk-reserved4 :: <anonymous-6585>;
+end;
 
-define C-subtype <_GtkVScaleClass> (<C-void*>) end;
-define constant <GtkVScaleClass> = <_GtkVScaleClass>;
+define C-pointer-type <GtkScaleClass> => <_GtkScaleClass>;
+
+define C-struct <_GtkVScaleClass>
+  slot GtkVScaleClass-parent-class :: <_GtkScaleClass>;
+end;
+
+define C-pointer-type <GtkVScaleClass> => <_GtkVScaleClass>;
 
 define C-function gtk-vscale-get-type
   result res :: <GType>;
@@ -25806,8 +27532,15 @@ end;
 
 define constant <gdouble<@10>> = <gdouble*>;
 define constant <gint<@5>> = <gint*>;
-define C-subtype <_GtkRulerMetric> (<C-void*>) end;
-define constant <GtkRulerMetric> = <_GtkRulerMetric>;
+define C-struct <_GtkRulerMetric>
+  slot GtkRulerMetric-metric-name :: <gchar*>;
+  slot GtkRulerMetric-abbrev :: <gchar*>;
+  slot GtkRulerMetric-pixels-per-unit :: <C-double>;
+  slot GtkRulerMetric-ruler-scale :: <gdouble<@10>>;
+  slot GtkRulerMetric-subdivide :: <gint<@5>>;
+end;
+
+define C-pointer-type <GtkRulerMetric> => <_GtkRulerMetric>;
 
 define C-subtype <_GtkRuler> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkRuler> = <_GtkRuler>;
@@ -25821,11 +27554,23 @@ define constant <anonymous-6565> = <C-function-pointer>;
 define constant <anonymous-6566> = <C-function-pointer>;
 define constant <anonymous-6567> = <C-function-pointer>;
 define constant <anonymous-6568> = <C-function-pointer>;
-define C-subtype <_GtkRulerClass> (<C-void*>) end;
-define constant <GtkRulerClass> = <_GtkRulerClass>;
+define C-struct <_GtkRulerClass>
+  slot GtkRulerClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkRulerClass-draw-ticks :: <anonymous-6563>;
+  slot GtkRulerClass-draw-pos :: <anonymous-6564>;
+  slot GtkRulerClass-_gtk-reserved1 :: <anonymous-6565>;
+  slot GtkRulerClass-_gtk-reserved2 :: <anonymous-6566>;
+  slot GtkRulerClass-_gtk-reserved3 :: <anonymous-6567>;
+  slot GtkRulerClass-_gtk-reserved4 :: <anonymous-6568>;
+end;
 
-define C-subtype <_GtkVRulerClass> (<C-void*>) end;
-define constant <GtkVRulerClass> = <_GtkVRulerClass>;
+define C-pointer-type <GtkRulerClass> => <_GtkRulerClass>;
+
+define C-struct <_GtkVRulerClass>
+  slot GtkVRulerClass-parent-class :: <_GtkRulerClass>;
+end;
+
+define C-pointer-type <GtkVRulerClass> => <_GtkVRulerClass>;
 
 define C-function gtk-vruler-get-type
   result res :: <GType>;
@@ -25882,8 +27627,10 @@ define C-function gtk-ruler-get-range
   c-name: "gtk_ruler_get_range";
 end;
 
-define C-subtype <_GtkPanedPrivate> (<C-void*>) end;
-define constant <GtkPanedPrivate> = <_GtkPanedPrivate>;
+define C-struct <_GtkPanedPrivate>
+end;
+
+define C-pointer-type <GtkPanedPrivate> => <_GtkPanedPrivate>;
 
 define C-subtype <_GtkPaned> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkPaned> = <_GtkPaned>;
@@ -25901,11 +27648,27 @@ define constant <anonymous-6547> = <C-function-pointer>;
 define constant <anonymous-6548> = <C-function-pointer>;
 define constant <anonymous-6549> = <C-function-pointer>;
 define constant <anonymous-6550> = <C-function-pointer>;
-define C-subtype <_GtkPanedClass> (<C-void*>) end;
-define constant <GtkPanedClass> = <_GtkPanedClass>;
+define C-struct <_GtkPanedClass>
+  slot GtkPanedClass-parent-class :: <_GtkContainerClass>;
+  slot GtkPanedClass-cycle-child-focus :: <anonymous-6541>;
+  slot GtkPanedClass-toggle-handle-focus :: <anonymous-6542>;
+  slot GtkPanedClass-move-handle :: <anonymous-6543>;
+  slot GtkPanedClass-cycle-handle-focus :: <anonymous-6544>;
+  slot GtkPanedClass-accept-position :: <anonymous-6545>;
+  slot GtkPanedClass-cancel-position :: <anonymous-6546>;
+  slot GtkPanedClass-_gtk-reserved1 :: <anonymous-6547>;
+  slot GtkPanedClass-_gtk-reserved2 :: <anonymous-6548>;
+  slot GtkPanedClass-_gtk-reserved3 :: <anonymous-6549>;
+  slot GtkPanedClass-_gtk-reserved4 :: <anonymous-6550>;
+end;
 
-define C-subtype <_GtkVPanedClass> (<C-void*>) end;
-define constant <GtkVPanedClass> = <_GtkVPanedClass>;
+define C-pointer-type <GtkPanedClass> => <_GtkPanedClass>;
+
+define C-struct <_GtkVPanedClass>
+  slot GtkVPanedClass-parent-class :: <_GtkPanedClass>;
+end;
+
+define C-pointer-type <GtkVPanedClass> => <_GtkVPanedClass>;
 
 define C-function gtk-vpaned-get-type
   result res :: <GType>;
@@ -25986,8 +27749,12 @@ define C-subtype <_GtkViewport> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkViewport> = <_GtkViewport>;
 
 define constant <anonymous-7616> = <C-function-pointer>;
-define C-subtype <_GtkViewportClass> (<C-void*>) end;
-define constant <GtkViewportClass> = <_GtkViewportClass>;
+define C-struct <_GtkViewportClass>
+  slot GtkViewportClass-parent-class :: <_GtkBinClass>;
+  slot GtkViewportClass-set-scroll-adjustments :: <anonymous-7616>;
+end;
+
+define C-pointer-type <GtkViewportClass> => <_GtkViewportClass>;
 
 define C-function gtk-viewport-get-type
   result res :: <GType>;
@@ -26053,11 +27820,17 @@ define constant <GtkBox> = <_GtkBox>;
 define C-subtype <_GtkVBox> (<_GtkBox>, <_AtkImplementorIface>) end;
 define constant <GtkVBox> = <_GtkVBox>;
 
-define C-subtype <_GtkBoxClass> (<C-void*>) end;
-define constant <GtkBoxClass> = <_GtkBoxClass>;
+define C-struct <_GtkBoxClass>
+  slot GtkBoxClass-parent-class :: <_GtkContainerClass>;
+end;
 
-define C-subtype <_GtkVBoxClass> (<C-void*>) end;
-define constant <GtkVBoxClass> = <_GtkVBoxClass>;
+define C-pointer-type <GtkBoxClass> => <_GtkBoxClass>;
+
+define C-struct <_GtkVBoxClass>
+  slot GtkVBoxClass-parent-class :: <_GtkBoxClass>;
+end;
+
+define C-pointer-type <GtkVBoxClass> => <_GtkVBoxClass>;
 
 define C-function gtk-vbox-get-type
   result res :: <GType>;
@@ -26071,8 +27844,16 @@ define C-function gtk-vbox-new
   c-name: "gtk_vbox_new";
 end;
 
-define C-subtype <_GtkBoxChild> (<C-void*>) end;
-define constant <GtkBoxChild> = <_GtkBoxChild>;
+define C-struct <_GtkBoxChild>
+  slot GtkBoxChild-widget :: <GtkWidget>;
+  slot GtkBoxChild-padding :: <C-unsigned-short>;
+  bitfield slot GtkBoxChild-expand :: <C-int>, width: 1;
+  bitfield slot GtkBoxChild-fill :: <C-int>, width: 1;
+  bitfield slot GtkBoxChild-pack :: <C-int>, width: 1;
+  bitfield slot GtkBoxChild-is-secondary :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkBoxChild> => <_GtkBoxChild>;
 
 define C-function gtk-box-get-type
   result res :: <GType>;
@@ -26167,11 +27948,17 @@ define constant <GtkButtonBox> = <_GtkButtonBox>;
 define C-subtype <_GtkVButtonBox> (<_GtkButtonBox>, <_AtkImplementorIface>) end;
 define constant <GtkVButtonBox> = <_GtkVButtonBox>;
 
-define C-subtype <_GtkButtonBoxClass> (<C-void*>) end;
-define constant <GtkButtonBoxClass> = <_GtkButtonBoxClass>;
+define C-struct <_GtkButtonBoxClass>
+  slot GtkButtonBoxClass-parent-class :: <_GtkBoxClass>;
+end;
 
-define C-subtype <_GtkVButtonBoxClass> (<C-void*>) end;
-define constant <GtkVButtonBoxClass> = <_GtkVButtonBoxClass>;
+define C-pointer-type <GtkButtonBoxClass> => <_GtkButtonBoxClass>;
+
+define C-struct <_GtkVButtonBoxClass>
+  slot GtkVButtonBoxClass-parent-class :: <_GtkButtonBoxClass>;
+end;
+
+define C-pointer-type <GtkVButtonBoxClass> => <_GtkVButtonBoxClass>;
 
 define C-function gtk-vbutton-box-get-type
   result res :: <GType>;
@@ -26264,16 +28051,20 @@ end;
 
 define constant $GTK-BUTTONBOX-DEFAULT = -1;
 
-define C-subtype <_GtkUIManagerPrivate> (<C-void*>) end;
-define constant <GtkUIManagerPrivate> = <_GtkUIManagerPrivate>;
+define C-struct <_GtkUIManagerPrivate>
+end;
+
+define C-pointer-type <GtkUIManagerPrivate> => <_GtkUIManagerPrivate>;
 
 define C-subtype <_GtkUIManager> (<_GObject>) end;
 define constant <GtkUIManager> = <_GtkUIManager>;
 
 define constant <anonymous-8173> = <C-function-pointer>;
 define constant <anonymous-8174> = <C-function-pointer>;
-define C-subtype <_GtkActionPrivate> (<C-void*>) end;
-define constant <GtkActionPrivate> = <_GtkActionPrivate>;
+define C-struct <_GtkActionPrivate>
+end;
+
+define C-pointer-type <GtkActionPrivate> => <_GtkActionPrivate>;
 
 define C-subtype <_GtkAction> (<_GObject>) end;
 define constant <GtkAction> = <_GtkAction>;
@@ -26286,8 +28077,21 @@ define constant <anonymous-8179> = <C-function-pointer>;
 define constant <anonymous-8180> = <C-function-pointer>;
 define constant <anonymous-8181> = <C-function-pointer>;
 define constant <anonymous-8182> = <C-function-pointer>;
-define C-subtype <_GtkUIManagerClass> (<C-void*>) end;
-define constant <GtkUIManagerClass> = <_GtkUIManagerClass>;
+define C-struct <_GtkUIManagerClass>
+  slot GtkUIManagerClass-parent-class :: <_GObjectClass>;
+  slot GtkUIManagerClass-add-widget :: <anonymous-8173>;
+  slot GtkUIManagerClass-actions-changed :: <anonymous-8174>;
+  slot GtkUIManagerClass-connect-proxy :: <anonymous-8175>;
+  slot GtkUIManagerClass-disconnect-proxy :: <anonymous-8176>;
+  slot GtkUIManagerClass-pre-activate :: <anonymous-8177>;
+  slot GtkUIManagerClass-post-activate :: <anonymous-8178>;
+  slot GtkUIManagerClass-get-widget :: <anonymous-8179>;
+  slot GtkUIManagerClass-get-action :: <anonymous-8180>;
+  slot GtkUIManagerClass-_gtk-reserved1 :: <anonymous-8181>;
+  slot GtkUIManagerClass-_gtk-reserved2 :: <anonymous-8182>;
+end;
+
+define C-pointer-type <GtkUIManagerClass> => <_GtkUIManagerClass>;
 
 define constant <GtkUIManagerItemType> = <C-int>;
 define constant $GTK-UI-MANAGER-AUTO = 0;
@@ -26323,8 +28127,10 @@ define C-function gtk-ui-manager-get-add-tearoffs
   c-name: "gtk_ui_manager_get_add_tearoffs";
 end;
 
-define C-subtype <_GtkActionGroupPrivate> (<C-void*>) end;
-define constant <GtkActionGroupPrivate> = <_GtkActionGroupPrivate>;
+define C-struct <_GtkActionGroupPrivate>
+end;
+
+define C-pointer-type <GtkActionGroupPrivate> => <_GtkActionGroupPrivate>;
 
 define C-subtype <_GtkActionGroup> (<_GObject>) end;
 define constant <GtkActionGroup> = <_GtkActionGroup>;
@@ -26433,17 +28239,50 @@ define constant <anonymous-4707> = <C-function-pointer>;
 define constant <anonymous-4708> = <C-function-pointer>;
 define constant <anonymous-4709> = <C-function-pointer>;
 define constant <anonymous-4710> = <C-function-pointer>;
-define C-subtype <_GtkActionGroupClass> (<C-void*>) end;
-define constant <GtkActionGroupClass> = <_GtkActionGroupClass>;
+define C-struct <_GtkActionGroupClass>
+  slot GtkActionGroupClass-parent-class :: <_GObjectClass>;
+  slot GtkActionGroupClass-get-action :: <anonymous-4706>;
+  slot GtkActionGroupClass-_gtk-reserved1 :: <anonymous-4707>;
+  slot GtkActionGroupClass-_gtk-reserved2 :: <anonymous-4708>;
+  slot GtkActionGroupClass-_gtk-reserved3 :: <anonymous-4709>;
+  slot GtkActionGroupClass-_gtk-reserved4 :: <anonymous-4710>;
+end;
 
-define C-subtype <_GtkActionEntry> (<C-void*>) end;
-define constant <GtkActionEntry> = <_GtkActionEntry>;
+define C-pointer-type <GtkActionGroupClass> => <_GtkActionGroupClass>;
 
-define C-subtype <_GtkToggleActionEntry> (<C-void*>) end;
-define constant <GtkToggleActionEntry> = <_GtkToggleActionEntry>;
+define C-struct <_GtkActionEntry>
+  slot GtkActionEntry-name :: <gchar*>;
+  slot GtkActionEntry-stock-id :: <gchar*>;
+  slot GtkActionEntry-label :: <gchar*>;
+  slot GtkActionEntry-accelerator :: <gchar*>;
+  slot GtkActionEntry-tooltip :: <gchar*>;
+  slot GtkActionEntry-callback :: <anonymous-1560>;
+end;
 
-define C-subtype <_GtkRadioActionEntry> (<C-void*>) end;
-define constant <GtkRadioActionEntry> = <_GtkRadioActionEntry>;
+define C-pointer-type <GtkActionEntry> => <_GtkActionEntry>;
+
+define C-struct <_GtkToggleActionEntry>
+  slot GtkToggleActionEntry-name :: <gchar*>;
+  slot GtkToggleActionEntry-stock-id :: <gchar*>;
+  slot GtkToggleActionEntry-label :: <gchar*>;
+  slot GtkToggleActionEntry-accelerator :: <gchar*>;
+  slot GtkToggleActionEntry-tooltip :: <gchar*>;
+  slot GtkToggleActionEntry-callback :: <anonymous-1560>;
+  slot GtkToggleActionEntry-is-active :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkToggleActionEntry> => <_GtkToggleActionEntry>;
+
+define C-struct <_GtkRadioActionEntry>
+  slot GtkRadioActionEntry-name :: <gchar*>;
+  slot GtkRadioActionEntry-stock-id :: <gchar*>;
+  slot GtkRadioActionEntry-label :: <gchar*>;
+  slot GtkRadioActionEntry-accelerator :: <gchar*>;
+  slot GtkRadioActionEntry-tooltip :: <gchar*>;
+  slot GtkRadioActionEntry-value :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkRadioActionEntry> => <_GtkRadioActionEntry>;
 
 define C-function gtk-action-group-get-type
   result res :: <GType>;
@@ -26613,14 +28452,34 @@ define constant <anonymous-4675> = <C-function-pointer>;
 define constant <anonymous-4676> = <C-function-pointer>;
 define constant <anonymous-4677> = <C-function-pointer>;
 define constant <anonymous-4678> = <C-function-pointer>;
-define C-subtype <_GtkItemFactoryClass> (<C-void*>) end;
-define constant <GtkItemFactoryClass> = <_GtkItemFactoryClass>;
+define C-struct <_GtkItemFactoryClass>
+  slot GtkItemFactoryClass-object-class :: <_GtkObjectClass>;
+  slot GtkItemFactoryClass-item-ht :: <GHashTable>;
+  slot GtkItemFactoryClass-_gtk-reserved1 :: <anonymous-4675>;
+  slot GtkItemFactoryClass-_gtk-reserved2 :: <anonymous-4676>;
+  slot GtkItemFactoryClass-_gtk-reserved3 :: <anonymous-4677>;
+  slot GtkItemFactoryClass-_gtk-reserved4 :: <anonymous-4678>;
+end;
 
-define C-subtype <_GtkItemFactoryEntry> (<C-void*>) end;
-define constant <GtkItemFactoryEntry> = <_GtkItemFactoryEntry>;
+define C-pointer-type <GtkItemFactoryClass> => <_GtkItemFactoryClass>;
 
-define C-subtype <_GtkItemFactoryItem> (<C-void*>) end;
-define constant <GtkItemFactoryItem> = <_GtkItemFactoryItem>;
+define C-struct <_GtkItemFactoryEntry>
+  slot GtkItemFactoryEntry-path :: <gchar*>;
+  slot GtkItemFactoryEntry-accelerator :: <gchar*>;
+  slot GtkItemFactoryEntry-callback :: <anonymous-4673>;
+  slot GtkItemFactoryEntry-callback-action :: <C-unsigned-int>;
+  slot GtkItemFactoryEntry-item-type :: <gchar*>;
+  slot GtkItemFactoryEntry-extra-data :: <C-void*>;
+end;
+
+define C-pointer-type <GtkItemFactoryEntry> => <_GtkItemFactoryEntry>;
+
+define C-struct <_GtkItemFactoryItem>
+  slot GtkItemFactoryItem-path :: <gchar*>;
+  slot GtkItemFactoryItem-widgets :: <GSList>;
+end;
+
+define C-pointer-type <GtkItemFactoryItem> => <_GtkItemFactoryItem>;
 
 define C-function gtk-item-factory-get-type
   result res :: <GType>;
@@ -26770,7 +28629,14 @@ end;
 define constant <anonymous-4699> = <C-function-pointer>;
 define constant <GtkMenuCallback> = <anonymous-4699>;
 
-define C-subtype <GtkMenuEntry> (<C-void*>) end;
+define C-struct <GtkMenuEntry>
+  slot tkMenuEntry-path :: <gchar*>;
+  slot tkMenuEntry-accelerator :: <gchar*>;
+  slot tkMenuEntry-callback :: <anonymous-4699>;
+  slot tkMenuEntry-callback-data :: <C-void*>;
+  slot tkMenuEntry-widget :: <GtkWidget>;
+end;
+
 define constant <anonymous-4701> = <C-function-pointer>;
 define constant <GtkItemFactoryCallback2> = <anonymous-4701>;
 
@@ -26810,8 +28676,22 @@ define constant <anonymous-4638> = <C-function-pointer>;
 define constant <anonymous-4639> = <C-function-pointer>;
 define constant <anonymous-4640> = <C-function-pointer>;
 define constant <anonymous-4641> = <C-function-pointer>;
-define C-subtype <_GtkActionClass> (<C-void*>) end;
-define constant <GtkActionClass> = <_GtkActionClass>;
+define C-struct <_GtkActionClass>
+  slot GtkActionClass-parent-class :: <_GObjectClass>;
+  slot GtkActionClass-activate :: <anonymous-4633>;
+  slot GtkActionClass-menu-item-type :: <C-unsigned-long>;
+  slot GtkActionClass-toolbar-item-type :: <C-unsigned-long>;
+  slot GtkActionClass-create-menu-item :: <anonymous-4634>;
+  slot GtkActionClass-create-tool-item :: <anonymous-4635>;
+  slot GtkActionClass-connect-proxy :: <anonymous-4636>;
+  slot GtkActionClass-disconnect-proxy :: <anonymous-4637>;
+  slot GtkActionClass-_gtk-reserved1 :: <anonymous-4638>;
+  slot GtkActionClass-_gtk-reserved2 :: <anonymous-4639>;
+  slot GtkActionClass-_gtk-reserved3 :: <anonymous-4640>;
+  slot GtkActionClass-_gtk-reserved4 :: <anonymous-4641>;
+end;
+
+define C-pointer-type <GtkActionClass> => <_GtkActionClass>;
 
 define C-function gtk-action-get-type
   result res :: <GType>;
@@ -26979,8 +28859,16 @@ define constant <anonymous-5123> = <C-function-pointer>;
 define constant <anonymous-5124> = <C-function-pointer>;
 define constant <anonymous-5125> = <C-function-pointer>;
 define constant <anonymous-5126> = <C-function-pointer>;
-define C-subtype <_GtkTreeViewColumnClass> (<C-void*>) end;
-define constant <GtkTreeViewColumnClass> = <_GtkTreeViewColumnClass>;
+define C-struct <_GtkTreeViewColumnClass>
+  slot GtkTreeViewColumnClass-parent-class :: <_GtkObjectClass>;
+  slot GtkTreeViewColumnClass-clicked :: <anonymous-5122>;
+  slot GtkTreeViewColumnClass-_gtk-reserved1 :: <anonymous-5123>;
+  slot GtkTreeViewColumnClass-_gtk-reserved2 :: <anonymous-5124>;
+  slot GtkTreeViewColumnClass-_gtk-reserved3 :: <anonymous-5125>;
+  slot GtkTreeViewColumnClass-_gtk-reserved4 :: <anonymous-5126>;
+end;
+
+define C-pointer-type <GtkTreeViewColumnClass> => <_GtkTreeViewColumnClass>;
 
 define C-subtype <_GtkCellRenderer> (<_GtkObject>) end;
 define constant <GtkCellRenderer> = <_GtkCellRenderer>;
@@ -26988,8 +28876,14 @@ define constant <GtkCellRenderer> = <_GtkCellRenderer>;
 define C-subtype <_GtkTreeModel> (<C-void*>) end;
 define constant <GtkTreeModel> = <_GtkTreeModel>;
 
-define C-subtype <_GtkTreeIter> (<C-void*>) end;
-define constant <GtkTreeIter> = <_GtkTreeIter>;
+define C-struct <_GtkTreeIter>
+  slot GtkTreeIter-stamp :: <C-signed-int>;
+  slot GtkTreeIter-user-data :: <C-void*>;
+  slot GtkTreeIter-user-data2 :: <C-void*>;
+  slot GtkTreeIter-user-data3 :: <C-void*>;
+end;
+
+define C-pointer-type <GtkTreeIter> => <_GtkTreeIter>;
 
 define constant <anonymous-5112> = <C-function-pointer>;
 define constant <GtkTreeCellDataFunc> = <anonymous-5112>;
@@ -27330,8 +29224,17 @@ define constant <GtkTreeIterCompareFunc> = <anonymous-5097>;
 define constant <anonymous-5101> = <C-function-pointer>;
 define constant <anonymous-5102> = <C-function-pointer>;
 define constant <anonymous-5103> = <C-function-pointer>;
-define C-subtype <_GtkTreeSortableIface> (<C-void*>) end;
-define constant <GtkTreeSortableIface> = <_GtkTreeSortableIface>;
+define C-struct <_GtkTreeSortableIface>
+  slot GtkTreeSortableIface-g-iface :: <_GTypeInterface>;
+  slot GtkTreeSortableIface-sort-column-changed :: <anonymous-5098>;
+  slot GtkTreeSortableIface-get-sort-column-id :: <anonymous-5099>;
+  slot GtkTreeSortableIface-set-sort-column-id :: <anonymous-5100>;
+  slot GtkTreeSortableIface-set-sort-func :: <anonymous-5101>;
+  slot GtkTreeSortableIface-set-default-sort-func :: <anonymous-5102>;
+  slot GtkTreeSortableIface-has-default-sort-func :: <anonymous-5103>;
+end;
+
+define C-pointer-type <GtkTreeSortableIface> => <_GtkTreeSortableIface>;
 
 define C-function gtk-tree-sortable-get-type
   result res :: <GType>;
@@ -27381,11 +29284,15 @@ define C-function gtk-tree-sortable-has-default-sort-func
   c-name: "gtk_tree_sortable_has_default_sort_func";
 end;
 
-define C-subtype <_GtkTreePath> (<C-void*>) end;
-define constant <GtkTreePath> = <_GtkTreePath>;
+define C-struct <_GtkTreePath>
+end;
 
-define C-subtype <_GtkTreeRowReference> (<C-void*>) end;
-define constant <GtkTreeRowReference> = <_GtkTreeRowReference>;
+define C-pointer-type <GtkTreePath> => <_GtkTreePath>;
+
+define C-struct <_GtkTreeRowReference>
+end;
+
+define C-pointer-type <GtkTreeRowReference> => <_GtkTreeRowReference>;
 
 define constant <anonymous-5018> = <C-function-pointer>;
 define constant <anonymous-5019> = <C-function-pointer>;
@@ -27410,8 +29317,30 @@ define constant <anonymous-5033> = <C-function-pointer>;
 define constant <anonymous-5034> = <C-function-pointer>;
 define constant <anonymous-5035> = <C-function-pointer>;
 define constant <anonymous-5036> = <C-function-pointer>;
-define C-subtype <_GtkTreeModelIface> (<C-void*>) end;
-define constant <GtkTreeModelIface> = <_GtkTreeModelIface>;
+define C-struct <_GtkTreeModelIface>
+  slot GtkTreeModelIface-g-iface :: <_GTypeInterface>;
+  slot GtkTreeModelIface-row-changed :: <anonymous-5018>;
+  slot GtkTreeModelIface-row-inserted :: <anonymous-5019>;
+  slot GtkTreeModelIface-row-has-child-toggled :: <anonymous-5020>;
+  slot GtkTreeModelIface-row-deleted :: <anonymous-5021>;
+  slot GtkTreeModelIface-rows-reordered :: <anonymous-5022>;
+  slot GtkTreeModelIface-get-flags :: <anonymous-5023>;
+  slot GtkTreeModelIface-get-n-columns :: <anonymous-5024>;
+  slot GtkTreeModelIface-get-column-type :: <anonymous-5025>;
+  slot GtkTreeModelIface-get-iter :: <anonymous-5026>;
+  slot GtkTreeModelIface-get-path :: <anonymous-5027>;
+  slot GtkTreeModelIface-get-value :: <anonymous-5028>;
+  slot GtkTreeModelIface-iter-next :: <anonymous-5029>;
+  slot GtkTreeModelIface-iter-children :: <anonymous-5030>;
+  slot GtkTreeModelIface-iter-has-child :: <anonymous-5031>;
+  slot GtkTreeModelIface-iter-n-children :: <anonymous-5032>;
+  slot GtkTreeModelIface-iter-nth-child :: <anonymous-5033>;
+  slot GtkTreeModelIface-iter-parent :: <anonymous-5034>;
+  slot GtkTreeModelIface-ref-node :: <anonymous-5035>;
+  slot GtkTreeModelIface-unref-node :: <anonymous-5036>;
+end;
+
+define C-pointer-type <GtkTreeModelIface> => <_GtkTreeModelIface>;
 
 define constant <anonymous-5016> = <C-function-pointer>;
 define constant <GtkTreeModelForeachFunc> = <anonymous-5016>;
@@ -27814,8 +29743,19 @@ define constant <anonymous-5003> = <C-function-pointer>;
 define constant <anonymous-5004> = <C-function-pointer>;
 define constant <anonymous-5005> = <C-function-pointer>;
 define constant <anonymous-5006> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererClass> (<C-void*>) end;
-define constant <GtkCellRendererClass> = <_GtkCellRendererClass>;
+define C-struct <_GtkCellRendererClass>
+  slot GtkCellRendererClass-parent-class :: <_GtkObjectClass>;
+  slot GtkCellRendererClass-get-size :: <anonymous-4999>;
+  slot GtkCellRendererClass-render :: <anonymous-5000>;
+  slot GtkCellRendererClass-activate :: <anonymous-5001>;
+  slot GtkCellRendererClass-start-editing :: <anonymous-5002>;
+  slot GtkCellRendererClass-editing-canceled :: <anonymous-5003>;
+  slot GtkCellRendererClass-editing-started :: <anonymous-5004>;
+  slot GtkCellRendererClass-_gtk-reserved1 :: <anonymous-5005>;
+  slot GtkCellRendererClass-_gtk-reserved2 :: <anonymous-5006>;
+end;
+
+define C-pointer-type <GtkCellRendererClass> => <_GtkCellRendererClass>;
 
 define C-function gtk-cell-renderer-get-type
   result res :: <GType>;
@@ -27896,8 +29836,14 @@ end;
 define constant <anonymous-4983> = <C-function-pointer>;
 define constant <anonymous-4984> = <C-function-pointer>;
 define constant <anonymous-4985> = <C-function-pointer>;
-define C-subtype <_GtkCellEditableIface> (<C-void*>) end;
-define constant <GtkCellEditableIface> = <_GtkCellEditableIface>;
+define C-struct <_GtkCellEditableIface>
+  slot GtkCellEditableIface-g-iface :: <_GTypeInterface>;
+  slot GtkCellEditableIface-editing-done :: <anonymous-4983>;
+  slot GtkCellEditableIface-remove-widget :: <anonymous-4984>;
+  slot GtkCellEditableIface-start-editing :: <anonymous-4985>;
+end;
+
+define C-pointer-type <GtkCellEditableIface> => <_GtkCellEditableIface>;
 
 define C-function gtk-cell-editable-get-type
   result res :: <GType>;
@@ -27926,8 +29872,10 @@ define constant $GTK-TREE-VIEW-DROP-AFTER = 1;
 define constant $GTK-TREE-VIEW-DROP-INTO-OR-BEFORE = 2;
 define constant $GTK-TREE-VIEW-DROP-INTO-OR-AFTER = 3;
 
-define C-subtype <_GtkTreeViewPrivate> (<C-void*>) end;
-define constant <GtkTreeViewPrivate> = <_GtkTreeViewPrivate>;
+define C-struct <_GtkTreeViewPrivate>
+end;
+
+define C-pointer-type <GtkTreeViewPrivate> => <_GtkTreeViewPrivate>;
 
 define C-subtype <_GtkTreeView> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTreeView> = <_GtkTreeView>;
@@ -27953,8 +29901,32 @@ define constant <anonymous-6085> = <C-function-pointer>;
 define constant <anonymous-6086> = <C-function-pointer>;
 define constant <anonymous-6087> = <C-function-pointer>;
 define constant <anonymous-6088> = <C-function-pointer>;
-define C-subtype <_GtkTreeViewClass> (<C-void*>) end;
-define constant <GtkTreeViewClass> = <_GtkTreeViewClass>;
+define C-struct <_GtkTreeViewClass>
+  slot GtkTreeViewClass-parent-class :: <_GtkContainerClass>;
+  slot GtkTreeViewClass-set-scroll-adjustments :: <anonymous-6068>;
+  slot GtkTreeViewClass-row-activated :: <anonymous-6069>;
+  slot GtkTreeViewClass-test-expand-row :: <anonymous-6070>;
+  slot GtkTreeViewClass-test-collapse-row :: <anonymous-6071>;
+  slot GtkTreeViewClass-row-expanded :: <anonymous-6072>;
+  slot GtkTreeViewClass-row-collapsed :: <anonymous-6073>;
+  slot GtkTreeViewClass-columns-changed :: <anonymous-6074>;
+  slot GtkTreeViewClass-cursor-changed :: <anonymous-6075>;
+  slot GtkTreeViewClass-move-cursor :: <anonymous-6076>;
+  slot GtkTreeViewClass-select-all :: <anonymous-6077>;
+  slot GtkTreeViewClass-unselect-all :: <anonymous-6078>;
+  slot GtkTreeViewClass-select-cursor-row :: <anonymous-6079>;
+  slot GtkTreeViewClass-toggle-cursor-row :: <anonymous-6080>;
+  slot GtkTreeViewClass-expand-collapse-cursor-row :: <anonymous-6081>;
+  slot GtkTreeViewClass-select-cursor-parent :: <anonymous-6082>;
+  slot GtkTreeViewClass-start-interactive-search :: <anonymous-6083>;
+  slot GtkTreeViewClass-_gtk-reserved0 :: <anonymous-6084>;
+  slot GtkTreeViewClass-_gtk-reserved1 :: <anonymous-6085>;
+  slot GtkTreeViewClass-_gtk-reserved2 :: <anonymous-6086>;
+  slot GtkTreeViewClass-_gtk-reserved3 :: <anonymous-6087>;
+  slot GtkTreeViewClass-_gtk-reserved4 :: <anonymous-6088>;
+end;
+
+define C-pointer-type <GtkTreeViewClass> => <_GtkTreeViewClass>;
 
 define constant <GtkTreeSelection> = <_GtkTreeSelection>;
 
@@ -27967,8 +29939,16 @@ define constant <anonymous-8121> = <C-function-pointer>;
 define constant <anonymous-8122> = <C-function-pointer>;
 define constant <anonymous-8123> = <C-function-pointer>;
 define constant <anonymous-8124> = <C-function-pointer>;
-define C-subtype <_GtkTreeSelectionClass> (<C-void*>) end;
-define constant <GtkTreeSelectionClass> = <_GtkTreeSelectionClass>;
+define C-struct <_GtkTreeSelectionClass>
+  slot GtkTreeSelectionClass-parent-class :: <_GObjectClass>;
+  slot GtkTreeSelectionClass-changed :: <anonymous-8120>;
+  slot GtkTreeSelectionClass-_gtk-reserved1 :: <anonymous-8121>;
+  slot GtkTreeSelectionClass-_gtk-reserved2 :: <anonymous-8122>;
+  slot GtkTreeSelectionClass-_gtk-reserved3 :: <anonymous-8123>;
+  slot GtkTreeSelectionClass-_gtk-reserved4 :: <anonymous-8124>;
+end;
+
+define C-pointer-type <GtkTreeSelectionClass> => <_GtkTreeSelectionClass>;
 
 define constant <anonymous-6089> = <C-function-pointer>;
 define constant <GtkTreeViewColumnDropFunc> = <anonymous-6089>;
@@ -28340,8 +30320,13 @@ define C-function gtk-tree-view-get-visible-range
   c-name: "gtk_tree_view_get_visible_range";
 end;
 
-define C-subtype <_GtkTargetEntry> (<C-void*>) end;
-define constant <GtkTargetEntry> = <_GtkTargetEntry>;
+define C-struct <_GtkTargetEntry>
+  slot GtkTargetEntry-target :: <gchar*>;
+  slot GtkTargetEntry-flags :: <C-unsigned-int>;
+  slot GtkTargetEntry-info :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkTargetEntry> => <_GtkTargetEntry>;
 
 define C-function gtk-tree-view-enable-model-drag-source
   input parameter arg1 :: <GtkTreeView>;
@@ -28591,8 +30576,24 @@ define constant <anonymous-6031> = <C-function-pointer>;
 define constant <anonymous-6032> = <C-function-pointer>;
 define constant <anonymous-6033> = <C-function-pointer>;
 define constant <anonymous-6034> = <C-function-pointer>;
-define C-subtype <_GtkEntryClass> (<C-void*>) end;
-define constant <GtkEntryClass> = <_GtkEntryClass>;
+define C-struct <_GtkEntryClass>
+  slot GtkEntryClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkEntryClass-populate-popup :: <anonymous-6022>;
+  slot GtkEntryClass-activate :: <anonymous-6023>;
+  slot GtkEntryClass-move-cursor :: <anonymous-6024>;
+  slot GtkEntryClass-insert-at-cursor :: <anonymous-6025>;
+  slot GtkEntryClass-delete-from-cursor :: <anonymous-6026>;
+  slot GtkEntryClass-backspace :: <anonymous-6027>;
+  slot GtkEntryClass-cut-clipboard :: <anonymous-6028>;
+  slot GtkEntryClass-copy-clipboard :: <anonymous-6029>;
+  slot GtkEntryClass-paste-clipboard :: <anonymous-6030>;
+  slot GtkEntryClass-toggle-overwrite :: <anonymous-6031>;
+  slot GtkEntryClass-_gtk-reserved1 :: <anonymous-6032>;
+  slot GtkEntryClass-_gtk-reserved2 :: <anonymous-6033>;
+  slot GtkEntryClass-_gtk-reserved3 :: <anonymous-6034>;
+end;
+
+define C-pointer-type <GtkEntryClass> => <_GtkEntryClass>;
 
 define C-function gtk-entry-get-type
   result res :: <GType>;
@@ -28725,8 +30726,10 @@ define C-function gtk-entry-get-alignment
   c-name: "gtk_entry_get_alignment";
 end;
 
-define C-subtype <_GtkEntryCompletionPrivate> (<C-void*>) end;
-define constant <GtkEntryCompletionPrivate> = <_GtkEntryCompletionPrivate>;
+define C-struct <_GtkEntryCompletionPrivate>
+end;
+
+define C-pointer-type <GtkEntryCompletionPrivate> => <_GtkEntryCompletionPrivate>;
 
 define C-subtype <_GtkEntryCompletion> (<_GObject>, <_GtkCellLayout>) end;
 define constant <GtkEntryCompletion> = <_GtkEntryCompletion>;
@@ -28800,8 +30803,17 @@ define constant <anonymous-5978> = <C-function-pointer>;
 define constant <anonymous-5979> = <C-function-pointer>;
 define constant <anonymous-5980> = <C-function-pointer>;
 define constant <anonymous-5981> = <C-function-pointer>;
-define C-subtype <_GtkEntryCompletionClass> (<C-void*>) end;
-define constant <GtkEntryCompletionClass> = <_GtkEntryCompletionClass>;
+define C-struct <_GtkEntryCompletionClass>
+  slot GtkEntryCompletionClass-parent-class :: <_GObjectClass>;
+  slot GtkEntryCompletionClass-match-selected :: <anonymous-5976>;
+  slot GtkEntryCompletionClass-action-activated :: <anonymous-5977>;
+  slot GtkEntryCompletionClass-insert-prefix :: <anonymous-5978>;
+  slot GtkEntryCompletionClass-_gtk-reserved0 :: <anonymous-5979>;
+  slot GtkEntryCompletionClass-_gtk-reserved1 :: <anonymous-5980>;
+  slot GtkEntryCompletionClass-_gtk-reserved2 :: <anonymous-5981>;
+end;
+
+define C-pointer-type <GtkEntryCompletionClass> => <_GtkEntryCompletionClass>;
 
 define constant <anonymous-5975> = <C-function-pointer>;
 define constant <GtkEntryCompletionMatchFunc> = <anonymous-5975>;
@@ -28950,8 +30962,10 @@ define constant <GtkTreeModelFilterVisibleFunc> = <anonymous-5957>;
 define constant <anonymous-5958> = <C-function-pointer>;
 define constant <GtkTreeModelFilterModifyFunc> = <anonymous-5958>;
 
-define C-subtype <_GtkTreeModelFilterPrivate> (<C-void*>) end;
-define constant <GtkTreeModelFilterPrivate> = <_GtkTreeModelFilterPrivate>;
+define C-struct <_GtkTreeModelFilterPrivate>
+end;
+
+define C-pointer-type <GtkTreeModelFilterPrivate> => <_GtkTreeModelFilterPrivate>;
 
 define C-subtype <_GtkTreeModelFilter> (<_GObject>, <_GtkTreeModel>, <_GtkTreeDragSource>) end;
 define constant <GtkTreeModelFilter> = <_GtkTreeModelFilter>;
@@ -28960,8 +30974,15 @@ define constant <anonymous-5959> = <C-function-pointer>;
 define constant <anonymous-5960> = <C-function-pointer>;
 define constant <anonymous-5961> = <C-function-pointer>;
 define constant <anonymous-5962> = <C-function-pointer>;
-define C-subtype <_GtkTreeModelFilterClass> (<C-void*>) end;
-define constant <GtkTreeModelFilterClass> = <_GtkTreeModelFilterClass>;
+define C-struct <_GtkTreeModelFilterClass>
+  slot GtkTreeModelFilterClass-parent-class :: <_GObjectClass>;
+  slot GtkTreeModelFilterClass-_gtk-reserved0 :: <anonymous-5959>;
+  slot GtkTreeModelFilterClass-_gtk-reserved1 :: <anonymous-5960>;
+  slot GtkTreeModelFilterClass-_gtk-reserved2 :: <anonymous-5961>;
+  slot GtkTreeModelFilterClass-_gtk-reserved3 :: <anonymous-5962>;
+end;
+
+define C-pointer-type <GtkTreeModelFilterClass> => <_GtkTreeModelFilterClass>;
 
 define C-function gtk-tree-model-filter-get-type
   result res :: <GType>;
@@ -29051,8 +31072,15 @@ define constant <anonymous-5932> = <C-function-pointer>;
 define constant <anonymous-5933> = <C-function-pointer>;
 define constant <anonymous-5934> = <C-function-pointer>;
 define constant <anonymous-5935> = <C-function-pointer>;
-define C-subtype <_GtkListStoreClass> (<C-void*>) end;
-define constant <GtkListStoreClass> = <_GtkListStoreClass>;
+define C-struct <_GtkListStoreClass>
+  slot GtkListStoreClass-parent-class :: <_GObjectClass>;
+  slot GtkListStoreClass-_gtk-reserved1 :: <anonymous-5932>;
+  slot GtkListStoreClass-_gtk-reserved2 :: <anonymous-5933>;
+  slot GtkListStoreClass-_gtk-reserved3 :: <anonymous-5934>;
+  slot GtkListStoreClass-_gtk-reserved4 :: <anonymous-5935>;
+end;
+
+define C-pointer-type <GtkListStoreClass> => <_GtkListStoreClass>;
 
 define C-function gtk-list-store-get-type
   result res :: <GType>;
@@ -29207,15 +31235,37 @@ define constant <anonymous-4133> = <C-function-pointer>;
 define constant <anonymous-4134> = <C-function-pointer>;
 define constant <anonymous-4135> = <C-function-pointer>;
 define constant <anonymous-4136> = <C-function-pointer>;
-define C-subtype <_GtkMenuShellClass> (<C-void*>) end;
-define constant <GtkMenuShellClass> = <_GtkMenuShellClass>;
+define C-struct <_GtkMenuShellClass>
+  slot GtkMenuShellClass-parent-class :: <_GtkContainerClass>;
+  bitfield slot GtkMenuShellClass-submenu-placement :: <C-int>, width: 1;
+  slot GtkMenuShellClass-deactivate :: <anonymous-4126>;
+  slot GtkMenuShellClass-selection-done :: <anonymous-4127>;
+  slot GtkMenuShellClass-move-current :: <anonymous-4128>;
+  slot GtkMenuShellClass-activate-current :: <anonymous-4129>;
+  slot GtkMenuShellClass-cancel :: <anonymous-4130>;
+  slot GtkMenuShellClass-select-item :: <anonymous-4131>;
+  slot GtkMenuShellClass-insert :: <anonymous-4132>;
+  slot GtkMenuShellClass-get-popup-delay :: <anonymous-4133>;
+  slot GtkMenuShellClass-_gtk-reserved1 :: <anonymous-4134>;
+  slot GtkMenuShellClass-_gtk-reserved2 :: <anonymous-4135>;
+  slot GtkMenuShellClass-_gtk-reserved3 :: <anonymous-4136>;
+end;
+
+define C-pointer-type <GtkMenuShellClass> => <_GtkMenuShellClass>;
 
 define constant <anonymous-4164> = <C-function-pointer>;
 define constant <anonymous-4165> = <C-function-pointer>;
 define constant <anonymous-4166> = <C-function-pointer>;
 define constant <anonymous-4167> = <C-function-pointer>;
-define C-subtype <_GtkMenuClass> (<C-void*>) end;
-define constant <GtkMenuClass> = <_GtkMenuClass>;
+define C-struct <_GtkMenuClass>
+  slot GtkMenuClass-parent-class :: <_GtkMenuShellClass>;
+  slot GtkMenuClass-_gtk-reserved1 :: <anonymous-4164>;
+  slot GtkMenuClass-_gtk-reserved2 :: <anonymous-4165>;
+  slot GtkMenuClass-_gtk-reserved3 :: <anonymous-4166>;
+  slot GtkMenuClass-_gtk-reserved4 :: <anonymous-4167>;
+end;
+
+define C-pointer-type <GtkMenuClass> => <_GtkMenuClass>;
 
 define constant <anonymous-4155> = <C-function-pointer>;
 define constant <GtkMenuDetachFunc> = <anonymous-4155>;
@@ -29450,8 +31500,33 @@ define constant <anonymous-5915> = <C-function-pointer>;
 define constant <anonymous-5916> = <C-function-pointer>;
 define constant <anonymous-5917> = <C-function-pointer>;
 define constant <anonymous-5918> = <C-function-pointer>;
-define C-subtype <_GtkIMContextClass> (<C-void*>) end;
-define constant <GtkIMContextClass> = <_GtkIMContextClass>;
+define C-struct <_GtkIMContextClass>
+  slot GtkIMContextClass-parent-class :: <_GtkObjectClass>;
+  slot GtkIMContextClass-preedit-start :: <anonymous-5897>;
+  slot GtkIMContextClass-preedit-end :: <anonymous-5898>;
+  slot GtkIMContextClass-preedit-changed :: <anonymous-5899>;
+  slot GtkIMContextClass-commit :: <anonymous-5900>;
+  slot GtkIMContextClass-retrieve-surrounding :: <anonymous-5901>;
+  slot GtkIMContextClass-delete-surrounding :: <anonymous-5902>;
+  slot GtkIMContextClass-set-client-window :: <anonymous-5903>;
+  slot GtkIMContextClass-get-preedit-string :: <anonymous-5904>;
+  slot GtkIMContextClass-filter-keypress :: <anonymous-5905>;
+  slot GtkIMContextClass-focus-in :: <anonymous-5906>;
+  slot GtkIMContextClass-focus-out :: <anonymous-5907>;
+  slot GtkIMContextClass-reset :: <anonymous-5908>;
+  slot GtkIMContextClass-set-cursor-location :: <anonymous-5909>;
+  slot GtkIMContextClass-set-use-preedit :: <anonymous-5910>;
+  slot GtkIMContextClass-set-surrounding :: <anonymous-5911>;
+  slot GtkIMContextClass-get-surrounding :: <anonymous-5912>;
+  slot GtkIMContextClass-_gtk-reserved1 :: <anonymous-5913>;
+  slot GtkIMContextClass-_gtk-reserved2 :: <anonymous-5914>;
+  slot GtkIMContextClass-_gtk-reserved3 :: <anonymous-5915>;
+  slot GtkIMContextClass-_gtk-reserved4 :: <anonymous-5916>;
+  slot GtkIMContextClass-_gtk-reserved5 :: <anonymous-5917>;
+  slot GtkIMContextClass-_gtk-reserved6 :: <anonymous-5918>;
+end;
+
+define C-pointer-type <GtkIMContextClass> => <_GtkIMContextClass>;
 
 define C-function gtk-im-context-get-type
   result res :: <GType>;
@@ -29543,8 +31618,21 @@ define constant <anonymous-5879> = <C-function-pointer>;
 define constant <anonymous-5880> = <C-function-pointer>;
 define constant <anonymous-5881> = <C-function-pointer>;
 define constant <anonymous-5882> = <C-function-pointer>;
-define C-subtype <_GtkEditableClass> (<C-void*>) end;
-define constant <GtkEditableClass> = <_GtkEditableClass>;
+define C-struct <_GtkEditableClass>
+  slot GtkEditableClass-base-iface :: <_GTypeInterface>;
+  slot GtkEditableClass-insert-text :: <anonymous-5873>;
+  slot GtkEditableClass-delete-text :: <anonymous-5874>;
+  slot GtkEditableClass-changed :: <anonymous-5875>;
+  slot GtkEditableClass-do-insert-text :: <anonymous-5876>;
+  slot GtkEditableClass-do-delete-text :: <anonymous-5877>;
+  slot GtkEditableClass-get-chars :: <anonymous-5878>;
+  slot GtkEditableClass-set-selection-bounds :: <anonymous-5879>;
+  slot GtkEditableClass-get-selection-bounds :: <anonymous-5880>;
+  slot GtkEditableClass-set-position :: <anonymous-5881>;
+  slot GtkEditableClass-get-position :: <anonymous-5882>;
+end;
+
+define C-pointer-type <GtkEditableClass> => <_GtkEditableClass>;
 
 define C-function gtk-editable-get-type
   result res :: <GType>;
@@ -29697,8 +31785,12 @@ define C-function gtk-drag-dest-unset
   c-name: "gtk_drag_dest_unset";
 end;
 
-define C-subtype <_GtkTargetList> (<C-void*>) end;
-define constant <GtkTargetList> = <_GtkTargetList>;
+define C-struct <_GtkTargetList>
+  slot GtkTargetList-list :: <GList>;
+  slot GtkTargetList-ref-count :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkTargetList> => <_GtkTargetList>;
 
 define C-function gtk-drag-dest-find-target
   input parameter arg1 :: <GtkWidget>;
@@ -29890,8 +31982,13 @@ define C-function gtk-drag-set-default-icon
   c-name: "gtk_drag_set_default_icon";
 end;
 
-define C-subtype <_GtkTargetPair> (<C-void*>) end;
-define constant <GtkTargetPair> = <_GtkTargetPair>;
+define C-struct <_GtkTargetPair>
+  slot GtkTargetPair-target :: <_GdkAtom>;
+  slot GtkTargetPair-flags :: <C-unsigned-int>;
+  slot GtkTargetPair-info :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkTargetPair> => <_GtkTargetPair>;
 
 define C-function gtk-target-list-new
   input parameter arg1 :: <GtkTargetEntry>;
@@ -29928,11 +32025,15 @@ end;
 define C-subtype <_GtkTextTagTable> (<_GObject>) end;
 define constant <GtkTextTagTable> = <_GtkTextTagTable>;
 
-define C-subtype <_GtkTextBTree> (<C-void*>) end;
-define constant <GtkTextBTree> = <_GtkTextBTree>;
+define C-struct <_GtkTextBTree>
+end;
 
-define C-subtype <_GtkTextLogAttrCache> (<C-void*>) end;
-define constant <GtkTextLogAttrCache> = <_GtkTextLogAttrCache>;
+define C-pointer-type <GtkTextBTree> => <_GtkTextBTree>;
+
+define C-struct <_GtkTextLogAttrCache>
+end;
+
+define C-pointer-type <GtkTextLogAttrCache> => <_GtkTextLogAttrCache>;
 
 define C-subtype <_GtkTextBuffer> (<_GObject>) end;
 define constant <GtkTextBuffer> = <_GtkTextBuffer>;
@@ -30191,8 +32292,24 @@ define constant <GtkTextSearchFlags> = <C-int>;
 define constant $GTK-TEXT-SEARCH-VISIBLE-ONLY = 1;
 define constant $GTK-TEXT-SEARCH-TEXT-ONLY = 2;
 
-define C-subtype <_GtkTextIter> (<C-void*>) end;
-define constant <GtkTextIter> = <_GtkTextIter>;
+define C-struct <_GtkTextIter>
+  slot GtkTextIter-dummy1 :: <C-void*>;
+  slot GtkTextIter-dummy2 :: <C-void*>;
+  slot GtkTextIter-dummy3 :: <C-signed-int>;
+  slot GtkTextIter-dummy4 :: <C-signed-int>;
+  slot GtkTextIter-dummy5 :: <C-signed-int>;
+  slot GtkTextIter-dummy6 :: <C-signed-int>;
+  slot GtkTextIter-dummy7 :: <C-signed-int>;
+  slot GtkTextIter-dummy8 :: <C-signed-int>;
+  slot GtkTextIter-dummy9 :: <C-void*>;
+  slot GtkTextIter-dummy10 :: <C-void*>;
+  slot GtkTextIter-dummy11 :: <C-signed-int>;
+  slot GtkTextIter-dummy12 :: <C-signed-int>;
+  slot GtkTextIter-dummy13 :: <C-signed-int>;
+  slot GtkTextIter-dummy14 :: <C-void*>;
+end;
+
+define C-pointer-type <GtkTextIter> => <_GtkTextIter>;
 
 define C-function gtk-text-iter-get-buffer
   input parameter arg1 :: <GtkTextIter>;
@@ -30314,11 +32431,54 @@ define C-function gtk-text-iter-get-toggled-tags
   c-name: "gtk_text_iter_get_toggled_tags";
 end;
 
-define C-subtype <_GtkTextAppearance> (<C-void*>) end;
-define constant <GtkTextAppearance> = <_GtkTextAppearance>;
+define C-struct <_GtkTextAppearance>
+  slot GtkTextAppearance-bg-color :: <_GdkColor>;
+  slot GtkTextAppearance-fg-color :: <_GdkColor>;
+  slot GtkTextAppearance-bg-stipple :: <GdkBitmap>;
+  slot GtkTextAppearance-fg-stipple :: <GdkBitmap>;
+  slot GtkTextAppearance-rise :: <C-signed-int>;
+  slot GtkTextAppearance-padding1 :: <C-void*>;
+  bitfield slot GtkTextAppearance-underline :: <C-int>, width: 4;
+  bitfield slot GtkTextAppearance-strikethrough :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-draw-bg :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-inside-selection :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-is-text :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-pad1 :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-pad2 :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-pad3 :: <C-int>, width: 1;
+  bitfield slot GtkTextAppearance-pad4 :: <C-int>, width: 1;
+end;
 
-define C-subtype <_GtkTextAttributes> (<C-void*>) end;
-define constant <GtkTextAttributes> = <_GtkTextAttributes>;
+define C-pointer-type <GtkTextAppearance> => <_GtkTextAppearance>;
+
+define C-struct <_GtkTextAttributes>
+  slot GtkTextAttributes-refcount :: <C-unsigned-int>;
+  slot GtkTextAttributes-appearance :: <_GtkTextAppearance>;
+  slot GtkTextAttributes-justification :: <GtkJustification>;
+  slot GtkTextAttributes-direction :: <GtkTextDirection>;
+  slot GtkTextAttributes-font :: <PangoFontDescription>;
+  slot GtkTextAttributes-font-scale :: <C-double>;
+  slot GtkTextAttributes-left-margin :: <C-signed-int>;
+  slot GtkTextAttributes-indent :: <C-signed-int>;
+  slot GtkTextAttributes-right-margin :: <C-signed-int>;
+  slot GtkTextAttributes-pixels-above-lines :: <C-signed-int>;
+  slot GtkTextAttributes-pixels-below-lines :: <C-signed-int>;
+  slot GtkTextAttributes-pixels-inside-wrap :: <C-signed-int>;
+  slot GtkTextAttributes-tabs :: <PangoTabArray>;
+  slot GtkTextAttributes-wrap-mode :: <GtkWrapMode>;
+  slot GtkTextAttributes-language :: <PangoLanguage>;
+  slot GtkTextAttributes-pg-bg-color :: <GdkColor>;
+  bitfield slot GtkTextAttributes-invisible :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-bg-full-height :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-editable :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-realized :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-pad1 :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-pad2 :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-pad3 :: <C-int>, width: 1;
+  bitfield slot GtkTextAttributes-pad4 :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkTextAttributes> => <_GtkTextAttributes>;
 
 define C-subtype <_GtkTextTag> (<_GObject>) end;
 define constant <GtkTextTag> = <_GtkTextTag>;
@@ -30806,8 +32966,15 @@ define constant <anonymous-5416> = <C-function-pointer>;
 define constant <anonymous-5417> = <C-function-pointer>;
 define constant <anonymous-5418> = <C-function-pointer>;
 define constant <anonymous-5419> = <C-function-pointer>;
-define C-subtype <_GtkTextChildAnchorClass> (<C-void*>) end;
-define constant <GtkTextChildAnchorClass> = <_GtkTextChildAnchorClass>;
+define C-struct <_GtkTextChildAnchorClass>
+  slot GtkTextChildAnchorClass-parent-class :: <_GObjectClass>;
+  slot GtkTextChildAnchorClass-_gtk-reserved1 :: <anonymous-5416>;
+  slot GtkTextChildAnchorClass-_gtk-reserved2 :: <anonymous-5417>;
+  slot GtkTextChildAnchorClass-_gtk-reserved3 :: <anonymous-5418>;
+  slot GtkTextChildAnchorClass-_gtk-reserved4 :: <anonymous-5419>;
+end;
+
+define C-pointer-type <GtkTextChildAnchorClass> => <_GtkTextChildAnchorClass>;
 
 define C-function gtk-text-child-anchor-get-type
   result res :: <GType>;
@@ -30836,8 +33003,16 @@ define constant <anonymous-5384> = <C-function-pointer>;
 define constant <anonymous-5385> = <C-function-pointer>;
 define constant <anonymous-5386> = <C-function-pointer>;
 define constant <anonymous-5387> = <C-function-pointer>;
-define C-subtype <_GtkTextTagClass> (<C-void*>) end;
-define constant <GtkTextTagClass> = <_GtkTextTagClass>;
+define C-struct <_GtkTextTagClass>
+  slot GtkTextTagClass-parent-class :: <_GObjectClass>;
+  slot GtkTextTagClass-event :: <anonymous-5383>;
+  slot GtkTextTagClass-_gtk-reserved1 :: <anonymous-5384>;
+  slot GtkTextTagClass-_gtk-reserved2 :: <anonymous-5385>;
+  slot GtkTextTagClass-_gtk-reserved3 :: <anonymous-5386>;
+  slot GtkTextTagClass-_gtk-reserved4 :: <anonymous-5387>;
+end;
+
+define C-pointer-type <GtkTextTagClass> => <_GtkTextTagClass>;
 
 define C-function gtk-text-tag-get-type
   result res :: <GType>;
@@ -30911,8 +33086,15 @@ define constant <anonymous-8146> = <C-function-pointer>;
 define constant <anonymous-8147> = <C-function-pointer>;
 define constant <anonymous-8148> = <C-function-pointer>;
 define constant <anonymous-8149> = <C-function-pointer>;
-define C-subtype <_GtkTreeStoreClass> (<C-void*>) end;
-define constant <GtkTreeStoreClass> = <_GtkTreeStoreClass>;
+define C-struct <_GtkTreeStoreClass>
+  slot GtkTreeStoreClass-parent-class :: <_GObjectClass>;
+  slot GtkTreeStoreClass-_gtk-reserved1 :: <anonymous-8146>;
+  slot GtkTreeStoreClass-_gtk-reserved2 :: <anonymous-8147>;
+  slot GtkTreeStoreClass-_gtk-reserved3 :: <anonymous-8148>;
+  slot GtkTreeStoreClass-_gtk-reserved4 :: <anonymous-8149>;
+end;
+
+define C-pointer-type <GtkTreeStoreClass> => <_GtkTreeStoreClass>;
 
 define C-function gtk-tree-store-get-type
   result res :: <GType>;
@@ -31217,8 +33399,15 @@ define constant <anonymous-8104> = <C-function-pointer>;
 define constant <anonymous-8105> = <C-function-pointer>;
 define constant <anonymous-8106> = <C-function-pointer>;
 define constant <anonymous-8107> = <C-function-pointer>;
-define C-subtype <_GtkTreeModelSortClass> (<C-void*>) end;
-define constant <GtkTreeModelSortClass> = <_GtkTreeModelSortClass>;
+define C-struct <_GtkTreeModelSortClass>
+  slot GtkTreeModelSortClass-parent-class :: <_GObjectClass>;
+  slot GtkTreeModelSortClass-_gtk-reserved1 :: <anonymous-8104>;
+  slot GtkTreeModelSortClass-_gtk-reserved2 :: <anonymous-8105>;
+  slot GtkTreeModelSortClass-_gtk-reserved3 :: <anonymous-8106>;
+  slot GtkTreeModelSortClass-_gtk-reserved4 :: <anonymous-8107>;
+end;
+
+define C-pointer-type <GtkTreeModelSortClass> => <_GtkTreeModelSortClass>;
 
 define C-function gtk-tree-model-sort-get-type
   result res :: <GType>;
@@ -31288,8 +33477,14 @@ define constant <GtkTreeDragSource> = <_GtkTreeDragSource>;
 define constant <anonymous-8090> = <C-function-pointer>;
 define constant <anonymous-8091> = <C-function-pointer>;
 define constant <anonymous-8092> = <C-function-pointer>;
-define C-subtype <_GtkTreeDragSourceIface> (<C-void*>) end;
-define constant <GtkTreeDragSourceIface> = <_GtkTreeDragSourceIface>;
+define C-struct <_GtkTreeDragSourceIface>
+  slot GtkTreeDragSourceIface-g-iface :: <_GTypeInterface>;
+  slot GtkTreeDragSourceIface-row-draggable :: <anonymous-8090>;
+  slot GtkTreeDragSourceIface-drag-data-get :: <anonymous-8091>;
+  slot GtkTreeDragSourceIface-drag-data-delete :: <anonymous-8092>;
+end;
+
+define C-pointer-type <GtkTreeDragSourceIface> => <_GtkTreeDragSourceIface>;
 
 define C-function gtk-tree-drag-source-get-type
   result res :: <GType>;
@@ -31323,8 +33518,13 @@ define constant <GtkTreeDragDest> = <_GtkTreeDragDest>;
 
 define constant <anonymous-8097> = <C-function-pointer>;
 define constant <anonymous-8098> = <C-function-pointer>;
-define C-subtype <_GtkTreeDragDestIface> (<C-void*>) end;
-define constant <GtkTreeDragDestIface> = <_GtkTreeDragDestIface>;
+define C-struct <_GtkTreeDragDestIface>
+  slot GtkTreeDragDestIface-g-iface :: <_GTypeInterface>;
+  slot GtkTreeDragDestIface-drag-data-received :: <anonymous-8097>;
+  slot GtkTreeDragDestIface-row-drop-possible :: <anonymous-8098>;
+end;
+
+define C-pointer-type <GtkTreeDragDestIface> => <_GtkTreeDragDestIface>;
 
 define C-function gtk-tree-drag-dest-get-type
   result res :: <GType>;
@@ -31365,16 +33565,29 @@ end;
 
 define constant <GtkTooltips> = <_GtkTooltips>;
 
-define C-subtype <_GtkTooltipsData> (<C-void*>) end;
-define constant <GtkTooltipsData> = <_GtkTooltipsData>;
+define C-struct <_GtkTooltipsData>
+  slot GtkTooltipsData-tooltips :: <GtkTooltips>;
+  slot GtkTooltipsData-widget :: <GtkWidget>;
+  slot GtkTooltipsData-tip-text :: <gchar*>;
+  slot GtkTooltipsData-tip-private :: <gchar*>;
+end;
+
+define C-pointer-type <GtkTooltipsData> => <_GtkTooltipsData>;
 
 define C-subtype <_GtkTooltips> (<_GtkObject>) end;
 define constant <anonymous-6928> = <C-function-pointer>;
 define constant <anonymous-6929> = <C-function-pointer>;
 define constant <anonymous-6930> = <C-function-pointer>;
 define constant <anonymous-6931> = <C-function-pointer>;
-define C-subtype <_GtkTooltipsClass> (<C-void*>) end;
-define constant <GtkTooltipsClass> = <_GtkTooltipsClass>;
+define C-struct <_GtkTooltipsClass>
+  slot GtkTooltipsClass-parent-class :: <_GtkObjectClass>;
+  slot GtkTooltipsClass-_gtk-reserved1 :: <anonymous-6928>;
+  slot GtkTooltipsClass-_gtk-reserved2 :: <anonymous-6929>;
+  slot GtkTooltipsClass-_gtk-reserved3 :: <anonymous-6930>;
+  slot GtkTooltipsClass-_gtk-reserved4 :: <anonymous-6931>;
+end;
+
+define C-pointer-type <GtkTooltipsClass> => <_GtkTooltipsClass>;
 
 define C-function gtk-tooltips-get-type
   result res :: <GType>;
@@ -31430,8 +33643,10 @@ define C-function gtk-tooltips-get-info-from-tip-window
   c-name: "gtk_tooltips_get_info_from_tip_window";
 end;
 
-define C-subtype <_GtkToolItemPrivate> (<C-void*>) end;
-define constant <GtkToolItemPrivate> = <_GtkToolItemPrivate>;
+define C-struct <_GtkToolItemPrivate>
+end;
+
+define C-pointer-type <GtkToolItemPrivate> => <_GtkToolItemPrivate>;
 
 define C-subtype <_GtkToolItem> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkToolItem> = <_GtkToolItem>;
@@ -31443,8 +33658,18 @@ define constant <anonymous-6945> = <C-function-pointer>;
 define constant <anonymous-6946> = <C-function-pointer>;
 define constant <anonymous-6947> = <C-function-pointer>;
 define constant <anonymous-6948> = <C-function-pointer>;
-define C-subtype <_GtkToolItemClass> (<C-void*>) end;
-define constant <GtkToolItemClass> = <_GtkToolItemClass>;
+define C-struct <_GtkToolItemClass>
+  slot GtkToolItemClass-parent-class :: <_GtkBinClass>;
+  slot GtkToolItemClass-create-menu-proxy :: <anonymous-6942>;
+  slot GtkToolItemClass-toolbar-reconfigured :: <anonymous-6943>;
+  slot GtkToolItemClass-set-tooltip :: <anonymous-6944>;
+  slot GtkToolItemClass-_gtk-reserved1 :: <anonymous-6945>;
+  slot GtkToolItemClass-_gtk-reserved2 :: <anonymous-6946>;
+  slot GtkToolItemClass-_gtk-reserved3 :: <anonymous-6947>;
+  slot GtkToolItemClass-_gtk-reserved4 :: <anonymous-6948>;
+end;
+
+define C-pointer-type <GtkToolItemClass> => <_GtkToolItemClass>;
 
 define C-function gtk-tool-item-get-type
   result res :: <GType>;
@@ -31598,8 +33823,18 @@ define constant <anonymous-5296> = <C-function-pointer>;
 define constant <anonymous-5297> = <C-function-pointer>;
 define constant <anonymous-5298> = <C-function-pointer>;
 define constant <anonymous-5299> = <C-function-pointer>;
-define C-subtype <_GtkItemClass> (<C-void*>) end;
-define constant <GtkItemClass> = <_GtkItemClass>;
+define C-struct <_GtkItemClass>
+  slot GtkItemClass-parent-class :: <_GtkBinClass>;
+  slot GtkItemClass-select :: <anonymous-5293>;
+  slot GtkItemClass-deselect :: <anonymous-5294>;
+  slot GtkItemClass-toggle :: <anonymous-5295>;
+  slot GtkItemClass-_gtk-reserved1 :: <anonymous-5296>;
+  slot GtkItemClass-_gtk-reserved2 :: <anonymous-5297>;
+  slot GtkItemClass-_gtk-reserved3 :: <anonymous-5298>;
+  slot GtkItemClass-_gtk-reserved4 :: <anonymous-5299>;
+end;
+
+define C-pointer-type <GtkItemClass> => <_GtkItemClass>;
 
 define constant <anonymous-5311> = <C-function-pointer>;
 define constant <anonymous-5312> = <C-function-pointer>;
@@ -31609,8 +33844,20 @@ define constant <anonymous-5315> = <C-function-pointer>;
 define constant <anonymous-5316> = <C-function-pointer>;
 define constant <anonymous-5317> = <C-function-pointer>;
 define constant <anonymous-5318> = <C-function-pointer>;
-define C-subtype <_GtkMenuItemClass> (<C-void*>) end;
-define constant <GtkMenuItemClass> = <_GtkMenuItemClass>;
+define C-struct <_GtkMenuItemClass>
+  slot GtkMenuItemClass-parent-class :: <_GtkItemClass>;
+  bitfield slot GtkMenuItemClass-hide-on-activate :: <C-int>, width: 1;
+  slot GtkMenuItemClass-activate :: <anonymous-5311>;
+  slot GtkMenuItemClass-activate-item :: <anonymous-5312>;
+  slot GtkMenuItemClass-toggle-size-request :: <anonymous-5313>;
+  slot GtkMenuItemClass-toggle-size-allocate :: <anonymous-5314>;
+  slot GtkMenuItemClass-_gtk-reserved1 :: <anonymous-5315>;
+  slot GtkMenuItemClass-_gtk-reserved2 :: <anonymous-5316>;
+  slot GtkMenuItemClass-_gtk-reserved3 :: <anonymous-5317>;
+  slot GtkMenuItemClass-_gtk-reserved4 :: <anonymous-5318>;
+end;
+
+define C-pointer-type <GtkMenuItemClass> => <_GtkMenuItemClass>;
 
 define C-function gtk-menu-item-get-type
   result res :: <GType>;
@@ -31716,8 +33963,10 @@ define C-function gtk-item-toggle
   c-name: "gtk_item_toggle";
 end;
 
-define C-subtype <_GtkToolButtonPrivate> (<C-void*>) end;
-define constant <GtkToolButtonPrivate> = <_GtkToolButtonPrivate>;
+define C-struct <_GtkToolButtonPrivate>
+end;
+
+define C-pointer-type <GtkToolButtonPrivate> => <_GtkToolButtonPrivate>;
 
 define C-subtype <_GtkToolButton> (<_GtkToolItem>, <_AtkImplementorIface>) end;
 define constant <GtkToolButton> = <_GtkToolButton>;
@@ -31727,8 +33976,17 @@ define constant <anonymous-6974> = <C-function-pointer>;
 define constant <anonymous-6975> = <C-function-pointer>;
 define constant <anonymous-6976> = <C-function-pointer>;
 define constant <anonymous-6977> = <C-function-pointer>;
-define C-subtype <_GtkToolButtonClass> (<C-void*>) end;
-define constant <GtkToolButtonClass> = <_GtkToolButtonClass>;
+define C-struct <_GtkToolButtonClass>
+  slot GtkToolButtonClass-parent-class :: <_GtkToolItemClass>;
+  slot GtkToolButtonClass-button-type :: <C-unsigned-long>;
+  slot GtkToolButtonClass-clicked :: <anonymous-6973>;
+  slot GtkToolButtonClass-_gtk-reserved1 :: <anonymous-6974>;
+  slot GtkToolButtonClass-_gtk-reserved2 :: <anonymous-6975>;
+  slot GtkToolButtonClass-_gtk-reserved3 :: <anonymous-6976>;
+  slot GtkToolButtonClass-_gtk-reserved4 :: <anonymous-6977>;
+end;
+
+define C-pointer-type <GtkToolButtonClass> => <_GtkToolButtonClass>;
 
 define C-function gtk-tool-button-get-type
   result res :: <GType>;
@@ -31827,8 +34085,14 @@ define constant $GTK-TOOLBAR-CHILD-TOGGLEBUTTON = 2;
 define constant $GTK-TOOLBAR-CHILD-RADIOBUTTON = 3;
 define constant $GTK-TOOLBAR-CHILD-WIDGET = 4;
 
-define C-subtype <_GtkToolbarChild> (<C-void*>) end;
-define constant <GtkToolbarChild> = <_GtkToolbarChild>;
+define C-struct <_GtkToolbarChild>
+  slot GtkToolbarChild-type :: <GtkToolbarChildType>;
+  slot GtkToolbarChild-widget :: <GtkWidget>;
+  slot GtkToolbarChild-icon :: <GtkWidget>;
+  slot GtkToolbarChild-label :: <GtkWidget>;
+end;
+
+define C-pointer-type <GtkToolbarChild> => <_GtkToolbarChild>;
 
 define constant <GtkToolbarSpaceStyle> = <C-int>;
 define constant $GTK-TOOLBAR-SPACE-EMPTY = 0;
@@ -31843,11 +34107,22 @@ define constant <anonymous-8047> = <C-function-pointer>;
 define constant <anonymous-8048> = <C-function-pointer>;
 define constant <anonymous-8049> = <C-function-pointer>;
 define constant <anonymous-8050> = <C-function-pointer>;
-define C-subtype <_GtkToolbarClass> (<C-void*>) end;
-define constant <GtkToolbarClass> = <_GtkToolbarClass>;
+define C-struct <_GtkToolbarClass>
+  slot GtkToolbarClass-parent-class :: <_GtkContainerClass>;
+  slot GtkToolbarClass-orientation-changed :: <anonymous-8045>;
+  slot GtkToolbarClass-style-changed :: <anonymous-8046>;
+  slot GtkToolbarClass-popup-context-menu :: <anonymous-8047>;
+  slot GtkToolbarClass-_gtk-reserved1 :: <anonymous-8048>;
+  slot GtkToolbarClass-_gtk-reserved2 :: <anonymous-8049>;
+  slot GtkToolbarClass-_gtk-reserved3 :: <anonymous-8050>;
+end;
 
-define C-subtype <_GtkToolbarPrivate> (<C-void*>) end;
-define constant <GtkToolbarPrivate> = <_GtkToolbarPrivate>;
+define C-pointer-type <GtkToolbarClass> => <_GtkToolbarClass>;
+
+define C-struct <_GtkToolbarPrivate>
+end;
+
+define C-pointer-type <GtkToolbarPrivate> => <_GtkToolbarPrivate>;
 
 define C-function gtk-toolbar-get-type
   result res :: <GType>;
@@ -32563,11 +34838,17 @@ define constant <GtkMisc> = <_GtkMisc>;
 define C-subtype <_GtkPixmap> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkPixmap> = <_GtkPixmap>;
 
-define C-subtype <_GtkMiscClass> (<C-void*>) end;
-define constant <GtkMiscClass> = <_GtkMiscClass>;
+define C-struct <_GtkMiscClass>
+  slot GtkMiscClass-parent-class :: <_GtkWidgetClass>;
+end;
 
-define C-subtype <_GtkPixmapClass> (<C-void*>) end;
-define constant <GtkPixmapClass> = <_GtkPixmapClass>;
+define C-pointer-type <GtkMiscClass> => <_GtkMiscClass>;
+
+define C-struct <_GtkPixmapClass>
+  slot GtkPixmapClass-parent-class :: <_GtkMiscClass>;
+end;
+
+define C-pointer-type <GtkPixmapClass> => <_GtkPixmapClass>;
 
 define C-function gtk-pixmap-get-type
   result res :: <GtkType>;
@@ -32635,8 +34916,10 @@ define C-function gtk-misc-get-padding
   c-name: "gtk_misc_get_padding";
 end;
 
-define C-subtype <_GtkToggleToolButtonPrivate> (<C-void*>) end;
-define constant <GtkToggleToolButtonPrivate> = <_GtkToggleToolButtonPrivate>;
+define C-struct <_GtkToggleToolButtonPrivate>
+end;
+
+define C-pointer-type <GtkToggleToolButtonPrivate> => <_GtkToggleToolButtonPrivate>;
 
 define C-subtype <_GtkToggleToolButton> (<_GtkToolButton>, <_AtkImplementorIface>) end;
 define constant <GtkToggleToolButton> = <_GtkToggleToolButton>;
@@ -32646,8 +34929,16 @@ define constant <anonymous-7468> = <C-function-pointer>;
 define constant <anonymous-7469> = <C-function-pointer>;
 define constant <anonymous-7470> = <C-function-pointer>;
 define constant <anonymous-7471> = <C-function-pointer>;
-define C-subtype <_GtkToggleToolButtonClass> (<C-void*>) end;
-define constant <GtkToggleToolButtonClass> = <_GtkToggleToolButtonClass>;
+define C-struct <_GtkToggleToolButtonClass>
+  slot GtkToggleToolButtonClass-parent-class :: <_GtkToolButtonClass>;
+  slot GtkToggleToolButtonClass-toggled :: <anonymous-7467>;
+  slot GtkToggleToolButtonClass-_gtk-reserved1 :: <anonymous-7468>;
+  slot GtkToggleToolButtonClass-_gtk-reserved2 :: <anonymous-7469>;
+  slot GtkToggleToolButtonClass-_gtk-reserved3 :: <anonymous-7470>;
+  slot GtkToggleToolButtonClass-_gtk-reserved4 :: <anonymous-7471>;
+end;
+
+define C-pointer-type <GtkToggleToolButtonClass> => <_GtkToggleToolButtonClass>;
 
 define C-function gtk-toggle-tool-button-get-type
   result res :: <GType>;
@@ -32693,16 +34984,37 @@ define constant <anonymous-4889> = <C-function-pointer>;
 define constant <anonymous-4890> = <C-function-pointer>;
 define constant <anonymous-4891> = <C-function-pointer>;
 define constant <anonymous-4892> = <C-function-pointer>;
-define C-subtype <_GtkButtonClass> (<C-void*>) end;
-define constant <GtkButtonClass> = <_GtkButtonClass>;
+define C-struct <_GtkButtonClass>
+  slot GtkButtonClass-parent-class :: <_GtkBinClass>;
+  slot GtkButtonClass-pressed :: <anonymous-4883>;
+  slot GtkButtonClass-released :: <anonymous-4884>;
+  slot GtkButtonClass-clicked :: <anonymous-4885>;
+  slot GtkButtonClass-enter :: <anonymous-4886>;
+  slot GtkButtonClass-leave :: <anonymous-4887>;
+  slot GtkButtonClass-activate :: <anonymous-4888>;
+  slot GtkButtonClass-_gtk-reserved1 :: <anonymous-4889>;
+  slot GtkButtonClass-_gtk-reserved2 :: <anonymous-4890>;
+  slot GtkButtonClass-_gtk-reserved3 :: <anonymous-4891>;
+  slot GtkButtonClass-_gtk-reserved4 :: <anonymous-4892>;
+end;
+
+define C-pointer-type <GtkButtonClass> => <_GtkButtonClass>;
 
 define constant <anonymous-5267> = <C-function-pointer>;
 define constant <anonymous-5268> = <C-function-pointer>;
 define constant <anonymous-5269> = <C-function-pointer>;
 define constant <anonymous-5270> = <C-function-pointer>;
 define constant <anonymous-5271> = <C-function-pointer>;
-define C-subtype <_GtkToggleButtonClass> (<C-void*>) end;
-define constant <GtkToggleButtonClass> = <_GtkToggleButtonClass>;
+define C-struct <_GtkToggleButtonClass>
+  slot GtkToggleButtonClass-parent-class :: <_GtkButtonClass>;
+  slot GtkToggleButtonClass-toggled :: <anonymous-5267>;
+  slot GtkToggleButtonClass-_gtk-reserved1 :: <anonymous-5268>;
+  slot GtkToggleButtonClass-_gtk-reserved2 :: <anonymous-5269>;
+  slot GtkToggleButtonClass-_gtk-reserved3 :: <anonymous-5270>;
+  slot GtkToggleButtonClass-_gtk-reserved4 :: <anonymous-5271>;
+end;
+
+define C-pointer-type <GtkToggleButtonClass> => <_GtkToggleButtonClass>;
 
 define C-function gtk-toggle-button-get-type
   result res :: <GType>;
@@ -32930,26 +35242,51 @@ define constant $GTK-IMAGE-ICON-SET = 5;
 define constant $GTK-IMAGE-ANIMATION = 6;
 define constant $GTK-IMAGE-ICON-NAME = 7;
 
-define C-subtype <_GtkImagePixmapData> (<C-void*>) end;
-define constant <GtkImagePixmapData> = <_GtkImagePixmapData>;
+define C-struct <_GtkImagePixmapData>
+  slot GtkImagePixmapData-pixmap :: <GdkPixmap>;
+end;
 
-define C-subtype <_GtkImageImageData> (<C-void*>) end;
-define constant <GtkImageImageData> = <_GtkImageImageData>;
+define C-pointer-type <GtkImagePixmapData> => <_GtkImagePixmapData>;
 
-define C-subtype <_GtkImagePixbufData> (<C-void*>) end;
-define constant <GtkImagePixbufData> = <_GtkImagePixbufData>;
+define C-struct <_GtkImageImageData>
+  slot GtkImageImageData-image :: <GdkImage>;
+end;
 
-define C-subtype <_GtkImageStockData> (<C-void*>) end;
-define constant <GtkImageStockData> = <_GtkImageStockData>;
+define C-pointer-type <GtkImageImageData> => <_GtkImageImageData>;
 
-define C-subtype <_GtkImageIconSetData> (<C-void*>) end;
-define constant <GtkImageIconSetData> = <_GtkImageIconSetData>;
+define C-struct <_GtkImagePixbufData>
+  slot GtkImagePixbufData-pixbuf :: <GdkPixbuf>;
+end;
 
-define C-subtype <_GtkImageAnimationData> (<C-void*>) end;
-define constant <GtkImageAnimationData> = <_GtkImageAnimationData>;
+define C-pointer-type <GtkImagePixbufData> => <_GtkImagePixbufData>;
 
-define C-subtype <_GtkImageIconNameData> (<C-void*>) end;
-define constant <GtkImageIconNameData> = <_GtkImageIconNameData>;
+define C-struct <_GtkImageStockData>
+  slot GtkImageStockData-stock-id :: <gchar*>;
+end;
+
+define C-pointer-type <GtkImageStockData> => <_GtkImageStockData>;
+
+define C-struct <_GtkImageIconSetData>
+  slot GtkImageIconSetData-icon-set :: <GtkIconSet>;
+end;
+
+define C-pointer-type <GtkImageIconSetData> => <_GtkImageIconSetData>;
+
+define C-struct <_GtkImageAnimationData>
+  slot GtkImageAnimationData-anim :: <GdkPixbufAnimation>;
+  slot GtkImageAnimationData-iter :: <GdkPixbufAnimationIter>;
+  slot GtkImageAnimationData-frame-timeout :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkImageAnimationData> => <_GtkImageAnimationData>;
+
+define C-struct <_GtkImageIconNameData>
+  slot GtkImageIconNameData-icon-name :: <gchar*>;
+  slot GtkImageIconNameData-pixbuf :: <GdkPixbuf>;
+  slot GtkImageIconNameData-theme-change-id :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <GtkImageIconNameData> => <_GtkImageIconNameData>;
 
 define C-subtype <anonymous-4838> (<C-void*>) end;
 define C-subtype <_GtkImage> (<_GtkMisc>, <_AtkImplementorIface>) end;
@@ -32959,8 +35296,15 @@ define constant <anonymous-4839> = <C-function-pointer>;
 define constant <anonymous-4840> = <C-function-pointer>;
 define constant <anonymous-4841> = <C-function-pointer>;
 define constant <anonymous-4842> = <C-function-pointer>;
-define C-subtype <_GtkImageClass> (<C-void*>) end;
-define constant <GtkImageClass> = <_GtkImageClass>;
+define C-struct <_GtkImageClass>
+  slot GtkImageClass-parent-class :: <_GtkMiscClass>;
+  slot GtkImageClass-_gtk-reserved1 :: <anonymous-4839>;
+  slot GtkImageClass-_gtk-reserved2 :: <anonymous-4840>;
+  slot GtkImageClass-_gtk-reserved3 :: <anonymous-4841>;
+  slot GtkImageClass-_gtk-reserved4 :: <anonymous-4842>;
+end;
+
+define C-pointer-type <GtkImageClass> => <_GtkImageClass>;
 
 define C-function gtk-image-get-type
   result res :: <GType>;
@@ -33169,8 +35513,10 @@ define constant gtk-image-new-from-file = gtk-image-new-from-file-utf8;
 
 define constant gtk-image-set-from-file = gtk-image-set-from-file-utf8;
 
-define C-subtype <_GtkToggleActionPrivate> (<C-void*>) end;
-define constant <GtkToggleActionPrivate> = <_GtkToggleActionPrivate>;
+define C-struct <_GtkToggleActionPrivate>
+end;
+
+define C-pointer-type <GtkToggleActionPrivate> => <_GtkToggleActionPrivate>;
 
 define C-subtype <_GtkToggleAction> (<_GtkAction>) end;
 define constant <GtkToggleAction> = <_GtkToggleAction>;
@@ -33180,8 +35526,16 @@ define constant <anonymous-7419> = <C-function-pointer>;
 define constant <anonymous-7420> = <C-function-pointer>;
 define constant <anonymous-7421> = <C-function-pointer>;
 define constant <anonymous-7422> = <C-function-pointer>;
-define C-subtype <_GtkToggleActionClass> (<C-void*>) end;
-define constant <GtkToggleActionClass> = <_GtkToggleActionClass>;
+define C-struct <_GtkToggleActionClass>
+  slot GtkToggleActionClass-parent-class :: <_GtkActionClass>;
+  slot GtkToggleActionClass-toggled :: <anonymous-7418>;
+  slot GtkToggleActionClass-_gtk-reserved1 :: <anonymous-7419>;
+  slot GtkToggleActionClass-_gtk-reserved2 :: <anonymous-7420>;
+  slot GtkToggleActionClass-_gtk-reserved3 :: <anonymous-7421>;
+  slot GtkToggleActionClass-_gtk-reserved4 :: <anonymous-7422>;
+end;
+
+define C-pointer-type <GtkToggleActionClass> => <_GtkToggleActionClass>;
 
 define C-function gtk-toggle-action-get-type
   result res :: <GType>;
@@ -33226,8 +35580,10 @@ define C-function gtk-toggle-action-get-draw-as-radio
   c-name: "gtk_toggle_action_get_draw_as_radio";
 end;
 
-define C-subtype <_GtkLabelSelectionInfo> (<C-void*>) end;
-define constant <GtkLabelSelectionInfo> = <_GtkLabelSelectionInfo>;
+define C-struct <_GtkLabelSelectionInfo>
+end;
+
+define C-pointer-type <GtkLabelSelectionInfo> => <_GtkLabelSelectionInfo>;
 
 define C-subtype <_GtkLabel> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkLabel> = <_GtkLabel>;
@@ -33242,8 +35598,18 @@ define constant <anonymous-4202> = <C-function-pointer>;
 define constant <anonymous-4203> = <C-function-pointer>;
 define constant <anonymous-4204> = <C-function-pointer>;
 define constant <anonymous-4205> = <C-function-pointer>;
-define C-subtype <_GtkLabelClass> (<C-void*>) end;
-define constant <GtkLabelClass> = <_GtkLabelClass>;
+define C-struct <_GtkLabelClass>
+  slot GtkLabelClass-parent-class :: <_GtkMiscClass>;
+  slot GtkLabelClass-move-cursor :: <anonymous-4199>;
+  slot GtkLabelClass-copy-clipboard :: <anonymous-4200>;
+  slot GtkLabelClass-populate-popup :: <anonymous-4201>;
+  slot GtkLabelClass-_gtk-reserved1 :: <anonymous-4202>;
+  slot GtkLabelClass-_gtk-reserved2 :: <anonymous-4203>;
+  slot GtkLabelClass-_gtk-reserved3 :: <anonymous-4204>;
+  slot GtkLabelClass-_gtk-reserved4 :: <anonymous-4205>;
+end;
+
+define C-pointer-type <GtkLabelClass> => <_GtkLabelClass>;
 
 define constant <anonymous-8027> = <C-function-pointer>;
 define constant <anonymous-8028> = <C-function-pointer>;
@@ -33253,8 +35619,19 @@ define constant <anonymous-8031> = <C-function-pointer>;
 define constant <anonymous-8032> = <C-function-pointer>;
 define constant <anonymous-8033> = <C-function-pointer>;
 define constant <anonymous-8034> = <C-function-pointer>;
-define C-subtype <_GtkTipsQueryClass> (<C-void*>) end;
-define constant <GtkTipsQueryClass> = <_GtkTipsQueryClass>;
+define C-struct <_GtkTipsQueryClass>
+  slot GtkTipsQueryClass-parent-class :: <_GtkLabelClass>;
+  slot GtkTipsQueryClass-start-query :: <anonymous-8027>;
+  slot GtkTipsQueryClass-stop-query :: <anonymous-8028>;
+  slot GtkTipsQueryClass-widget-entered :: <anonymous-8029>;
+  slot GtkTipsQueryClass-widget-selected :: <anonymous-8030>;
+  slot GtkTipsQueryClass-_gtk-reserved1 :: <anonymous-8031>;
+  slot GtkTipsQueryClass-_gtk-reserved2 :: <anonymous-8032>;
+  slot GtkTipsQueryClass-_gtk-reserved3 :: <anonymous-8033>;
+  slot GtkTipsQueryClass-_gtk-reserved4 :: <anonymous-8034>;
+end;
+
+define C-pointer-type <GtkTipsQueryClass> => <_GtkTipsQueryClass>;
 
 define C-function gtk-tips-query-get-type
   result res :: <GtkType>;
@@ -33568,15 +35945,21 @@ define constant $GTK-TEXT-WINDOW-RIGHT = 4;
 define constant $GTK-TEXT-WINDOW-TOP = 5;
 define constant $GTK-TEXT-WINDOW-BOTTOM = 6;
 
-define C-subtype <_GtkTextLayout> (<C-void*>) end;
-define C-subtype <_GtkTextWindow> (<C-void*>) end;
-define constant <GtkTextWindow> = <_GtkTextWindow>;
+define C-struct <_GtkTextLayout>
+end;
+
+define C-struct <_GtkTextWindow>
+end;
+
+define C-pointer-type <GtkTextWindow> => <_GtkTextWindow>;
 
 define C-subtype <_GtkTextMark> (<_GObject>) end;
 define constant <GtkTextMark> = <_GtkTextMark>;
 
-define C-subtype <_GtkTextPendingScroll> (<C-void*>) end;
-define constant <GtkTextPendingScroll> = <_GtkTextPendingScroll>;
+define C-struct <_GtkTextPendingScroll>
+end;
+
+define C-pointer-type <GtkTextPendingScroll> => <_GtkTextPendingScroll>;
 
 define C-subtype <_GtkTextView> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTextView> = <_GtkTextView>;
@@ -33601,8 +35984,31 @@ define constant <anonymous-7963> = <C-function-pointer>;
 define constant <anonymous-7964> = <C-function-pointer>;
 define constant <anonymous-7965> = <C-function-pointer>;
 define constant <anonymous-7966> = <C-function-pointer>;
-define C-subtype <_GtkTextViewClass> (<C-void*>) end;
-define constant <GtkTextViewClass> = <_GtkTextViewClass>;
+define C-struct <_GtkTextViewClass>
+  slot GtkTextViewClass-parent-class :: <_GtkContainerClass>;
+  slot GtkTextViewClass-set-scroll-adjustments :: <anonymous-7947>;
+  slot GtkTextViewClass-populate-popup :: <anonymous-7948>;
+  slot GtkTextViewClass-move-cursor :: <anonymous-7949>;
+  slot GtkTextViewClass-page-horizontally :: <anonymous-7950>;
+  slot GtkTextViewClass-set-anchor :: <anonymous-7951>;
+  slot GtkTextViewClass-insert-at-cursor :: <anonymous-7952>;
+  slot GtkTextViewClass-delete-from-cursor :: <anonymous-7953>;
+  slot GtkTextViewClass-backspace :: <anonymous-7954>;
+  slot GtkTextViewClass-cut-clipboard :: <anonymous-7955>;
+  slot GtkTextViewClass-copy-clipboard :: <anonymous-7956>;
+  slot GtkTextViewClass-paste-clipboard :: <anonymous-7957>;
+  slot GtkTextViewClass-toggle-overwrite :: <anonymous-7958>;
+  slot GtkTextViewClass-move-focus :: <anonymous-7959>;
+  slot GtkTextViewClass-_gtk-reserved1 :: <anonymous-7960>;
+  slot GtkTextViewClass-_gtk-reserved2 :: <anonymous-7961>;
+  slot GtkTextViewClass-_gtk-reserved3 :: <anonymous-7962>;
+  slot GtkTextViewClass-_gtk-reserved4 :: <anonymous-7963>;
+  slot GtkTextViewClass-_gtk-reserved5 :: <anonymous-7964>;
+  slot GtkTextViewClass-_gtk-reserved6 :: <anonymous-7965>;
+  slot GtkTextViewClass-_gtk-reserved7 :: <anonymous-7966>;
+end;
+
+define C-pointer-type <GtkTextViewClass> => <_GtkTextViewClass>;
 
 define C-function gtk-text-view-get-type
   result res :: <GType>;
@@ -34020,8 +36426,29 @@ define constant <anonymous-7855> = <C-function-pointer>;
 define constant <anonymous-7856> = <C-function-pointer>;
 define constant <anonymous-7857> = <C-function-pointer>;
 define constant <anonymous-7858> = <C-function-pointer>;
-define C-subtype <_GtkTextBufferClass> (<C-void*>) end;
-define constant <GtkTextBufferClass> = <_GtkTextBufferClass>;
+define C-struct <_GtkTextBufferClass>
+  slot GtkTextBufferClass-parent-class :: <_GObjectClass>;
+  slot GtkTextBufferClass-insert-text :: <anonymous-7841>;
+  slot GtkTextBufferClass-insert-pixbuf :: <anonymous-7842>;
+  slot GtkTextBufferClass-insert-child-anchor :: <anonymous-7843>;
+  slot GtkTextBufferClass-delete-range :: <anonymous-7844>;
+  slot GtkTextBufferClass-changed :: <anonymous-7845>;
+  slot GtkTextBufferClass-modified-changed :: <anonymous-7846>;
+  slot GtkTextBufferClass-mark-set :: <anonymous-7847>;
+  slot GtkTextBufferClass-mark-deleted :: <anonymous-7848>;
+  slot GtkTextBufferClass-apply-tag :: <anonymous-7849>;
+  slot GtkTextBufferClass-remove-tag :: <anonymous-7850>;
+  slot GtkTextBufferClass-begin-user-action :: <anonymous-7851>;
+  slot GtkTextBufferClass-end-user-action :: <anonymous-7852>;
+  slot GtkTextBufferClass-_gtk-reserved1 :: <anonymous-7853>;
+  slot GtkTextBufferClass-_gtk-reserved2 :: <anonymous-7854>;
+  slot GtkTextBufferClass-_gtk-reserved3 :: <anonymous-7855>;
+  slot GtkTextBufferClass-_gtk-reserved4 :: <anonymous-7856>;
+  slot GtkTextBufferClass-_gtk-reserved5 :: <anonymous-7857>;
+  slot GtkTextBufferClass-_gtk-reserved6 :: <anonymous-7858>;
+end;
+
+define C-pointer-type <GtkTextBufferClass> => <_GtkTextBufferClass>;
 
 define C-function gtk-text-buffer-get-type
   result res :: <GType>;
@@ -34463,8 +36890,15 @@ define constant <anonymous-7827> = <C-function-pointer>;
 define constant <anonymous-7828> = <C-function-pointer>;
 define constant <anonymous-7829> = <C-function-pointer>;
 define constant <anonymous-7830> = <C-function-pointer>;
-define C-subtype <_GtkTextMarkClass> (<C-void*>) end;
-define constant <GtkTextMarkClass> = <_GtkTextMarkClass>;
+define C-struct <_GtkTextMarkClass>
+  slot GtkTextMarkClass-parent-class :: <_GObjectClass>;
+  slot GtkTextMarkClass-_gtk-reserved1 :: <anonymous-7827>;
+  slot GtkTextMarkClass-_gtk-reserved2 :: <anonymous-7828>;
+  slot GtkTextMarkClass-_gtk-reserved3 :: <anonymous-7829>;
+  slot GtkTextMarkClass-_gtk-reserved4 :: <anonymous-7830>;
+end;
+
+define C-pointer-type <GtkTextMarkClass> => <_GtkTextMarkClass>;
 
 define C-function gtk-text-mark-get-type
   result res :: <GType>;
@@ -34517,8 +36951,18 @@ define constant <anonymous-7814> = <C-function-pointer>;
 define constant <anonymous-7815> = <C-function-pointer>;
 define constant <anonymous-7816> = <C-function-pointer>;
 define constant <anonymous-7817> = <C-function-pointer>;
-define C-subtype <_GtkTextTagTableClass> (<C-void*>) end;
-define constant <GtkTextTagTableClass> = <_GtkTextTagTableClass>;
+define C-struct <_GtkTextTagTableClass>
+  slot GtkTextTagTableClass-parent-class :: <_GObjectClass>;
+  slot GtkTextTagTableClass-tag-changed :: <anonymous-7811>;
+  slot GtkTextTagTableClass-tag-added :: <anonymous-7812>;
+  slot GtkTextTagTableClass-tag-removed :: <anonymous-7813>;
+  slot GtkTextTagTableClass-_gtk-reserved1 :: <anonymous-7814>;
+  slot GtkTextTagTableClass-_gtk-reserved2 :: <anonymous-7815>;
+  slot GtkTextTagTableClass-_gtk-reserved3 :: <anonymous-7816>;
+  slot GtkTextTagTableClass-_gtk-reserved4 :: <anonymous-7817>;
+end;
+
+define C-pointer-type <GtkTextTagTableClass> => <_GtkTextTagTableClass>;
 
 define C-function gtk-text-tag-table-get-type
   result res :: <GType>;
@@ -34874,8 +37318,15 @@ define constant <anonymous-7804> = <C-function-pointer>;
 define constant <anonymous-7805> = <C-function-pointer>;
 define constant <anonymous-7806> = <C-function-pointer>;
 define constant <anonymous-7807> = <C-function-pointer>;
-define C-subtype <_GtkTearoffMenuItemClass> (<C-void*>) end;
-define constant <GtkTearoffMenuItemClass> = <_GtkTearoffMenuItemClass>;
+define C-struct <_GtkTearoffMenuItemClass>
+  slot GtkTearoffMenuItemClass-parent-class :: <_GtkMenuItemClass>;
+  slot GtkTearoffMenuItemClass-_gtk-reserved1 :: <anonymous-7804>;
+  slot GtkTearoffMenuItemClass-_gtk-reserved2 :: <anonymous-7805>;
+  slot GtkTearoffMenuItemClass-_gtk-reserved3 :: <anonymous-7806>;
+  slot GtkTearoffMenuItemClass-_gtk-reserved4 :: <anonymous-7807>;
+end;
+
+define C-pointer-type <GtkTearoffMenuItemClass> => <_GtkTearoffMenuItemClass>;
 
 define C-function gtk-tearoff-menu-item-get-type
   result res :: <GType>;
@@ -34887,17 +37338,45 @@ define C-function gtk-tearoff-menu-item-new
   c-name: "gtk_tearoff_menu_item_new";
 end;
 
-define C-subtype <_GtkTableRowCol> (<C-void*>) end;
-define constant <GtkTableRowCol> = <_GtkTableRowCol>;
+define C-struct <_GtkTableRowCol>
+  slot GtkTableRowCol-requisition :: <C-unsigned-short>;
+  slot GtkTableRowCol-allocation :: <C-unsigned-short>;
+  slot GtkTableRowCol-spacing :: <C-unsigned-short>;
+  bitfield slot GtkTableRowCol-need-expand :: <C-int>, width: 1;
+  bitfield slot GtkTableRowCol-need-shrink :: <C-int>, width: 1;
+  bitfield slot GtkTableRowCol-expand :: <C-int>, width: 1;
+  bitfield slot GtkTableRowCol-shrink :: <C-int>, width: 1;
+  bitfield slot GtkTableRowCol-empty :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkTableRowCol> => <_GtkTableRowCol>;
 
 define C-subtype <_GtkTable> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkTable> = <_GtkTable>;
 
-define C-subtype <_GtkTableClass> (<C-void*>) end;
-define constant <GtkTableClass> = <_GtkTableClass>;
+define C-struct <_GtkTableClass>
+  slot GtkTableClass-parent-class :: <_GtkContainerClass>;
+end;
 
-define C-subtype <_GtkTableChild> (<C-void*>) end;
-define constant <GtkTableChild> = <_GtkTableChild>;
+define C-pointer-type <GtkTableClass> => <_GtkTableClass>;
+
+define C-struct <_GtkTableChild>
+  slot GtkTableChild-widget :: <GtkWidget>;
+  slot GtkTableChild-left-attach :: <C-unsigned-short>;
+  slot GtkTableChild-right-attach :: <C-unsigned-short>;
+  slot GtkTableChild-top-attach :: <C-unsigned-short>;
+  slot GtkTableChild-bottom-attach :: <C-unsigned-short>;
+  slot GtkTableChild-xpadding :: <C-unsigned-short>;
+  slot GtkTableChild-ypadding :: <C-unsigned-short>;
+  bitfield slot GtkTableChild-xexpand :: <C-int>, width: 1;
+  bitfield slot GtkTableChild-yexpand :: <C-int>, width: 1;
+  bitfield slot GtkTableChild-xshrink :: <C-int>, width: 1;
+  bitfield slot GtkTableChild-yshrink :: <C-int>, width: 1;
+  bitfield slot GtkTableChild-xfill :: <C-int>, width: 1;
+  bitfield slot GtkTableChild-yfill :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkTableChild> => <_GtkTableChild>;
 
 define C-function gtk-table-get-type
   result res :: <GType>;
@@ -35007,8 +37486,15 @@ define C-function gtk-table-get-homogeneous
   c-name: "gtk_table_get_homogeneous";
 end;
 
-define C-subtype <_GtkStockItem> (<C-void*>) end;
-define constant <GtkStockItem> = <_GtkStockItem>;
+define C-struct <_GtkStockItem>
+  slot GtkStockItem-stock-id :: <gchar*>;
+  slot GtkStockItem-label :: <gchar*>;
+  slot GtkStockItem-modifier :: <GdkModifierType>;
+  slot GtkStockItem-keyval :: <C-unsigned-int>;
+  slot GtkStockItem-translation-domain :: <gchar*>;
+end;
+
+define C-pointer-type <GtkStockItem> => <_GtkStockItem>;
 
 define C-function gtk-stock-add
   input parameter arg1 :: <GtkStockItem>;
@@ -35249,17 +37735,35 @@ define constant $GTK-STOCK-ZOOM-IN = "gtk-zoom-in";
 
 define constant $GTK-STOCK-ZOOM-OUT = "gtk-zoom-out";
 
-define C-subtype <_GtkStatusIconPrivate> (<C-void*>) end;
-define constant <GtkStatusIconPrivate> = <_GtkStatusIconPrivate>;
+define C-struct <_GtkStatusIconPrivate>
+end;
 
-define C-subtype <_GtkStatusIcon> (<C-void*>) end;
-define constant <GtkStatusIcon> = <_GtkStatusIcon>;
+define C-pointer-type <GtkStatusIconPrivate> => <_GtkStatusIconPrivate>;
+
+define C-struct <_GtkStatusIcon>
+  slot GtkStatusIcon-parent-instance :: <_GObject>;
+  slot GtkStatusIcon-priv :: <GtkStatusIconPrivate>;
+end;
+
+define C-pointer-type <GtkStatusIcon> => <_GtkStatusIcon>;
 
 define constant <anonymous-7743> = <C-function-pointer>;
 define constant <anonymous-7744> = <C-function-pointer>;
 define constant <anonymous-7745> = <C-function-pointer>;
-define C-subtype <_GtkStatusIconClass> (<C-void*>) end;
-define constant <GtkStatusIconClass> = <_GtkStatusIconClass>;
+define C-struct <_GtkStatusIconClass>
+  slot GtkStatusIconClass-parent-class :: <_GObjectClass>;
+  slot GtkStatusIconClass-activate :: <anonymous-7743>;
+  slot GtkStatusIconClass-popup-menu :: <anonymous-7744>;
+  slot GtkStatusIconClass-size-changed :: <anonymous-7745>;
+  slot GtkStatusIconClass-__gtk-reserved1 :: <C-void*>;
+  slot GtkStatusIconClass-__gtk-reserved2 :: <C-void*>;
+  slot GtkStatusIconClass-__gtk-reserved3 :: <C-void*>;
+  slot GtkStatusIconClass-__gtk-reserved4 :: <C-void*>;
+  slot GtkStatusIconClass-__gtk-reserved5 :: <C-void*>;
+  slot GtkStatusIconClass-__gtk-reserved6 :: <C-void*>;
+end;
+
+define C-pointer-type <GtkStatusIconClass> => <_GtkStatusIconClass>;
 
 define C-function gtk-status-icon-get-type
   result res :: <GType>;
@@ -35410,8 +37914,11 @@ define constant <GtkHBox> = <_GtkHBox>;
 define C-subtype <_GtkStatusbar> (<_GtkHBox>, <_AtkImplementorIface>) end;
 define constant <GtkStatusbar> = <_GtkStatusbar>;
 
-define C-subtype <_GtkHBoxClass> (<C-void*>) end;
-define constant <GtkHBoxClass> = <_GtkHBoxClass>;
+define C-struct <_GtkHBoxClass>
+  slot GtkHBoxClass-parent-class :: <_GtkBoxClass>;
+end;
+
+define C-pointer-type <GtkHBoxClass> => <_GtkHBoxClass>;
 
 define constant <anonymous-7729> = <C-function-pointer>;
 define constant <anonymous-7730> = <C-function-pointer>;
@@ -35419,8 +37926,18 @@ define constant <anonymous-7731> = <C-function-pointer>;
 define constant <anonymous-7732> = <C-function-pointer>;
 define constant <anonymous-7733> = <C-function-pointer>;
 define constant <anonymous-7734> = <C-function-pointer>;
-define C-subtype <_GtkStatusbarClass> (<C-void*>) end;
-define constant <GtkStatusbarClass> = <_GtkStatusbarClass>;
+define C-struct <_GtkStatusbarClass>
+  slot GtkStatusbarClass-parent-class :: <_GtkHBoxClass>;
+  slot GtkStatusbarClass-reserved :: <C-void*>;
+  slot GtkStatusbarClass-text-pushed :: <anonymous-7729>;
+  slot GtkStatusbarClass-text-popped :: <anonymous-7730>;
+  slot GtkStatusbarClass-_gtk-reserved1 :: <anonymous-7731>;
+  slot GtkStatusbarClass-_gtk-reserved2 :: <anonymous-7732>;
+  slot GtkStatusbarClass-_gtk-reserved3 :: <anonymous-7733>;
+  slot GtkStatusbarClass-_gtk-reserved4 :: <anonymous-7734>;
+end;
+
+define C-pointer-type <GtkStatusbarClass> => <_GtkStatusbarClass>;
 
 define C-function gtk-statusbar-get-type
   result res :: <GType>;
@@ -35508,8 +38025,19 @@ define constant <anonymous-7699> = <C-function-pointer>;
 define constant <anonymous-7700> = <C-function-pointer>;
 define constant <anonymous-7701> = <C-function-pointer>;
 define constant <anonymous-7702> = <C-function-pointer>;
-define C-subtype <_GtkSpinButtonClass> (<C-void*>) end;
-define constant <GtkSpinButtonClass> = <_GtkSpinButtonClass>;
+define C-struct <_GtkSpinButtonClass>
+  slot GtkSpinButtonClass-parent-class :: <_GtkEntryClass>;
+  slot GtkSpinButtonClass-input :: <anonymous-7695>;
+  slot GtkSpinButtonClass-output :: <anonymous-7696>;
+  slot GtkSpinButtonClass-value-changed :: <anonymous-7697>;
+  slot GtkSpinButtonClass-change-value :: <anonymous-7698>;
+  slot GtkSpinButtonClass-wrapped :: <anonymous-7699>;
+  slot GtkSpinButtonClass-_gtk-reserved1 :: <anonymous-7700>;
+  slot GtkSpinButtonClass-_gtk-reserved2 :: <anonymous-7701>;
+  slot GtkSpinButtonClass-_gtk-reserved3 :: <anonymous-7702>;
+end;
+
+define C-pointer-type <GtkSpinButtonClass> => <_GtkSpinButtonClass>;
 
 define C-function gtk-spin-button-get-type
   result res :: <GType>;
@@ -35683,8 +38211,17 @@ define constant <anonymous-7149> = <C-function-pointer>;
 define constant <anonymous-7150> = <C-function-pointer>;
 define constant <anonymous-7151> = <C-function-pointer>;
 define constant <anonymous-7152> = <C-function-pointer>;
-define C-subtype <_GtkSocketClass> (<C-void*>) end;
-define constant <GtkSocketClass> = <_GtkSocketClass>;
+define C-struct <_GtkSocketClass>
+  slot GtkSocketClass-parent-class :: <_GtkContainerClass>;
+  slot GtkSocketClass-plug-added :: <anonymous-7147>;
+  slot GtkSocketClass-plug-removed :: <anonymous-7148>;
+  slot GtkSocketClass-_gtk-reserved1 :: <anonymous-7149>;
+  slot GtkSocketClass-_gtk-reserved2 :: <anonymous-7150>;
+  slot GtkSocketClass-_gtk-reserved3 :: <anonymous-7151>;
+  slot GtkSocketClass-_gtk-reserved4 :: <anonymous-7152>;
+end;
+
+define C-pointer-type <GtkSocketClass> => <_GtkSocketClass>;
 
 define C-function gtk-socket-get-type
   result res :: <GType>;
@@ -35721,8 +38258,15 @@ define constant <anonymous-7667> = <C-function-pointer>;
 define constant <anonymous-7668> = <C-function-pointer>;
 define constant <anonymous-7669> = <C-function-pointer>;
 define constant <anonymous-7670> = <C-function-pointer>;
-define C-subtype <_GtkSizeGroupClass> (<C-void*>) end;
-define constant <GtkSizeGroupClass> = <_GtkSizeGroupClass>;
+define C-struct <_GtkSizeGroupClass>
+  slot GtkSizeGroupClass-parent-class :: <_GObjectClass>;
+  slot GtkSizeGroupClass-_gtk-reserved1 :: <anonymous-7667>;
+  slot GtkSizeGroupClass-_gtk-reserved2 :: <anonymous-7668>;
+  slot GtkSizeGroupClass-_gtk-reserved3 :: <anonymous-7669>;
+  slot GtkSizeGroupClass-_gtk-reserved4 :: <anonymous-7670>;
+end;
+
+define C-pointer-type <GtkSizeGroupClass> => <_GtkSizeGroupClass>;
 
 define constant <GtkSizeGroupMode> = <C-int>;
 define constant $GTK-SIZE-GROUP-NONE = 0;
@@ -35783,8 +38327,10 @@ define C-function gtk-size-group-get-widgets
   c-name: "gtk_size_group_get_widgets";
 end;
 
-define C-subtype <_GtkSeparatorToolItemPrivate> (<C-void*>) end;
-define constant <GtkSeparatorToolItemPrivate> = <_GtkSeparatorToolItemPrivate>;
+define C-struct <_GtkSeparatorToolItemPrivate>
+end;
+
+define C-pointer-type <GtkSeparatorToolItemPrivate> => <_GtkSeparatorToolItemPrivate>;
 
 define C-subtype <_GtkSeparatorToolItem> (<_GtkToolItem>, <_AtkImplementorIface>) end;
 define constant <GtkSeparatorToolItem> = <_GtkSeparatorToolItem>;
@@ -35793,8 +38339,15 @@ define constant <anonymous-7656> = <C-function-pointer>;
 define constant <anonymous-7657> = <C-function-pointer>;
 define constant <anonymous-7658> = <C-function-pointer>;
 define constant <anonymous-7659> = <C-function-pointer>;
-define C-subtype <_GtkSeparatorToolItemClass> (<C-void*>) end;
-define constant <GtkSeparatorToolItemClass> = <_GtkSeparatorToolItemClass>;
+define C-struct <_GtkSeparatorToolItemClass>
+  slot GtkSeparatorToolItemClass-parent-class :: <_GtkToolItemClass>;
+  slot GtkSeparatorToolItemClass-_gtk-reserved1 :: <anonymous-7656>;
+  slot GtkSeparatorToolItemClass-_gtk-reserved2 :: <anonymous-7657>;
+  slot GtkSeparatorToolItemClass-_gtk-reserved3 :: <anonymous-7658>;
+  slot GtkSeparatorToolItemClass-_gtk-reserved4 :: <anonymous-7659>;
+end;
+
+define C-pointer-type <GtkSeparatorToolItemClass> => <_GtkSeparatorToolItemClass>;
 
 define C-function gtk-separator-tool-item-get-type
   result res :: <GType>;
@@ -35821,8 +38374,11 @@ end;
 define C-subtype <_GtkSeparatorMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkSeparatorMenuItem> = <_GtkSeparatorMenuItem>;
 
-define C-subtype <_GtkSeparatorMenuItemClass> (<C-void*>) end;
-define constant <GtkSeparatorMenuItemClass> = <_GtkSeparatorMenuItemClass>;
+define C-struct <_GtkSeparatorMenuItemClass>
+  slot GtkSeparatorMenuItemClass-parent-class :: <_GtkMenuItemClass>;
+end;
+
+define C-pointer-type <GtkSeparatorMenuItemClass> => <_GtkSeparatorMenuItemClass>;
 
 define C-function gtk-separator-menu-item-get-type
   result res :: <GType>;
@@ -35843,8 +38399,18 @@ define constant <anonymous-7633> = <C-function-pointer>;
 define constant <anonymous-7634> = <C-function-pointer>;
 define constant <anonymous-7635> = <C-function-pointer>;
 define constant <anonymous-7636> = <C-function-pointer>;
-define C-subtype <_GtkScrolledWindowClass> (<C-void*>) end;
-define constant <GtkScrolledWindowClass> = <_GtkScrolledWindowClass>;
+define C-struct <_GtkScrolledWindowClass>
+  slot GtkScrolledWindowClass-parent-class :: <_GtkBinClass>;
+  slot GtkScrolledWindowClass-scrollbar-spacing :: <C-signed-int>;
+  slot GtkScrolledWindowClass-scroll-child :: <anonymous-7631>;
+  slot GtkScrolledWindowClass-move-focus-out :: <anonymous-7632>;
+  slot GtkScrolledWindowClass-_gtk-reserved1 :: <anonymous-7633>;
+  slot GtkScrolledWindowClass-_gtk-reserved2 :: <anonymous-7634>;
+  slot GtkScrolledWindowClass-_gtk-reserved3 :: <anonymous-7635>;
+  slot GtkScrolledWindowClass-_gtk-reserved4 :: <anonymous-7636>;
+end;
+
+define C-pointer-type <GtkScrolledWindowClass> => <_GtkScrolledWindowClass>;
 
 define C-function gtk-scrolled-window-get-type
   result res :: <GType>;
@@ -35947,8 +38513,11 @@ end;
 define C-subtype <_GtkHScrollbar> (<_GtkScrollbar>, <_AtkImplementorIface>) end;
 define constant <GtkHScrollbar> = <_GtkHScrollbar>;
 
-define C-subtype <_GtkHScrollbarClass> (<C-void*>) end;
-define constant <GtkHScrollbarClass> = <_GtkHScrollbarClass>;
+define C-struct <_GtkHScrollbarClass>
+  slot GtkHScrollbarClass-parent-class :: <_GtkScrollbarClass>;
+end;
+
+define C-pointer-type <GtkHScrollbarClass> => <_GtkHScrollbarClass>;
 
 define C-function gtk-hscrollbar-get-type
   result res :: <GType>;
@@ -35961,25 +38530,50 @@ define C-function gtk-hscrollbar-new
   c-name: "gtk_hscrollbar_new";
 end;
 
-define C-subtype <_GtkRecentInfo> (<C-void*>) end;
-define constant <GtkRecentInfo> = <_GtkRecentInfo>;
+define C-struct <_GtkRecentInfo>
+end;
 
-define C-subtype <_GtkRecentData> (<C-void*>) end;
-define constant <GtkRecentData> = <_GtkRecentData>;
+define C-pointer-type <GtkRecentInfo> => <_GtkRecentInfo>;
 
-define C-subtype <_GtkRecentManagerPrivate> (<C-void*>) end;
-define constant <GtkRecentManagerPrivate> = <_GtkRecentManagerPrivate>;
+define C-struct <_GtkRecentData>
+  slot GtkRecentData-display-name :: <gchar*>;
+  slot GtkRecentData-description :: <gchar*>;
+  slot GtkRecentData-mime-type :: <gchar*>;
+  slot GtkRecentData-app-name :: <gchar*>;
+  slot GtkRecentData-app-exec :: <gchar*>;
+  slot GtkRecentData-groups :: <gchar**>;
+  slot GtkRecentData-is-private :: <C-signed-int>;
+end;
 
-define C-subtype <_GtkRecentManager> (<C-void*>) end;
-define constant <GtkRecentManager> = <_GtkRecentManager>;
+define C-pointer-type <GtkRecentData> => <_GtkRecentData>;
+
+define C-struct <_GtkRecentManagerPrivate>
+end;
+
+define C-pointer-type <GtkRecentManagerPrivate> => <_GtkRecentManagerPrivate>;
+
+define C-struct <_GtkRecentManager>
+  slot GtkRecentManager-parent-instance :: <_GObject>;
+  slot GtkRecentManager-priv :: <GtkRecentManagerPrivate>;
+end;
+
+define C-pointer-type <GtkRecentManager> => <_GtkRecentManager>;
 
 define constant <anonymous-7488> = <C-function-pointer>;
 define constant <anonymous-7489> = <C-function-pointer>;
 define constant <anonymous-7490> = <C-function-pointer>;
 define constant <anonymous-7491> = <C-function-pointer>;
 define constant <anonymous-7492> = <C-function-pointer>;
-define C-subtype <_GtkRecentManagerClass> (<C-void*>) end;
-define constant <GtkRecentManagerClass> = <_GtkRecentManagerClass>;
+define C-struct <_GtkRecentManagerClass>
+  slot GtkRecentManagerClass-parent-class :: <_GObjectClass>;
+  slot GtkRecentManagerClass-changed :: <anonymous-7488>;
+  slot GtkRecentManagerClass-_gtk-recent1 :: <anonymous-7489>;
+  slot GtkRecentManagerClass-_gtk-recent2 :: <anonymous-7490>;
+  slot GtkRecentManagerClass-_gtk-recent3 :: <anonymous-7491>;
+  slot GtkRecentManagerClass-_gtk-recent4 :: <anonymous-7492>;
+end;
+
+define C-pointer-type <GtkRecentManagerClass> => <_GtkRecentManagerClass>;
 
 define constant <GtkRecentManagerError> = <C-int>;
 define constant $GTK-RECENT-MANAGER-ERROR-NOT-FOUND = 0;
@@ -36246,8 +38840,10 @@ define C-function gtk-recent-info-match
   c-name: "gtk_recent_info_match";
 end;
 
-define C-subtype <_GtkRecentFilter> (<C-void*>) end;
-define constant <GtkRecentFilter> = <_GtkRecentFilter>;
+define C-struct <_GtkRecentFilter>
+end;
+
+define C-pointer-type <GtkRecentFilter> => <_GtkRecentFilter>;
 
 define constant <GtkRecentFilterFlags> = <C-int>;
 define constant $GTK-RECENT-FILTER-URI = 1;
@@ -36257,8 +38853,17 @@ define constant $GTK-RECENT-FILTER-APPLICATION = 8;
 define constant $GTK-RECENT-FILTER-GROUP = 16;
 define constant $GTK-RECENT-FILTER-AGE = 32;
 
-define C-subtype <_GtkRecentFilterInfo> (<C-void*>) end;
-define constant <GtkRecentFilterInfo> = <_GtkRecentFilterInfo>;
+define C-struct <_GtkRecentFilterInfo>
+  slot GtkRecentFilterInfo-contains :: <GtkRecentFilterFlags>;
+  slot GtkRecentFilterInfo-uri :: <gchar*>;
+  slot GtkRecentFilterInfo-display-name :: <gchar*>;
+  slot GtkRecentFilterInfo-mime-type :: <gchar*>;
+  slot GtkRecentFilterInfo-applications :: <gchar**>;
+  slot GtkRecentFilterInfo-groups :: <gchar**>;
+  slot GtkRecentFilterInfo-age :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkRecentFilterInfo> => <_GtkRecentFilterInfo>;
 
 define constant <anonymous-7535> = <C-function-pointer>;
 define constant <GtkRecentFilterFunc> = <anonymous-7535>;
@@ -36342,14 +38947,23 @@ define C-function gtk-recent-filter-filter
   c-name: "gtk_recent_filter_filter";
 end;
 
-define C-subtype <_GtkRecentChooserWidgetPrivate> (<C-void*>) end;
-define constant <GtkRecentChooserWidgetPrivate> = <_GtkRecentChooserWidgetPrivate>;
+define C-struct <_GtkRecentChooserWidgetPrivate>
+end;
 
-define C-subtype <_GtkRecentChooserWidget> (<C-void*>) end;
-define constant <GtkRecentChooserWidget> = <_GtkRecentChooserWidget>;
+define C-pointer-type <GtkRecentChooserWidgetPrivate> => <_GtkRecentChooserWidgetPrivate>;
 
-define C-subtype <_GtkRecentChooserWidgetClass> (<C-void*>) end;
-define constant <GtkRecentChooserWidgetClass> = <_GtkRecentChooserWidgetClass>;
+define C-struct <_GtkRecentChooserWidget>
+  slot GtkRecentChooserWidget-parent-instance :: <_GtkVBox>;
+  slot GtkRecentChooserWidget-priv :: <GtkRecentChooserWidgetPrivate>;
+end;
+
+define C-pointer-type <GtkRecentChooserWidget> => <_GtkRecentChooserWidget>;
+
+define C-struct <_GtkRecentChooserWidgetClass>
+  slot GtkRecentChooserWidgetClass-parent-class :: <_GtkVBoxClass>;
+end;
+
+define C-pointer-type <GtkRecentChooserWidgetClass> => <_GtkRecentChooserWidgetClass>;
 
 define C-function gtk-recent-chooser-widget-get-type
   result res :: <GType>;
@@ -36376,8 +38990,10 @@ define constant $GTK-RECENT-SORT-CUSTOM = 3;
 define constant <anonymous-7550> = <C-function-pointer>;
 define constant <GtkRecentSortFunc> = <anonymous-7550>;
 
-define C-subtype <_GtkRecentChooser> (<C-void*>) end;
-define constant <GtkRecentChooser> = <_GtkRecentChooser>;
+define C-struct <_GtkRecentChooser>
+end;
+
+define C-pointer-type <GtkRecentChooser> => <_GtkRecentChooser>;
 
 define constant <anonymous-7553> = <C-function-pointer>;
 define constant <anonymous-7554> = <C-function-pointer>;
@@ -36393,8 +39009,25 @@ define constant <anonymous-7563> = <C-function-pointer>;
 define constant <anonymous-7564> = <C-function-pointer>;
 define constant <anonymous-7565> = <C-function-pointer>;
 define constant <anonymous-7566> = <C-function-pointer>;
-define C-subtype <_GtkRecentChooserIface> (<C-void*>) end;
-define constant <GtkRecentChooserIface> = <_GtkRecentChooserIface>;
+define C-struct <_GtkRecentChooserIface>
+  slot GtkRecentChooserIface-base-iface :: <_GTypeInterface>;
+  slot GtkRecentChooserIface-set-current-uri :: <anonymous-7553>;
+  slot GtkRecentChooserIface-get-current-uri :: <anonymous-7554>;
+  slot GtkRecentChooserIface-select-uri :: <anonymous-7555>;
+  slot GtkRecentChooserIface-unselect-uri :: <anonymous-7556>;
+  slot GtkRecentChooserIface-select-all :: <anonymous-7557>;
+  slot GtkRecentChooserIface-unselect-all :: <anonymous-7558>;
+  slot GtkRecentChooserIface-get-items :: <anonymous-7559>;
+  slot GtkRecentChooserIface-get-recent-manager :: <anonymous-7560>;
+  slot GtkRecentChooserIface-add-filter :: <anonymous-7561>;
+  slot GtkRecentChooserIface-remove-filter :: <anonymous-7562>;
+  slot GtkRecentChooserIface-list-filters :: <anonymous-7563>;
+  slot GtkRecentChooserIface-set-sort-func :: <anonymous-7564>;
+  slot GtkRecentChooserIface-item-activated :: <anonymous-7565>;
+  slot GtkRecentChooserIface-selection-changed :: <anonymous-7566>;
+end;
+
+define C-pointer-type <GtkRecentChooserIface> => <_GtkRecentChooserIface>;
 
 define constant <GtkRecentChooserError> = <C-int>;
 define constant $GTK-RECENT-CHOOSER-ERROR-NOT-FOUND = 0;
@@ -36613,18 +39246,31 @@ define C-function gtk-recent-chooser-get-filter
   c-name: "gtk_recent_chooser_get_filter";
 end;
 
-define C-subtype <_GtkRecentChooserMenuPrivate> (<C-void*>) end;
-define constant <GtkRecentChooserMenuPrivate> = <_GtkRecentChooserMenuPrivate>;
+define C-struct <_GtkRecentChooserMenuPrivate>
+end;
 
-define C-subtype <_GtkRecentChooserMenu> (<C-void*>) end;
-define constant <GtkRecentChooserMenu> = <_GtkRecentChooserMenu>;
+define C-pointer-type <GtkRecentChooserMenuPrivate> => <_GtkRecentChooserMenuPrivate>;
+
+define C-struct <_GtkRecentChooserMenu>
+  slot GtkRecentChooserMenu-parent-instance :: <_GtkMenu>;
+  slot GtkRecentChooserMenu-priv :: <GtkRecentChooserMenuPrivate>;
+end;
+
+define C-pointer-type <GtkRecentChooserMenu> => <_GtkRecentChooserMenu>;
 
 define constant <anonymous-7604> = <C-function-pointer>;
 define constant <anonymous-7605> = <C-function-pointer>;
 define constant <anonymous-7606> = <C-function-pointer>;
 define constant <anonymous-7607> = <C-function-pointer>;
-define C-subtype <_GtkRecentChooserMenuClass> (<C-void*>) end;
-define constant <GtkRecentChooserMenuClass> = <_GtkRecentChooserMenuClass>;
+define C-struct <_GtkRecentChooserMenuClass>
+  slot GtkRecentChooserMenuClass-parent-class :: <_GtkMenuClass>;
+  slot GtkRecentChooserMenuClass-gtk-recent1 :: <anonymous-7604>;
+  slot GtkRecentChooserMenuClass-gtk-recent2 :: <anonymous-7605>;
+  slot GtkRecentChooserMenuClass-gtk-recent3 :: <anonymous-7606>;
+  slot GtkRecentChooserMenuClass-gtk-recent4 :: <anonymous-7607>;
+end;
+
+define C-pointer-type <GtkRecentChooserMenuClass> => <_GtkRecentChooserMenuClass>;
 
 define C-function gtk-recent-chooser-menu-get-type
   result res :: <GType>;
@@ -36657,11 +39303,17 @@ end;
 define C-subtype <_GtkDialog> (<_GtkWindow>, <_AtkImplementorIface>) end;
 define constant <GtkDialog> = <_GtkDialog>;
 
-define C-subtype <_GtkRecentChooserDialogPrivate> (<C-void*>) end;
-define constant <GtkRecentChooserDialogPrivate> = <_GtkRecentChooserDialogPrivate>;
+define C-struct <_GtkRecentChooserDialogPrivate>
+end;
 
-define C-subtype <_GtkRecentChooserDialog> (<C-void*>) end;
-define constant <GtkRecentChooserDialog> = <_GtkRecentChooserDialog>;
+define C-pointer-type <GtkRecentChooserDialogPrivate> => <_GtkRecentChooserDialogPrivate>;
+
+define C-struct <_GtkRecentChooserDialog>
+  slot GtkRecentChooserDialog-parent-instance :: <_GtkDialog>;
+  slot GtkRecentChooserDialog-priv :: <GtkRecentChooserDialogPrivate>;
+end;
+
+define C-pointer-type <GtkRecentChooserDialog> => <_GtkRecentChooserDialog>;
 
 define constant <anonymous-4053> = <C-function-pointer>;
 define constant <anonymous-4054> = <C-function-pointer>;
@@ -36669,11 +39321,23 @@ define constant <anonymous-4055> = <C-function-pointer>;
 define constant <anonymous-4056> = <C-function-pointer>;
 define constant <anonymous-4057> = <C-function-pointer>;
 define constant <anonymous-4058> = <C-function-pointer>;
-define C-subtype <_GtkDialogClass> (<C-void*>) end;
-define constant <GtkDialogClass> = <_GtkDialogClass>;
+define C-struct <_GtkDialogClass>
+  slot GtkDialogClass-parent-class :: <_GtkWindowClass>;
+  slot GtkDialogClass-response :: <anonymous-4053>;
+  slot GtkDialogClass-close :: <anonymous-4054>;
+  slot GtkDialogClass-_gtk-reserved1 :: <anonymous-4055>;
+  slot GtkDialogClass-_gtk-reserved2 :: <anonymous-4056>;
+  slot GtkDialogClass-_gtk-reserved3 :: <anonymous-4057>;
+  slot GtkDialogClass-_gtk-reserved4 :: <anonymous-4058>;
+end;
 
-define C-subtype <_GtkRecentChooserDialogClass> (<C-void*>) end;
-define constant <GtkRecentChooserDialogClass> = <_GtkRecentChooserDialogClass>;
+define C-pointer-type <GtkDialogClass> => <_GtkDialogClass>;
+
+define C-struct <_GtkRecentChooserDialogClass>
+  slot GtkRecentChooserDialogClass-parent-class :: <_GtkDialogClass>;
+end;
+
+define C-pointer-type <GtkRecentChooserDialogClass> => <_GtkRecentChooserDialogClass>;
 
 define C-function gtk-recent-chooser-dialog-get-type
   result res :: <GType>;
@@ -36825,8 +39489,15 @@ define constant <anonymous-7477> = <C-function-pointer>;
 define constant <anonymous-7478> = <C-function-pointer>;
 define constant <anonymous-7479> = <C-function-pointer>;
 define constant <anonymous-7480> = <C-function-pointer>;
-define C-subtype <_GtkRadioToolButtonClass> (<C-void*>) end;
-define constant <GtkRadioToolButtonClass> = <_GtkRadioToolButtonClass>;
+define C-struct <_GtkRadioToolButtonClass>
+  slot GtkRadioToolButtonClass-parent-class :: <_GtkToggleToolButtonClass>;
+  slot GtkRadioToolButtonClass-_gtk-reserved1 :: <anonymous-7477>;
+  slot GtkRadioToolButtonClass-_gtk-reserved2 :: <anonymous-7478>;
+  slot GtkRadioToolButtonClass-_gtk-reserved3 :: <anonymous-7479>;
+  slot GtkRadioToolButtonClass-_gtk-reserved4 :: <anonymous-7480>;
+end;
+
+define C-pointer-type <GtkRadioToolButtonClass> => <_GtkRadioToolButtonClass>;
 
 define C-function gtk-radio-tool-button-get-type
   result res :: <GType>;
@@ -36883,15 +39554,31 @@ define constant <anonymous-5343> = <C-function-pointer>;
 define constant <anonymous-5344> = <C-function-pointer>;
 define constant <anonymous-5345> = <C-function-pointer>;
 define constant <anonymous-5346> = <C-function-pointer>;
-define C-subtype <_GtkCheckMenuItemClass> (<C-void*>) end;
-define constant <GtkCheckMenuItemClass> = <_GtkCheckMenuItemClass>;
+define C-struct <_GtkCheckMenuItemClass>
+  slot GtkCheckMenuItemClass-parent-class :: <_GtkMenuItemClass>;
+  slot GtkCheckMenuItemClass-toggled :: <anonymous-5341>;
+  slot GtkCheckMenuItemClass-draw-indicator :: <anonymous-5342>;
+  slot GtkCheckMenuItemClass-_gtk-reserved1 :: <anonymous-5343>;
+  slot GtkCheckMenuItemClass-_gtk-reserved2 :: <anonymous-5344>;
+  slot GtkCheckMenuItemClass-_gtk-reserved3 :: <anonymous-5345>;
+  slot GtkCheckMenuItemClass-_gtk-reserved4 :: <anonymous-5346>;
+end;
+
+define C-pointer-type <GtkCheckMenuItemClass> => <_GtkCheckMenuItemClass>;
 
 define constant <anonymous-7454> = <C-function-pointer>;
 define constant <anonymous-7455> = <C-function-pointer>;
 define constant <anonymous-7456> = <C-function-pointer>;
 define constant <anonymous-7457> = <C-function-pointer>;
-define C-subtype <_GtkRadioMenuItemClass> (<C-void*>) end;
-define constant <GtkRadioMenuItemClass> = <_GtkRadioMenuItemClass>;
+define C-struct <_GtkRadioMenuItemClass>
+  slot GtkRadioMenuItemClass-parent-class :: <_GtkCheckMenuItemClass>;
+  slot GtkRadioMenuItemClass-group-changed :: <anonymous-7454>;
+  slot GtkRadioMenuItemClass-_gtk-reserved2 :: <anonymous-7455>;
+  slot GtkRadioMenuItemClass-_gtk-reserved3 :: <anonymous-7456>;
+  slot GtkRadioMenuItemClass-_gtk-reserved4 :: <anonymous-7457>;
+end;
+
+define C-pointer-type <GtkRadioMenuItemClass> => <_GtkRadioMenuItemClass>;
 
 define C-function gtk-radio-menu-item-get-type
   result res :: <GType>;
@@ -37034,15 +39721,30 @@ define constant <anonymous-5284> = <C-function-pointer>;
 define constant <anonymous-5285> = <C-function-pointer>;
 define constant <anonymous-5286> = <C-function-pointer>;
 define constant <anonymous-5287> = <C-function-pointer>;
-define C-subtype <_GtkCheckButtonClass> (<C-void*>) end;
-define constant <GtkCheckButtonClass> = <_GtkCheckButtonClass>;
+define C-struct <_GtkCheckButtonClass>
+  slot GtkCheckButtonClass-parent-class :: <_GtkToggleButtonClass>;
+  slot GtkCheckButtonClass-draw-indicator :: <anonymous-5283>;
+  slot GtkCheckButtonClass-_gtk-reserved1 :: <anonymous-5284>;
+  slot GtkCheckButtonClass-_gtk-reserved2 :: <anonymous-5285>;
+  slot GtkCheckButtonClass-_gtk-reserved3 :: <anonymous-5286>;
+  slot GtkCheckButtonClass-_gtk-reserved4 :: <anonymous-5287>;
+end;
+
+define C-pointer-type <GtkCheckButtonClass> => <_GtkCheckButtonClass>;
 
 define constant <anonymous-7441> = <C-function-pointer>;
 define constant <anonymous-7442> = <C-function-pointer>;
 define constant <anonymous-7443> = <C-function-pointer>;
 define constant <anonymous-7444> = <C-function-pointer>;
-define C-subtype <_GtkRadioButtonClass> (<C-void*>) end;
-define constant <GtkRadioButtonClass> = <_GtkRadioButtonClass>;
+define C-struct <_GtkRadioButtonClass>
+  slot GtkRadioButtonClass-parent-class :: <_GtkCheckButtonClass>;
+  slot GtkRadioButtonClass-group-changed :: <anonymous-7441>;
+  slot GtkRadioButtonClass-_gtk-reserved2 :: <anonymous-7442>;
+  slot GtkRadioButtonClass-_gtk-reserved3 :: <anonymous-7443>;
+  slot GtkRadioButtonClass-_gtk-reserved4 :: <anonymous-7444>;
+end;
+
+define C-pointer-type <GtkRadioButtonClass> => <_GtkRadioButtonClass>;
 
 define C-function gtk-radio-button-get-type
   result res :: <GType>;
@@ -37125,8 +39827,10 @@ define C-function gtk-check-button-new-with-mnemonic
   c-name: "gtk_check_button_new_with_mnemonic";
 end;
 
-define C-subtype <_GtkRadioActionPrivate> (<C-void*>) end;
-define constant <GtkRadioActionPrivate> = <_GtkRadioActionPrivate>;
+define C-struct <_GtkRadioActionPrivate>
+end;
+
+define C-pointer-type <GtkRadioActionPrivate> => <_GtkRadioActionPrivate>;
 
 define C-subtype <_GtkRadioAction> (<_GtkToggleAction>) end;
 define constant <GtkRadioAction> = <_GtkRadioAction>;
@@ -37136,8 +39840,16 @@ define constant <anonymous-7431> = <C-function-pointer>;
 define constant <anonymous-7432> = <C-function-pointer>;
 define constant <anonymous-7433> = <C-function-pointer>;
 define constant <anonymous-7434> = <C-function-pointer>;
-define C-subtype <_GtkRadioActionClass> (<C-void*>) end;
-define constant <GtkRadioActionClass> = <_GtkRadioActionClass>;
+define C-struct <_GtkRadioActionClass>
+  slot GtkRadioActionClass-parent-class :: <_GtkToggleActionClass>;
+  slot GtkRadioActionClass-changed :: <anonymous-7430>;
+  slot GtkRadioActionClass-_gtk-reserved1 :: <anonymous-7431>;
+  slot GtkRadioActionClass-_gtk-reserved2 :: <anonymous-7432>;
+  slot GtkRadioActionClass-_gtk-reserved3 :: <anonymous-7433>;
+  slot GtkRadioActionClass-_gtk-reserved4 :: <anonymous-7434>;
+end;
+
+define C-pointer-type <GtkRadioActionClass> => <_GtkRadioActionClass>;
 
 define C-function gtk-radio-action-get-type
   result res :: <GType>;
@@ -37201,15 +39913,32 @@ define constant <anonymous-7372> = <C-function-pointer>;
 define constant <anonymous-7373> = <C-function-pointer>;
 define constant <anonymous-7374> = <C-function-pointer>;
 define constant <anonymous-7375> = <C-function-pointer>;
-define C-subtype <_GtkProgressClass> (<C-void*>) end;
-define constant <GtkProgressClass> = <_GtkProgressClass>;
+define C-struct <_GtkProgressClass>
+  slot GtkProgressClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkProgressClass-paint :: <anonymous-7369>;
+  slot GtkProgressClass-update :: <anonymous-7370>;
+  slot GtkProgressClass-act-mode-enter :: <anonymous-7371>;
+  slot GtkProgressClass-_gtk-reserved1 :: <anonymous-7372>;
+  slot GtkProgressClass-_gtk-reserved2 :: <anonymous-7373>;
+  slot GtkProgressClass-_gtk-reserved3 :: <anonymous-7374>;
+  slot GtkProgressClass-_gtk-reserved4 :: <anonymous-7375>;
+end;
+
+define C-pointer-type <GtkProgressClass> => <_GtkProgressClass>;
 
 define constant <anonymous-7395> = <C-function-pointer>;
 define constant <anonymous-7396> = <C-function-pointer>;
 define constant <anonymous-7397> = <C-function-pointer>;
 define constant <anonymous-7398> = <C-function-pointer>;
-define C-subtype <_GtkProgressBarClass> (<C-void*>) end;
-define constant <GtkProgressBarClass> = <_GtkProgressBarClass>;
+define C-struct <_GtkProgressBarClass>
+  slot GtkProgressBarClass-parent-class :: <_GtkProgressClass>;
+  slot GtkProgressBarClass-_gtk-reserved1 :: <anonymous-7395>;
+  slot GtkProgressBarClass-_gtk-reserved2 :: <anonymous-7396>;
+  slot GtkProgressBarClass-_gtk-reserved3 :: <anonymous-7397>;
+  slot GtkProgressBarClass-_gtk-reserved4 :: <anonymous-7398>;
+end;
+
+define C-pointer-type <GtkProgressBarClass> => <_GtkProgressBarClass>;
 
 define C-function gtk-progress-bar-get-type
   result res :: <GType>;
@@ -37410,11 +40139,17 @@ define C-function gtk-progress-get-percentage-from-value
   c-name: "gtk_progress_get_percentage_from_value";
 end;
 
-define C-subtype <_GtkPrintOperationPrivate> (<C-void*>) end;
-define constant <GtkPrintOperationPrivate> = <_GtkPrintOperationPrivate>;
+define C-struct <_GtkPrintOperationPrivate>
+end;
 
-define C-subtype <_GtkPrintOperation> (<C-void*>) end;
-define constant <GtkPrintOperation> = <_GtkPrintOperation>;
+define C-pointer-type <GtkPrintOperationPrivate> => <_GtkPrintOperationPrivate>;
+
+define C-struct <_GtkPrintOperation>
+  slot GtkPrintOperation-parent-instance :: <_GObject>;
+  slot GtkPrintOperation-priv :: <GtkPrintOperationPrivate>;
+end;
+
+define C-pointer-type <GtkPrintOperation> => <_GtkPrintOperation>;
 
 define constant <GtkPrintOperationResult> = <C-int>;
 define constant $GTK-PRINT-OPERATION-RESULT-ERROR = 0;
@@ -37423,13 +40158,17 @@ define constant $GTK-PRINT-OPERATION-RESULT-CANCEL = 2;
 define constant $GTK-PRINT-OPERATION-RESULT-IN-PROGRESS = 3;
 
 define constant <anonymous-7322> = <C-function-pointer>;
-define C-subtype <_GtkPrintContext> (<C-void*>) end;
-define constant <GtkPrintContext> = <_GtkPrintContext>;
+define C-struct <_GtkPrintContext>
+end;
+
+define C-pointer-type <GtkPrintContext> => <_GtkPrintContext>;
 
 define constant <anonymous-7323> = <C-function-pointer>;
 define constant <anonymous-7324> = <C-function-pointer>;
-define C-subtype <_GtkPageSetup> (<C-void*>) end;
-define constant <GtkPageSetup> = <_GtkPageSetup>;
+define C-struct <_GtkPageSetup>
+end;
+
+define C-pointer-type <GtkPageSetup> => <_GtkPageSetup>;
 
 define constant <anonymous-7325> = <C-function-pointer>;
 define constant <anonymous-7326> = <C-function-pointer>;
@@ -37437,8 +40176,10 @@ define constant <anonymous-7327> = <C-function-pointer>;
 define constant <anonymous-7328> = <C-function-pointer>;
 define constant <anonymous-7329> = <C-function-pointer>;
 define constant <anonymous-7330> = <C-function-pointer>;
-define C-subtype <_GtkPrintOperationPreview> (<C-void*>) end;
-define constant <GtkPrintOperationPreview> = <_GtkPrintOperationPreview>;
+define C-struct <_GtkPrintOperationPreview>
+end;
+
+define C-pointer-type <GtkPrintOperationPreview> => <_GtkPrintOperationPreview>;
 
 define constant <anonymous-7331> = <C-function-pointer>;
 define constant <anonymous-7332> = <C-function-pointer>;
@@ -37448,8 +40189,28 @@ define constant <anonymous-7335> = <C-function-pointer>;
 define constant <anonymous-7336> = <C-function-pointer>;
 define constant <anonymous-7337> = <C-function-pointer>;
 define constant <anonymous-7338> = <C-function-pointer>;
-define C-subtype <_GtkPrintOperationClass> (<C-void*>) end;
-define constant <GtkPrintOperationClass> = <_GtkPrintOperationClass>;
+define C-struct <_GtkPrintOperationClass>
+  slot GtkPrintOperationClass-parent-class :: <_GObjectClass>;
+  slot GtkPrintOperationClass-done :: <anonymous-7322>;
+  slot GtkPrintOperationClass-begin-print :: <anonymous-7323>;
+  slot GtkPrintOperationClass-paginate :: <anonymous-7324>;
+  slot GtkPrintOperationClass-request-page-setup :: <anonymous-7325>;
+  slot GtkPrintOperationClass-draw-page :: <anonymous-7326>;
+  slot GtkPrintOperationClass-end-print :: <anonymous-7327>;
+  slot GtkPrintOperationClass-status-changed :: <anonymous-7328>;
+  slot GtkPrintOperationClass-create-custom-widget :: <anonymous-7329>;
+  slot GtkPrintOperationClass-custom-widget-apply :: <anonymous-7330>;
+  slot GtkPrintOperationClass-preview :: <anonymous-7331>;
+  slot GtkPrintOperationClass-_gtk-reserved1 :: <anonymous-7332>;
+  slot GtkPrintOperationClass-_gtk-reserved2 :: <anonymous-7333>;
+  slot GtkPrintOperationClass-_gtk-reserved3 :: <anonymous-7334>;
+  slot GtkPrintOperationClass-_gtk-reserved4 :: <anonymous-7335>;
+  slot GtkPrintOperationClass-_gtk-reserved5 :: <anonymous-7336>;
+  slot GtkPrintOperationClass-_gtk-reserved6 :: <anonymous-7337>;
+  slot GtkPrintOperationClass-_gtk-reserved7 :: <anonymous-7338>;
+end;
+
+define C-pointer-type <GtkPrintOperationClass> => <_GtkPrintOperationClass>;
 
 define constant <GtkPrintStatus> = <C-int>;
 define constant $GTK-PRINT-STATUS-INITIAL = 0;
@@ -37500,8 +40261,10 @@ define C-function gtk-print-operation-get-default-page-setup
   c-name: "gtk_print_operation_get_default_page_setup";
 end;
 
-define C-subtype <_GtkPrintSettings> (<C-void*>) end;
-define constant <GtkPrintSettings> = <_GtkPrintSettings>;
+define C-struct <_GtkPrintSettings>
+end;
+
+define C-pointer-type <GtkPrintSettings> => <_GtkPrintSettings>;
 
 define C-function gtk-print-operation-set-print-settings
   input parameter arg1 :: <GtkPrintOperation>;
@@ -37645,8 +40408,23 @@ define constant <anonymous-7311> = <C-function-pointer>;
 define constant <anonymous-7312> = <C-function-pointer>;
 define constant <anonymous-7313> = <C-function-pointer>;
 define constant <anonymous-7314> = <C-function-pointer>;
-define C-subtype <_GtkPrintOperationPreviewIface> (<C-void*>) end;
-define constant <GtkPrintOperationPreviewIface> = <_GtkPrintOperationPreviewIface>;
+define C-struct <_GtkPrintOperationPreviewIface>
+  slot GtkPrintOperationPreviewIface-g-iface :: <_GTypeInterface>;
+  slot GtkPrintOperationPreviewIface-ready :: <anonymous-7303>;
+  slot GtkPrintOperationPreviewIface-got-page-size :: <anonymous-7304>;
+  slot GtkPrintOperationPreviewIface-render-page :: <anonymous-7305>;
+  slot GtkPrintOperationPreviewIface-is-selected :: <anonymous-7306>;
+  slot GtkPrintOperationPreviewIface-end-preview :: <anonymous-7307>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved1 :: <anonymous-7308>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved2 :: <anonymous-7309>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved3 :: <anonymous-7310>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved4 :: <anonymous-7311>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved5 :: <anonymous-7312>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved6 :: <anonymous-7313>;
+  slot GtkPrintOperationPreviewIface-_gtk-reserved7 :: <anonymous-7314>;
+end;
+
+define C-pointer-type <GtkPrintOperationPreviewIface> => <_GtkPrintOperationPreviewIface>;
 
 define C-function gtk-print-operation-preview-get-type
   result res :: <GType>;
@@ -37766,8 +40544,10 @@ define C-function gtk-page-setup-set-orientation
   c-name: "gtk_page_setup_set_orientation";
 end;
 
-define C-subtype <_GtkPaperSize> (<C-void*>) end;
-define constant <GtkPaperSize> = <_GtkPaperSize>;
+define C-struct <_GtkPaperSize>
+end;
+
+define C-pointer-type <GtkPaperSize> => <_GtkPaperSize>;
 
 define C-function gtk-page-setup-get-paper-size
   input parameter arg1 :: <GtkPageSetup>;
@@ -38015,8 +40795,12 @@ define constant $GTK-PAPER-NAME-LEGAL = "na_legal";
 define constant <anonymous-7229> = <C-function-pointer>;
 define constant <GtkPrintSettingsFunc> = <anonymous-7229>;
 
-define C-subtype <_GtkPageRange> (<C-void*>) end;
-define constant <GtkPageRange> = <_GtkPageRange>;
+define C-struct <_GtkPageRange>
+  slot GtkPageRange-start :: <C-signed-int>;
+  slot GtkPageRange-end :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkPageRange> => <_GtkPageRange>;
 
 define C-function gtk-print-settings-get-type
   result res :: <GType>;
@@ -38784,8 +41568,12 @@ define constant $GTK-PRIORITY-LOW = 300;
 define C-subtype <_GtkPreview> (<_GtkWidget>, <_AtkImplementorIface>) end;
 define constant <GtkPreview> = <_GtkPreview>;
 
-define C-subtype <_GtkPreviewInfo> (<C-void*>) end;
-define constant <GtkPreviewInfo> = <_GtkPreviewInfo>;
+define C-struct <_GtkPreviewInfo>
+  slot GtkPreviewInfo-lookup :: <guchar*>;
+  slot GtkPreviewInfo-gamma :: <C-double>;
+end;
+
+define C-pointer-type <GtkPreviewInfo> => <_GtkPreviewInfo>;
 
 define C-pointer-type <gushort*> => <gushort>;
 define constant <gushort<@2>> = <gushort*>;
@@ -38793,8 +41581,12 @@ define constant <guchar<@4>> = <guchar*>;
 define C-subtype <_GtkDitherInfo> (<C-void*>) end;
 define constant <GtkDitherInfo> = <_GtkDitherInfo>;
 
-define C-subtype <_GtkPreviewClass> (<C-void*>) end;
-define constant <GtkPreviewClass> = <_GtkPreviewClass>;
+define C-struct <_GtkPreviewClass>
+  slot GtkPreviewClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkPreviewClass-info :: <_GtkPreviewInfo>;
+end;
+
+define C-pointer-type <GtkPreviewClass> => <_GtkPreviewClass>;
 
 define C-function gtk-preview-get-type
   result res :: <GtkType>;
@@ -38902,8 +41694,16 @@ define constant <anonymous-7160> = <C-function-pointer>;
 define constant <anonymous-7161> = <C-function-pointer>;
 define constant <anonymous-7162> = <C-function-pointer>;
 define constant <anonymous-7163> = <C-function-pointer>;
-define C-subtype <_GtkPlugClass> (<C-void*>) end;
-define constant <GtkPlugClass> = <_GtkPlugClass>;
+define C-struct <_GtkPlugClass>
+  slot GtkPlugClass-parent-class :: <_GtkWindowClass>;
+  slot GtkPlugClass-embedded :: <anonymous-7159>;
+  slot GtkPlugClass-_gtk-reserved1 :: <anonymous-7160>;
+  slot GtkPlugClass-_gtk-reserved2 :: <anonymous-7161>;
+  slot GtkPlugClass-_gtk-reserved3 :: <anonymous-7162>;
+  slot GtkPlugClass-_gtk-reserved4 :: <anonymous-7163>;
+end;
+
+define C-pointer-type <GtkPlugClass> => <_GtkPlugClass>;
 
 define C-function gtk-plug-get-type
   result res :: <GType>;
@@ -38950,8 +41750,16 @@ define constant <anonymous-7124> = <C-function-pointer>;
 define constant <anonymous-7125> = <C-function-pointer>;
 define constant <anonymous-7126> = <C-function-pointer>;
 define constant <anonymous-7127> = <C-function-pointer>;
-define C-subtype <_GtkOptionMenuClass> (<C-void*>) end;
-define constant <GtkOptionMenuClass> = <_GtkOptionMenuClass>;
+define C-struct <_GtkOptionMenuClass>
+  slot GtkOptionMenuClass-parent-class :: <_GtkButtonClass>;
+  slot GtkOptionMenuClass-changed :: <anonymous-7123>;
+  slot GtkOptionMenuClass-_gtk-reserved1 :: <anonymous-7124>;
+  slot GtkOptionMenuClass-_gtk-reserved2 :: <anonymous-7125>;
+  slot GtkOptionMenuClass-_gtk-reserved3 :: <anonymous-7126>;
+  slot GtkOptionMenuClass-_gtk-reserved4 :: <anonymous-7127>;
+end;
+
+define C-pointer-type <GtkOptionMenuClass> => <_GtkOptionMenuClass>;
 
 define C-function gtk-option-menu-get-type
   result res :: <GType>;
@@ -38992,8 +41800,18 @@ define C-function gtk-option-menu-set-history
   c-name: "gtk_option_menu_set_history";
 end;
 
-define C-subtype <_GtkOldEditable> (<C-void*>) end;
-define constant <GtkOldEditable> = <_GtkOldEditable>;
+define C-struct <_GtkOldEditable>
+  slot GtkOldEditable-widget :: <_GtkWidget>;
+  slot GtkOldEditable-current-pos :: <C-unsigned-int>;
+  slot GtkOldEditable-selection-start-pos :: <C-unsigned-int>;
+  slot GtkOldEditable-selection-end-pos :: <C-unsigned-int>;
+  bitfield slot GtkOldEditable-has-selection :: <C-int>, width: 1;
+  bitfield slot GtkOldEditable-editable :: <C-int>, width: 1;
+  bitfield slot GtkOldEditable-visible :: <C-int>, width: 1;
+  slot GtkOldEditable-clipboard-text :: <gchar*>;
+end;
+
+define C-pointer-type <GtkOldEditable> => <_GtkOldEditable>;
 
 define constant <anonymous-7103> = <C-function-pointer>;
 define constant <anonymous-7104> = <C-function-pointer>;
@@ -39012,8 +41830,28 @@ define constant <anonymous-7116> = <C-function-pointer>;
 define constant <anonymous-7117> = <C-function-pointer>;
 define constant <anonymous-7118> = <C-function-pointer>;
 define constant <anonymous-7119> = <C-function-pointer>;
-define C-subtype <_GtkOldEditableClass> (<C-void*>) end;
-define constant <GtkOldEditableClass> = <_GtkOldEditableClass>;
+define C-struct <_GtkOldEditableClass>
+  slot GtkOldEditableClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkOldEditableClass-activate :: <anonymous-7103>;
+  slot GtkOldEditableClass-set-editable :: <anonymous-7104>;
+  slot GtkOldEditableClass-move-cursor :: <anonymous-7105>;
+  slot GtkOldEditableClass-move-word :: <anonymous-7106>;
+  slot GtkOldEditableClass-move-page :: <anonymous-7107>;
+  slot GtkOldEditableClass-move-to-row :: <anonymous-7108>;
+  slot GtkOldEditableClass-move-to-column :: <anonymous-7109>;
+  slot GtkOldEditableClass-kill-char :: <anonymous-7110>;
+  slot GtkOldEditableClass-kill-word :: <anonymous-7111>;
+  slot GtkOldEditableClass-kill-line :: <anonymous-7112>;
+  slot GtkOldEditableClass-cut-clipboard :: <anonymous-7113>;
+  slot GtkOldEditableClass-copy-clipboard :: <anonymous-7114>;
+  slot GtkOldEditableClass-paste-clipboard :: <anonymous-7115>;
+  slot GtkOldEditableClass-update-text :: <anonymous-7116>;
+  slot GtkOldEditableClass-get-chars :: <anonymous-7117>;
+  slot GtkOldEditableClass-set-selection :: <anonymous-7118>;
+  slot GtkOldEditableClass-set-position :: <anonymous-7119>;
+end;
+
+define C-pointer-type <GtkOldEditableClass> => <_GtkOldEditableClass>;
 
 define constant <anonymous-7099> = <C-function-pointer>;
 define constant <GtkTextFunction> = <anonymous-7099>;
@@ -39039,8 +41877,10 @@ define constant <GtkNotebookTab> = <C-int>;
 define constant $GTK-NOTEBOOK-TAB-FIRST = 0;
 define constant $GTK-NOTEBOOK-TAB-LAST = 1;
 
-define C-subtype <_GtkNotebookPage> (<C-void*>) end;
-define constant <GtkNotebookPage> = <_GtkNotebookPage>;
+define C-struct <_GtkNotebookPage>
+end;
+
+define C-pointer-type <GtkNotebookPage> => <_GtkNotebookPage>;
 
 define C-subtype <_GtkNotebook> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkNotebook> = <_GtkNotebook>;
@@ -39054,8 +41894,20 @@ define constant <anonymous-7046> = <C-function-pointer>;
 define constant <anonymous-7047> = <C-function-pointer>;
 define constant <anonymous-7048> = <C-function-pointer>;
 define constant <anonymous-7049> = <C-function-pointer>;
-define C-subtype <_GtkNotebookClass> (<C-void*>) end;
-define constant <GtkNotebookClass> = <_GtkNotebookClass>;
+define C-struct <_GtkNotebookClass>
+  slot GtkNotebookClass-parent-class :: <_GtkContainerClass>;
+  slot GtkNotebookClass-switch-page :: <anonymous-7041>;
+  slot GtkNotebookClass-select-page :: <anonymous-7042>;
+  slot GtkNotebookClass-focus-tab :: <anonymous-7043>;
+  slot GtkNotebookClass-change-current-page :: <anonymous-7044>;
+  slot GtkNotebookClass-move-focus-out :: <anonymous-7045>;
+  slot GtkNotebookClass-reorder-tab :: <anonymous-7046>;
+  slot GtkNotebookClass-insert-page :: <anonymous-7047>;
+  slot GtkNotebookClass-_gtk-reserved1 :: <anonymous-7048>;
+  slot GtkNotebookClass-_gtk-reserved2 :: <anonymous-7049>;
+end;
+
+define C-pointer-type <GtkNotebookClass> => <_GtkNotebookClass>;
 
 define constant <anonymous-7050> = <C-function-pointer>;
 define constant <GtkNotebookWindowCreationFunc> = <anonymous-7050>;
@@ -39413,8 +42265,15 @@ define constant <anonymous-7007> = <C-function-pointer>;
 define constant <anonymous-7008> = <C-function-pointer>;
 define constant <anonymous-7009> = <C-function-pointer>;
 define constant <anonymous-7010> = <C-function-pointer>;
-define C-subtype <_GtkMessageDialogClass> (<C-void*>) end;
-define constant <GtkMessageDialogClass> = <_GtkMessageDialogClass>;
+define C-struct <_GtkMessageDialogClass>
+  slot GtkMessageDialogClass-parent-class :: <_GtkDialogClass>;
+  slot GtkMessageDialogClass-_gtk-reserved1 :: <anonymous-7007>;
+  slot GtkMessageDialogClass-_gtk-reserved2 :: <anonymous-7008>;
+  slot GtkMessageDialogClass-_gtk-reserved3 :: <anonymous-7009>;
+  slot GtkMessageDialogClass-_gtk-reserved4 :: <anonymous-7010>;
+end;
+
+define C-pointer-type <GtkMessageDialogClass> => <_GtkMessageDialogClass>;
 
 define C-function gtk-message-dialog-get-type
   result res :: <GType>;
@@ -39465,8 +42324,10 @@ define C-function gtk-message-dialog-format-secondary-markup
   c-name: "gtk_message_dialog_format_secondary_markup";
 end;
 
-define C-subtype <_GtkMenuToolButtonPrivate> (<C-void*>) end;
-define constant <GtkMenuToolButtonPrivate> = <_GtkMenuToolButtonPrivate>;
+define C-struct <_GtkMenuToolButtonPrivate>
+end;
+
+define C-pointer-type <GtkMenuToolButtonPrivate> => <_GtkMenuToolButtonPrivate>;
 
 define C-subtype <_GtkMenuToolButton> (<_GtkToolButton>, <_AtkImplementorIface>) end;
 define constant <GtkMenuToolButton> = <_GtkMenuToolButton>;
@@ -39476,8 +42337,16 @@ define constant <anonymous-6995> = <C-function-pointer>;
 define constant <anonymous-6996> = <C-function-pointer>;
 define constant <anonymous-6997> = <C-function-pointer>;
 define constant <anonymous-6998> = <C-function-pointer>;
-define C-subtype <_GtkMenuToolButtonClass> (<C-void*>) end;
-define constant <GtkMenuToolButtonClass> = <_GtkMenuToolButtonClass>;
+define C-struct <_GtkMenuToolButtonClass>
+  slot GtkMenuToolButtonClass-parent-class :: <_GtkToolButtonClass>;
+  slot GtkMenuToolButtonClass-show-menu :: <anonymous-6994>;
+  slot GtkMenuToolButtonClass-_gtk-reserved1 :: <anonymous-6995>;
+  slot GtkMenuToolButtonClass-_gtk-reserved2 :: <anonymous-6996>;
+  slot GtkMenuToolButtonClass-_gtk-reserved3 :: <anonymous-6997>;
+  slot GtkMenuToolButtonClass-_gtk-reserved4 :: <anonymous-6998>;
+end;
+
+define C-pointer-type <GtkMenuToolButtonClass> => <_GtkMenuToolButtonClass>;
 
 define C-function gtk-menu-tool-button-get-type
   result res :: <GType>;
@@ -39524,8 +42393,15 @@ define constant <anonymous-6913> = <C-function-pointer>;
 define constant <anonymous-6914> = <C-function-pointer>;
 define constant <anonymous-6915> = <C-function-pointer>;
 define constant <anonymous-6916> = <C-function-pointer>;
-define C-subtype <_GtkMenuBarClass> (<C-void*>) end;
-define constant <GtkMenuBarClass> = <_GtkMenuBarClass>;
+define C-struct <_GtkMenuBarClass>
+  slot GtkMenuBarClass-parent-class :: <_GtkMenuShellClass>;
+  slot GtkMenuBarClass-_gtk-reserved1 :: <anonymous-6913>;
+  slot GtkMenuBarClass-_gtk-reserved2 :: <anonymous-6914>;
+  slot GtkMenuBarClass-_gtk-reserved3 :: <anonymous-6915>;
+  slot GtkMenuBarClass-_gtk-reserved4 :: <anonymous-6916>;
+end;
+
+define C-pointer-type <GtkMenuBarClass> => <_GtkMenuBarClass>;
 
 define C-function gtk-menu-bar-get-type
   result res :: <GType>;
@@ -39574,8 +42450,21 @@ define constant <anonymous-6822> = <C-function-pointer>;
 define constant <anonymous-6823> = <C-function-pointer>;
 define constant <anonymous-6824> = <C-function-pointer>;
 define constant <anonymous-6825> = <C-function-pointer>;
-define C-subtype <_GtkListItemClass> (<C-void*>) end;
-define constant <GtkListItemClass> = <_GtkListItemClass>;
+define C-struct <_GtkListItemClass>
+  slot GtkListItemClass-parent-class :: <_GtkItemClass>;
+  slot GtkListItemClass-toggle-focus-row :: <anonymous-6816>;
+  slot GtkListItemClass-select-all :: <anonymous-6817>;
+  slot GtkListItemClass-unselect-all :: <anonymous-6818>;
+  slot GtkListItemClass-undo-selection :: <anonymous-6819>;
+  slot GtkListItemClass-start-selection :: <anonymous-6820>;
+  slot GtkListItemClass-end-selection :: <anonymous-6821>;
+  slot GtkListItemClass-extend-selection :: <anonymous-6822>;
+  slot GtkListItemClass-scroll-horizontal :: <anonymous-6823>;
+  slot GtkListItemClass-scroll-vertical :: <anonymous-6824>;
+  slot GtkListItemClass-toggle-add-mode :: <anonymous-6825>;
+end;
+
+define C-pointer-type <GtkListItemClass> => <_GtkListItemClass>;
 
 define C-function gtk-list-item-get-type
   result res :: <GtkType>;
@@ -39609,8 +42498,14 @@ define constant <GtkList> = <_GtkList>;
 define constant <anonymous-6834> = <C-function-pointer>;
 define constant <anonymous-6835> = <C-function-pointer>;
 define constant <anonymous-6836> = <C-function-pointer>;
-define C-subtype <_GtkListClass> (<C-void*>) end;
-define constant <GtkListClass> = <_GtkListClass>;
+define C-struct <_GtkListClass>
+  slot GtkListClass-parent-class :: <_GtkContainerClass>;
+  slot GtkListClass-selection-changed :: <anonymous-6834>;
+  slot GtkListClass-select-child :: <anonymous-6835>;
+  slot GtkListClass-unselect-child :: <anonymous-6836>;
+end;
+
+define C-pointer-type <GtkListClass> => <_GtkListClass>;
 
 define C-function gtk-list-get-type
   result res :: <GtkType>;
@@ -39765,18 +42660,31 @@ define C-function gtk-list-end-drag-selection
   c-name: "gtk_list_end_drag_selection";
 end;
 
-define C-subtype <_GtkLinkButtonPrivate> (<C-void*>) end;
-define constant <GtkLinkButtonPrivate> = <_GtkLinkButtonPrivate>;
+define C-struct <_GtkLinkButtonPrivate>
+end;
 
-define C-subtype <_GtkLinkButton> (<C-void*>) end;
-define constant <GtkLinkButton> = <_GtkLinkButton>;
+define C-pointer-type <GtkLinkButtonPrivate> => <_GtkLinkButtonPrivate>;
+
+define C-struct <_GtkLinkButton>
+  slot GtkLinkButton-parent-instance :: <_GtkButton>;
+  slot GtkLinkButton-priv :: <GtkLinkButtonPrivate>;
+end;
+
+define C-pointer-type <GtkLinkButton> => <_GtkLinkButton>;
 
 define constant <anonymous-6806> = <C-function-pointer>;
 define constant <anonymous-6807> = <C-function-pointer>;
 define constant <anonymous-6808> = <C-function-pointer>;
 define constant <anonymous-6809> = <C-function-pointer>;
-define C-subtype <_GtkLinkButtonClass> (<C-void*>) end;
-define constant <GtkLinkButtonClass> = <_GtkLinkButtonClass>;
+define C-struct <_GtkLinkButtonClass>
+  slot GtkLinkButtonClass-parent-class :: <_GtkButtonClass>;
+  slot GtkLinkButtonClass-_gtk-padding1 :: <anonymous-6806>;
+  slot GtkLinkButtonClass-_gtk-padding2 :: <anonymous-6807>;
+  slot GtkLinkButtonClass-_gtk-padding3 :: <anonymous-6808>;
+  slot GtkLinkButtonClass-_gtk-padding4 :: <anonymous-6809>;
+end;
+
+define C-pointer-type <GtkLinkButtonClass> => <_GtkLinkButtonClass>;
 
 define constant <anonymous-6805> = <C-function-pointer>;
 define constant <GtkLinkButtonUriFunc> = <anonymous-6805>;
@@ -39827,8 +42735,16 @@ define constant <anonymous-6789> = <C-function-pointer>;
 define constant <anonymous-6790> = <C-function-pointer>;
 define constant <anonymous-6791> = <C-function-pointer>;
 define constant <anonymous-6792> = <C-function-pointer>;
-define C-subtype <_GtkLayoutClass> (<C-void*>) end;
-define constant <GtkLayoutClass> = <_GtkLayoutClass>;
+define C-struct <_GtkLayoutClass>
+  slot GtkLayoutClass-parent-class :: <_GtkContainerClass>;
+  slot GtkLayoutClass-set-scroll-adjustments :: <anonymous-6788>;
+  slot GtkLayoutClass-_gtk-reserved1 :: <anonymous-6789>;
+  slot GtkLayoutClass-_gtk-reserved2 :: <anonymous-6790>;
+  slot GtkLayoutClass-_gtk-reserved3 :: <anonymous-6791>;
+  slot GtkLayoutClass-_gtk-reserved4 :: <anonymous-6792>;
+end;
+
+define C-pointer-type <GtkLayoutClass> => <_GtkLayoutClass>;
 
 define C-function gtk-layout-get-type
   result res :: <GType>;
@@ -39913,8 +42829,15 @@ define constant <anonymous-6779> = <C-function-pointer>;
 define constant <anonymous-6780> = <C-function-pointer>;
 define constant <anonymous-6781> = <C-function-pointer>;
 define constant <anonymous-6782> = <C-function-pointer>;
-define C-subtype <_GtkInvisibleClass> (<C-void*>) end;
-define constant <GtkInvisibleClass> = <_GtkInvisibleClass>;
+define C-struct <_GtkInvisibleClass>
+  slot GtkInvisibleClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkInvisibleClass-_gtk-reserved1 :: <anonymous-6779>;
+  slot GtkInvisibleClass-_gtk-reserved2 :: <anonymous-6780>;
+  slot GtkInvisibleClass-_gtk-reserved3 :: <anonymous-6781>;
+  slot GtkInvisibleClass-_gtk-reserved4 :: <anonymous-6782>;
+end;
+
+define C-pointer-type <GtkInvisibleClass> => <_GtkInvisibleClass>;
 
 define C-function gtk-invisible-get-type
   result res :: <GType>;
@@ -39954,8 +42877,17 @@ define constant <anonymous-6773> = <C-function-pointer>;
 define constant <anonymous-6774> = <C-function-pointer>;
 define constant <anonymous-6775> = <C-function-pointer>;
 define constant <anonymous-6776> = <C-function-pointer>;
-define C-subtype <_GtkInputDialogClass> (<C-void*>) end;
-define constant <GtkInputDialogClass> = <_GtkInputDialogClass>;
+define C-struct <_GtkInputDialogClass>
+  slot GtkInputDialogClass-parent-class :: <_GtkDialogClass>;
+  slot GtkInputDialogClass-enable-device :: <anonymous-6771>;
+  slot GtkInputDialogClass-disable-device :: <anonymous-6772>;
+  slot GtkInputDialogClass-_gtk-reserved1 :: <anonymous-6773>;
+  slot GtkInputDialogClass-_gtk-reserved2 :: <anonymous-6774>;
+  slot GtkInputDialogClass-_gtk-reserved3 :: <anonymous-6775>;
+  slot GtkInputDialogClass-_gtk-reserved4 :: <anonymous-6776>;
+end;
+
+define C-pointer-type <GtkInputDialogClass> => <_GtkInputDialogClass>;
 
 define C-function gtk-input-dialog-get-type
   result res :: <GType>;
@@ -39967,8 +42899,10 @@ define C-function gtk-input-dialog-new
   c-name: "gtk_input_dialog_new";
 end;
 
-define C-subtype <_GtkIMMulticontextPrivate> (<C-void*>) end;
-define constant <GtkIMMulticontextPrivate> = <_GtkIMMulticontextPrivate>;
+define C-struct <_GtkIMMulticontextPrivate>
+end;
+
+define C-pointer-type <GtkIMMulticontextPrivate> => <_GtkIMMulticontextPrivate>;
 
 define C-subtype <_GtkIMMulticontext> (<_GtkIMContext>) end;
 define constant <GtkIMMulticontext> = <_GtkIMMulticontext>;
@@ -39977,8 +42911,15 @@ define constant <anonymous-6764> = <C-function-pointer>;
 define constant <anonymous-6765> = <C-function-pointer>;
 define constant <anonymous-6766> = <C-function-pointer>;
 define constant <anonymous-6767> = <C-function-pointer>;
-define C-subtype <_GtkIMMulticontextClass> (<C-void*>) end;
-define constant <GtkIMMulticontextClass> = <_GtkIMMulticontextClass>;
+define C-struct <_GtkIMMulticontextClass>
+  slot GtkIMMulticontextClass-parent-class :: <_GtkIMContextClass>;
+  slot GtkIMMulticontextClass-_gtk-reserved1 :: <anonymous-6764>;
+  slot GtkIMMulticontextClass-_gtk-reserved2 :: <anonymous-6765>;
+  slot GtkIMMulticontextClass-_gtk-reserved3 :: <anonymous-6766>;
+  slot GtkIMMulticontextClass-_gtk-reserved4 :: <anonymous-6767>;
+end;
+
+define C-pointer-type <GtkIMMulticontextClass> => <_GtkIMMulticontextClass>;
 
 define C-function gtk-im-multicontext-get-type
   result res :: <GType>;
@@ -40000,8 +42941,11 @@ define constant <guint<@8>> = <guint*>;
 define C-subtype <_GtkIMContextSimple> (<_GtkIMContext>) end;
 define constant <GtkIMContextSimple> = <_GtkIMContextSimple>;
 
-define C-subtype <_GtkIMContextSimpleClass> (<C-void*>) end;
-define constant <GtkIMContextSimpleClass> = <_GtkIMContextSimpleClass>;
+define C-struct <_GtkIMContextSimpleClass>
+  slot GtkIMContextSimpleClass-parent-class :: <_GtkIMContextClass>;
+end;
+
+define C-pointer-type <GtkIMContextSimpleClass> => <_GtkIMContextSimpleClass>;
 
 define C-function gtk-im-context-simple-get-type
   result res :: <GType>;
@@ -40026,8 +42970,11 @@ define constant $GTK-MAX-COMPOSE-LEN = 7;
 define C-subtype <_GtkImageMenuItem> (<_GtkMenuItem>, <_AtkImplementorIface>) end;
 define constant <GtkImageMenuItem> = <_GtkImageMenuItem>;
 
-define C-subtype <_GtkImageMenuItemClass> (<C-void*>) end;
-define constant <GtkImageMenuItemClass> = <_GtkImageMenuItemClass>;
+define C-struct <_GtkImageMenuItemClass>
+  slot GtkImageMenuItemClass-parent-class :: <_GtkMenuItemClass>;
+end;
+
+define C-pointer-type <GtkImageMenuItemClass> => <_GtkImageMenuItemClass>;
 
 define C-function gtk-image-menu-item-get-type
   result res :: <GType>;
@@ -40070,8 +43017,10 @@ define C-function gtk-image-menu-item-get-image
   c-name: "gtk_image_menu_item_get_image";
 end;
 
-define C-subtype <_GtkIconViewPrivate> (<C-void*>) end;
-define constant <GtkIconViewPrivate> = <_GtkIconViewPrivate>;
+define C-struct <_GtkIconViewPrivate>
+end;
+
+define C-pointer-type <GtkIconViewPrivate> => <_GtkIconViewPrivate>;
 
 define C-subtype <_GtkIconView> (<_GtkContainer>, <_AtkImplementorIface>, <_GtkCellLayout>) end;
 define constant <GtkIconView> = <_GtkIconView>;
@@ -40085,8 +43034,20 @@ define constant <anonymous-6697> = <C-function-pointer>;
 define constant <anonymous-6698> = <C-function-pointer>;
 define constant <anonymous-6699> = <C-function-pointer>;
 define constant <anonymous-6700> = <C-function-pointer>;
-define C-subtype <_GtkIconViewClass> (<C-void*>) end;
-define constant <GtkIconViewClass> = <_GtkIconViewClass>;
+define C-struct <_GtkIconViewClass>
+  slot GtkIconViewClass-parent-class :: <_GtkContainerClass>;
+  slot GtkIconViewClass-set-scroll-adjustments :: <anonymous-6692>;
+  slot GtkIconViewClass-item-activated :: <anonymous-6693>;
+  slot GtkIconViewClass-selection-changed :: <anonymous-6694>;
+  slot GtkIconViewClass-select-all :: <anonymous-6695>;
+  slot GtkIconViewClass-unselect-all :: <anonymous-6696>;
+  slot GtkIconViewClass-select-cursor-item :: <anonymous-6697>;
+  slot GtkIconViewClass-toggle-cursor-item :: <anonymous-6698>;
+  slot GtkIconViewClass-move-cursor :: <anonymous-6699>;
+  slot GtkIconViewClass-activate-cursor-item :: <anonymous-6700>;
+end;
+
+define C-pointer-type <GtkIconViewClass> => <_GtkIconViewClass>;
 
 define constant <anonymous-6690> = <C-function-pointer>;
 define constant <GtkIconViewForeachFunc> = <anonymous-6690>;
@@ -40430,18 +43391,26 @@ define C-function gtk-icon-view-create-drag-icon
   c-name: "gtk_icon_view_create_drag_icon";
 end;
 
-define C-subtype <_GtkIconInfo> (<C-void*>) end;
-define constant <GtkIconInfo> = <_GtkIconInfo>;
+define C-struct <_GtkIconInfo>
+end;
 
-define C-subtype <_GtkIconThemePrivate> (<C-void*>) end;
-define constant <GtkIconThemePrivate> = <_GtkIconThemePrivate>;
+define C-pointer-type <GtkIconInfo> => <_GtkIconInfo>;
+
+define C-struct <_GtkIconThemePrivate>
+end;
+
+define C-pointer-type <GtkIconThemePrivate> => <_GtkIconThemePrivate>;
 
 define C-subtype <_GtkIconTheme> (<_GObject>) end;
 define constant <GtkIconTheme> = <_GtkIconTheme>;
 
 define constant <anonymous-6655> = <C-function-pointer>;
-define C-subtype <_GtkIconThemeClass> (<C-void*>) end;
-define constant <GtkIconThemeClass> = <_GtkIconThemeClass>;
+define C-struct <_GtkIconThemeClass>
+  slot GtkIconThemeClass-parent-class :: <_GObjectClass>;
+  slot GtkIconThemeClass-changed :: <anonymous-6655>;
+end;
+
+define C-pointer-type <GtkIconThemeClass> => <_GtkIconThemeClass>;
 
 define constant <GtkIconLookupFlags> = <C-int>;
 define constant $GTK-ICON-LOOKUP-NO-SVG = 1;
@@ -40659,8 +43628,15 @@ define constant <anonymous-6604> = <C-function-pointer>;
 define constant <anonymous-6605> = <C-function-pointer>;
 define constant <anonymous-6606> = <C-function-pointer>;
 define constant <anonymous-6607> = <C-function-pointer>;
-define C-subtype <_GtkIconFactoryClass> (<C-void*>) end;
-define constant <GtkIconFactoryClass> = <_GtkIconFactoryClass>;
+define C-struct <_GtkIconFactoryClass>
+  slot GtkIconFactoryClass-parent-class :: <_GObjectClass>;
+  slot GtkIconFactoryClass-_gtk-reserved1 :: <anonymous-6604>;
+  slot GtkIconFactoryClass-_gtk-reserved2 :: <anonymous-6605>;
+  slot GtkIconFactoryClass-_gtk-reserved3 :: <anonymous-6606>;
+  slot GtkIconFactoryClass-_gtk-reserved4 :: <anonymous-6607>;
+end;
+
+define C-pointer-type <GtkIconFactoryClass> => <_GtkIconFactoryClass>;
 
 define C-function gtk-icon-factory-get-type
   result res :: <GType>;
@@ -40940,8 +43916,11 @@ define constant gtk-icon-source-get-filename = gtk-icon-source-get-filename-utf8
 define C-subtype <_GtkHSeparator> (<_GtkSeparator>, <_AtkImplementorIface>) end;
 define constant <GtkHSeparator> = <_GtkHSeparator>;
 
-define C-subtype <_GtkHSeparatorClass> (<C-void*>) end;
-define constant <GtkHSeparatorClass> = <_GtkHSeparatorClass>;
+define C-struct <_GtkHSeparatorClass>
+  slot GtkHSeparatorClass-parent-class :: <_GtkSeparatorClass>;
+end;
+
+define C-pointer-type <GtkHSeparatorClass> => <_GtkHSeparatorClass>;
 
 define C-function gtk-hseparator-get-type
   result res :: <GType>;
@@ -40956,8 +43935,11 @@ end;
 define C-subtype <_GtkHScale> (<_GtkScale>, <_AtkImplementorIface>) end;
 define constant <GtkHScale> = <_GtkHScale>;
 
-define C-subtype <_GtkHScaleClass> (<C-void*>) end;
-define constant <GtkHScaleClass> = <_GtkHScaleClass>;
+define C-struct <_GtkHScaleClass>
+  slot GtkHScaleClass-parent-class :: <_GtkScaleClass>;
+end;
+
+define C-pointer-type <GtkHScaleClass> => <_GtkHScaleClass>;
 
 define C-function gtk-hscale-get-type
   result res :: <GType>;
@@ -40981,8 +43963,11 @@ end;
 define C-subtype <_GtkHRuler> (<_GtkRuler>, <_AtkImplementorIface>) end;
 define constant <GtkHRuler> = <_GtkHRuler>;
 
-define C-subtype <_GtkHRulerClass> (<C-void*>) end;
-define constant <GtkHRulerClass> = <_GtkHRulerClass>;
+define C-struct <_GtkHRulerClass>
+  slot GtkHRulerClass-parent-class :: <_GtkRulerClass>;
+end;
+
+define C-pointer-type <GtkHRulerClass> => <_GtkHRulerClass>;
 
 define C-function gtk-hruler-get-type
   result res :: <GType>;
@@ -40997,8 +43982,11 @@ end;
 define C-subtype <_GtkHPaned> (<_GtkPaned>, <_AtkImplementorIface>) end;
 define constant <GtkHPaned> = <_GtkHPaned>;
 
-define C-subtype <_GtkHPanedClass> (<C-void*>) end;
-define constant <GtkHPanedClass> = <_GtkHPanedClass>;
+define C-struct <_GtkHPanedClass>
+  slot GtkHPanedClass-parent-class :: <_GtkPanedClass>;
+end;
+
+define C-pointer-type <GtkHPanedClass> => <_GtkHPanedClass>;
 
 define C-function gtk-hpaned-get-type
   result res :: <GType>;
@@ -41013,8 +44001,11 @@ end;
 define C-subtype <_GtkHButtonBox> (<_GtkButtonBox>, <_AtkImplementorIface>) end;
 define constant <GtkHButtonBox> = <_GtkHButtonBox>;
 
-define C-subtype <_GtkHButtonBoxClass> (<C-void*>) end;
-define constant <GtkHButtonBoxClass> = <_GtkHButtonBoxClass>;
+define C-struct <_GtkHButtonBoxClass>
+  slot GtkHButtonBoxClass-parent-class :: <_GtkButtonBoxClass>;
+end;
+
+define C-pointer-type <GtkHButtonBoxClass> => <_GtkHButtonBoxClass>;
 
 define C-function gtk-hbutton-box-get-type
   result res :: <GType>;
@@ -41055,8 +44046,17 @@ define constant <anonymous-6514> = <C-function-pointer>;
 define constant <anonymous-6515> = <C-function-pointer>;
 define constant <anonymous-6516> = <C-function-pointer>;
 define constant <anonymous-6517> = <C-function-pointer>;
-define C-subtype <_GtkHandleBoxClass> (<C-void*>) end;
-define constant <GtkHandleBoxClass> = <_GtkHandleBoxClass>;
+define C-struct <_GtkHandleBoxClass>
+  slot GtkHandleBoxClass-parent-class :: <_GtkBinClass>;
+  slot GtkHandleBoxClass-child-attached :: <anonymous-6512>;
+  slot GtkHandleBoxClass-child-detached :: <anonymous-6513>;
+  slot GtkHandleBoxClass-_gtk-reserved1 :: <anonymous-6514>;
+  slot GtkHandleBoxClass-_gtk-reserved2 :: <anonymous-6515>;
+  slot GtkHandleBoxClass-_gtk-reserved3 :: <anonymous-6516>;
+  slot GtkHandleBoxClass-_gtk-reserved4 :: <anonymous-6517>;
+end;
+
+define C-pointer-type <GtkHandleBoxClass> => <_GtkHandleBoxClass>;
 
 define C-function gtk-handle-box-get-type
   result res :: <GType>;
@@ -41126,8 +44126,15 @@ define constant <anonymous-6498> = <C-function-pointer>;
 define constant <anonymous-6499> = <C-function-pointer>;
 define constant <anonymous-6500> = <C-function-pointer>;
 define constant <anonymous-6501> = <C-function-pointer>;
-define C-subtype <_GtkGammaCurveClass> (<C-void*>) end;
-define constant <GtkGammaCurveClass> = <_GtkGammaCurveClass>;
+define C-struct <_GtkGammaCurveClass>
+  slot GtkGammaCurveClass-parent-class :: <_GtkVBoxClass>;
+  slot GtkGammaCurveClass-_gtk-reserved1 :: <anonymous-6498>;
+  slot GtkGammaCurveClass-_gtk-reserved2 :: <anonymous-6499>;
+  slot GtkGammaCurveClass-_gtk-reserved3 :: <anonymous-6500>;
+  slot GtkGammaCurveClass-_gtk-reserved4 :: <anonymous-6501>;
+end;
+
+define C-pointer-type <GtkGammaCurveClass> => <_GtkGammaCurveClass>;
 
 define C-function gtk-gamma-curve-get-type
   result res :: <GType>;
@@ -41143,8 +44150,12 @@ define C-subtype <_GtkFrame> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkFrame> = <_GtkFrame>;
 
 define constant <anonymous-4744> = <C-function-pointer>;
-define C-subtype <_GtkFrameClass> (<C-void*>) end;
-define constant <GtkFrameClass> = <_GtkFrameClass>;
+define C-struct <_GtkFrameClass>
+  slot GtkFrameClass-parent-class :: <_GtkBinClass>;
+  slot GtkFrameClass-compute-child-allocation :: <anonymous-4744>;
+end;
+
+define C-pointer-type <GtkFrameClass> => <_GtkFrameClass>;
 
 define C-function gtk-frame-get-type
   result res :: <GType>;
@@ -41214,8 +44225,15 @@ define constant <anonymous-6476> = <C-function-pointer>;
 define constant <anonymous-6477> = <C-function-pointer>;
 define constant <anonymous-6478> = <C-function-pointer>;
 define constant <anonymous-6479> = <C-function-pointer>;
-define C-subtype <_GtkFontSelectionClass> (<C-void*>) end;
-define constant <GtkFontSelectionClass> = <_GtkFontSelectionClass>;
+define C-struct <_GtkFontSelectionClass>
+  slot GtkFontSelectionClass-parent-class :: <_GtkVBoxClass>;
+  slot GtkFontSelectionClass-_gtk-reserved1 :: <anonymous-6476>;
+  slot GtkFontSelectionClass-_gtk-reserved2 :: <anonymous-6477>;
+  slot GtkFontSelectionClass-_gtk-reserved3 :: <anonymous-6478>;
+  slot GtkFontSelectionClass-_gtk-reserved4 :: <anonymous-6479>;
+end;
+
+define C-pointer-type <GtkFontSelectionClass> => <_GtkFontSelectionClass>;
 
 define C-subtype <_GtkFontSelectionDialog> (<_GtkDialog>, <_AtkImplementorIface>) end;
 define constant <GtkFontSelectionDialog> = <_GtkFontSelectionDialog>;
@@ -41224,8 +44242,15 @@ define constant <anonymous-6480> = <C-function-pointer>;
 define constant <anonymous-6481> = <C-function-pointer>;
 define constant <anonymous-6482> = <C-function-pointer>;
 define constant <anonymous-6483> = <C-function-pointer>;
-define C-subtype <_GtkFontSelectionDialogClass> (<C-void*>) end;
-define constant <GtkFontSelectionDialogClass> = <_GtkFontSelectionDialogClass>;
+define C-struct <_GtkFontSelectionDialogClass>
+  slot GtkFontSelectionDialogClass-parent-class :: <_GtkDialogClass>;
+  slot GtkFontSelectionDialogClass-_gtk-reserved1 :: <anonymous-6480>;
+  slot GtkFontSelectionDialogClass-_gtk-reserved2 :: <anonymous-6481>;
+  slot GtkFontSelectionDialogClass-_gtk-reserved3 :: <anonymous-6482>;
+  slot GtkFontSelectionDialogClass-_gtk-reserved4 :: <anonymous-6483>;
+end;
+
+define C-pointer-type <GtkFontSelectionDialogClass> => <_GtkFontSelectionDialogClass>;
 
 define C-function gtk-font-selection-get-type
   result res :: <GType>;
@@ -41310,8 +44335,10 @@ define C-function gtk-font-selection-dialog-set-preview-text
   c-name: "gtk_font_selection_dialog_set_preview_text";
 end;
 
-define C-subtype <_GtkFontButtonPrivate> (<C-void*>) end;
-define constant <GtkFontButtonPrivate> = <_GtkFontButtonPrivate>;
+define C-struct <_GtkFontButtonPrivate>
+end;
+
+define C-pointer-type <GtkFontButtonPrivate> => <_GtkFontButtonPrivate>;
 
 define C-subtype <_GtkFontButton> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkFontButton> = <_GtkFontButton>;
@@ -41321,8 +44348,16 @@ define constant <anonymous-6457> = <C-function-pointer>;
 define constant <anonymous-6458> = <C-function-pointer>;
 define constant <anonymous-6459> = <C-function-pointer>;
 define constant <anonymous-6460> = <C-function-pointer>;
-define C-subtype <_GtkFontButtonClass> (<C-void*>) end;
-define constant <GtkFontButtonClass> = <_GtkFontButtonClass>;
+define C-struct <_GtkFontButtonClass>
+  slot GtkFontButtonClass-parent-class :: <_GtkButtonClass>;
+  slot GtkFontButtonClass-font-set :: <anonymous-6456>;
+  slot GtkFontButtonClass-_gtk-reserved1 :: <anonymous-6457>;
+  slot GtkFontButtonClass-_gtk-reserved2 :: <anonymous-6458>;
+  slot GtkFontButtonClass-_gtk-reserved3 :: <anonymous-6459>;
+  slot GtkFontButtonClass-_gtk-reserved4 :: <anonymous-6460>;
+end;
+
+define C-pointer-type <GtkFontButtonClass> => <_GtkFontButtonClass>;
 
 define C-function gtk-font-button-get-type
   result res :: <GType>;
@@ -41413,14 +44448,19 @@ define C-function gtk-font-button-set-show-size
   c-name: "gtk_font_button_set_show_size";
 end;
 
-define C-subtype <_GtkFileChooserWidgetPrivate> (<C-void*>) end;
-define constant <GtkFileChooserWidgetPrivate> = <_GtkFileChooserWidgetPrivate>;
+define C-struct <_GtkFileChooserWidgetPrivate>
+end;
+
+define C-pointer-type <GtkFileChooserWidgetPrivate> => <_GtkFileChooserWidgetPrivate>;
 
 define C-subtype <_GtkFileChooserWidget> (<_GtkVBox>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserWidget> = <_GtkFileChooserWidget>;
 
-define C-subtype <_GtkFileChooserWidgetClass> (<C-void*>) end;
-define constant <GtkFileChooserWidgetClass> = <_GtkFileChooserWidgetClass>;
+define C-struct <_GtkFileChooserWidgetClass>
+  slot GtkFileChooserWidgetClass-parent-class :: <_GtkVBoxClass>;
+end;
+
+define C-pointer-type <GtkFileChooserWidgetClass> => <_GtkFileChooserWidgetClass>;
 
 define C-function gtk-file-chooser-widget-get-type
   result res :: <GType>;
@@ -41800,8 +44840,15 @@ define constant $GTK-FILE-FILTER-URI = 2;
 define constant $GTK-FILE-FILTER-DISPLAY-NAME = 4;
 define constant $GTK-FILE-FILTER-MIME-TYPE = 8;
 
-define C-subtype <_GtkFileFilterInfo> (<C-void*>) end;
-define constant <GtkFileFilterInfo> = <_GtkFileFilterInfo>;
+define C-struct <_GtkFileFilterInfo>
+  slot GtkFileFilterInfo-contains :: <GtkFileFilterFlags>;
+  slot GtkFileFilterInfo-filename :: <gchar*>;
+  slot GtkFileFilterInfo-uri :: <gchar*>;
+  slot GtkFileFilterInfo-display-name :: <gchar*>;
+  slot GtkFileFilterInfo-mime-type :: <gchar*>;
+end;
+
+define C-pointer-type <GtkFileFilterInfo> => <_GtkFileFilterInfo>;
 
 define constant <anonymous-6376> = <C-function-pointer>;
 define constant <GtkFileFilterFunc> = <anonymous-6376>;
@@ -41867,14 +44914,19 @@ define C-function gtk-file-filter-filter
   c-name: "gtk_file_filter_filter";
 end;
 
-define C-subtype <_GtkFileChooserDialogPrivate> (<C-void*>) end;
-define constant <GtkFileChooserDialogPrivate> = <_GtkFileChooserDialogPrivate>;
+define C-struct <_GtkFileChooserDialogPrivate>
+end;
+
+define C-pointer-type <GtkFileChooserDialogPrivate> => <_GtkFileChooserDialogPrivate>;
 
 define C-subtype <_GtkFileChooserDialog> (<_GtkDialog>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserDialog> = <_GtkFileChooserDialog>;
 
-define C-subtype <_GtkFileChooserDialogClass> (<C-void*>) end;
-define constant <GtkFileChooserDialogClass> = <_GtkFileChooserDialogClass>;
+define C-struct <_GtkFileChooserDialogClass>
+  slot GtkFileChooserDialogClass-parent-class :: <_GtkDialogClass>;
+end;
+
+define C-pointer-type <GtkFileChooserDialogClass> => <_GtkFileChooserDialogClass>;
 
 define C-function gtk-file-chooser-dialog-get-type
   result res :: <GType>;
@@ -41900,14 +44952,27 @@ define C-function gtk-file-chooser-dialog-new-with-backend
   c-name: "gtk_file_chooser_dialog_new_with_backend";
 end;
 
-define C-subtype <_GtkFileChooserButtonPrivate> (<C-void*>) end;
-define constant <GtkFileChooserButtonPrivate> = <_GtkFileChooserButtonPrivate>;
+define C-struct <_GtkFileChooserButtonPrivate>
+end;
+
+define C-pointer-type <GtkFileChooserButtonPrivate> => <_GtkFileChooserButtonPrivate>;
 
 define C-subtype <_GtkFileChooserButton> (<_GtkHBox>, <_AtkImplementorIface>, <_GtkFileChooser>) end;
 define constant <GtkFileChooserButton> = <_GtkFileChooserButton>;
 
-define C-subtype <_GtkFileChooserButtonClass> (<C-void*>) end;
-define constant <GtkFileChooserButtonClass> = <_GtkFileChooserButtonClass>;
+define C-struct <_GtkFileChooserButtonClass>
+  slot GtkFileChooserButtonClass-parent-class :: <_GtkHBoxClass>;
+  slot GtkFileChooserButtonClass-__gtk-reserved1 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved2 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved3 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved4 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved5 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved6 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved7 :: <C-void*>;
+  slot GtkFileChooserButtonClass-__gtk-reserved8 :: <C-void*>;
+end;
+
+define C-pointer-type <GtkFileChooserButtonClass> => <_GtkFileChooserButtonClass>;
 
 define C-function gtk-file-chooser-button-get-type
   result res :: <GType>;
@@ -41974,11 +45039,19 @@ end;
 define C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkFixed> = <_GtkFixed>;
 
-define C-subtype <_GtkFixedClass> (<C-void*>) end;
-define constant <GtkFixedClass> = <_GtkFixedClass>;
+define C-struct <_GtkFixedClass>
+  slot GtkFixedClass-parent-class :: <_GtkContainerClass>;
+end;
 
-define C-subtype <_GtkFixedChild> (<C-void*>) end;
-define constant <GtkFixedChild> = <_GtkFixedChild>;
+define C-pointer-type <GtkFixedClass> => <_GtkFixedClass>;
+
+define C-struct <_GtkFixedChild>
+  slot GtkFixedChild-widget :: <GtkWidget>;
+  slot GtkFixedChild-x :: <C-signed-int>;
+  slot GtkFixedChild-y :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkFixedChild> => <_GtkFixedChild>;
 
 define C-function gtk-fixed-get-type
   result res :: <GType>;
@@ -42025,8 +45098,15 @@ define constant <anonymous-6355> = <C-function-pointer>;
 define constant <anonymous-6356> = <C-function-pointer>;
 define constant <anonymous-6357> = <C-function-pointer>;
 define constant <anonymous-6358> = <C-function-pointer>;
-define C-subtype <_GtkFileSelectionClass> (<C-void*>) end;
-define constant <GtkFileSelectionClass> = <_GtkFileSelectionClass>;
+define C-struct <_GtkFileSelectionClass>
+  slot GtkFileSelectionClass-parent-class :: <_GtkDialogClass>;
+  slot GtkFileSelectionClass-_gtk-reserved1 :: <anonymous-6355>;
+  slot GtkFileSelectionClass-_gtk-reserved2 :: <anonymous-6356>;
+  slot GtkFileSelectionClass-_gtk-reserved3 :: <anonymous-6357>;
+  slot GtkFileSelectionClass-_gtk-reserved4 :: <anonymous-6358>;
+end;
+
+define C-pointer-type <GtkFileSelectionClass> => <_GtkFileSelectionClass>;
 
 define C-function gtk-file-selection-get-type
   result res :: <GType>;
@@ -42091,15 +45171,21 @@ define constant gtk-file-selection-set-filename = gtk-file-selection-set-filenam
 
 define constant gtk-file-selection-get-selections = gtk-file-selection-get-selections-utf8;
 
-define C-subtype <_GtkExpanderPrivate> (<C-void*>) end;
-define constant <GtkExpanderPrivate> = <_GtkExpanderPrivate>;
+define C-struct <_GtkExpanderPrivate>
+end;
+
+define C-pointer-type <GtkExpanderPrivate> => <_GtkExpanderPrivate>;
 
 define C-subtype <_GtkExpander> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkExpander> = <_GtkExpander>;
 
 define constant <anonymous-6339> = <C-function-pointer>;
-define C-subtype <_GtkExpanderClass> (<C-void*>) end;
-define constant <GtkExpanderClass> = <_GtkExpanderClass>;
+define C-struct <_GtkExpanderClass>
+  slot GtkExpanderClass-parent-class :: <_GtkBinClass>;
+  slot GtkExpanderClass-activate :: <anonymous-6339>;
+end;
+
+define C-pointer-type <GtkExpanderClass> => <_GtkExpanderClass>;
 
 define C-function gtk-expander-get-type
   result res :: <GType>;
@@ -42193,8 +45279,11 @@ end;
 define C-subtype <_GtkEventBox> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkEventBox> = <_GtkEventBox>;
 
-define C-subtype <_GtkEventBoxClass> (<C-void*>) end;
-define constant <GtkEventBoxClass> = <_GtkEventBoxClass>;
+define C-struct <_GtkEventBoxClass>
+  slot GtkEventBoxClass-parent-class :: <_GtkBinClass>;
+end;
+
+define C-pointer-type <GtkEventBoxClass> => <_GtkEventBoxClass>;
 
 define C-function gtk-event-box-get-type
   result res :: <GType>;
@@ -42237,8 +45326,15 @@ define constant <anonymous-6313> = <C-function-pointer>;
 define constant <anonymous-6314> = <C-function-pointer>;
 define constant <anonymous-6315> = <C-function-pointer>;
 define constant <anonymous-6316> = <C-function-pointer>;
-define C-subtype <_GtkDrawingAreaClass> (<C-void*>) end;
-define constant <GtkDrawingAreaClass> = <_GtkDrawingAreaClass>;
+define C-struct <_GtkDrawingAreaClass>
+  slot GtkDrawingAreaClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkDrawingAreaClass-_gtk-reserved1 :: <anonymous-6313>;
+  slot GtkDrawingAreaClass-_gtk-reserved2 :: <anonymous-6314>;
+  slot GtkDrawingAreaClass-_gtk-reserved3 :: <anonymous-6315>;
+  slot GtkDrawingAreaClass-_gtk-reserved4 :: <anonymous-6316>;
+end;
+
+define C-pointer-type <GtkDrawingAreaClass> => <_GtkDrawingAreaClass>;
 
 define C-function gtk-drawing-area-get-type
   result res :: <GType>;
@@ -42266,8 +45362,16 @@ define constant <anonymous-6321> = <C-function-pointer>;
 define constant <anonymous-6322> = <C-function-pointer>;
 define constant <anonymous-6323> = <C-function-pointer>;
 define constant <anonymous-6324> = <C-function-pointer>;
-define C-subtype <_GtkCurveClass> (<C-void*>) end;
-define constant <GtkCurveClass> = <_GtkCurveClass>;
+define C-struct <_GtkCurveClass>
+  slot GtkCurveClass-parent-class :: <_GtkDrawingAreaClass>;
+  slot GtkCurveClass-curve-type-changed :: <anonymous-6320>;
+  slot GtkCurveClass-_gtk-reserved1 :: <anonymous-6321>;
+  slot GtkCurveClass-_gtk-reserved2 :: <anonymous-6322>;
+  slot GtkCurveClass-_gtk-reserved3 :: <anonymous-6323>;
+  slot GtkCurveClass-_gtk-reserved4 :: <anonymous-6324>;
+end;
+
+define C-pointer-type <GtkCurveClass> => <_GtkCurveClass>;
 
 define C-function gtk-curve-get-type
   result res :: <GType>;
@@ -42345,12 +45449,31 @@ define constant $GTK-CTREE-EXPANSION-COLLAPSE-RECURSIVE = 3;
 define constant $GTK-CTREE-EXPANSION-TOGGLE = 4;
 define constant $GTK-CTREE-EXPANSION-TOGGLE-RECURSIVE = 5;
 
-define C-subtype <_GtkCListColumn> (<C-void*>) end;
-define constant <GtkCListColumn> = <_GtkCListColumn>;
+define C-struct <_GtkCListColumn>
+  slot GtkCListColumn-title :: <gchar*>;
+  slot GtkCListColumn-area :: <_GdkRectangle>;
+  slot GtkCListColumn-button :: <GtkWidget>;
+  slot GtkCListColumn-window :: <GdkWindow>;
+  slot GtkCListColumn-width :: <C-signed-int>;
+  slot GtkCListColumn-min-width :: <C-signed-int>;
+  slot GtkCListColumn-max-width :: <C-signed-int>;
+  slot GtkCListColumn-justification :: <GtkJustification>;
+  bitfield slot GtkCListColumn-visible :: <C-int>, width: 1;
+  bitfield slot GtkCListColumn-width-set :: <C-int>, width: 1;
+  bitfield slot GtkCListColumn-resizeable :: <C-int>, width: 1;
+  bitfield slot GtkCListColumn-auto-resize :: <C-int>, width: 1;
+  bitfield slot GtkCListColumn-button-passive :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkCListColumn> => <_GtkCListColumn>;
 
 define constant <guint8<@5>> = <guint8*>;
-define C-subtype <_GtkCListCellInfo> (<C-void*>) end;
-define constant <GtkCListCellInfo> = <_GtkCListCellInfo>;
+define C-struct <_GtkCListCellInfo>
+  slot GtkCListCellInfo-row :: <C-signed-int>;
+  slot GtkCListCellInfo-column :: <C-signed-int>;
+end;
+
+define C-pointer-type <GtkCListCellInfo> => <_GtkCListCellInfo>;
 
 define constant <anonymous-5644> = <C-function-pointer>;
 define constant <GtkCListCompareFunc> = <anonymous-5644>;
@@ -42366,8 +45489,11 @@ define constant <GtkCList> = <_GtkCList>;
 
 define constant <GtkCTree> = <_GtkCTree>;
 
-define C-subtype <_GtkCTreeNode> (<C-void*>) end;
-define constant <GtkCTreeNode> = <_GtkCTreeNode>;
+define C-struct <_GtkCTreeNode>
+  slot GtkCTreeNode-list :: <_GList>;
+end;
+
+define C-pointer-type <GtkCTreeNode> => <_GtkCTreeNode>;
 
 define constant <anonymous-6233> = <C-function-pointer>;
 define constant <GtkCTreeCompareDragFunc> = <anonymous-6233>;
@@ -42400,14 +45526,43 @@ define constant $GTK-CELL-PIXMAP = 2;
 define constant $GTK-CELL-PIXTEXT = 3;
 define constant $GTK-CELL-WIDGET = 4;
 
-define C-subtype <anonymous-5682> (<C-void*>) end;
-define C-subtype <anonymous-5683> (<C-void*>) end;
-define C-subtype <anonymous-5684> (<C-void*>) end;
-define C-subtype <_GtkCell> (<C-void*>) end;
-define constant <GtkCell> = <_GtkCell>;
+define C-struct <anonymous-5682>
+  slot nonymous-5682-pixmap :: <GdkPixmap>;
+  slot nonymous-5682-mask :: <GdkBitmap>;
+end;
 
-define C-subtype <_GtkCListRow> (<C-void*>) end;
-define constant <GtkCListRow> = <_GtkCListRow>;
+define C-struct <anonymous-5683>
+  slot nonymous-5683-text :: <gchar*>;
+  slot nonymous-5683-spacing :: <C-unsigned-char>;
+  slot nonymous-5683-pixmap :: <GdkPixmap>;
+  slot nonymous-5683-mask :: <GdkBitmap>;
+end;
+
+define C-subtype <anonymous-5684> (<C-void*>) end;
+define C-struct <_GtkCell>
+  slot GtkCell-type :: <GtkCellType>;
+  slot GtkCell-vertical :: <C-signed-short>;
+  slot GtkCell-horizontal :: <C-signed-short>;
+  slot GtkCell-style :: <GtkStyle>;
+  slot GtkCell-u :: <anonymous-5684>;
+end;
+
+define C-pointer-type <GtkCell> => <_GtkCell>;
+
+define C-struct <_GtkCListRow>
+  slot GtkCListRow-cell :: <GtkCell>;
+  slot GtkCListRow-state :: <GtkStateType>;
+  slot GtkCListRow-foreground :: <_GdkColor>;
+  slot GtkCListRow-background :: <_GdkColor>;
+  slot GtkCListRow-style :: <GtkStyle>;
+  slot GtkCListRow-data :: <C-void*>;
+  slot GtkCListRow-destroy :: <anonymous-3342>;
+  bitfield slot GtkCListRow-fg-set :: <C-int>, width: 1;
+  bitfield slot GtkCListRow-bg-set :: <C-int>, width: 1;
+  bitfield slot GtkCListRow-selectable :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkCListRow> => <_GtkCListRow>;
 
 define constant <anonymous-5665> = <C-function-pointer>;
 define constant <anonymous-5666> = <C-function-pointer>;
@@ -42418,8 +45573,40 @@ define constant <anonymous-5670> = <C-function-pointer>;
 define constant <anonymous-5671> = <C-function-pointer>;
 define constant <anonymous-5672> = <C-function-pointer>;
 define constant <anonymous-5673> = <C-function-pointer>;
-define C-subtype <_GtkCListClass> (<C-void*>) end;
-define constant <GtkCListClass> = <_GtkCListClass>;
+define C-struct <_GtkCListClass>
+  slot GtkCListClass-parent-class :: <_GtkContainerClass>;
+  slot GtkCListClass-set-scroll-adjustments :: <anonymous-5645>;
+  slot GtkCListClass-refresh :: <anonymous-5646>;
+  slot GtkCListClass-select-row :: <anonymous-5647>;
+  slot GtkCListClass-unselect-row :: <anonymous-5648>;
+  slot GtkCListClass-row-move :: <anonymous-5649>;
+  slot GtkCListClass-click-column :: <anonymous-5650>;
+  slot GtkCListClass-resize-column :: <anonymous-5651>;
+  slot GtkCListClass-toggle-focus-row :: <anonymous-5652>;
+  slot GtkCListClass-select-all :: <anonymous-5653>;
+  slot GtkCListClass-unselect-all :: <anonymous-5654>;
+  slot GtkCListClass-undo-selection :: <anonymous-5655>;
+  slot GtkCListClass-start-selection :: <anonymous-5656>;
+  slot GtkCListClass-end-selection :: <anonymous-5657>;
+  slot GtkCListClass-extend-selection :: <anonymous-5658>;
+  slot GtkCListClass-scroll-horizontal :: <anonymous-5659>;
+  slot GtkCListClass-scroll-vertical :: <anonymous-5660>;
+  slot GtkCListClass-toggle-add-mode :: <anonymous-5661>;
+  slot GtkCListClass-abort-column-resize :: <anonymous-5662>;
+  slot GtkCListClass-resync-selection :: <anonymous-5663>;
+  slot GtkCListClass-selection-find :: <anonymous-5664>;
+  slot GtkCListClass-draw-row :: <anonymous-5665>;
+  slot GtkCListClass-draw-drag-highlight :: <anonymous-5666>;
+  slot GtkCListClass-clear :: <anonymous-5667>;
+  slot GtkCListClass-fake-unselect-all :: <anonymous-5668>;
+  slot GtkCListClass-sort-list :: <anonymous-5669>;
+  slot GtkCListClass-insert-row :: <anonymous-5670>;
+  slot GtkCListClass-remove-row :: <anonymous-5671>;
+  slot GtkCListClass-set-cell-contents :: <anonymous-5672>;
+  slot GtkCListClass-cell-size-request :: <anonymous-5673>;
+end;
+
+define C-pointer-type <GtkCListClass> => <_GtkCListClass>;
 
 define constant <anonymous-6237> = <C-function-pointer>;
 define constant <anonymous-6238> = <C-function-pointer>;
@@ -42427,11 +45614,33 @@ define constant <anonymous-6239> = <C-function-pointer>;
 define constant <anonymous-6240> = <C-function-pointer>;
 define constant <anonymous-6241> = <C-function-pointer>;
 define constant <anonymous-6242> = <C-function-pointer>;
-define C-subtype <_GtkCTreeClass> (<C-void*>) end;
-define constant <GtkCTreeClass> = <_GtkCTreeClass>;
+define C-struct <_GtkCTreeClass>
+  slot GtkCTreeClass-parent-class :: <_GtkCListClass>;
+  slot GtkCTreeClass-tree-select-row :: <anonymous-6237>;
+  slot GtkCTreeClass-tree-unselect-row :: <anonymous-6238>;
+  slot GtkCTreeClass-tree-expand :: <anonymous-6239>;
+  slot GtkCTreeClass-tree-collapse :: <anonymous-6240>;
+  slot GtkCTreeClass-tree-move :: <anonymous-6241>;
+  slot GtkCTreeClass-change-focus-row-expansion :: <anonymous-6242>;
+end;
 
-define C-subtype <_GtkCTreeRow> (<C-void*>) end;
-define constant <GtkCTreeRow> = <_GtkCTreeRow>;
+define C-pointer-type <GtkCTreeClass> => <_GtkCTreeClass>;
+
+define C-struct <_GtkCTreeRow>
+  slot GtkCTreeRow-row :: <_GtkCListRow>;
+  slot GtkCTreeRow-parent :: <GtkCTreeNode>;
+  slot GtkCTreeRow-sibling :: <GtkCTreeNode>;
+  slot GtkCTreeRow-children :: <GtkCTreeNode>;
+  slot GtkCTreeRow-pixmap-closed :: <GdkPixmap>;
+  slot GtkCTreeRow-mask-closed :: <GdkBitmap>;
+  slot GtkCTreeRow-pixmap-opened :: <GdkPixmap>;
+  slot GtkCTreeRow-mask-opened :: <GdkBitmap>;
+  slot GtkCTreeRow-level :: <C-unsigned-short>;
+  bitfield slot GtkCTreeRow-is-leaf :: <C-int>, width: 1;
+  bitfield slot GtkCTreeRow-expanded :: <C-int>, width: 1;
+end;
+
+define C-pointer-type <GtkCTreeRow> => <_GtkCTreeRow>;
 
 define constant <anonymous-6231> = <C-function-pointer>;
 define constant <GtkCTreeFunc> = <anonymous-6231>;
@@ -42984,20 +46193,56 @@ define constant $GTK-BUTTON-SELECTS = 1;
 define constant $GTK-BUTTON-DRAGS = 2;
 define constant $GTK-BUTTON-EXPANDS = 4;
 
-define C-subtype <_GtkCellText> (<C-void*>) end;
-define constant <GtkCellText> = <_GtkCellText>;
+define C-struct <_GtkCellText>
+  slot GtkCellText-type :: <GtkCellType>;
+  slot GtkCellText-vertical :: <C-signed-short>;
+  slot GtkCellText-horizontal :: <C-signed-short>;
+  slot GtkCellText-style :: <GtkStyle>;
+  slot GtkCellText-text :: <gchar*>;
+end;
 
-define C-subtype <_GtkCellPixmap> (<C-void*>) end;
-define constant <GtkCellPixmap> = <_GtkCellPixmap>;
+define C-pointer-type <GtkCellText> => <_GtkCellText>;
 
-define C-subtype <_GtkCellPixText> (<C-void*>) end;
-define constant <GtkCellPixText> = <_GtkCellPixText>;
+define C-struct <_GtkCellPixmap>
+  slot GtkCellPixmap-type :: <GtkCellType>;
+  slot GtkCellPixmap-vertical :: <C-signed-short>;
+  slot GtkCellPixmap-horizontal :: <C-signed-short>;
+  slot GtkCellPixmap-style :: <GtkStyle>;
+  slot GtkCellPixmap-pixmap :: <GdkPixmap>;
+  slot GtkCellPixmap-mask :: <GdkBitmap>;
+end;
 
-define C-subtype <_GtkCellWidget> (<C-void*>) end;
-define constant <GtkCellWidget> = <_GtkCellWidget>;
+define C-pointer-type <GtkCellPixmap> => <_GtkCellPixmap>;
 
-define C-subtype <_GtkCListDestInfo> (<C-void*>) end;
-define constant <GtkCListDestInfo> = <_GtkCListDestInfo>;
+define C-struct <_GtkCellPixText>
+  slot GtkCellPixText-type :: <GtkCellType>;
+  slot GtkCellPixText-vertical :: <C-signed-short>;
+  slot GtkCellPixText-horizontal :: <C-signed-short>;
+  slot GtkCellPixText-style :: <GtkStyle>;
+  slot GtkCellPixText-text :: <gchar*>;
+  slot GtkCellPixText-spacing :: <C-unsigned-char>;
+  slot GtkCellPixText-pixmap :: <GdkPixmap>;
+  slot GtkCellPixText-mask :: <GdkBitmap>;
+end;
+
+define C-pointer-type <GtkCellPixText> => <_GtkCellPixText>;
+
+define C-struct <_GtkCellWidget>
+  slot GtkCellWidget-type :: <GtkCellType>;
+  slot GtkCellWidget-vertical :: <C-signed-short>;
+  slot GtkCellWidget-horizontal :: <C-signed-short>;
+  slot GtkCellWidget-style :: <GtkStyle>;
+  slot GtkCellWidget-widget :: <GtkWidget>;
+end;
+
+define C-pointer-type <GtkCellWidget> => <_GtkCellWidget>;
+
+define C-struct <_GtkCListDestInfo>
+  slot GtkCListDestInfo-cell :: <_GtkCListCellInfo>;
+  slot GtkCListDestInfo-insert-pos :: <GtkCListDragPos>;
+end;
+
+define C-pointer-type <GtkCListDestInfo> => <_GtkCListDestInfo>;
 
 define C-function gtk-clist-get-type
   result res :: <GtkType>;
@@ -43507,11 +46752,16 @@ end;
 define C-subtype <_GtkAlignment> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GtkAlignment> = <_GtkAlignment>;
 
-define C-subtype <_GtkAlignmentClass> (<C-void*>) end;
-define constant <GtkAlignmentClass> = <_GtkAlignmentClass>;
+define C-struct <_GtkAlignmentClass>
+  slot GtkAlignmentClass-parent-class :: <_GtkBinClass>;
+end;
 
-define C-subtype <_GtkAlignmentPrivate> (<C-void*>) end;
-define constant <GtkAlignmentPrivate> = <_GtkAlignmentPrivate>;
+define C-pointer-type <GtkAlignmentClass> => <_GtkAlignmentClass>;
+
+define C-struct <_GtkAlignmentPrivate>
+end;
+
+define C-pointer-type <GtkAlignmentPrivate> => <_GtkAlignmentPrivate>;
 
 define C-function gtk-alignment-get-type
   result res :: <GType>;
@@ -43554,14 +46804,18 @@ define C-function gtk-alignment-get-padding
   c-name: "gtk_alignment_get_padding";
 end;
 
-define C-subtype <_GtkComboBoxPrivate> (<C-void*>) end;
-define constant <GtkComboBoxPrivate> = <_GtkComboBoxPrivate>;
+define C-struct <_GtkComboBoxPrivate>
+end;
+
+define C-pointer-type <GtkComboBoxPrivate> => <_GtkComboBoxPrivate>;
 
 define C-subtype <_GtkComboBox> (<_GtkBin>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>) end;
 define constant <GtkComboBox> = <_GtkComboBox>;
 
-define C-subtype <_GtkComboBoxEntryPrivate> (<C-void*>) end;
-define constant <GtkComboBoxEntryPrivate> = <_GtkComboBoxEntryPrivate>;
+define C-struct <_GtkComboBoxEntryPrivate>
+end;
+
+define C-pointer-type <GtkComboBoxEntryPrivate> => <_GtkComboBoxEntryPrivate>;
 
 define C-subtype <_GtkComboBoxEntry> (<_GtkComboBox>, <_AtkImplementorIface>, <_GtkCellLayout>, <_GtkCellEditable>) end;
 define constant <GtkComboBoxEntry> = <_GtkComboBoxEntry>;
@@ -43571,15 +46825,30 @@ define constant <anonymous-6180> = <C-function-pointer>;
 define constant <anonymous-6181> = <C-function-pointer>;
 define constant <anonymous-6182> = <C-function-pointer>;
 define constant <anonymous-6183> = <C-function-pointer>;
-define C-subtype <_GtkComboBoxClass> (<C-void*>) end;
-define constant <GtkComboBoxClass> = <_GtkComboBoxClass>;
+define C-struct <_GtkComboBoxClass>
+  slot GtkComboBoxClass-parent-class :: <_GtkBinClass>;
+  slot GtkComboBoxClass-changed :: <anonymous-6179>;
+  slot GtkComboBoxClass-get-active-text :: <anonymous-6180>;
+  slot GtkComboBoxClass-_gtk-reserved0 :: <anonymous-6181>;
+  slot GtkComboBoxClass-_gtk-reserved1 :: <anonymous-6182>;
+  slot GtkComboBoxClass-_gtk-reserved2 :: <anonymous-6183>;
+end;
+
+define C-pointer-type <GtkComboBoxClass> => <_GtkComboBoxClass>;
 
 define constant <anonymous-6217> = <C-function-pointer>;
 define constant <anonymous-6218> = <C-function-pointer>;
 define constant <anonymous-6219> = <C-function-pointer>;
 define constant <anonymous-6220> = <C-function-pointer>;
-define C-subtype <_GtkComboBoxEntryClass> (<C-void*>) end;
-define constant <GtkComboBoxEntryClass> = <_GtkComboBoxEntryClass>;
+define C-struct <_GtkComboBoxEntryClass>
+  slot GtkComboBoxEntryClass-parent-class :: <_GtkComboBoxClass>;
+  slot GtkComboBoxEntryClass-_gtk-reserved0 :: <anonymous-6217>;
+  slot GtkComboBoxEntryClass-_gtk-reserved1 :: <anonymous-6218>;
+  slot GtkComboBoxEntryClass-_gtk-reserved2 :: <anonymous-6219>;
+  slot GtkComboBoxEntryClass-_gtk-reserved3 :: <anonymous-6220>;
+end;
+
+define C-pointer-type <GtkComboBoxEntryClass> => <_GtkComboBoxEntryClass>;
 
 define C-function gtk-combo-box-entry-get-type
   result res :: <GType>;
@@ -43813,8 +47082,15 @@ define constant <anonymous-5820> = <C-function-pointer>;
 define constant <anonymous-5821> = <C-function-pointer>;
 define constant <anonymous-5822> = <C-function-pointer>;
 define constant <anonymous-5823> = <C-function-pointer>;
-define C-subtype <_GtkComboClass> (<C-void*>) end;
-define constant <GtkComboClass> = <_GtkComboClass>;
+define C-struct <_GtkComboClass>
+  slot GtkComboClass-parent-class :: <_GtkHBoxClass>;
+  slot GtkComboClass-_gtk-reserved1 :: <anonymous-5820>;
+  slot GtkComboClass-_gtk-reserved2 :: <anonymous-5821>;
+  slot GtkComboClass-_gtk-reserved3 :: <anonymous-5822>;
+  slot GtkComboClass-_gtk-reserved4 :: <anonymous-5823>;
+end;
+
+define C-pointer-type <GtkComboClass> => <_GtkComboClass>;
 
 define C-function gtk-combo-get-type
   result res :: <GType>;
@@ -43876,8 +47152,15 @@ define constant <anonymous-5807> = <C-function-pointer>;
 define constant <anonymous-5808> = <C-function-pointer>;
 define constant <anonymous-5809> = <C-function-pointer>;
 define constant <anonymous-5810> = <C-function-pointer>;
-define C-subtype <_GtkColorSelectionDialogClass> (<C-void*>) end;
-define constant <GtkColorSelectionDialogClass> = <_GtkColorSelectionDialogClass>;
+define C-struct <_GtkColorSelectionDialogClass>
+  slot GtkColorSelectionDialogClass-parent-class :: <_GtkDialogClass>;
+  slot GtkColorSelectionDialogClass-_gtk-reserved1 :: <anonymous-5807>;
+  slot GtkColorSelectionDialogClass-_gtk-reserved2 :: <anonymous-5808>;
+  slot GtkColorSelectionDialogClass-_gtk-reserved3 :: <anonymous-5809>;
+  slot GtkColorSelectionDialogClass-_gtk-reserved4 :: <anonymous-5810>;
+end;
+
+define C-pointer-type <GtkColorSelectionDialogClass> => <_GtkColorSelectionDialogClass>;
 
 define C-function gtk-color-selection-dialog-get-type
   result res :: <GType>;
@@ -43898,8 +47181,16 @@ define constant <anonymous-5781> = <C-function-pointer>;
 define constant <anonymous-5782> = <C-function-pointer>;
 define constant <anonymous-5783> = <C-function-pointer>;
 define constant <anonymous-5784> = <C-function-pointer>;
-define C-subtype <_GtkColorSelectionClass> (<C-void*>) end;
-define constant <GtkColorSelectionClass> = <_GtkColorSelectionClass>;
+define C-struct <_GtkColorSelectionClass>
+  slot GtkColorSelectionClass-parent-class :: <_GtkVBoxClass>;
+  slot GtkColorSelectionClass-color-changed :: <anonymous-5780>;
+  slot GtkColorSelectionClass-_gtk-reserved1 :: <anonymous-5781>;
+  slot GtkColorSelectionClass-_gtk-reserved2 :: <anonymous-5782>;
+  slot GtkColorSelectionClass-_gtk-reserved3 :: <anonymous-5783>;
+  slot GtkColorSelectionClass-_gtk-reserved4 :: <anonymous-5784>;
+end;
+
+define C-pointer-type <GtkColorSelectionClass> => <_GtkColorSelectionClass>;
 
 define constant <anonymous-5778> = <C-function-pointer>;
 define constant <GtkColorSelectionChangePaletteFunc> = <anonymous-5778>;
@@ -44041,8 +47332,10 @@ define C-function gtk-color-selection-set-update-policy
   c-name: "gtk_color_selection_set_update_policy";
 end;
 
-define C-subtype <_GtkColorButtonPrivate> (<C-void*>) end;
-define constant <GtkColorButtonPrivate> = <_GtkColorButtonPrivate>;
+define C-struct <_GtkColorButtonPrivate>
+end;
+
+define C-pointer-type <GtkColorButtonPrivate> => <_GtkColorButtonPrivate>;
 
 define C-subtype <_GtkColorButton> (<_GtkButton>, <_AtkImplementorIface>) end;
 define constant <GtkColorButton> = <_GtkColorButton>;
@@ -44052,8 +47345,16 @@ define constant <anonymous-5761> = <C-function-pointer>;
 define constant <anonymous-5762> = <C-function-pointer>;
 define constant <anonymous-5763> = <C-function-pointer>;
 define constant <anonymous-5764> = <C-function-pointer>;
-define C-subtype <_GtkColorButtonClass> (<C-void*>) end;
-define constant <GtkColorButtonClass> = <_GtkColorButtonClass>;
+define C-struct <_GtkColorButtonClass>
+  slot GtkColorButtonClass-parent-class :: <_GtkButtonClass>;
+  slot GtkColorButtonClass-color-set :: <anonymous-5760>;
+  slot GtkColorButtonClass-_gtk-reserved1 :: <anonymous-5761>;
+  slot GtkColorButtonClass-_gtk-reserved2 :: <anonymous-5762>;
+  slot GtkColorButtonClass-_gtk-reserved3 :: <anonymous-5763>;
+  slot GtkColorButtonClass-_gtk-reserved4 :: <anonymous-5764>;
+end;
+
+define C-pointer-type <GtkColorButtonClass> => <_GtkColorButtonClass>;
 
 define C-function gtk-color-button-get-type
   result res :: <GType>;
@@ -44119,14 +47420,19 @@ define C-function gtk-color-button-get-title
   c-name: "gtk_color_button_get_title";
 end;
 
-define C-subtype <_GtkCellViewPrivate> (<C-void*>) end;
-define constant <GtkCellViewPrivate> = <_GtkCellViewPrivate>;
+define C-struct <_GtkCellViewPrivate>
+end;
+
+define C-pointer-type <GtkCellViewPrivate> => <_GtkCellViewPrivate>;
 
 define C-subtype <_GtkCellView> (<_GtkWidget>, <_AtkImplementorIface>, <_GtkCellLayout>) end;
 define constant <GtkCellView> = <_GtkCellView>;
 
-define C-subtype <_GtkCellViewClass> (<C-void*>) end;
-define constant <GtkCellViewClass> = <_GtkCellViewClass>;
+define C-struct <_GtkCellViewClass>
+  slot GtkCellViewClass-parent-class :: <_GtkWidgetClass>;
+end;
+
+define C-pointer-type <GtkCellViewClass> => <_GtkCellViewClass>;
 
 define C-function gtk-cell-view-get-type
   result res :: <GType>;
@@ -44202,8 +47508,16 @@ define constant <anonymous-5243> = <C-function-pointer>;
 define constant <anonymous-5244> = <C-function-pointer>;
 define constant <anonymous-5245> = <C-function-pointer>;
 define constant <anonymous-5246> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererToggleClass> (<C-void*>) end;
-define constant <GtkCellRendererToggleClass> = <_GtkCellRendererToggleClass>;
+define C-struct <_GtkCellRendererToggleClass>
+  slot GtkCellRendererToggleClass-parent-class :: <_GtkCellRendererClass>;
+  slot GtkCellRendererToggleClass-toggled :: <anonymous-5242>;
+  slot GtkCellRendererToggleClass-_gtk-reserved1 :: <anonymous-5243>;
+  slot GtkCellRendererToggleClass-_gtk-reserved2 :: <anonymous-5244>;
+  slot GtkCellRendererToggleClass-_gtk-reserved3 :: <anonymous-5245>;
+  slot GtkCellRendererToggleClass-_gtk-reserved4 :: <anonymous-5246>;
+end;
+
+define C-pointer-type <GtkCellRendererToggleClass> => <_GtkCellRendererToggleClass>;
 
 define C-function gtk-cell-renderer-toggle-get-type
   result res :: <GType>;
@@ -44247,8 +47561,16 @@ define constant <anonymous-5206> = <C-function-pointer>;
 define constant <anonymous-5207> = <C-function-pointer>;
 define constant <anonymous-5208> = <C-function-pointer>;
 define constant <anonymous-5209> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererTextClass> (<C-void*>) end;
-define constant <GtkCellRendererTextClass> = <_GtkCellRendererTextClass>;
+define C-struct <_GtkCellRendererTextClass>
+  slot GtkCellRendererTextClass-parent-class :: <_GtkCellRendererClass>;
+  slot GtkCellRendererTextClass-edited :: <anonymous-5205>;
+  slot GtkCellRendererTextClass-_gtk-reserved1 :: <anonymous-5206>;
+  slot GtkCellRendererTextClass-_gtk-reserved2 :: <anonymous-5207>;
+  slot GtkCellRendererTextClass-_gtk-reserved3 :: <anonymous-5208>;
+  slot GtkCellRendererTextClass-_gtk-reserved4 :: <anonymous-5209>;
+end;
+
+define C-pointer-type <GtkCellRendererTextClass> => <_GtkCellRendererTextClass>;
 
 define C-function gtk-cell-renderer-text-get-type
   result res :: <GType>;
@@ -44266,14 +47588,22 @@ define C-function gtk-cell-renderer-text-set-fixed-height-from-font
   c-name: "gtk_cell_renderer_text_set_fixed_height_from_font";
 end;
 
-define C-subtype <_GtkCellRendererSpin> (<C-void*>) end;
-define constant <GtkCellRendererSpin> = <_GtkCellRendererSpin>;
+define C-struct <_GtkCellRendererSpin>
+  slot GtkCellRendererSpin-parent :: <_GtkCellRendererText>;
+end;
 
-define C-subtype <_GtkCellRendererSpinClass> (<C-void*>) end;
-define constant <GtkCellRendererSpinClass> = <_GtkCellRendererSpinClass>;
+define C-pointer-type <GtkCellRendererSpin> => <_GtkCellRendererSpin>;
 
-define C-subtype <_GtkCellRendererSpinPrivate> (<C-void*>) end;
-define constant <GtkCellRendererSpinPrivate> = <_GtkCellRendererSpinPrivate>;
+define C-struct <_GtkCellRendererSpinClass>
+  slot GtkCellRendererSpinClass-parent :: <_GtkCellRendererTextClass>;
+end;
+
+define C-pointer-type <GtkCellRendererSpinClass> => <_GtkCellRendererSpinClass>;
+
+define C-struct <_GtkCellRendererSpinPrivate>
+end;
+
+define C-pointer-type <GtkCellRendererSpinPrivate> => <_GtkCellRendererSpinPrivate>;
 
 define C-function gtk-cell-renderer-spin-get-type
   result res :: <GType>;
@@ -44285,8 +47615,10 @@ define C-function gtk-cell-renderer-spin-new
   c-name: "gtk_cell_renderer_spin_new";
 end;
 
-define C-subtype <_GtkCellRendererProgressPrivate> (<C-void*>) end;
-define constant <GtkCellRendererProgressPrivate> = <_GtkCellRendererProgressPrivate>;
+define C-struct <_GtkCellRendererProgressPrivate>
+end;
+
+define C-pointer-type <GtkCellRendererProgressPrivate> => <_GtkCellRendererProgressPrivate>;
 
 define C-subtype <_GtkCellRendererProgress> (<_GtkCellRenderer>) end;
 define constant <GtkCellRendererProgress> = <_GtkCellRendererProgress>;
@@ -44295,8 +47627,15 @@ define constant <anonymous-5231> = <C-function-pointer>;
 define constant <anonymous-5232> = <C-function-pointer>;
 define constant <anonymous-5233> = <C-function-pointer>;
 define constant <anonymous-5234> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererProgressClass> (<C-void*>) end;
-define constant <GtkCellRendererProgressClass> = <_GtkCellRendererProgressClass>;
+define C-struct <_GtkCellRendererProgressClass>
+  slot GtkCellRendererProgressClass-parent-class :: <_GtkCellRendererClass>;
+  slot GtkCellRendererProgressClass-_gtk-reserved1 :: <anonymous-5231>;
+  slot GtkCellRendererProgressClass-_gtk-reserved2 :: <anonymous-5232>;
+  slot GtkCellRendererProgressClass-_gtk-reserved3 :: <anonymous-5233>;
+  slot GtkCellRendererProgressClass-_gtk-reserved4 :: <anonymous-5234>;
+end;
+
+define C-pointer-type <GtkCellRendererProgressClass> => <_GtkCellRendererProgressClass>;
 
 define C-function gtk-cell-renderer-progress-get-type
   result res :: <GType>;
@@ -44315,8 +47654,15 @@ define constant <anonymous-5225> = <C-function-pointer>;
 define constant <anonymous-5226> = <C-function-pointer>;
 define constant <anonymous-5227> = <C-function-pointer>;
 define constant <anonymous-5228> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererPixbufClass> (<C-void*>) end;
-define constant <GtkCellRendererPixbufClass> = <_GtkCellRendererPixbufClass>;
+define C-struct <_GtkCellRendererPixbufClass>
+  slot GtkCellRendererPixbufClass-parent-class :: <_GtkCellRendererClass>;
+  slot GtkCellRendererPixbufClass-_gtk-reserved1 :: <anonymous-5225>;
+  slot GtkCellRendererPixbufClass-_gtk-reserved2 :: <anonymous-5226>;
+  slot GtkCellRendererPixbufClass-_gtk-reserved3 :: <anonymous-5227>;
+  slot GtkCellRendererPixbufClass-_gtk-reserved4 :: <anonymous-5228>;
+end;
+
+define C-pointer-type <GtkCellRendererPixbufClass> => <_GtkCellRendererPixbufClass>;
 
 define C-function gtk-cell-renderer-pixbuf-get-type
   result res :: <GType>;
@@ -44331,8 +47677,11 @@ end;
 define C-subtype <_GtkCellRendererCombo> (<_GtkCellRendererText>) end;
 define constant <GtkCellRendererCombo> = <_GtkCellRendererCombo>;
 
-define C-subtype <_GtkCellRendererComboClass> (<C-void*>) end;
-define constant <GtkCellRendererComboClass> = <_GtkCellRendererComboClass>;
+define C-struct <_GtkCellRendererComboClass>
+  slot GtkCellRendererComboClass-parent :: <_GtkCellRendererTextClass>;
+end;
+
+define C-pointer-type <GtkCellRendererComboClass> => <_GtkCellRendererComboClass>;
 
 define C-function gtk-cell-renderer-combo-get-type
   result res :: <GType>;
@@ -44348,8 +47697,18 @@ define constant <GtkCellRendererAccelMode> = <C-int>;
 define constant $GTK-CELL-RENDERER-ACCEL-MODE-GTK = 0;
 define constant $GTK-CELL-RENDERER-ACCEL-MODE-OTHER = 1;
 
-define C-subtype <_GtkCellRendererAccel> (<C-void*>) end;
-define constant <GtkCellRendererAccel> = <_GtkCellRendererAccel>;
+define C-struct <_GtkCellRendererAccel>
+  slot GtkCellRendererAccel-parent :: <_GtkCellRendererText>;
+  slot GtkCellRendererAccel-accel-key :: <C-unsigned-int>;
+  slot GtkCellRendererAccel-accel-mods :: <GdkModifierType>;
+  slot GtkCellRendererAccel-keycode :: <C-unsigned-int>;
+  slot GtkCellRendererAccel-accel-mode :: <GtkCellRendererAccelMode>;
+  slot GtkCellRendererAccel-edit-widget :: <GtkWidget>;
+  slot GtkCellRendererAccel-grab-widget :: <GtkWidget>;
+  slot GtkCellRendererAccel-sizing-label :: <GtkWidget>;
+end;
+
+define C-pointer-type <GtkCellRendererAccel> => <_GtkCellRendererAccel>;
 
 define constant <anonymous-5214> = <C-function-pointer>;
 define constant <anonymous-5215> = <C-function-pointer>;
@@ -44358,8 +47717,18 @@ define constant <anonymous-5217> = <C-function-pointer>;
 define constant <anonymous-5218> = <C-function-pointer>;
 define constant <anonymous-5219> = <C-function-pointer>;
 define constant <anonymous-5220> = <C-function-pointer>;
-define C-subtype <_GtkCellRendererAccelClass> (<C-void*>) end;
-define constant <GtkCellRendererAccelClass> = <_GtkCellRendererAccelClass>;
+define C-struct <_GtkCellRendererAccelClass>
+  slot GtkCellRendererAccelClass-parent-class :: <_GtkCellRendererTextClass>;
+  slot GtkCellRendererAccelClass-accel-edited :: <anonymous-5214>;
+  slot GtkCellRendererAccelClass-accel-cleared :: <anonymous-5215>;
+  slot GtkCellRendererAccelClass-_gtk-reserved0 :: <anonymous-5216>;
+  slot GtkCellRendererAccelClass-_gtk-reserved1 :: <anonymous-5217>;
+  slot GtkCellRendererAccelClass-_gtk-reserved2 :: <anonymous-5218>;
+  slot GtkCellRendererAccelClass-_gtk-reserved3 :: <anonymous-5219>;
+  slot GtkCellRendererAccelClass-_gtk-reserved4 :: <anonymous-5220>;
+end;
+
+define C-pointer-type <GtkCellRendererAccelClass> => <_GtkCellRendererAccelClass>;
 
 define C-function gtk-cell-renderer-accel-get-type
   result res :: <GType>;
@@ -44371,8 +47740,10 @@ define C-function gtk-cell-renderer-accel-new
   c-name: "gtk_cell_renderer_accel_new";
 end;
 
-define C-subtype <_GtkCellLayout> (<C-void*>) end;
-define constant <GtkCellLayout> = <_GtkCellLayout>;
+define C-struct <_GtkCellLayout>
+end;
+
+define C-pointer-type <GtkCellLayout> => <_GtkCellLayout>;
 
 define constant <anonymous-5179> = <C-function-pointer>;
 define constant <anonymous-5180> = <C-function-pointer>;
@@ -44384,8 +47755,18 @@ define constant <GtkCellLayoutDataFunc> = <anonymous-5178>;
 define constant <anonymous-5183> = <C-function-pointer>;
 define constant <anonymous-5184> = <C-function-pointer>;
 define constant <anonymous-5185> = <C-function-pointer>;
-define C-subtype <_GtkCellLayoutIface> (<C-void*>) end;
-define constant <GtkCellLayoutIface> = <_GtkCellLayoutIface>;
+define C-struct <_GtkCellLayoutIface>
+  slot GtkCellLayoutIface-g-iface :: <_GTypeInterface>;
+  slot GtkCellLayoutIface-pack-start :: <anonymous-5179>;
+  slot GtkCellLayoutIface-pack-end :: <anonymous-5180>;
+  slot GtkCellLayoutIface-clear :: <anonymous-5181>;
+  slot GtkCellLayoutIface-add-attribute :: <anonymous-5182>;
+  slot GtkCellLayoutIface-set-cell-data-func :: <anonymous-5183>;
+  slot GtkCellLayoutIface-clear-attributes :: <anonymous-5184>;
+  slot GtkCellLayoutIface-reorder :: <anonymous-5185>;
+end;
+
+define C-pointer-type <GtkCellLayoutIface> => <_GtkCellLayoutIface>;
 
 define C-function gtk-cell-layout-get-type
   result res :: <GType>;
@@ -44458,8 +47839,10 @@ define constant $GTK-CALENDAR-SHOW-WEEK-NUMBERS = 8;
 define constant $GTK-CALENDAR-WEEK-START-MONDAY = 16;
 
 define constant <GdkColor<@31>> = <GdkColor>;
-define C-subtype <_GtkCalendarPrivate> (<C-void*>) end;
-define constant <GtkCalendarPrivate> = <_GtkCalendarPrivate>;
+define C-struct <_GtkCalendarPrivate>
+end;
+
+define C-pointer-type <GtkCalendarPrivate> => <_GtkCalendarPrivate>;
 
 define constant <gchar<@32>> = <gchar*>;
 define constant <anonymous-4959> = <C-function-pointer>;
@@ -44476,8 +47859,18 @@ define constant <anonymous-4966> = <C-function-pointer>;
 define constant <anonymous-4967> = <C-function-pointer>;
 define constant <anonymous-4968> = <C-function-pointer>;
 define constant <anonymous-4969> = <C-function-pointer>;
-define C-subtype <_GtkCalendarClass> (<C-void*>) end;
-define constant <GtkCalendarClass> = <_GtkCalendarClass>;
+define C-struct <_GtkCalendarClass>
+  slot GtkCalendarClass-parent-class :: <_GtkWidgetClass>;
+  slot GtkCalendarClass-month-changed :: <anonymous-4963>;
+  slot GtkCalendarClass-day-selected :: <anonymous-4964>;
+  slot GtkCalendarClass-day-selected-double-click :: <anonymous-4965>;
+  slot GtkCalendarClass-prev-month :: <anonymous-4966>;
+  slot GtkCalendarClass-next-month :: <anonymous-4967>;
+  slot GtkCalendarClass-prev-year :: <anonymous-4968>;
+  slot GtkCalendarClass-next-year :: <anonymous-4969>;
+end;
+
+define C-pointer-type <GtkCalendarClass> => <_GtkCalendarClass>;
 
 define C-function gtk-calendar-get-type
   result res :: <GType>;
@@ -44558,19 +47951,49 @@ define C-function gtk-calendar-thaw
   c-name: "gtk_calendar_thaw";
 end;
 
-define constant <GtkBindingSet> = <_GtkBindingSet>;
+define C-pointer-type <GtkBindingSet> => <_GtkBindingSet>;
 
 define C-subtype <anonymous-4822> (<C-void*>) end;
-define C-subtype <_GtkBindingArg> (<C-void*>) end;
-define constant <GtkBindingArg> = <_GtkBindingArg>;
+define C-struct <_GtkBindingArg>
+  slot GtkBindingArg-arg-type :: <C-unsigned-long>;
+  slot GtkBindingArg-d :: <anonymous-4822>;
+end;
 
-define C-subtype <_GtkBindingSignal> (<C-void*>) end;
-define constant <GtkBindingSignal> = <_GtkBindingSignal>;
+define C-pointer-type <GtkBindingArg> => <_GtkBindingArg>;
 
-define C-subtype <_GtkBindingEntry> (<C-void*>) end;
-define constant <GtkBindingEntry> = <_GtkBindingEntry>;
+define C-struct <_GtkBindingSignal>
+  slot GtkBindingSignal-next :: <GtkBindingSignal>;
+  slot GtkBindingSignal-signal-name :: <gchar*>;
+  slot GtkBindingSignal-n-args :: <C-unsigned-int>;
+  slot GtkBindingSignal-args :: <GtkBindingArg>;
+end;
 
-define C-subtype <_GtkBindingSet> (<C-void*>) end;
+define C-pointer-type <GtkBindingSignal> => <_GtkBindingSignal>;
+
+define C-struct <_GtkBindingEntry>
+  slot GtkBindingEntry-keyval :: <C-unsigned-int>;
+  slot GtkBindingEntry-modifiers :: <GdkModifierType>;
+  slot GtkBindingEntry-binding-set :: <GtkBindingSet>;
+  bitfield slot GtkBindingEntry-destroyed :: <C-int>, width: 1;
+  bitfield slot GtkBindingEntry-in-emission :: <C-int>, width: 1;
+  slot GtkBindingEntry-set-next :: <GtkBindingEntry>;
+  slot GtkBindingEntry-hash-next :: <GtkBindingEntry>;
+  slot GtkBindingEntry-signals :: <GtkBindingSignal>;
+end;
+
+define C-pointer-type <GtkBindingEntry> => <_GtkBindingEntry>;
+
+define C-struct <_GtkBindingSet>
+  slot GtkBindingSet-set-name :: <gchar*>;
+  slot GtkBindingSet-priority :: <C-signed-int>;
+  slot GtkBindingSet-widget-path-pspecs :: <GSList>;
+  slot GtkBindingSet-widget-class-pspecs :: <GSList>;
+  slot GtkBindingSet-class-branch-pspecs :: <GSList>;
+  slot GtkBindingSet-entries :: <GtkBindingEntry>;
+  slot GtkBindingSet-current :: <GtkBindingEntry>;
+  bitfield slot GtkBindingSet-parsed :: <C-int>, width: 1;
+end;
+
 define C-function gtk-binding-set-new
   input parameter arg1 :: <gchar*>;
   result res :: <GtkBindingSet>;
@@ -44668,11 +48091,23 @@ define constant $GTK-ASSISTANT-PAGE-CONFIRM = 2;
 define constant $GTK-ASSISTANT-PAGE-SUMMARY = 3;
 define constant $GTK-ASSISTANT-PAGE-PROGRESS = 4;
 
-define C-subtype <_GtkAssistantPrivate> (<C-void*>) end;
-define constant <GtkAssistantPrivate> = <_GtkAssistantPrivate>;
+define C-struct <_GtkAssistantPrivate>
+end;
 
-define C-subtype <_GtkAssistant> (<C-void*>) end;
-define constant <GtkAssistant> = <_GtkAssistant>;
+define C-pointer-type <GtkAssistantPrivate> => <_GtkAssistantPrivate>;
+
+define C-struct <_GtkAssistant>
+  slot GtkAssistant-parent :: <_GtkWindow>;
+  slot GtkAssistant-cancel :: <GtkWidget>;
+  slot GtkAssistant-forward :: <GtkWidget>;
+  slot GtkAssistant-back :: <GtkWidget>;
+  slot GtkAssistant-apply :: <GtkWidget>;
+  slot GtkAssistant-close :: <GtkWidget>;
+  slot GtkAssistant-last :: <GtkWidget>;
+  slot GtkAssistant-priv :: <GtkAssistantPrivate>;
+end;
+
+define C-pointer-type <GtkAssistant> => <_GtkAssistant>;
 
 define constant <anonymous-4759> = <C-function-pointer>;
 define constant <anonymous-4760> = <C-function-pointer>;
@@ -44683,8 +48118,20 @@ define constant <anonymous-4764> = <C-function-pointer>;
 define constant <anonymous-4765> = <C-function-pointer>;
 define constant <anonymous-4766> = <C-function-pointer>;
 define constant <anonymous-4767> = <C-function-pointer>;
-define C-subtype <_GtkAssistantClass> (<C-void*>) end;
-define constant <GtkAssistantClass> = <_GtkAssistantClass>;
+define C-struct <_GtkAssistantClass>
+  slot GtkAssistantClass-parent-class :: <_GtkWindowClass>;
+  slot GtkAssistantClass-prepare :: <anonymous-4759>;
+  slot GtkAssistantClass-apply :: <anonymous-4760>;
+  slot GtkAssistantClass-close :: <anonymous-4761>;
+  slot GtkAssistantClass-cancel :: <anonymous-4762>;
+  slot GtkAssistantClass-_gtk-reserved1 :: <anonymous-4763>;
+  slot GtkAssistantClass-_gtk-reserved2 :: <anonymous-4764>;
+  slot GtkAssistantClass-_gtk-reserved3 :: <anonymous-4765>;
+  slot GtkAssistantClass-_gtk-reserved4 :: <anonymous-4766>;
+  slot GtkAssistantClass-_gtk-reserved5 :: <anonymous-4767>;
+end;
+
+define C-pointer-type <GtkAssistantClass> => <_GtkAssistantClass>;
 
 define constant <anonymous-4768> = <C-function-pointer>;
 define constant <GtkAssistantPageFunc> = <anonymous-4768>;
@@ -44844,8 +48291,11 @@ end;
 define C-subtype <_GtkAspectFrame> (<_GtkFrame>, <_AtkImplementorIface>) end;
 define constant <GtkAspectFrame> = <_GtkAspectFrame>;
 
-define C-subtype <_GtkAspectFrameClass> (<C-void*>) end;
-define constant <GtkAspectFrameClass> = <_GtkAspectFrameClass>;
+define C-struct <_GtkAspectFrameClass>
+  slot GtkAspectFrameClass-parent-class :: <_GtkFrameClass>;
+end;
+
+define C-pointer-type <GtkAspectFrameClass> => <_GtkAspectFrameClass>;
 
 define C-function gtk-aspect-frame-get-type
   result res :: <GType>;
@@ -44874,8 +48324,11 @@ end;
 define C-subtype <_GtkArrow> (<_GtkMisc>, <_AtkImplementorIface>) end;
 define constant <GtkArrow> = <_GtkArrow>;
 
-define C-subtype <_GtkArrowClass> (<C-void*>) end;
-define constant <GtkArrowClass> = <_GtkArrowClass>;
+define C-struct <_GtkArrowClass>
+  slot GtkArrowClass-parent-class :: <_GtkMiscClass>;
+end;
+
+define C-pointer-type <GtkArrowClass> => <_GtkArrowClass>;
 
 define C-function gtk-arrow-get-type
   result res :: <GType>;
@@ -44904,8 +48357,16 @@ define constant <anonymous-4627> = <C-function-pointer>;
 define constant <anonymous-4628> = <C-function-pointer>;
 define constant <anonymous-4629> = <C-function-pointer>;
 define constant <anonymous-4630> = <C-function-pointer>;
-define C-subtype <_GtkAccessibleClass> (<C-void*>) end;
-define constant <GtkAccessibleClass> = <_GtkAccessibleClass>;
+define C-struct <_GtkAccessibleClass>
+  slot GtkAccessibleClass-parent-class :: <_AtkObjectClass>;
+  slot GtkAccessibleClass-connect-widget-destroyed :: <anonymous-4626>;
+  slot GtkAccessibleClass-_gtk-reserved1 :: <anonymous-4627>;
+  slot GtkAccessibleClass-_gtk-reserved2 :: <anonymous-4628>;
+  slot GtkAccessibleClass-_gtk-reserved3 :: <anonymous-4629>;
+  slot GtkAccessibleClass-_gtk-reserved4 :: <anonymous-4630>;
+end;
+
+define C-pointer-type <GtkAccessibleClass> => <_GtkAccessibleClass>;
 
 define C-function gtk-accessible-get-type
   result res :: <GType>;
@@ -44917,16 +48378,27 @@ define C-function gtk-accessible-connect-widget-destroyed
   c-name: "gtk_accessible_connect_widget_destroyed";
 end;
 
-define C-subtype <_AtkValue> (<C-void*>) end;
-define constant <AtkValue> = <_AtkValue>;
+define C-struct <_AtkValue>
+end;
+
+define C-pointer-type <AtkValue> => <_AtkValue>;
 
 define constant <anonymous-4615> = <C-function-pointer>;
 define constant <anonymous-4616> = <C-function-pointer>;
 define constant <anonymous-4617> = <C-function-pointer>;
 define constant <anonymous-4618> = <C-function-pointer>;
 define constant <anonymous-4619> = <C-function-pointer>;
-define C-subtype <_AtkValueIface> (<C-void*>) end;
-define constant <AtkValueIface> = <_AtkValueIface>;
+define C-struct <_AtkValueIface>
+  slot AtkValueIface-parent :: <_GTypeInterface>;
+  slot AtkValueIface-get-current-value :: <anonymous-4615>;
+  slot AtkValueIface-get-maximum-value :: <anonymous-4616>;
+  slot AtkValueIface-get-minimum-value :: <anonymous-4617>;
+  slot AtkValueIface-set-current-value :: <anonymous-4618>;
+  slot AtkValueIface-get-minimum-increment :: <anonymous-4619>;
+  slot AtkValueIface-pad1 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkValueIface> => <_AtkValueIface>;
 
 define C-function atk-value-get-type
   result res :: <GType>;
@@ -44963,8 +48435,17 @@ define constant <AtkUtil> = <_AtkUtil>;
 
 define constant <anonymous-4302> = <C-function-pointer>;
 define constant <anonymous-4303> = <C-function-pointer>;
-define C-subtype <_AtkKeyEventStruct> (<C-void*>) end;
-define constant <AtkKeyEventStruct> = <_AtkKeyEventStruct>;
+define C-struct <_AtkKeyEventStruct>
+  slot AtkKeyEventStruct-type :: <C-signed-int>;
+  slot AtkKeyEventStruct-state :: <C-unsigned-int>;
+  slot AtkKeyEventStruct-keyval :: <C-unsigned-int>;
+  slot AtkKeyEventStruct-length :: <C-signed-int>;
+  slot AtkKeyEventStruct-string :: <gchar*>;
+  slot AtkKeyEventStruct-keycode :: <C-unsigned-short>;
+  slot AtkKeyEventStruct-timestamp :: <C-unsigned-int>;
+end;
+
+define C-pointer-type <AtkKeyEventStruct> => <_AtkKeyEventStruct>;
 
 define constant <anonymous-4300> = <C-function-pointer>;
 define constant <AtkKeySnoopFunc> = <anonymous-4300>;
@@ -44974,8 +48455,18 @@ define constant <anonymous-4305> = <C-function-pointer>;
 define constant <anonymous-4306> = <C-function-pointer>;
 define constant <anonymous-4307> = <C-function-pointer>;
 define constant <anonymous-4308> = <C-function-pointer>;
-define C-subtype <_AtkUtilClass> (<C-void*>) end;
-define constant <AtkUtilClass> = <_AtkUtilClass>;
+define C-struct <_AtkUtilClass>
+  slot AtkUtilClass-parent :: <_GObjectClass>;
+  slot AtkUtilClass-add-global-event-listener :: <anonymous-4302>;
+  slot AtkUtilClass-remove-global-event-listener :: <anonymous-4303>;
+  slot AtkUtilClass-add-key-event-listener :: <anonymous-4304>;
+  slot AtkUtilClass-remove-key-event-listener :: <anonymous-4305>;
+  slot AtkUtilClass-get-root :: <anonymous-4306>;
+  slot AtkUtilClass-get-toolkit-name :: <anonymous-4307>;
+  slot AtkUtilClass-get-toolkit-version :: <anonymous-4308>;
+end;
+
+define C-pointer-type <AtkUtilClass> => <_AtkUtilClass>;
 
 define constant <anonymous-4298> = <C-function-pointer>;
 define constant <AtkEventListener> = <anonymous-4298>;
@@ -45099,8 +48590,10 @@ define C-function atk-text-attribute-register
   c-name: "atk_text_attribute_register";
 end;
 
-define C-subtype <_AtkText> (<C-void*>) end;
-define constant <AtkText> = <_AtkText>;
+define C-struct <_AtkText>
+end;
+
+define C-pointer-type <AtkText> => <_AtkText>;
 
 define constant <anonymous-4372> = <C-function-pointer>;
 define constant <AtkTextBoundary> = <C-int>;
@@ -45132,12 +48625,24 @@ define constant <anonymous-4389> = <C-function-pointer>;
 define constant <anonymous-4390> = <C-function-pointer>;
 define constant <anonymous-4391> = <C-function-pointer>;
 define constant <anonymous-4392> = <C-function-pointer>;
-define C-subtype <_AtkTextRectangle> (<C-void*>) end;
-define constant <AtkTextRectangle> = <_AtkTextRectangle>;
+define C-struct <_AtkTextRectangle>
+  slot AtkTextRectangle-x :: <C-signed-int>;
+  slot AtkTextRectangle-y :: <C-signed-int>;
+  slot AtkTextRectangle-width :: <C-signed-int>;
+  slot AtkTextRectangle-height :: <C-signed-int>;
+end;
+
+define C-pointer-type <AtkTextRectangle> => <_AtkTextRectangle>;
 
 define constant <anonymous-4393> = <C-function-pointer>;
-define C-subtype <_AtkTextRange> (<C-void*>) end;
-define constant <AtkTextRange> = <_AtkTextRange>;
+define C-struct <_AtkTextRange>
+  slot AtkTextRange-bounds :: <_AtkTextRectangle>;
+  slot AtkTextRange-start-offset :: <C-signed-int>;
+  slot AtkTextRange-end-offset :: <C-signed-int>;
+  slot AtkTextRange-content :: <gchar*>;
+end;
+
+define C-pointer-type <AtkTextRange> => <_AtkTextRange>;
 
 define C-pointer-type <AtkTextRange*> => <AtkTextRange>;
 define constant <AtkTextClipType> = <C-int>;
@@ -45147,8 +48652,35 @@ define constant $ATK-TEXT-CLIP-MAX = 2;
 define constant $ATK-TEXT-CLIP-BOTH = 3;
 
 define constant <anonymous-4394> = <C-function-pointer>;
-define C-subtype <_AtkTextIface> (<C-void*>) end;
-define constant <AtkTextIface> = <_AtkTextIface>;
+define C-struct <_AtkTextIface>
+  slot AtkTextIface-parent :: <_GTypeInterface>;
+  slot AtkTextIface-get-text :: <anonymous-4372>;
+  slot AtkTextIface-get-text-after-offset :: <anonymous-4373>;
+  slot AtkTextIface-get-text-at-offset :: <anonymous-4374>;
+  slot AtkTextIface-get-character-at-offset :: <anonymous-4375>;
+  slot AtkTextIface-get-text-before-offset :: <anonymous-4376>;
+  slot AtkTextIface-get-caret-offset :: <anonymous-4377>;
+  slot AtkTextIface-get-run-attributes :: <anonymous-4378>;
+  slot AtkTextIface-get-default-attributes :: <anonymous-4379>;
+  slot AtkTextIface-get-character-extents :: <anonymous-4380>;
+  slot AtkTextIface-get-character-count :: <anonymous-4381>;
+  slot AtkTextIface-get-offset-at-point :: <anonymous-4382>;
+  slot AtkTextIface-get-n-selections :: <anonymous-4383>;
+  slot AtkTextIface-get-selection :: <anonymous-4384>;
+  slot AtkTextIface-add-selection :: <anonymous-4385>;
+  slot AtkTextIface-remove-selection :: <anonymous-4386>;
+  slot AtkTextIface-set-selection :: <anonymous-4387>;
+  slot AtkTextIface-set-caret-offset :: <anonymous-4388>;
+  slot AtkTextIface-text-changed :: <anonymous-4389>;
+  slot AtkTextIface-text-caret-moved :: <anonymous-4390>;
+  slot AtkTextIface-text-selection-changed :: <anonymous-4391>;
+  slot AtkTextIface-text-attributes-changed :: <anonymous-4392>;
+  slot AtkTextIface-get-range-extents :: <anonymous-4393>;
+  slot AtkTextIface-get-bounded-ranges :: <anonymous-4394>;
+  slot AtkTextIface-pad4 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkTextIface> => <_AtkTextIface>;
 
 define C-function atk-text-get-type
   result res :: <GType>;
@@ -45341,8 +48873,10 @@ define C-function atk-text-attribute-get-value
   c-name: "atk_text_attribute_get_value";
 end;
 
-define C-subtype <_AtkTable> (<C-void*>) end;
-define constant <AtkTable> = <_AtkTable>;
+define C-struct <_AtkTable>
+end;
+
+define C-pointer-type <AtkTable> => <_AtkTable>;
 
 define constant <anonymous-4549> = <C-function-pointer>;
 define constant <anonymous-4550> = <C-function-pointer>;
@@ -45380,8 +48914,51 @@ define constant <anonymous-4581> = <C-function-pointer>;
 define constant <anonymous-4582> = <C-function-pointer>;
 define constant <anonymous-4583> = <C-function-pointer>;
 define constant <anonymous-4584> = <C-function-pointer>;
-define C-subtype <_AtkTableIface> (<C-void*>) end;
-define constant <AtkTableIface> = <_AtkTableIface>;
+define C-struct <_AtkTableIface>
+  slot AtkTableIface-parent :: <_GTypeInterface>;
+  slot AtkTableIface-ref-at :: <anonymous-4549>;
+  slot AtkTableIface-get-index-at :: <anonymous-4550>;
+  slot AtkTableIface-get-column-at-index :: <anonymous-4551>;
+  slot AtkTableIface-get-row-at-index :: <anonymous-4552>;
+  slot AtkTableIface-get-n-columns :: <anonymous-4553>;
+  slot AtkTableIface-get-n-rows :: <anonymous-4554>;
+  slot AtkTableIface-get-column-extent-at :: <anonymous-4555>;
+  slot AtkTableIface-get-row-extent-at :: <anonymous-4556>;
+  slot AtkTableIface-get-caption :: <anonymous-4557>;
+  slot AtkTableIface-get-column-description :: <anonymous-4558>;
+  slot AtkTableIface-get-column-header :: <anonymous-4559>;
+  slot AtkTableIface-get-row-description :: <anonymous-4560>;
+  slot AtkTableIface-get-row-header :: <anonymous-4561>;
+  slot AtkTableIface-get-summary :: <anonymous-4562>;
+  slot AtkTableIface-set-caption :: <anonymous-4563>;
+  slot AtkTableIface-set-column-description :: <anonymous-4564>;
+  slot AtkTableIface-set-column-header :: <anonymous-4565>;
+  slot AtkTableIface-set-row-description :: <anonymous-4566>;
+  slot AtkTableIface-set-row-header :: <anonymous-4567>;
+  slot AtkTableIface-set-summary :: <anonymous-4568>;
+  slot AtkTableIface-get-selected-columns :: <anonymous-4569>;
+  slot AtkTableIface-get-selected-rows :: <anonymous-4570>;
+  slot AtkTableIface-is-column-selected :: <anonymous-4571>;
+  slot AtkTableIface-is-row-selected :: <anonymous-4572>;
+  slot AtkTableIface-is-selected :: <anonymous-4573>;
+  slot AtkTableIface-add-row-selection :: <anonymous-4574>;
+  slot AtkTableIface-remove-row-selection :: <anonymous-4575>;
+  slot AtkTableIface-add-column-selection :: <anonymous-4576>;
+  slot AtkTableIface-remove-column-selection :: <anonymous-4577>;
+  slot AtkTableIface-row-inserted :: <anonymous-4578>;
+  slot AtkTableIface-column-inserted :: <anonymous-4579>;
+  slot AtkTableIface-row-deleted :: <anonymous-4580>;
+  slot AtkTableIface-column-deleted :: <anonymous-4581>;
+  slot AtkTableIface-row-reordered :: <anonymous-4582>;
+  slot AtkTableIface-column-reordered :: <anonymous-4583>;
+  slot AtkTableIface-model-changed :: <anonymous-4584>;
+  slot AtkTableIface-pad1 :: <anonymous-3575>;
+  slot AtkTableIface-pad2 :: <anonymous-3575>;
+  slot AtkTableIface-pad3 :: <anonymous-3575>;
+  slot AtkTableIface-pad4 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkTableIface> => <_AtkTableIface>;
 
 define C-function atk-table-get-type
   result res :: <GType>;
@@ -45590,15 +49167,27 @@ define C-function atk-table-remove-column-selection
   c-name: "atk_table_remove_column_selection";
 end;
 
-define C-subtype <_AtkStreamableContent> (<C-void*>) end;
-define constant <AtkStreamableContent> = <_AtkStreamableContent>;
+define C-struct <_AtkStreamableContent>
+end;
+
+define C-pointer-type <AtkStreamableContent> => <_AtkStreamableContent>;
 
 define constant <anonymous-4540> = <C-function-pointer>;
 define constant <anonymous-4541> = <C-function-pointer>;
 define constant <anonymous-4542> = <C-function-pointer>;
 define constant <anonymous-4543> = <C-function-pointer>;
-define C-subtype <_AtkStreamableContentIface> (<C-void*>) end;
-define constant <AtkStreamableContentIface> = <_AtkStreamableContentIface>;
+define C-struct <_AtkStreamableContentIface>
+  slot AtkStreamableContentIface-parent :: <_GTypeInterface>;
+  slot AtkStreamableContentIface-get-n-mime-types :: <anonymous-4540>;
+  slot AtkStreamableContentIface-get-mime-type :: <anonymous-4541>;
+  slot AtkStreamableContentIface-get-stream :: <anonymous-4542>;
+  slot AtkStreamableContentIface-get-uri :: <anonymous-4543>;
+  slot AtkStreamableContentIface-pad1 :: <anonymous-3575>;
+  slot AtkStreamableContentIface-pad2 :: <anonymous-3575>;
+  slot AtkStreamableContentIface-pad3 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkStreamableContentIface> => <_AtkStreamableContentIface>;
 
 define C-function atk-streamable-content-get-type
   result res :: <GType>;
@@ -45625,8 +49214,11 @@ define C-function atk-streamable-content-get-stream
   c-name: "atk_streamable_content_get_stream";
 end;
 
-define C-subtype <_AtkStateSetClass> (<C-void*>) end;
-define constant <AtkStateSetClass> = <_AtkStateSetClass>;
+define C-struct <_AtkStateSetClass>
+  slot AtkStateSetClass-parent :: <_GObjectClass>;
+end;
+
+define C-pointer-type <AtkStateSetClass> => <_AtkStateSetClass>;
 
 define C-function atk-state-set-get-type
   result res :: <GType>;
@@ -45707,8 +49299,10 @@ define C-function atk-state-set-xor-sets
   c-name: "atk_state_set_xor_sets";
 end;
 
-define C-subtype <_AtkSelection> (<C-void*>) end;
-define constant <AtkSelection> = <_AtkSelection>;
+define C-struct <_AtkSelection>
+end;
+
+define C-pointer-type <AtkSelection> => <_AtkSelection>;
 
 define constant <anonymous-4512> = <C-function-pointer>;
 define constant <anonymous-4513> = <C-function-pointer>;
@@ -45718,8 +49312,21 @@ define constant <anonymous-4516> = <C-function-pointer>;
 define constant <anonymous-4517> = <C-function-pointer>;
 define constant <anonymous-4518> = <C-function-pointer>;
 define constant <anonymous-4519> = <C-function-pointer>;
-define C-subtype <_AtkSelectionIface> (<C-void*>) end;
-define constant <AtkSelectionIface> = <_AtkSelectionIface>;
+define C-struct <_AtkSelectionIface>
+  slot AtkSelectionIface-parent :: <_GTypeInterface>;
+  slot AtkSelectionIface-add-selection :: <anonymous-4512>;
+  slot AtkSelectionIface-clear-selection :: <anonymous-4513>;
+  slot AtkSelectionIface-ref-selection :: <anonymous-4514>;
+  slot AtkSelectionIface-get-selection-count :: <anonymous-4515>;
+  slot AtkSelectionIface-is-child-selected :: <anonymous-4516>;
+  slot AtkSelectionIface-remove-selection :: <anonymous-4517>;
+  slot AtkSelectionIface-select-all-selection :: <anonymous-4518>;
+  slot AtkSelectionIface-selection-changed :: <anonymous-4519>;
+  slot AtkSelectionIface-pad1 :: <anonymous-3575>;
+  slot AtkSelectionIface-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkSelectionIface> => <_AtkSelectionIface>;
 
 define C-function atk-selection-get-type
   result res :: <GType>;
@@ -45772,8 +49379,13 @@ define C-function atk-selection-select-all-selection
   c-name: "atk_selection_select_all_selection";
 end;
 
-define C-subtype <_AtkRelationSetClass> (<C-void*>) end;
-define constant <AtkRelationSetClass> = <_AtkRelationSetClass>;
+define C-struct <_AtkRelationSetClass>
+  slot AtkRelationSetClass-parent :: <_GObjectClass>;
+  slot AtkRelationSetClass-pad1 :: <anonymous-3575>;
+  slot AtkRelationSetClass-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkRelationSetClass> => <_AtkRelationSetClass>;
 
 define C-function atk-relation-set-get-type
   result res :: <GType>;
@@ -45834,8 +49446,11 @@ define C-function atk-relation-set-add-relation-by-type
   c-name: "atk_relation_set_add_relation_by_type";
 end;
 
-define C-subtype <_AtkRelationClass> (<C-void*>) end;
-define constant <AtkRelationClass> = <_AtkRelationClass>;
+define C-struct <_AtkRelationClass>
+  slot AtkRelationClass-parent :: <_GObjectClass>;
+end;
+
+define C-pointer-type <AtkRelationClass> => <_AtkRelationClass>;
 
 define C-function atk-relation-get-type
   result res :: <GType>;
@@ -45888,10 +49503,13 @@ define C-function atk-relation-add-target
 end;
 
 define C-subtype <_AtkRegistry> (<_GObject>) end;
-define C-subtype <_AtkRegistryClass> (<C-void*>) end;
+define C-struct <_AtkRegistryClass>
+  slot AtkRegistryClass-parent-class :: <_GObjectClass>;
+end;
+
 define constant <AtkRegistry> = <_AtkRegistry>;
 
-define constant <AtkRegistryClass> = <_AtkRegistryClass>;
+define C-pointer-type <AtkRegistryClass> => <_AtkRegistryClass>;
 
 define C-function atk-registry-get-type
   result res :: <GType>;
@@ -45930,8 +49548,16 @@ end;
 define constant <anonymous-4481> = <C-function-pointer>;
 define constant <anonymous-4482> = <C-function-pointer>;
 define constant <anonymous-4483> = <C-function-pointer>;
-define C-subtype <_AtkObjectFactoryClass> (<C-void*>) end;
-define constant <AtkObjectFactoryClass> = <_AtkObjectFactoryClass>;
+define C-struct <_AtkObjectFactoryClass>
+  slot AtkObjectFactoryClass-parent-class :: <_GObjectClass>;
+  slot AtkObjectFactoryClass-create-accessible :: <anonymous-4481>;
+  slot AtkObjectFactoryClass-invalidate :: <anonymous-4482>;
+  slot AtkObjectFactoryClass-get-accessible-type :: <anonymous-4483>;
+  slot AtkObjectFactoryClass-pad1 :: <anonymous-3575>;
+  slot AtkObjectFactoryClass-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkObjectFactoryClass> => <_AtkObjectFactoryClass>;
 
 define C-function atk-object-factory-get-type
   result res :: <GType>;
@@ -45959,8 +49585,11 @@ end;
 define C-subtype <_AtkNoOpObjectFactory> (<_AtkObjectFactory>) end;
 define constant <AtkNoOpObjectFactory> = <_AtkNoOpObjectFactory>;
 
-define C-subtype <_AtkNoOpObjectFactoryClass> (<C-void*>) end;
-define constant <AtkNoOpObjectFactoryClass> = <_AtkNoOpObjectFactoryClass>;
+define C-struct <_AtkNoOpObjectFactoryClass>
+  slot AtkNoOpObjectFactoryClass-parent-class :: <_AtkObjectFactoryClass>;
+end;
+
+define C-pointer-type <AtkNoOpObjectFactoryClass> => <_AtkNoOpObjectFactoryClass>;
 
 define C-function atk-no-op-object-factory-get-type
   result res :: <GType>;
@@ -45975,8 +49604,11 @@ end;
 define C-subtype <_AtkNoOpObject> (<_AtkObject>, <_AtkComponent>, <_AtkAction>, <_AtkEditableText>, <_AtkHypertext>, <_AtkImage>, <_AtkSelection>, <_AtkTable>, <_AtkText>, <_AtkValue>) end;
 define constant <AtkNoOpObject> = <_AtkNoOpObject>;
 
-define C-subtype <_AtkNoOpObjectClass> (<C-void*>) end;
-define constant <AtkNoOpObjectClass> = <_AtkNoOpObjectClass>;
+define C-struct <_AtkNoOpObjectClass>
+  slot AtkNoOpObjectClass-parent-class :: <_AtkObjectClass>;
+end;
+
+define C-pointer-type <AtkNoOpObjectClass> => <_AtkNoOpObjectClass>;
 
 define C-function atk-no-op-object-get-type
   result res :: <GType>;
@@ -45989,16 +49621,27 @@ define C-function atk-no-op-object-new
   c-name: "atk_no_op_object_new";
 end;
 
-define C-subtype <_AtkImage> (<C-void*>) end;
-define constant <AtkImage> = <_AtkImage>;
+define C-struct <_AtkImage>
+end;
+
+define C-pointer-type <AtkImage> => <_AtkImage>;
 
 define constant <anonymous-4468> = <C-function-pointer>;
 define constant <anonymous-4469> = <C-function-pointer>;
 define constant <anonymous-4470> = <C-function-pointer>;
 define constant <anonymous-4471> = <C-function-pointer>;
 define constant <anonymous-4472> = <C-function-pointer>;
-define C-subtype <_AtkImageIface> (<C-void*>) end;
-define constant <AtkImageIface> = <_AtkImageIface>;
+define C-struct <_AtkImageIface>
+  slot AtkImageIface-parent :: <_GTypeInterface>;
+  slot AtkImageIface-get-image-position :: <anonymous-4468>;
+  slot AtkImageIface-get-image-description :: <anonymous-4469>;
+  slot AtkImageIface-get-image-size :: <anonymous-4470>;
+  slot AtkImageIface-set-image-description :: <anonymous-4471>;
+  slot AtkImageIface-get-image-locale :: <anonymous-4472>;
+  slot AtkImageIface-pad1 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkImageIface> => <_AtkImageIface>;
 
 define C-function atk-image-get-type
   result res :: <GType>;
@@ -46039,8 +49682,10 @@ define C-function atk-image-get-image-locale
   c-name: "atk_image_get_image_locale";
 end;
 
-define C-subtype <_AtkHypertext> (<C-void*>) end;
-define constant <AtkHypertext> = <_AtkHypertext>;
+define C-struct <_AtkHypertext>
+end;
+
+define C-pointer-type <AtkHypertext> => <_AtkHypertext>;
 
 define C-subtype <_AtkHyperlink> (<_GObject>, <_AtkAction>) end;
 define constant <AtkHyperlink> = <_AtkHyperlink>;
@@ -46049,8 +49694,18 @@ define constant <anonymous-4460> = <C-function-pointer>;
 define constant <anonymous-4461> = <C-function-pointer>;
 define constant <anonymous-4462> = <C-function-pointer>;
 define constant <anonymous-4463> = <C-function-pointer>;
-define C-subtype <_AtkHypertextIface> (<C-void*>) end;
-define constant <AtkHypertextIface> = <_AtkHypertextIface>;
+define C-struct <_AtkHypertextIface>
+  slot AtkHypertextIface-parent :: <_GTypeInterface>;
+  slot AtkHypertextIface-get-link :: <anonymous-4460>;
+  slot AtkHypertextIface-get-n-links :: <anonymous-4461>;
+  slot AtkHypertextIface-get-link-index :: <anonymous-4462>;
+  slot AtkHypertextIface-link-selected :: <anonymous-4463>;
+  slot AtkHypertextIface-pad1 :: <anonymous-3575>;
+  slot AtkHypertextIface-pad2 :: <anonymous-3575>;
+  slot AtkHypertextIface-pad3 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkHypertextIface> => <_AtkHypertextIface>;
 
 define C-function atk-hypertext-get-type
   result res :: <GType>;
@@ -46089,8 +49744,21 @@ define constant <anonymous-4444> = <C-function-pointer>;
 define constant <anonymous-4445> = <C-function-pointer>;
 define constant <anonymous-4446> = <C-function-pointer>;
 define constant <anonymous-4447> = <C-function-pointer>;
-define C-subtype <_AtkHyperlinkClass> (<C-void*>) end;
-define constant <AtkHyperlinkClass> = <_AtkHyperlinkClass>;
+define C-struct <_AtkHyperlinkClass>
+  slot AtkHyperlinkClass-parent :: <_GObjectClass>;
+  slot AtkHyperlinkClass-get-uri :: <anonymous-4439>;
+  slot AtkHyperlinkClass-get-object :: <anonymous-4440>;
+  slot AtkHyperlinkClass-get-end-index :: <anonymous-4441>;
+  slot AtkHyperlinkClass-get-start-index :: <anonymous-4442>;
+  slot AtkHyperlinkClass-is-valid :: <anonymous-4443>;
+  slot AtkHyperlinkClass-get-n-anchors :: <anonymous-4444>;
+  slot AtkHyperlinkClass-link-state :: <anonymous-4445>;
+  slot AtkHyperlinkClass-is-selected-link :: <anonymous-4446>;
+  slot AtkHyperlinkClass-link-activated :: <anonymous-4447>;
+  slot AtkHyperlinkClass-pad1 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkHyperlinkClass> => <_AtkHyperlinkClass>;
 
 define C-function atk-hyperlink-get-type
   result res :: <GType>;
@@ -46147,8 +49815,10 @@ define C-function atk-hyperlink-is-selected-link
   c-name: "atk_hyperlink_is_selected_link";
 end;
 
-define C-subtype <_AtkAction> (<C-void*>) end;
-define constant <AtkAction> = <_AtkAction>;
+define C-struct <_AtkAction>
+end;
+
+define C-pointer-type <AtkAction> => <_AtkAction>;
 
 define constant <anonymous-4283> = <C-function-pointer>;
 define constant <anonymous-4284> = <C-function-pointer>;
@@ -46157,8 +49827,19 @@ define constant <anonymous-4286> = <C-function-pointer>;
 define constant <anonymous-4287> = <C-function-pointer>;
 define constant <anonymous-4288> = <C-function-pointer>;
 define constant <anonymous-4289> = <C-function-pointer>;
-define C-subtype <_AtkActionIface> (<C-void*>) end;
-define constant <AtkActionIface> = <_AtkActionIface>;
+define C-struct <_AtkActionIface>
+  slot AtkActionIface-parent :: <_GTypeInterface>;
+  slot AtkActionIface-do-action :: <anonymous-4283>;
+  slot AtkActionIface-get-n-actions :: <anonymous-4284>;
+  slot AtkActionIface-get-description :: <anonymous-4285>;
+  slot AtkActionIface-get-name :: <anonymous-4286>;
+  slot AtkActionIface-get-keybinding :: <anonymous-4287>;
+  slot AtkActionIface-set-description :: <anonymous-4288>;
+  slot AtkActionIface-get-localized-name :: <anonymous-4289>;
+  slot AtkActionIface-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkActionIface> => <_AtkActionIface>;
 
 define C-function atk-action-get-type
   result res :: <GType>;
@@ -46214,18 +49895,30 @@ define C-function atk-action-get-localized-name
   c-name: "atk_action_get_localized_name";
 end;
 
-define C-subtype <_AtkHyperlinkImpl> (<C-void*>) end;
-define constant <AtkHyperlinkImpl> = <_AtkHyperlinkImpl>;
+define C-struct <_AtkHyperlinkImpl>
+end;
+
+define C-pointer-type <AtkHyperlinkImpl> => <_AtkHyperlinkImpl>;
 
 define constant <anonymous-4457> = <C-function-pointer>;
-define C-subtype <_AtkHyperlinkImplIface> (<C-void*>) end;
-define constant <AtkHyperlinkImplIface> = <_AtkHyperlinkImplIface>;
+define C-struct <_AtkHyperlinkImplIface>
+  slot AtkHyperlinkImplIface-parent :: <_GTypeInterface>;
+  slot AtkHyperlinkImplIface-get-hyperlink :: <anonymous-4457>;
+  slot AtkHyperlinkImplIface-pad1 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkHyperlinkImplIface> => <_AtkHyperlinkImplIface>;
 
 define C-subtype <_AtkGObjectAccessible> (<_AtkObject>) end;
 define constant <AtkGObjectAccessible> = <_AtkGObjectAccessible>;
 
-define C-subtype <_AtkGObjectAccessibleClass> (<C-void*>) end;
-define constant <AtkGObjectAccessibleClass> = <_AtkGObjectAccessibleClass>;
+define C-struct <_AtkGObjectAccessibleClass>
+  slot AtkGObjectAccessibleClass-parent-class :: <_AtkObjectClass>;
+  slot AtkGObjectAccessibleClass-pad1 :: <anonymous-3575>;
+  slot AtkGObjectAccessibleClass-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkGObjectAccessibleClass> => <_AtkGObjectAccessibleClass>;
 
 define C-function atk-gobject-accessible-get-type
   result res :: <GType>;
@@ -46244,8 +49937,10 @@ define C-function atk-gobject-accessible-get-object
   c-name: "atk_gobject_accessible_get_object";
 end;
 
-define C-subtype <_AtkEditableText> (<C-void*>) end;
-define constant <AtkEditableText> = <_AtkEditableText>;
+define C-struct <_AtkEditableText>
+end;
+
+define C-pointer-type <AtkEditableText> => <_AtkEditableText>;
 
 define constant <anonymous-4420> = <C-function-pointer>;
 define constant <anonymous-4421> = <C-function-pointer>;
@@ -46254,8 +49949,20 @@ define constant <anonymous-4423> = <C-function-pointer>;
 define constant <anonymous-4424> = <C-function-pointer>;
 define constant <anonymous-4425> = <C-function-pointer>;
 define constant <anonymous-4426> = <C-function-pointer>;
-define C-subtype <_AtkEditableTextIface> (<C-void*>) end;
-define constant <AtkEditableTextIface> = <_AtkEditableTextIface>;
+define C-struct <_AtkEditableTextIface>
+  slot AtkEditableTextIface-parent-interface :: <_GTypeInterface>;
+  slot AtkEditableTextIface-set-run-attributes :: <anonymous-4420>;
+  slot AtkEditableTextIface-set-text-contents :: <anonymous-4421>;
+  slot AtkEditableTextIface-insert-text :: <anonymous-4422>;
+  slot AtkEditableTextIface-copy-text :: <anonymous-4423>;
+  slot AtkEditableTextIface-cut-text :: <anonymous-4424>;
+  slot AtkEditableTextIface-delete-text :: <anonymous-4425>;
+  slot AtkEditableTextIface-paste-text :: <anonymous-4426>;
+  slot AtkEditableTextIface-pad1 :: <anonymous-3575>;
+  slot AtkEditableTextIface-pad2 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkEditableTextIface> => <_AtkEditableTextIface>;
 
 define C-function atk-editable-text-get-type
   result res :: <GType>;
@@ -46312,8 +50019,10 @@ define C-function atk-editable-text-paste-text
   c-name: "atk_editable_text_paste_text";
 end;
 
-define C-subtype <_AtkDocument> (<C-void*>) end;
-define constant <AtkDocument> = <_AtkDocument>;
+define C-struct <_AtkDocument>
+end;
+
+define C-pointer-type <AtkDocument> => <_AtkDocument>;
 
 define constant <anonymous-4355> = <C-function-pointer>;
 define constant <anonymous-4356> = <C-function-pointer>;
@@ -46321,8 +50030,21 @@ define constant <anonymous-4357> = <C-function-pointer>;
 define constant <anonymous-4358> = <C-function-pointer>;
 define constant <anonymous-4359> = <C-function-pointer>;
 define constant <anonymous-4360> = <C-function-pointer>;
-define C-subtype <_AtkDocumentIface> (<C-void*>) end;
-define constant <AtkDocumentIface> = <_AtkDocumentIface>;
+define C-struct <_AtkDocumentIface>
+  slot AtkDocumentIface-parent :: <_GTypeInterface>;
+  slot AtkDocumentIface-get-document-type :: <anonymous-4355>;
+  slot AtkDocumentIface-get-document :: <anonymous-4356>;
+  slot AtkDocumentIface-get-document-locale :: <anonymous-4357>;
+  slot AtkDocumentIface-get-document-attributes :: <anonymous-4358>;
+  slot AtkDocumentIface-get-document-attribute-value :: <anonymous-4359>;
+  slot AtkDocumentIface-set-document-attribute :: <anonymous-4360>;
+  slot AtkDocumentIface-pad1 :: <anonymous-3575>;
+  slot AtkDocumentIface-pad2 :: <anonymous-3575>;
+  slot AtkDocumentIface-pad3 :: <anonymous-3575>;
+  slot AtkDocumentIface-pad4 :: <anonymous-3575>;
+end;
+
+define C-pointer-type <AtkDocumentIface> => <_AtkDocumentIface>;
 
 define C-function atk-document-get-type
   result res :: <GType>;
@@ -46368,8 +50090,10 @@ define C-function atk-document-set-attribute-value
   c-name: "atk_document_set_attribute_value";
 end;
 
-define C-subtype <_AtkComponent> (<C-void*>) end;
-define constant <AtkComponent> = <_AtkComponent>;
+define C-struct <_AtkComponent>
+end;
+
+define C-pointer-type <AtkComponent> => <_AtkComponent>;
 
 define constant <anonymous-4323> = <C-function-pointer>;
 define constant <AtkFocusHandler> = <anonymous-4323>;
@@ -46387,13 +50111,37 @@ define constant <anonymous-4334> = <C-function-pointer>;
 define constant <anonymous-4335> = <C-function-pointer>;
 define constant <anonymous-4336> = <C-function-pointer>;
 define constant <anonymous-4337> = <C-function-pointer>;
-define C-subtype <_AtkRectangle> (<C-void*>) end;
-define constant <AtkRectangle> = <_AtkRectangle>;
+define C-struct <_AtkRectangle>
+  slot AtkRectangle-x :: <C-signed-int>;
+  slot AtkRectangle-y :: <C-signed-int>;
+  slot AtkRectangle-width :: <C-signed-int>;
+  slot AtkRectangle-height :: <C-signed-int>;
+end;
+
+define C-pointer-type <AtkRectangle> => <_AtkRectangle>;
 
 define constant <anonymous-4338> = <C-function-pointer>;
 define constant <anonymous-4339> = <C-function-pointer>;
-define C-subtype <_AtkComponentIface> (<C-void*>) end;
-define constant <AtkComponentIface> = <_AtkComponentIface>;
+define C-struct <_AtkComponentIface>
+  slot AtkComponentIface-parent :: <_GTypeInterface>;
+  slot AtkComponentIface-add-focus-handler :: <anonymous-4325>;
+  slot AtkComponentIface-contains :: <anonymous-4326>;
+  slot AtkComponentIface-ref-accessible-at-point :: <anonymous-4327>;
+  slot AtkComponentIface-get-extents :: <anonymous-4328>;
+  slot AtkComponentIface-get-position :: <anonymous-4329>;
+  slot AtkComponentIface-get-size :: <anonymous-4330>;
+  slot AtkComponentIface-grab-focus :: <anonymous-4331>;
+  slot AtkComponentIface-remove-focus-handler :: <anonymous-4332>;
+  slot AtkComponentIface-set-extents :: <anonymous-4333>;
+  slot AtkComponentIface-set-position :: <anonymous-4334>;
+  slot AtkComponentIface-set-size :: <anonymous-4335>;
+  slot AtkComponentIface-get-layer :: <anonymous-4336>;
+  slot AtkComponentIface-get-mdi-zorder :: <anonymous-4337>;
+  slot AtkComponentIface-bounds-changed :: <anonymous-4338>;
+  slot AtkComponentIface-get-alpha :: <anonymous-4339>;
+end;
+
+define C-pointer-type <AtkComponentIface> => <_AtkComponentIface>;
 
 define C-function atk-rectangle-get-type
   result res :: <GType>;
@@ -46516,8 +50264,10 @@ end;
 define C-subtype <_GtkAccelMap> (<_GObject>) end;
 define constant <GtkAccelMap> = <_GtkAccelMap>;
 
-define C-subtype <_GtkAccelMapClass> (<C-void*>) end;
-define constant <GtkAccelMapClass> = <_GtkAccelMapClass>;
+define C-struct <_GtkAccelMapClass>
+end;
+
+define C-pointer-type <GtkAccelMapClass> => <_GtkAccelMapClass>;
 
 define constant <anonymous-4263> = <C-function-pointer>;
 define constant <GtkAccelMapForeach> = <anonymous-4263>;
@@ -46618,8 +50368,23 @@ define constant <anonymous-4251> = <C-function-pointer>;
 define constant <anonymous-4252> = <C-function-pointer>;
 define constant <anonymous-4253> = <C-function-pointer>;
 define constant <anonymous-4254> = <C-function-pointer>;
-define C-subtype <_GtkAccelLabelClass> (<C-void*>) end;
-define constant <GtkAccelLabelClass> = <_GtkAccelLabelClass>;
+define C-struct <_GtkAccelLabelClass>
+  slot GtkAccelLabelClass-parent-class :: <_GtkLabelClass>;
+  slot GtkAccelLabelClass-signal-quote1 :: <gchar*>;
+  slot GtkAccelLabelClass-signal-quote2 :: <gchar*>;
+  slot GtkAccelLabelClass-mod-name-shift :: <gchar*>;
+  slot GtkAccelLabelClass-mod-name-control :: <gchar*>;
+  slot GtkAccelLabelClass-mod-name-alt :: <gchar*>;
+  slot GtkAccelLabelClass-mod-separator :: <gchar*>;
+  slot GtkAccelLabelClass-accel-seperator :: <gchar*>;
+  bitfield slot GtkAccelLabelClass-latin1-to-char :: <C-int>, width: 1;
+  slot GtkAccelLabelClass-_gtk-reserved1 :: <anonymous-4251>;
+  slot GtkAccelLabelClass-_gtk-reserved2 :: <anonymous-4252>;
+  slot GtkAccelLabelClass-_gtk-reserved3 :: <anonymous-4253>;
+  slot GtkAccelLabelClass-_gtk-reserved4 :: <anonymous-4254>;
+end;
+
+define C-pointer-type <GtkAccelLabelClass> => <_GtkAccelLabelClass>;
 
 define C-function gtk-accel-label-get-type
   result res :: <GType>;
@@ -46671,8 +50436,15 @@ define constant <anonymous-4076> = <C-function-pointer>;
 define constant <anonymous-4077> = <C-function-pointer>;
 define constant <anonymous-4078> = <C-function-pointer>;
 define constant <anonymous-4079> = <C-function-pointer>;
-define C-subtype <_GtkAboutDialogClass> (<C-void*>) end;
-define constant <GtkAboutDialogClass> = <_GtkAboutDialogClass>;
+define C-struct <_GtkAboutDialogClass>
+  slot GtkAboutDialogClass-parent-class :: <_GtkDialogClass>;
+  slot GtkAboutDialogClass-_gtk-reserved1 :: <anonymous-4076>;
+  slot GtkAboutDialogClass-_gtk-reserved2 :: <anonymous-4077>;
+  slot GtkAboutDialogClass-_gtk-reserved3 :: <anonymous-4078>;
+  slot GtkAboutDialogClass-_gtk-reserved4 :: <anonymous-4079>;
+end;
+
+define C-pointer-type <GtkAboutDialogClass> => <_GtkAboutDialogClass>;
 
 define C-function gtk-about-dialog-get-type
   result res :: <GType>;
