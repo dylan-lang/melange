@@ -40,11 +40,26 @@ define method write-declaration
   // form "typedef struct foo foo".
   if (~decl.equated? 
         & decl.simple-name ~= decl.type.simple-name)
-    if (~ instance?(decl.type, <struct-declaration>) | decl.type.superclasses)
-      format(stream, "define constant %s = %s;\n\n",
-             decl.dylan-name, decl.type.dylan-name);
+    if (instance?(decl.type, <struct-declaration>))
+      if (decl.type.superclasses)
+        if (copy-sequence(decl.dylan-name, start: 1) ~= copy-sequence(decl.type.dylan-name, start: 2))
+          let underscore-name = concatenate("<", copy-sequence(decl.dylan-name));
+          underscore-name[1] := '_';
+          format(stream, "define C-subtype %s (%s) end;\n\n",
+                 underscore-name, decl.type.dylan-name);
+          register-written-name(back-end.written-names, underscore-name, decl);
+          format(stream, "define constant %s = %s;\n\n",
+                 decl.dylan-name, underscore-name);
+        else
+          format(stream, "define constant %s = %s;\n\n",
+                 decl.dylan-name, decl.type.dylan-name);
+        end;
+      else
+        format(stream, "define C-pointer-type %s => %s;\n\n",
+               decl.dylan-name, decl.type.dylan-name);
+      end;
     else
-      format(stream, "define C-pointer-type %s => %s;\n\n",
+      format(stream, "define constant %s = %s;\n\n",
              decl.dylan-name, decl.type.dylan-name);
     end;
     register-written-name(back-end.written-names, decl.dylan-name, decl);

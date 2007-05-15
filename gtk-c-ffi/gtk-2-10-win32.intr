@@ -278,11 +278,10 @@ define interface
       "_gtk_window_reposition",
       "_gtk_window_internal_set_focus"
   	},
-    map: { "gchar*" => <byte-string>,
-           "char*" => <byte-string>,
-           "GCallback" => <function>},
-    rename: { "gtk_init" => %gtk-init },
-    equate: { "gchar*" => <C-string> },
+    map: {"gchar*" => <byte-string>,
+          "char*" => <byte-string>,
+          "GCallback" => <function>},
+    rename: {"gtk_init" => %gtk-init },
     name-mapper: gtk-name-mapping;
 
   struct "struct _GTypeInstance",

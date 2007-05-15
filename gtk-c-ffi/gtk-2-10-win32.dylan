@@ -21,7 +21,9 @@ end;
 define C-pointer-type <GData> => <_GData>;
 
 define C-subtype <_GObject> (<_GTypeInstance>) end;
-define constant <GInitiallyUnowned> = <_GObject>;
+define C-subtype <_GInitiallyUnowned> (<_GObject>) end;
+
+define constant <GInitiallyUnowned> = <_GInitiallyUnowned>;
 
 define constant <guint32> = <C-unsigned-int>;
 
@@ -34,8 +36,7 @@ define constant <guint8> = <C-unsigned-char>;
 
 define constant <gchar> = <C-signed-char>;
 
-define constant <gchar*> = <C-String>;
-//define C-pointer-type <gchar*> => <gchar>;
+define constant <gchar*> = <C-string>;
 define constant <GObject> = <_GObject>;
 
 define C-struct <_GdkColor>
@@ -81,7 +82,9 @@ define constant <GdkGC> = <_GdkGC>;
 define C-pointer-type <GdkGC*> => <GdkGC>;
 define constant <GdkGC<@5>> = <GdkGC*>;
 define C-subtype <_GdkDrawable> (<_GObject>) end;
-define constant <GdkPixmap> = <_GdkDrawable>;
+define C-subtype <_GdkPixmap> (<_GdkDrawable>) end;
+
+define constant <GdkPixmap> = <_GdkPixmap>;
 
 define C-pointer-type <GdkPixmap*> => <GdkPixmap>;
 define constant <GdkPixmap<@5>> = <GdkPixmap*>;
@@ -145,7 +148,9 @@ define C-pointer-type <GdkRectangle> => <_GdkRectangle>;
 
 define constant <GtkAllocation> = <GdkRectangle>;
 
-define constant <GdkWindow> = <_GdkDrawable>;
+define C-subtype <_GdkWindow> (<_GdkDrawable>) end;
+
+define constant <GdkWindow> = <_GdkWindow>;
 
 define C-subtype <_GtkWidget> (<_GtkObject>, <_AtkImplementorIface>) end;
 define constant <GtkWidget> = <_GtkWidget>;
@@ -183,8 +188,6 @@ define constant $GDK-BUTTON5-MASK = 4096;
 define constant $GDK-SUPER-MASK = 67108864;
 define constant $GDK-HYPER-MASK = 134217728;
 define constant $GDK-META-MASK = 268435456;
-//define constant $GDK-RELEASE-MASK = #ex0000000040000000;
-//define constant $GDK-MODIFIER-MASK = #ex000000005C001FFF;
 
 define constant <GdkGC<@32>> = <GdkGC*>;
 define C-struct <_cairo-font-options>
@@ -1932,7 +1935,9 @@ end;
 
 define C-pointer-type <GtkWidgetAuxInfo> => <_GtkWidgetAuxInfo>;
 
-define constant <GdkBitmap> = <_GdkDrawable>;
+define C-subtype <_GdkBitmap> (<_GdkDrawable>) end;
+
+define constant <GdkBitmap> = <_GdkBitmap>;
 
 define C-struct <_GtkWidgetShapeInfo>
   slot GtkWidgetShapeInfo-offset-x :: <C-signed-short>;
@@ -4405,11 +4410,8 @@ define constant $USHRT-MAX = 65535;
 
 //define constant $UINT-MAX = #ex00000000FFFFFFFF;
 
-//define constant $LONG-MIN = #exFFFFFFFF80000000;
 
-//define constant $LONG-MAX = #ex000000007FFFFFFF;
 
-//define constant $ULONG-MAX = #ex00000000FFFFFFFF;
 
 define constant $_POSIX-ARG-MAX = 4096;
 
@@ -6333,7 +6335,6 @@ define C-function g-once-impl
   c-name: "g_once_impl";
 end;
 
-//define constant $G-MUTEX-DEBUG-MAGIC = #ex00000000F8E18AD7;
 
 define C-function g-atomic-int-exchange-and-add
   input parameter arg1 :: <gint*>;
@@ -12154,7 +12155,6 @@ end;
 define C-pointer-type <_HEAPINFO> => <_heapinfo>;
 
  /* Ignoring declaration for {instance of <variable-declaration>} "_amblksiz"*/
-//define constant $_HEAP-MAXREQ = #ex00000000FFFFFFE0;
 
 define constant $_HEAPEMPTY = -1;
 
