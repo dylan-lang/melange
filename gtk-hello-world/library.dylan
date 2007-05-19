@@ -8,6 +8,5 @@ define library gtk-hello-world
   use dylan;
   use io;
   use system;
-  use c-ffi;
-  use gtk-c-ffi;
+  use gtk;
 end library gtk-hello-world;

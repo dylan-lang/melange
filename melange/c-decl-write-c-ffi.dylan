@@ -20,6 +20,9 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
              if (instance?(slot.type, <bitfield-declaration>))
                format(stream, "  bitfield slot %s :: %s, width: %d;\n",
                       slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)  
+             elseif (instance?(slot.type, <vector-declaration>))
+               format(stream, "  array slot %s :: %s, length: %d;\n",
+                      slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)  
              else
                format(stream, "  slot %s :: %s;\n",
                       slot.dylan-name, slot.type.true-type.type-name)

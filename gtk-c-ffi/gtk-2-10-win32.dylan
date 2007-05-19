@@ -239,7 +239,7 @@ define C-subtype <anonymous-1507> (<C-void*>) end;
 define constant <anonymous-1507<@2>> = <anonymous-1507>;
 define C-struct <_GValue>
   slot GValue-g-type :: <C-unsigned-long>;
-  slot GValue-data :: <anonymous-1507<@2>>;
+  array slot GValue-data :: <anonymous-1507>, length: 2;
 end;
 
 define C-pointer-type <GValue> => <_GValue>;
@@ -271,7 +271,7 @@ define C-struct <_GObjectClass>
   slot GObjectClass-finalize :: <anonymous-1657>;
   slot GObjectClass-dispatch-properties-changed :: <anonymous-1658>;
   slot GObjectClass-notify :: <anonymous-1659>;
-  slot GObjectClass-pdummy :: <gpointer<@8>>;
+  array slot GObjectClass-pdummy :: <gpointer>, length: 8;
 end;
 
 define C-pointer-type <GInitiallyUnownedClass> => <_GObjectClass>;
@@ -4130,9 +4130,7 @@ define constant $G-MAXUINT8 = 255;
 
 define constant $G-MAXUINT16 = 65535;
 
-//define constant $G-MAXUINT32 = #ex00000000FFFFFFFF;
 
-//define constant $G-MAXINT64 = #ex7FFFFFFFFFFFFFFF;
 
 define constant $G-LITTLE-ENDIAN = 1234;
 
@@ -4165,17 +4163,11 @@ define constant $G-MAXSHORT = 32767;
 
 define constant $G-MAXUSHORT = 65535;
 
-//define constant $G-MININT = #exFFFFFFFF80000000;
 
-//define constant $G-MAXINT = #ex000000007FFFFFFF;
 
-//define constant $G-MAXUINT = #ex00000000FFFFFFFF;
 
-//define constant $G-MINLONG = #exFFFFFFFF80000000;
 
-//define constant $G-MAXLONG = #ex000000007FFFFFFF;
 
-//define constant $G-MAXULONG = #ex00000000FFFFFFFF;
 
 define constant $G-GINT16-MODIFIER = "h";
 
@@ -4209,7 +4201,6 @@ define constant $G-GSSIZE-FORMAT = "i";
 
 define constant $G-GSIZE-FORMAT = "u";
 
-//define constant $G-MAXSIZE = #ex00000000FFFFFFFF;
 
 define constant $GLIB-MAJOR-VERSION = 2;
 
@@ -4404,11 +4395,8 @@ define constant $SHRT-MAX = 32767;
 
 define constant $USHRT-MAX = 65535;
 
-//define constant $INT-MIN = #exFFFFFFFF80000000;
 
-//define constant $INT-MAX = #ex000000007FFFFFFF;
 
-//define constant $UINT-MAX = #ex00000000FFFFFFFF;
 
 
 
@@ -9947,7 +9935,7 @@ define C-struct <_GIOChannel>
   slot GIOChannel-read-buf :: <GString>;
   slot GIOChannel-encoded-read-buf :: <GString>;
   slot GIOChannel-write-buf :: <GString>;
-  slot GIOChannel-partial-write-buf :: <gchar<@6>>;
+  array slot GIOChannel-partial-write-buf :: <gchar>, length: 6;
   bitfield slot GIOChannel-use-buffer :: <C-int>, width: 1;
   bitfield slot GIOChannel-do-encode :: <C-int>, width: 1;
   bitfield slot GIOChannel-close-on-unref :: <C-int>, width: 1;
@@ -10485,7 +10473,7 @@ define C-struct <_GHookList>
   slot GHookList-hooks :: <GHook>;
   slot GHookList-dummy3 :: <C-void*>;
   slot GHookList-finalize-hook :: <anonymous-664>;
-  slot GHookList-dummy :: <gpointer<@2>>;
+  array slot GHookList-dummy :: <gpointer>, length: 2;
 end;
 
 define constant <anonymous-658> = <C-function-pointer>;
@@ -13438,7 +13426,7 @@ define C-struct <_GParamSpecClass>
   slot GParamSpecClass-value-set-default :: <anonymous-1521>;
   slot GParamSpecClass-value-validate :: <anonymous-1522>;
   slot GParamSpecClass-values-cmp :: <anonymous-1523>;
-  slot GParamSpecClass-dummy :: <gpointer<@4>>;
+  array slot GParamSpecClass-dummy :: <gpointer>, length: 4;
 end;
 
 define C-pointer-type <GParamSpecClass> => <_GParamSpecClass>;
@@ -20295,7 +20283,7 @@ define C-pointer-type <GdkDeviceClass> => <_GdkDeviceClass>;
 define constant <gdouble<@128>> = <gdouble*>;
 define C-struct <_GdkTimeCoord>
   slot GdkTimeCoord-time :: <C-unsigned-int>;
-  slot GdkTimeCoord-axes :: <gdouble<@128>>;
+  array slot GdkTimeCoord-axes :: <gdouble>, length: 128;
 end;
 
 define C-pointer-type <GdkTimeCoord> => <_GdkTimeCoord>;
@@ -23312,7 +23300,7 @@ define constant $GDK-PIXBUF-VERSION = "2.10.11";
 
 define constant <guint32<@256>> = <guint32*>;
 define C-struct <_GdkRgbCmap>
-  slot GdkRgbCmap-colors :: <guint32<@256>>;
+  array slot GdkRgbCmap-colors :: <guint32>, length: 256;
   slot GdkRgbCmap-n-colors :: <C-signed-int>;
   slot GdkRgbCmap-info-list :: <GSList>;
 end;
@@ -27536,8 +27524,8 @@ define C-struct <_GtkRulerMetric>
   slot GtkRulerMetric-metric-name :: <gchar*>;
   slot GtkRulerMetric-abbrev :: <gchar*>;
   slot GtkRulerMetric-pixels-per-unit :: <C-double>;
-  slot GtkRulerMetric-ruler-scale :: <gdouble<@10>>;
-  slot GtkRulerMetric-subdivide :: <gint<@5>>;
+  array slot GtkRulerMetric-ruler-scale :: <gdouble>, length: 10;
+  array slot GtkRulerMetric-subdivide :: <gint>, length: 5;
 end;
 
 define C-pointer-type <GtkRulerMetric> => <_GtkRulerMetric>;
