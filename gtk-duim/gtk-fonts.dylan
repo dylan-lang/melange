@@ -12,7 +12,7 @@ Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 define sealed class <gtk-font> (<object>)
   sealed slot %font-name :: <string>,
     required-init-keyword: name:;
-  sealed slot %font-id :: false-or(<GdkFont*>) = #f;
+  sealed slot %font-id :: false-or(<GdkFont>) = #f;
   sealed slot %font-struct = #f;
 end class <gtk-font>;
 

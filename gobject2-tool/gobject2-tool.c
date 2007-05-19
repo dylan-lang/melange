@@ -175,8 +175,6 @@ static GetTypeFunc get_type_funcs[] =
     gtk_adjustment_get_type,
     gtk_alignment_get_type,
     gtk_arrow_get_type,
-    gtk_aspect_frame_get_type,
-    gtk_button_box_get_type,
     gtk_bin_get_type,
     gtk_calendar_get_type,
     gtk_box_get_type,

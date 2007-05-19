@@ -92,7 +92,7 @@ define method do-compose-space
 //  debug-message("do-compose-space(%= , %d, %d)", gadget, width, height);
   let mirror = sheet-direct-mirror(gadget);
   if (mirror)
-    let widget = GTK-WIDGET(mirror-widget(mirror));
+    let widget = mirror-widget(mirror);
     gtk-space-requirements(gadget, widget)
   else
     gtk-debug("Composing space on an unmirrored gadget!");
@@ -102,7 +102,7 @@ end method do-compose-space;
 
 // We take the values suggested by GTK as the default sizes
 define method gtk-space-requirements
-    (gadget :: <gtk-gadget-mixin>, widget :: <GtkWidget*>)
+    (gadget :: <gtk-gadget-mixin>, widget :: <GtkWidget>)
  => (space-req :: <space-requirement>)
   let (width, height) = widget-size(widget);
   let max-width  = if (gadget.%gtk-fixed-width?)  width  else $fill end;
@@ -113,9 +113,9 @@ define method gtk-space-requirements
 end method gtk-space-requirements;
 
 define method widget-size
-    (widget :: <GtkWidget*>)
+    (widget :: <GtkWidget>)
  => (width :: <integer>, height :: <integer>)
-  with-stack-structure (request :: <GtkRequisition*>)
+  with-stack-structure (request :: <GtkRequisition>)
     gtk-widget-size-request(widget, request);
     values(request.GtkRequisition-width, request.GtkRequisition-height)
   end
@@ -172,7 +172,7 @@ define sealed method note-gadget-enabled
     (client, gadget :: <gtk-gadget-mixin>) => ()
   ignore(client);
   next-method();
-  let widget = GTK-WIDGET(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   gtk-widget-set-sensitive(widget, $true)
 end method note-gadget-enabled;
 
@@ -180,7 +180,7 @@ define sealed method note-gadget-disabled
     (client, gadget :: <gtk-gadget-mixin>) => ()
   ignore(client);
   next-method();
-  let widget = GTK-WIDGET(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   gtk-widget-set-sensitive(widget, $false)
 end method note-gadget-disabled;
 
@@ -323,7 +323,7 @@ define sealed method make-gtk-mirror
     (gadget :: <gtk-label>)
  => (mirror :: <gadget-mirror>)
   with-c-string (c-string = defaulted-gadget-label(gadget))
-    let widget = GTK-LABEL(gtk-label-new(c-string));
+    let widget = gtk-label-new(c-string);
     assert(~null-pointer?(widget), "gtk-label-new failed");
     make(<gadget-mirror>,
 	 widget: widget,
@@ -334,7 +334,7 @@ end method make-gtk-mirror;
 define sealed method update-mirror-label
     (gadget :: <gtk-label>, mirror :: <gadget-mirror>) => ()
   with-c-string (c-string = defaulted-gadget-label(gadget))
-    let widget = GTK-LABEL(mirror-widget(mirror));
+    let widget = mirror-widget(mirror);
     gtk-label-set-text(widget, c-string)
   end
 end method update-mirror-label;
@@ -400,8 +400,8 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define sealed method handle-gtk-clicked-event
-    (gadget :: <gtk-button-mixin>, widget :: <GtkWidget*>,
-     event :: <GdkEventAny*>)
+    (gadget :: <gtk-button-mixin>, widget :: <GtkWidget>,
+     event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on button %=", gadget-label(gadget));
   handle-button-gadget-click(gadget)
@@ -455,7 +455,7 @@ define sealed method make-gtk-mirror
     ignoring("image label")
   end;
   with-c-string (c-string = text)
-    let widget = GTK-BUTTON(gtk-button-new-with-label(c-string));
+    let widget = gtk-button-new-with-label(c-string);
     assert(~null-pointer?(widget), "gtk-button-new-with-label failed");
     make(<gadget-mirror>,
 	 widget: widget,
@@ -512,10 +512,9 @@ define sealed method make-gtk-mirror
   with-c-string (c-string = text)
     let widget
       = if (push-button-like?(gadget))
-	  GTK-TOGGLE-BUTTON(gtk-toggle-button-new-with-label(c-string))
+	  gtk-toggle-button-new-with-label(c-string)
 	else
-          GTK-RADIO-BUTTON(gtk-radio-button-new-with-label
-                             (null-pointer(<GSList*>), c-string))
+          gtk-radio-button-new-with-label(null-pointer(<GSList>), c-string)
 	end;
     assert(~null-pointer?(widget), "gtk-toggle/radio-button-new-with-label failed");
     make(<gadget-mirror>,
@@ -583,9 +582,9 @@ define sealed method make-gtk-mirror
   with-c-string (c-string = text)
     let widget
       = if (push-button-like?(gadget))
-          GTK-TOGGLE-BUTTON(gtk-toggle-button-new-with-label(c-string))
+          gtk-toggle-button-new-with-label(c-string)
 	else
-          GTK-CHECK-BUTTON(gtk-check-button-new-with-label(c-string))
+          gtk-check-button-new-with-label(c-string)
 	end;
     assert(~null-pointer?(widget), "gtk-toggle/radio-button-new-with-label failed");
     make(<gadget-mirror>,
@@ -615,10 +614,6 @@ end method note-gadget-value-changed;
 
 /// Text gadgets
 
-define gtk-type-cast-function GTK-EDITABLE => <GtkEditable*>;
-
-// --- TODO: should this be unicode?
-define gtk-type-cast-function GTK-STRING => <c-string>;
 define method gtk-copy-text (text :: <c-string>) => (str :: <string>)
   // Convert to gc'able string.
   as(<byte-string>, text)
@@ -637,22 +632,10 @@ end class <gtk-text-gadget-mixin>;
 define method install-event-handlers
     (sheet :: <gtk-text-gadget-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  install-named-handlers(mirror, #[#"changed", #"activate"]);
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "activate", method (#rest args) activate-gtk-gadget(sheet) end);
+  g-signal-connect(widget, "changed", method(#rest args) handle-text-gadget-changing(sheet) end);
 end method install-event-handlers;
-
-// #"activate" signal
-define method gtk-activate-signal-handler (gadget :: <gtk-text-gadget-mixin>,
-					   user-data :: <gpointer>)
-  ignore(user-data);
-  activate-gtk-gadget(gadget);
-end;
-
-// #"changed" signal
-define method gtk-changed-signal-handler (gadget :: <gtk-text-gadget-mixin>,
-					  user-data :: <gpointer>)
-  ignore(user-data);
-  handle-text-gadget-changing(gadget);
-end;
 
 define sealed method update-mirror-attributes
     (gadget :: <gtk-text-gadget-mixin>, mirror :: <gadget-mirror>) => ()
@@ -674,9 +657,9 @@ define sealed method handle-text-gadget-changing
     (gadget :: <gtk-text-gadget-mixin>) => ()
   gtk-debug("handle-text-gadget-changing");
   let old-text = gadget.gadget-text-buffer;
-  let widget = GTK-EDITABLE(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   // --- TODO: use a stretchy buffer to avoid copying on each character?
-  let chars = GTK-STRING(gtk-editable-get-chars(widget, 0, -1));
+  let chars = gtk-editable-get-chars(widget, 0, -1);
   let new-text = unless (old-text = chars)
 		   gadget.gadget-text-buffer := gtk-copy-text(chars);
 		 end;
@@ -699,7 +682,7 @@ end method handle-text-gadget-changed;
 
 define sealed method text-selection
     (gadget :: <gtk-text-gadget-mixin>) => (range :: type-union(<text-range>, one-of(#f)))
-  let widget = GTK-EDITABLE(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   let start-pos = widget.selection-start-pos-value;
   let end-pos = widget.selection-end-pos-value;
   when (start-pos < end-pos)
@@ -709,7 +692,7 @@ end method text-selection;
 
 define sealed method selected-text
     (gadget :: <gtk-text-gadget-mixin>) => (string :: false-or(<string>))
-  let widget = GTK-EDITABLE(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   let start-pos = widget.selection-start-pos-value;
   let end-pos = widget.selection-end-pos-value;
   if (start-pos >= end-pos)
@@ -717,7 +700,7 @@ define sealed method selected-text
   elseif (start-pos = 0 & end-pos = gadget.gadget-text-buffer.size)
     gadget.gadget-text-buffer
   else
-    let chars = GTK-STRING(gtk-editable-get-chars(widget, start-pos, end-pos));
+    let chars = gtk-editable-get-chars(widget, start-pos, end-pos);
     let string = gtk-copy-text(chars);
     g-free(chars);
     string
@@ -750,7 +733,7 @@ define sealed method text-selection-setter
     (range :: type-union(<text-range>, one-of(#t, #f)),
      gadget :: <gtk-text-gadget-mixin>)
  => (range :: type-union(<text-range>, one-of(#t, #f)))
-  let widget = GTK-EDITABLE(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   let (start-pos, end-pos) = widget-range-bounds(widget, range);
   gtk-editable-select-region(widget, start-pos, end-pos);
   range
@@ -759,7 +742,7 @@ end method text-selection-setter;
 define sealed method text-caret-position
     (gadget :: <gtk-text-gadget-mixin>)
  => (position :: <integer>)
-  let widget = GTK-EDITABLE(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   gtk-editable-get-position(widget);
 end method text-caret-position;
 
@@ -767,7 +750,7 @@ define sealed method text-caret-position-setter
     (position :: false-or(<integer>), gadget :: <gtk-text-gadget-mixin>)
  => (position :: false-or(<integer>))
   if (position)
-    let widget = GTK-EDITABLE(gadget-widget(gadget));
+    let widget = gadget-widget(gadget);
     gtk-editable-set-position(widget, position);
     position
   end;
@@ -803,9 +786,9 @@ define sealed method make-gtk-mirror
   let text = gadget-text-buffer(gadget);
   let visibility = %gtk-text-visibility(gadget);
   let widget = if (max)
-                 GTK-ENTRY(gtk-entry-new-with-max-length(max))
+                 gtk-entry-new-with-max-length(max)
 	       else
-                 GTK-ENTRY(gtk-entry-new());
+                 gtk-entry-new();
 	       end;
   assert(~null-pointer?(widget), "gtk-entry-new failed");
   // Note that this is happening before install-event-handlers, so don't
@@ -825,7 +808,7 @@ end method make-gtk-mirror;
 define sealed method update-gadget-text
     (gadget :: <gtk-text-field-mixin>, mirror :: <gadget-mirror>) => ()
   ignore(mirror);
-  let widget = GTK-ENTRY(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   let new-text = gadget-text-buffer(gadget);
   with-disabled-event-handler (widget, #"changed")
     with-c-string (c-text = new-text)
@@ -901,8 +884,8 @@ define sealed method make-gtk-mirror
   let columns = gadget-columns(gadget);
   let word-wrap? = text-field-word-wrap?(gadget);
   let text = gadget-text-buffer(gadget);
-  let widget = GTK-TEXT(gtk-text-new(null-pointer(<GtkAdjustment*>),
-                                     null-pointer(<GtkAdjustment*>)));
+  let widget = gtk-text-new(null-pointer(<GtkAdjustment>),
+                            null-pointer(<GtkAdjustment>));
   assert(~null-pointer?(widget), "gtk-text-new failed");
   // Note that this is happening before install-event-handlers, so don't
   // need to disable events.
@@ -919,10 +902,10 @@ end method make-gtk-mirror;
 define sealed method update-gadget-text
     (gadget :: <gtk-text-editor>, mirror :: <gadget-mirror>) => ()
   ignore(mirror);
-  let widget = GTK-TEXT(gadget-widget(gadget));
+  let widget = gadget-widget(gadget);
   when (widget)
     let new-text = gadget-text-buffer(gadget);
-    let old-text = GTK-STRING(gtk-editable-get-chars(widget, 0, -1));
+    let old-text = gtk-editable-get-chars(widget, 0, -1);
     let update? = old-text ~= new-text;
     g-free(old-text);
     when (update?)
@@ -1009,20 +992,20 @@ end gadget-range-values;
 
 define method scroll-bar-adjusted-contents
     (gadget :: <gtk-scroll-bar>)
- => (value :: <single-float>,
-     lower :: <single-float>, upper :: <single-float>,
-     step-increment :: <single-float>, page-increment :: <single-float>,
-     page-size :: <single-float>)
+ => (value :: <double-float>,
+     lower :: <double-float>, upper :: <double-float>,
+     step-increment :: <double-float>, page-increment :: <double-float>,
+     page-size :: <double-float>)
   let range-value = gadget-value(gadget);
   let (range-start, range-end, range-step) = gadget-range-values(gadget);
   let slug-size = gadget-slug-size(gadget);
 
-  let lower = as(<single-float>, range-start);
-  let page-size = as(<single-float>, slug-size);
-  let step-increment = as(<single-float>, range-step);
+  let lower = as(<double-float>, range-start);
+  let page-size = as(<double-float>, slug-size);
+  let step-increment = as(<double-float>, range-step);
   let page-increment = max(page-size, step-increment);
-  let upper = as(<single-float>, range-end); // this inclues page size.
-  let value = as(<single-float>, range-value);
+  let upper = as(<double-float>, range-end); // this inclues page size.
+  let value = as(<double-float>, range-value);
 
   values(value, lower, upper, step-increment, page-increment, page-size)
 end scroll-bar-adjusted-contents;
@@ -1032,15 +1015,15 @@ define sealed method make-gtk-mirror
  => (mirror :: <gadget-mirror>)
   let (value, lower, upper, step-inc, page-inc, page-size)
     = scroll-bar-adjusted-contents(gadget);
-  let adj = GTK-ADJUSTMENT(gtk-adjustment-new(value,
-                                              lower,
-                                              upper,
-                                              step-inc,
-                                              page-inc,
-                                              page-size));
+  let adj = gtk-adjustment-new(value,
+                               lower,
+                               upper,
+                               step-inc,
+                               page-inc,
+                               page-size);
   let widget = select(gadget-orientation(gadget))
-		 #"horizontal" => GTK-HSCROLLBAR(gtk-hscrollbar-new(adj));
-		 #"vertical"   => GTK-VSCROLLBAR(gtk-vscrollbar-new(adj));
+		 #"horizontal" => gtk-hscrollbar-new(adj);
+		 #"vertical"   => gtk-vscrollbar-new(adj);
 	       end;
   assert(~null-pointer?(widget), "gtk-h/vscrollbar-new failed");
   // --- Does DUIM have anything to select/deselect smooth scrolling?
@@ -1059,8 +1042,8 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define method gtk-adjustment-value-changed-signal-handler
-    (gadget :: <gtk-scroll-bar>, adjustment :: <GtkAdjustment*>) => ()
-  let value = adjustment.value-value;
+    (gadget :: <gtk-scroll-bar>, adjustment :: <GtkAdjustment>) => ()
+  let value = adjustment.gtk-adjustment-get-value;
   scroll-to-position(gadget, value);
 end;
 
@@ -1094,16 +1077,16 @@ define sealed method note-scroll-bar-changed
   when (widget)
     let (value, lower, upper, step-inc, page-inc, page-size)
       = scroll-bar-adjusted-contents(gadget);
-    let adjustment :: <GtkAdjustment*> = gtk-range-get-adjustment(widget);
-    adjustment.GtkAdjustment-lower := lower;
-    adjustment.GtkAdjustment-upper := upper;
-    adjustment.GtkAdjustment-value := value;
-    adjustment.GtkAdjustment-step-increment := step-inc;
-    adjustment.GtkAdjustment-page-increment := page-inc;
-    adjustment.GtkAdjustment-page-size := page-size;
+    let adjustment :: <GtkAdjustment> = gtk-range-get-adjustment(widget);
+    adjustment.@lower := lower;
+    adjustment.@upper := upper;
+    adjustment.@value := value;
+    adjustment.@step-increment := step-inc;
+    adjustment.@page-increment := page-inc;
+    adjustment.@page-size := page-size;
     // --- TODO: cache gtk-signal-lookup
     with-c-string (name = "changed")
-      gtk-signal-emitv-by-name(adjustment, name, null-pointer(<GtkArg*>));
+      gtk-signal-emitv-by-name(adjustment, name, null-pointer(<GtkArg>));
     end;
   end;
 end method note-scroll-bar-changed;
@@ -1120,7 +1103,7 @@ end class <gtk-list-control-mixin>;
 define method update-mirror-attributes
     (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = GTK-CLIST(mirror.mirror-widget);
+  let widget = mirror.mirror-widget;
   gtk-clist-set-selection-mode
     (widget,
      select (gadget-selection-mode(gadget))
@@ -1147,8 +1130,8 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define sealed method handle-gtk-select-row-event
-    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget*>,
-     event :: <GdkEventAny*>)
+    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget>,
+     event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on list control!");
   let selection = list-selection(gadget, sheet-direct-mirror(gadget));
@@ -1158,8 +1141,8 @@ define sealed method handle-gtk-select-row-event
 end method handle-gtk-select-row-event;
 
 define sealed method handle-gtk-button-press-event
-    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget*>,
-     event :: <GdkEventButton*>)
+    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget>,
+     event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   gtk-debug("Pressed button %=, type %=",
 		event.GdkEventButton-button,
@@ -1182,17 +1165,17 @@ define method list-selection
     (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>)
  => (vector :: <vector>)
 /* TODO: GtkCList is deprecated in GTK2 */
-  let widget = GTK-CLIST(mirror.mirror-widget);
+  let widget = mirror.mirror-widget;
   let selection = widget.selection-value;
   glist-to-vector(selection, <integer>)
 end method list-selection;
 
 define method glist-to-vector
-    (GList :: <GList*>, type :: <type>)
+    (GList :: <GList>, type :: <type>)
  => (vector :: <stretchy-object-vector>)
   let vector = make(<stretchy-object-vector>);
   local method process-list
-	    (GList :: <GList*>)
+	    (GList :: <GList>)
 	  case
 	    null-pointer?(GList) =>
 	      #f;
@@ -1222,7 +1205,7 @@ end method update-gadget;
 define sealed method update-list-control-items
     (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>)
  => ()
-  let widget = GTK-CLIST(mirror.mirror-widget);
+  let widget = mirror.mirror-widget;
   let items = gadget-items(gadget);
   let label-function = gadget-label-key(gadget);
   gtk-clist-clear(widget);
@@ -1286,7 +1269,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-list-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-CLIST(gtk-clist-new(1));
+  let widget = gtk-clist-new(1);
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1312,7 +1295,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-list-control>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-CLIST(gtk-clist-new(1));
+  let widget = gtk-clist-new(1);
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1376,16 +1359,16 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define sealed method handle-gtk-click-column-event
-    (gadget :: <gtk-table-control>, widget :: <GtkWidget*>,
-     event :: <GdkEventAny*>)
+    (gadget :: <gtk-table-control>, widget :: <GtkWidget>,
+     event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on column!");
   #t
 end method handle-gtk-click-column-event;
 
 define sealed method handle-gtk-resize-column-event
-    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget*>,
-     event :: <GdkEventAny*>)
+    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget>,
+     event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   gtk-debug("Resized column!");
   #t
@@ -1439,7 +1422,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-option-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-CLIST(gtk-clist-new(1));
+  let widget = gtk-clist-new(1);
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1483,7 +1466,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-combo-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-CLIST(gtk-clist-new(1));
+  let widget = gtk-clist-new(1);
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1703,7 +1686,7 @@ define method make-gtk-mirror
     (sheet :: <gtk-viewport>)
  => (mirror :: <widget-mirror>)
 // let widget = GTK-DRAWING-AREA(gtk-drawing-area-new());
- let widget = GTK-WIDGET(gtk-drawing-area-new());
+ let widget = gtk-drawing-area-new();
 // gtk-drawing-area-size(widget, 200, 200);
  gtk-widget-set-size-request(widget, 200, 200);
  make(<drawing-area-mirror>,
@@ -1838,7 +1821,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-horizontal-slider>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-HSCALE(gtk-hscale-new(null-pointer(<GtkAdjustment*>)));
+  let widget = gtk-hscale-new(null-pointer(<GtkAdjustment>));
   assert(~null-pointer?(widget), "gtk-hscale-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1848,7 +1831,7 @@ end method make-gtk-mirror;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-vertical-slider>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-VSCALE(gtk-vscale-new(null-pointer(<GtkAdjustment*>)));
+  let widget = gtk-vscale-new(null-pointer(<GtkAdjustment>));
   assert(~null-pointer?(widget), "gtk-vscale-new failed");
   make(<gadget-mirror>,
        widget: widget,

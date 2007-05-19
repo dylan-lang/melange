@@ -10,19 +10,19 @@ Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 /// GTK keyboard handling
 
 define method handle-gtk-key-press-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventKey*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventKey>)
  => (handled? :: <boolean>)
   handle-gtk-key-event(sheet, widget, event)
 end method handle-gtk-key-press-event;
 
 define method handle-gtk-key-release-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventKey*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventKey>)
  => (handled? :: <boolean>)
   handle-gtk-key-event(sheet, widget, event)
 end method handle-gtk-key-release-event;
 
 define method handle-gtk-key-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventKey*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventKey>)
  => (handled? :: <boolean>)
   ignore(widget);
   let _port = port(sheet);

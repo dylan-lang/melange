@@ -205,20 +205,20 @@ define sealed method raise-mirror
     ignoring("activate? keyword to raise-mirror")
   end;
   let widget = mirror-widget(mirror);
-  gdk-window-raise(widget.GtkWidget-window)
+  gdk-window-raise(gtk-widget-get-window(widget))
 end method raise-mirror;
 
 define sealed method lower-mirror
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>) => ()
   let widget = mirror-widget(mirror);
-  gdk-window-lower(widget.GtkWidget-window)
+  gdk-window-lower(widget.gtk-widget-get-window)
 end method lower-mirror;
 
 define sealed method mirror-visible? 
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>)
  => (visible? :: <boolean>)
   let widget = mirror-widget(mirror);
-  gdk-window-is-visible(widget.GtkWidget-window) == $false
+  gdk-window-is-visible(widget.gtk-widget-get-window) == $false
 end method mirror-visible?;
 
 
@@ -292,7 +292,7 @@ end method make-gtk-mirror;
 define method do-make-gtk-mirror 
     (sheet :: <mirrored-sheet-mixin>)
 => (mirror :: <widget-mirror>)
-  let widget = GTK-FIXED(gtk-fixed-new());
+  let widget = gtk-fixed-new();
   //---*** We really want to switch this off entirely...
   gtk-container-set-resize-mode(widget, $GTK-RESIZE-QUEUE);
   make(<fixed-container-mirror>,
@@ -303,9 +303,9 @@ end method do-make-gtk-mirror;
 define method do-make-gtk-mirror
     (sheet :: <standard-repainting-mixin>)
   => (mirror :: <widget-mirror>)
-  let widget = GTK-DRAWING-AREA(gtk-drawing-area-new());
+  let widget = gtk-drawing-area-new();
 //  gtk-drawing-area-size(widget, 200, 200);
-  gtk-widget-set-size-request(GTK-WIDGET(widget), 200, 200);
+  gtk-widget-set-size-request(widget, 200, 200);
   make(<drawing-area-mirror>,
        widget: widget,
        sheet:  sheet);
@@ -324,8 +324,8 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define sealed method handle-gtk-expose-event
-    (sheet :: <mirrored-sheet-mixin>, widget :: <GtkWidget*>,
-     event :: <GdkEventExpose*>)
+    (sheet :: <mirrored-sheet-mixin>, widget :: <GtkWidget>,
+     event :: <GdkEventExpose>)
  => (handled? :: <boolean>)
   let area   = event.GdkEventExpose-area;
   let x      = area.GdkRectangle-x;
@@ -383,7 +383,7 @@ define method set-mirror-size
  => ()
   let widget = mirror.mirror-widget;
   let (left, top) = box-position(mirror.%region);
-  with-stack-structure (allocation :: <GtkAllocation*>)
+  with-stack-structure (allocation :: <GtkAllocation>)
     allocation.GdkRectangle-x      := left;
     allocation.GdkRectangle-y      := top;
     allocation.GdkRectangle-width  := width;

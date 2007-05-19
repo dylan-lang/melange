@@ -34,10 +34,10 @@ define function fetch-signal-handler
 end function fetch-signal-handler;
 
 define function do-with-disabled-event-handler
-    (function :: <function>, widget :: <GtkWidget*>, name :: <symbol>)
+    (function :: <function>, widget :: <GtkWidget>, name :: <symbol>)
  => (#rest values)
   let _handler = handler-function(fetch-signal-handler(name));
-  let object = GTK-OBJECT(widget);
+  let object = widget;
   block ()
     gtk-signal-handler-block-by-func(object, _handler, $null-gpointer);
     function()
@@ -50,7 +50,7 @@ define macro with-disabled-event-handler
   { with-disabled-event-handler (?widget:expression, ?name:expression)
       ?body:body
     end }
- => { do-with-disabled-event-handler(method () ?body end, GTK-WIDGET(?widget), ?name) }
+ => { do-with-disabled-event-handler(method () ?body end, ?widget, ?name) }
 end macro with-disabled-event-handler;
 
 define macro event-handler-definer
@@ -60,37 +60,37 @@ define macro event-handler-definer
         ?eq "handle_" ## ?name;
       register-signal-handler(as-lowercase(?"name"), "_gtk-" ## ?name ## "-callback");
       define open generic ?handler
-    (sheet :: <abstract-sheet>, widget :: <GtkWidget*>, 
+    (sheet :: <abstract-sheet>, widget :: <GtkWidget>, 
      event :: ?event-type)
        => (handled? :: <boolean>);
       define function "handle_" ## ?name
-    (widget :: <GtkWidget*>, event :: ?event-type)
+    (widget :: <GtkWidget>, event :: ?event-type)
        => (code :: <integer>)
   do-handle-gtk-signal
     (?handler, widget, ?"name", widget, event)
       end }
 end macro event-handler-definer;
 
-define event-handler (destroy,              <GdkEventAny*>)       = handle-gtk-destroy-event;
-define event-handler (delete_event,         <GdkEventAny*>)       = handle-gtk-delete-event;
-define event-handler (motion_notify_event,  <GdkEventMotion*>)    = handle-gtk-motion-event;
-define event-handler (button_press_event,   <GdkEventButton*>)    = handle-gtk-button-press-event;
-define event-handler (button_release_event, <GdkEventButton*>)    = handle-gtk-button-release-event;
-define event-handler (key_press_event,      <GdkEventKey*>)       = handle-gtk-key-press-event;
-define event-handler (key_release_event,    <GdkEventKey*>)       = handle-gtk-key-release-event;
-define event-handler (configure_event,      <GdkEventConfigure*>) = handle-gtk-configure-event;
-define event-handler (expose_event,         <GdkEventExpose*>)    = handle-gtk-expose-event;
-define event-handler (enter_event,          <GdkEventCrossing*>)  = handle-gtk-enter-event;
-define event-handler (leave_event,          <GdkEventCrossing*>)  = handle-gtk-leave-event;
+define event-handler (destroy,              <GdkEventAny>)       = handle-gtk-destroy-event;
+define event-handler (delete_event,         <GdkEventAny>)       = handle-gtk-delete-event;
+define event-handler (motion_notify_event,  <GdkEventMotion>)    = handle-gtk-motion-event;
+define event-handler (button_press_event,   <GdkEventButton>)    = handle-gtk-button-press-event;
+define event-handler (button_release_event, <GdkEventButton>)    = handle-gtk-button-release-event;
+define event-handler (key_press_event,      <GdkEventKey>)       = handle-gtk-key-press-event;
+define event-handler (key_release_event,    <GdkEventKey>)       = handle-gtk-key-release-event;
+define event-handler (configure_event,      <GdkEventConfigure>) = handle-gtk-configure-event;
+define event-handler (expose_event,         <GdkEventExpose>)    = handle-gtk-expose-event;
+define event-handler (enter_event,          <GdkEventCrossing>)  = handle-gtk-enter-event;
+define event-handler (leave_event,          <GdkEventCrossing>)  = handle-gtk-leave-event;
 
-define event-handler (clicked,              <GdkEventAny*>)       = handle-gtk-clicked-event;
-define event-handler (select_row,           <GdkEventAny*>)       = handle-gtk-select-row-event;
-define event-handler (click_column,         <GdkEventAny*>)       = handle-gtk-click-column-event;
-define event-handler (resize_column,        <GdkEventAny*>)       = handle-gtk-resize-column-event;
+define event-handler (clicked,              <GdkEventAny>)       = handle-gtk-clicked-event;
+define event-handler (select_row,           <GdkEventAny>)       = handle-gtk-select-row-event;
+define event-handler (click_column,         <GdkEventAny>)       = handle-gtk-click-column-event;
+define event-handler (resize_column,        <GdkEventAny>)       = handle-gtk-resize-column-event;
 
   
 define inline function do-handle-gtk-signal
-    (handler_ :: <function>, widget :: <GtkWidget*>, name :: <string>,
+    (handler_ :: <function>, widget :: <GtkWidget>, name :: <string>,
      #rest args)
  => (code :: <integer>)
   let mirror = widget-mirror(widget);
@@ -124,11 +124,11 @@ define macro signal-handler-aux
       ?%handler:name (?params:*),
       ?_handler:name (?c-params)
     end }
-    => { define function ?%handler (widget :: <GtkWidget*>, ?params)
+    => { define function ?%handler (widget :: <GtkWidget>, ?params)
     do-handle-gtk-signal(?handler, widget, ?signal, ?args)
    end;
          define C-callable-wrapper ?_handler of ?%handler
-            parameter widget :: <GtkWidget*>;
+            parameter widget :: <GtkWidget>;
            ?c-params
          end;
          register-signal-handler(?signal, ?_handler)
@@ -149,14 +149,14 @@ define signal-handler activate (user-data :: <gpointer>)
 
 /// Adjustments
 define function %gtk-adjustment-value-changed-signal-handler
-    (adj :: <GtkAdjustment*>, widget :: <GtkWidget*>)
+    (adj :: <GtkAdjustment>, widget :: <GtkWidget>)
   do-handle-gtk-signal(gtk-adjustment-value-changed-signal-handler,
            widget, "adjustment/value_changed", adj)
 end;
 define C-callable-wrapper _gtk-adjustment-value-changed-signal-handler
   of %gtk-adjustment-value-changed-signal-handler
-  parameter adj :: <GtkAdjustment*>;
-  parameter user-data :: <GtkWidget*>;
+  parameter adj :: <GtkAdjustment>;
+  parameter user-data :: <GtkWidget>;
 end;
 register-signal-handler("value_changed",
       _gtk-adjustment-value-changed-signal-handler,
@@ -165,7 +165,7 @@ register-signal-handler("value_changed",
 define function install-named-handlers
     (mirror :: <gtk-mirror>, handlers :: <sequence>, #key adjustment) => ()
   let widget = mirror-widget(mirror);
-  let object = GTK-OBJECT(widget);
+  let object = widget;
   duim-debug-message("Installing handlers for %=: %=",
       mirror-sheet(mirror), handlers);
   for (key :: <symbol> in handlers)
@@ -223,7 +223,7 @@ end method process-next-event;
 /// Event handlers
 
 define method handle-gtk-destroy-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventAny*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   ignoring("handle-gtk-destroy-event");
   // frame-can-quit?...
@@ -231,7 +231,7 @@ define method handle-gtk-destroy-event
 end method handle-gtk-destroy-event;
 
 define method handle-gtk-motion-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventMotion*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventMotion>)
  => (handled? :: <boolean>)
   let mirror = widget-mirror(widget);
   let sheet = mirror-sheet(mirror);
@@ -269,14 +269,14 @@ define method handle-gtk-motion-event
 end method handle-gtk-motion-event;
 
 define method handle-gtk-enter-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventCrossing*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventCrossing>)
  => (handled? :: <boolean>)
   ignore(widget);
   handle-gtk-crossing-event(sheet, event, <pointer-enter-event>)
 end method handle-gtk-enter-event;
 
 define method handle-gtk-leave-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventCrossing*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventCrossing>)
  => (handled? :: <boolean>)
   ignore(widget);
   handle-gtk-crossing-event(sheet, event, <pointer-exit-event>)
@@ -284,7 +284,7 @@ end method handle-gtk-leave-event;
 
 // Watch out, because leave events show up after window have been killed!
 define sealed method handle-gtk-crossing-event
-    (sheet :: <sheet>, event :: <GdkEventCrossing*>,
+    (sheet :: <sheet>, event :: <GdkEventCrossing>,
      event-class :: subclass(<pointer-motion-event>))
  => (handled? :: <boolean>)
   let _port = port(sheet);
@@ -319,19 +319,19 @@ define function gtk-detail->duim-crossing-kind
 end function gtk-detail->duim-crossing-kind;
 
 define method handle-gtk-button-press-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventButton*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   handle-gtk-button-event(sheet, widget, event)
 end method handle-gtk-button-press-event;
 
 define method handle-gtk-button-release-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventButton*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   handle-gtk-button-press-event(sheet, widget, event)
 end method handle-gtk-button-release-event;
 
 define method handle-gtk-button-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventButton*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   let _port = port(sheet);
   when (_port)
@@ -376,7 +376,7 @@ define function gtk-button->duim-button
 end function gtk-button->duim-button;
 
 define method handle-gtk-expose-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventExpose*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventExpose>)
  => (handled? :: <boolean>)
   let _port = port(sheet);
   when (_port)
@@ -485,7 +485,7 @@ end method handle-gtk-state-change-no-config-event;
 */
 
 define method handle-gtk-configure-event
-    (sheet :: <sheet>, widget :: <GtkWidget*>, event :: <GdkEventConfigure*>)
+    (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventConfigure>)
  => (handled? :: <boolean>)
   let allocation = widget.GtkWidget-allocation;
   let native-x  = event.GdkEventConfigure-x;

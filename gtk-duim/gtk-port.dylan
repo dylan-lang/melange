@@ -175,8 +175,8 @@ define method grab-pointer
 			  logior($GDK-POINTER-MOTION-MASK,
 				 $GDK-BUTTON-PRESS-MASK,
 				 $GDK-BUTTON-RELEASE-MASK),
-			  null-pointer(<GdkWindow*>),		// confine to
-			  null-pointer(<GdkCursor*>),		// cursor
+			  null-pointer(<GdkWindow>),		// confine to
+			  null-pointer(<GdkCursor>),		// cursor
 			  current-time);
   end;
   result ~= 0

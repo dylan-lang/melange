@@ -14,7 +14,7 @@ define constant $supports-titled-ellipses = #f;
 
 define sealed method draw-point
     (medium :: <gtk-medium>, x, y) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium);
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x, y)
@@ -33,7 +33,7 @@ end method draw-point;
 
 define sealed method draw-points
     (medium :: <gtk-medium>, coord-seq :: <coordinate-sequence>) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium);
   let transform = medium-device-transform(medium);
   let thickness = pen-width(medium-pen(medium));
@@ -87,7 +87,7 @@ end method set-pixels;
 
 define sealed method draw-line
     (medium :: <gtk-medium>, x1, y1, x2, y2) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, pen: medium-pen(medium));
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x1, y1, x2, y2)
@@ -98,7 +98,7 @@ end method draw-line;
 
 define sealed method draw-lines
     (medium :: <gtk-medium>, coord-seq :: <coordinate-sequence>) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, pen: medium-pen(medium));
   let transform = medium-device-transform(medium);
   //---*** Use gdk-draw-segments
@@ -121,7 +121,7 @@ define sealed method draw-rectangle
       draw-polygon(medium, coords, filled?: filled?, closed?: #t)
     end
   else
-    let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+    let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
       = update-drawing-state(medium, pen: ~filled? & medium-pen(medium));
     //---*** Might need to use 'gdk-gc-set-ts-origin' to set tile/stipple origin to x1/y1
     with-device-coordinates (transform, x1, y1, x2, y2)
@@ -140,7 +140,7 @@ define sealed method draw-rectangles
   if (~rectilinear-transform?(transform))
     draw-transformed-rectangles(medium, coord-seq, filled?: filled?)
   else
-    let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+    let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
       = update-drawing-state(medium, pen: ~filled? & medium-pen(medium));
     let transform = medium-device-transform(medium);
     do-endpoint-coordinates
@@ -182,7 +182,7 @@ end method draw-transformed-rectangles;
 define sealed method draw-rounded-rectangle
     (medium :: <gtk-medium>, x1, y1, x2, y2,
      #key filled? = #t, radius) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, pen: ~filled? & medium-pen(medium));
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x1, y1, x2, y2)
@@ -200,13 +200,13 @@ end method draw-rounded-rectangle;
 define sealed method draw-polygon
     (medium :: <gtk-medium>, coord-seq :: <coordinate-sequence>,
      #key closed? = #t, filled? = #t) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, pen: ~filled? & medium-pen(medium));
   let transform = medium-device-transform(medium);
   let scoords :: <integer> = size(coord-seq);
   let ncoords :: <integer> = size(coord-seq);
   let npoints :: <integer> = floor/(ncoords, 2) + if (closed? & ~filled?) 1 else 0 end;
-  with-stack-structure (points :: <GdkPoint*>, element-count: npoints)
+  with-stack-structure (points :: <GdkPoint>, element-count: npoints)
     //--- Can't use without-bounds-checks until it works on FFI 'element-setter' calls
     // without-bounds-checks
       for (i :: <integer> from 0 below ncoords by 2,
@@ -245,7 +245,7 @@ define sealed method draw-polygon
 // ---*** (I tried both Dylan stack allocated and gdk-gc-new gcontexts)
 // ---*** so the code has to frig a potentially shared gcontext (= not good).
 //      gdk-draw-lines(drawable, gcontext, points, npoints)
-      with-stack-structure (gcontext-values :: <GdkGCValues*>)
+      with-stack-structure (gcontext-values :: <GdkGCValues>)
         let old-cap-style = #f;
         block ()
           gdk-gc-get-values(gcontext, gcontext-values);
@@ -284,7 +284,7 @@ define sealed method draw-ellipse
     (medium :: <gtk-medium>, center-x, center-y,
      radius-1-dx, radius-1-dy, radius-2-dx, radius-2-dy,
      #key start-angle, end-angle, filled? = #t) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, pen: ~filled? & medium-pen(medium));
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, center-x, center-y)
@@ -325,7 +325,7 @@ end method draw-ellipse;
 // GTK bitmaps and icons are handled separately
 define sealed method draw-image
     (medium :: <gtk-medium>, image :: <image>, x, y) => (record)
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium);
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x, y)
@@ -424,7 +424,7 @@ end method draw-pixmap;
 
 define sealed method clear-box
     (medium :: <gtk-medium>, left, top, right, bottom) => ()
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = get-gcontext(medium);
   let sheet = medium-sheet(medium);
   let transform = sheet-device-transform(sheet);
@@ -457,7 +457,7 @@ define sealed method draw-text
   let text-style :: <text-style> = medium-merged-text-style(medium);
   let font :: <gtk-font> = text-style-mapping(port(medium), text-style);
   let length :: <integer> = size(string);
-  let (drawable :: <GdkDrawable*>, gcontext :: <GdkGC*>)
+  let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, font: font);
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x, y)

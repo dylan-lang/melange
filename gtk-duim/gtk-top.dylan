@@ -44,7 +44,7 @@ define method set-mirror-parent
     (child :: <widget-mirror>, parent :: <top-level-mirror>)
  => ()
   let (x, y) = sheet-native-edges(mirror-sheet(child));
-  gtk-container-add(GTK-CONTAINER(mirror-widget(parent)),
+  gtk-container-add(mirror-widget(parent),
 		    mirror-widget(child))
 end method set-mirror-parent;
     
@@ -354,7 +354,7 @@ end method make-gtk-mirror;
 define sealed method make-top-level-mirror
     (sheet :: <top-level-sheet>, frame :: <basic-frame>)
  => (mirror :: <top-level-mirror>)
-  let widget = GTK-WINDOW(gtk-window-new($GTK-WINDOW-TOPLEVEL));
+  let widget = gtk-window-new($GTK-WINDOW-TOPLEVEL);
   make(<top-level-mirror>,
        widget: widget,
        sheet:  sheet)
@@ -372,7 +372,7 @@ define method update-mirror-attributes
     gtk-window-set-title(widget, c-string)
   end;
   gtk-window-set-modal(widget, if (modal?) $true else $false end);
-  gtk-container-set-border-width(GTK-CONTAINER(widget), $top-level-border);
+  gtk-container-set-border-width(widget, $top-level-border);
 end method update-mirror-attributes;
 
 define method install-event-handlers
@@ -415,8 +415,8 @@ define sealed method lower-mirror
 end method lower-mirror;
 
 define sealed method handle-gtk-delete-event
-    (sheet :: <top-level-sheet>, widget :: <GtkWidget*>,
-     event :: <GdkEventAny*>)
+    (sheet :: <top-level-sheet>, widget :: <GtkWidget>,
+     event :: <GdkEventAny>)
  => (handled? :: <boolean>)
   let frame  = sheet-frame(sheet);
   let controller = frame & frame-controlling-frame(frame);
@@ -535,8 +535,8 @@ define sealed method handle-move
 end method handle-move;
 
 define sealed method handle-gtk-configure-event
-    (sheet :: <top-level-sheet>, widget :: <GtkWidget*>,
-     event :: <GdkEventConfigure*>)
+    (sheet :: <top-level-sheet>, widget :: <GtkWidget>,
+     event :: <GdkEventConfigure>)
  => (handled? :: <boolean>)
   let frame  = sheet-frame(sheet);
   let left   = event.GdkEventConfigure-x;

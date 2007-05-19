@@ -25,20 +25,19 @@ define method set-mirror-parent
   duim-debug-message("Adding %= to menu %=",
 		gadget-label(mirror-sheet(child)),
 		gadget-label(mirror-sheet(parent)));
-  gtk-menu-shell-append(GTK-MENU(mirror-widget(parent).GtkMenuItem-submenu),
-		  mirror-widget(child))
+  gtk-menu-shell-append(mirror-widget(parent).Gtk-Menu-Item-get-submenu,
+                        mirror-widget(child))
 end method set-mirror-parent;
     
 define method set-mirror-parent
     (child :: <menu-mirror>, parent :: <menu-mirror>)
  => ()
   let widget = mirror-widget(child);
-  let menu = GTK-MENU(gtk-menu-new());
+  let menu = gtk-menu-new();
   duim-debug-message("Creating submenu for %s",
 		gadget-label(mirror-sheet(child)));
   gtk-menu-item-set-submenu(widget, menu);
-  gtk-menu-shell-append(GTK-MENU(mirror-widget(parent).GtkMenuItem-submenu),
-		  widget)
+  gtk-menu-shell-append(mirror-widget(parent).Gtk-Menu-Item-get-submenu, widget)
 end method set-mirror-parent;
     
 define method set-mirror-parent
@@ -50,7 +49,7 @@ define method set-mirror-parent
 //      gtk-menu-item-right-justify(widget)
       gtk-menu-item-set-right-justified ((widget), /* TRUE */ 1)
     end;
-    let menu = GTK-MENU(gtk-menu-new());
+    let menu = gtk-menu-new();
     duim-debug-message("Creating submenu for menu bar");
     gtk-menu-item-set-submenu(widget, menu);
     gtk-menu-shell-append(mirror-widget(parent),
@@ -306,7 +305,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-menu-bar>)
  => (mirror :: <gadget-mirror>)
-  let widget = GTK-MENU-BAR(gtk-menu-bar-new());
+  let widget = gtk-menu-bar-new();
   make(<gadget-mirror>,
        widget: widget,
        sheet:  gadget)
@@ -354,7 +353,7 @@ define sealed method make-gtk-mirror
     mnemonic := allocate-unique-mnemonic(gadget, text)
   end;
   with-c-string (c-string = text)
-    let widget = GTK-MENU-ITEM(gtk-menu-item-new-with-label(c-string));
+    let widget = gtk-menu-item-new-with-label(c-string);
     make(<menu-button-mirror>,
 	 widget: widget,
 	 sheet:  gadget)
@@ -411,7 +410,7 @@ define sealed method make-gtk-mirror
     ignoring("menu with image")
   end;
   with-c-string (c-string = text)
-    let widget = GTK-MENU-ITEM(gtk-menu-item-new-with-label(c-string));
+    let widget = gtk-menu-item-new-with-label(c-string);
     let owner = menu-owner(gadget);
     let owner = if (frame?(owner)) top-level-sheet(owner) else owner end;
     make-menu-mirror-for-owner(owner, gadget, widget)
@@ -419,7 +418,7 @@ define sealed method make-gtk-mirror
 end method make-gtk-mirror;
 
 define sealed method make-menu-mirror-for-owner
-    (owner :: <sheet>, gadget :: <gtk-menu>, widget :: <GtkMenuItem*>)
+    (owner :: <sheet>, gadget :: <gtk-menu>, widget :: <GtkMenuItem>)
  => (mirror :: <popup-menu-mirror>)
   let selection-owner = menu-record-selection?(gadget) & gadget;
   make(<popup-menu-mirror>, 
@@ -429,7 +428,7 @@ define sealed method make-menu-mirror-for-owner
 end method make-menu-mirror-for-owner;
 
 define sealed method make-menu-mirror-for-owner
-    (owner == #f, gadget :: <gtk-menu>, widget :: <GtkMenuItem*>)
+    (owner == #f, gadget :: <gtk-menu>, widget :: <GtkMenuItem>)
  => (mirror :: <menu-mirror>)
   make(<menu-mirror>,
        widget: widget,
