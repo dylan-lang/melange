@@ -33,6 +33,7 @@ define C-function gtk-widget-get-state
 end;
 
 
+
 define method make(type :: subclass(<GTypeInstance>), #rest args, 
                    #key address, #all-keys)
  => (result :: <GTypeInstance>)
@@ -49,7 +50,7 @@ define method make(type :: subclass(<GTypeInstance>), #rest args,
     result;
   else
     // possible route: convert #rest args into GParamSpec, call g_object_newv()
-    error("Can't create GTypeInstance on my own.");
+    error("Can't create GTypeInstance on my own from %=", type.debug-name);
   end if;
 end method make;
 
