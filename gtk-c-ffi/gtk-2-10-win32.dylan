@@ -79,6 +79,9 @@ define constant <GdkColormap> = <_GdkColormap>;
 define C-subtype <_GdkGC> (<_GObject>) end;
 define constant <GdkGC> = <_GdkGC>;
 
+define C-subtype <_GdkGCWin32> (<_GdkGC>) end;
+define constant <GdkGCWin32> = <_GdkGCWin32>;
+
 define C-pointer-type <GdkGC*> => <GdkGC>;
 define constant <GdkGC<@5>> = <GdkGC*>;
 define C-subtype <_GdkDrawable> (<_GObject>) end;
@@ -19818,9 +19821,9 @@ end;
 
 define C-function gdk-window-get-pointer
   input parameter arg1 :: <GdkWindow>;
-  input parameter arg2 :: <gint*>;
-  input parameter arg3 :: <gint*>;
-  input parameter arg4 :: <GdkModifierType*>;
+  output parameter arg2 :: <gint*>;
+  output parameter arg3 :: <gint*>;
+  output parameter arg4 :: <GdkModifierType*>;
   result res :: <GdkWindow>;
   c-name: "gdk_window_get_pointer";
 end;
