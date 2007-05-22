@@ -52,9 +52,10 @@ define sealed method do-attach-medium
   duim-debug-message("Attaching medium to %= (medium-sheet %=)",
 		sheet, medium-sheet(medium));
   let widget = mirror.mirror-widget;
-  let drawable = pointer-cast(<GdkDrawable>, widget.gtk-widget-get-window);
+// FIXME
+//  let drawable = widget.gtk-widget-get-window;
   clear-ink-cache(medium);
-  medium-drawable(medium) := drawable;
+//  medium-drawable(medium) := drawable;
   // Set up the palette and fg/bg pixels
   let widget  = mirror-widget(mirror);
   let palette = port-default-palette(_port);
@@ -175,15 +176,13 @@ define inline method get-gcontext
   let widget = mirror.mirror-widget;
   let drawable = medium-drawable(medium);
   // let gcontext = widget.gtk-widget-get-style.GtkStyle-black-gc;
-  let gcontext = widget.gtk-widget-get-style.GtkStyle-fg-gc[widget.gtk-widget-get-state];
-  if (null-pointer?(drawable))
-    duim-debug-message("Null pointer drawable!");
-    let drawable = widget.gtk-widget-get-window;
+  // let gcontext = widget.gtk-widget-get-style.GtkStyle-fg-gc[widget.gtk-widget-get-state];
+  unless (drawable)
+    drawable := widget.gtk-widget-get-window;
     medium-drawable(medium) := drawable;
-    values(drawable, gcontext)
-  else
-    values(drawable, gcontext)
-  end
+  end;
+  let gcontext = gdk-gc-new(drawable);
+  values(drawable, gcontext)
 end method get-gcontext;
 
 // Note that the brush defaults to 'medium-brush(medium)',

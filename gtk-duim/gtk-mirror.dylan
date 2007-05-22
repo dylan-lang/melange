@@ -314,18 +314,27 @@ end method do-make-gtk-mirror;
 define method install-event-handlers
     (sheet :: <mirrored-sheet-mixin>, mirror :: <fixed-container-mirror>) => ()
   next-method();
-  install-named-handlers(mirror, #[#"expose_event"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "expose-event", method (widget, event, #rest args) handle-gtk-expose-event(sheet, event) end);
+  gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
 end method install-event-handlers;
 
 define method install-event-handlers
     (sheet :: <mirrored-sheet-mixin>, mirror :: <drawing-area-mirror>) => ()
   next-method();
-  install-named-handlers(mirror, #[#"expose_event", #"button_press_event", #"button_release_event", #"motion_notify_event"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "expose-event", method (widget, event, #rest args) handle-gtk-expose-event(sheet, event) end);
+  gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
+  g-signal-connect(widget, "button-press-event", method (widget, event) handle-gtk-button-event(sheet, event) end);
+  gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
+  g-signal-connect(widget, "button-release-event", method (widget, event) handle-gtk-button-event(sheet, event) end);
+  gtk-widget-add-events(widget, $GDK-BUTTON-RELEASE-MASK);
+  g-signal-connect(widget, "motion-notify-event", method (widget, event, #rest args) handle-gtk-motion-event(sheet, event) end);
+  gtk-widget-add-events(widget, logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK));
 end method install-event-handlers;
 
 define sealed method handle-gtk-expose-event
-    (sheet :: <mirrored-sheet-mixin>, widget :: <GtkWidget>,
-     event :: <GdkEventExpose>)
+    (sheet :: <mirrored-sheet-mixin>, event :: <GdkEventExpose>)
  => (handled? :: <boolean>)
   let area   = event.GdkEventExpose-area;
   let x      = area.GdkRectangle-x;

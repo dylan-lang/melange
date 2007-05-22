@@ -363,7 +363,8 @@ end method make-gtk-mirror;
 define method install-event-handlers
     (sheet :: <gtk-menu-button-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  install-named-handlers(mirror, #[#"activate"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "activate", method (#rest args) activate-gtk-gadget(sheet) end);
 end method install-event-handlers;
 
 // #"activate" signal

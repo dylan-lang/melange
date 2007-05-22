@@ -8,7 +8,7 @@ Dual-license: GNU Lesser General Public License
 Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 
 /// Palettes
-// /*---*** No palettes for now...
+/*---*** No palettes for now...
 //--- How much more do we need to flesh out palettes?
 define sealed class <gtk-palette> (<basic-palette>)
   sealed slot port :: false-or(<port>),
@@ -235,4 +235,4 @@ define sealed method set-x-read-write-color
     x/XStoreColor(x-display, x-colormap, x-color)
   end
 end method set-x-read-write-color;
-// */
+*/

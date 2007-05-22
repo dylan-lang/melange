@@ -378,8 +378,9 @@ end method update-mirror-attributes;
 define method install-event-handlers
     (sheet :: <gtk-top-level-sheet-mixin>, mirror :: <top-level-mirror>) => ()
   next-method();
-  install-named-handlers(mirror,
-			 #[#"delete_event", #"configure_event"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "delete-event", method (#rest args) handle-gtk-delete-event(sheet) end);
+  g-signal-connect(widget, "configure-event", method (widget, event, #rest args) handle-gtk-configure-event(sheet, widget, event) end);
 end method install-event-handlers;
 
 
@@ -415,8 +416,7 @@ define sealed method lower-mirror
 end method lower-mirror;
 
 define sealed method handle-gtk-delete-event
-    (sheet :: <top-level-sheet>, widget :: <GtkWidget>,
-     event :: <GdkEventAny>)
+    (sheet :: <top-level-sheet>)
  => (handled? :: <boolean>)
   let frame  = sheet-frame(sheet);
   let controller = frame & frame-controlling-frame(frame);

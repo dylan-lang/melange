@@ -396,7 +396,8 @@ end class <gtk-button-mixin>;
 define method install-event-handlers
     (sheet :: <gtk-button-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  install-named-handlers(mirror, #[#"clicked"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "clicked", method (#rest args) handle-button-gadget-click(sheet) end);
 end method install-event-handlers;
 
 define sealed method handle-gtk-clicked-event
@@ -1036,14 +1037,14 @@ end method make-gtk-mirror;
 define method install-event-handlers
     (sheet :: <gtk-scroll-bar>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let adj = gtk-range-get-adjustment(mirror-widget(mirror));
-  install-named-handlers(mirror, #[#"adjustment/value_changed"],
-			 adjustment: adj);
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "value-changed", method (#rest args) gtk-adjustment-value-changed-signal-handler(sheet, widget) end);
 end method install-event-handlers;
 
 define method gtk-adjustment-value-changed-signal-handler
-    (gadget :: <gtk-scroll-bar>, adjustment :: <GtkAdjustment>) => ()
-  let value = adjustment.gtk-adjustment-get-value;
+    (gadget :: <gtk-scroll-bar>, widget :: <GtkWidget>) => ()
+  let adj = gtk-range-get-adjustment(widget);
+  let value = adj.gtk-adjustment-get-value;
   scroll-to-position(gadget, value);
 end;
 
@@ -1125,24 +1126,24 @@ end method update-mirror-attributes;
 define method install-event-handlers
     (sheet :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  install-named-handlers(mirror,
-			 #[#"select_row", #"button_press_event"])
+  let widget = mirror-widget(mirror);
+  g-signal-connect(widget, "select-row", method (widget, row, column, event, #rest args) handle-gtk-select-row-event(sheet, row, event) end);
+  g-signal-connect(widget, "button-press-event", method (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end);
+  gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
 end method install-event-handlers;
 
 define sealed method handle-gtk-select-row-event
-    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget>,
-     event :: <GdkEventAny>)
+    (gadget :: <gtk-list-control-mixin>, row :: <integer>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on list control!");
-  let selection = list-selection(gadget, sheet-direct-mirror(gadget));
+  let selection = list(row); //list-selection(gadget, sheet-direct-mirror(gadget));
   gtk-debug("  Selection now %=", selection);
   distribute-selection-changed-callback(gadget, selection);
   #t
 end method handle-gtk-select-row-event;
 
 define sealed method handle-gtk-button-press-event
-    (gadget :: <gtk-list-control-mixin>, widget :: <GtkWidget>,
-     event :: <GdkEventButton>)
+    (gadget :: <gtk-list-control-mixin>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   gtk-debug("Pressed button %=, type %=",
 		event.GdkEventButton-button,
