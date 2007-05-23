@@ -6467,13 +6467,6 @@ define C-function g-string-append-printf
   c-name: "g_string_append_printf";
 end;
 
-define C-function g-string-append-c-inline
-  input parameter arg1 :: <GString>;
-  input parameter arg2 :: <gchar>;
-  result res :: <GString>;
-  c-name: "g_string_append_c_inline";
-end;
-
 define C-function g-string-down
   input parameter arg1 :: <GString>;
   result res :: <GString>;
@@ -11049,27 +11042,6 @@ define C-function nanosleep
   c-name: "nanosleep";
 end;
 
-define C-function clock-getres
-  input parameter arg1 :: <clockid-t>;
-  input parameter arg2 :: <timespec>;
-  result res :: <C-signed-int>;
-  c-name: "clock_getres";
-end;
-
-define C-function clock-gettime
-  input parameter arg1 :: <clockid-t>;
-  input parameter arg2 :: <timespec>;
-  result res :: <C-signed-int>;
-  c-name: "clock_gettime";
-end;
-
-define C-function clock-settime
-  input parameter arg1 :: <clockid-t>;
-  input parameter arg2 :: <timespec>;
-  result res :: <C-signed-int>;
-  c-name: "clock_settime";
-end;
-
 define C-pointer-type <timer-t*> => <timer-t>;
 define C-function timer-create
   input parameter arg1 :: <clockid-t>;
@@ -11857,12 +11829,6 @@ define C-function g-byte-array-sort-with-data
   input parameter arg2 :: <GCompareDataFunc>;
   input parameter arg3 :: <gpointer>;
   c-name: "g_byte_array_sort_with_data";
-end;
-
-define C-function alloca
-  input parameter arg1 :: <size-t>;
-  result res :: <C-void*>;
-  c-name: "alloca";
 end;
 
 define constant $_ALLOCA-H = 1;
@@ -39260,13 +39226,6 @@ define C-function gtk-dialog-run
   input parameter arg1 :: <GtkDialog>;
   result res :: <gint>;
   c-name: "gtk_dialog_run";
-end;
-
-define C-function _gtk-dialog-get-response-for-widget
-  input parameter arg1 :: <GtkDialog>;
-  input parameter arg2 :: <GtkWidget>;
-  result res :: <gint>;
-  c-name: "_gtk_dialog_get_response_for_widget";
 end;
 
 define C-struct <_GtkMenuToolButtonPrivate>

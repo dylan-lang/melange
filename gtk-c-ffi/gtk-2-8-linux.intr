@@ -7,6 +7,8 @@ define interface
       "g_scanner_cur_value", // returns a union of size 8
       "glib_dummy_decl",
       "g_thread_init",
+      "g_string_append_c_inline", //why that?
+      "clock_gettime", "clock_settime", "clock_getres", "alloca", //kludge
       "_g_param_type_register_static_constant",
       "g_thread_init_with_errorcheck_mutexes",
       "_gtk_container_clear_resize_widgets",
@@ -34,6 +36,7 @@ define interface
       "_gtk_boolean_handled_accumulator",
       "_gtk_check_button_get_props",
       "_gtk_dialog_set_ignore_separator",
+      "_gtk_dialog_get_response_for_widget",
       "_gtk_scrolled_window_get_scrollbar_spacing",
       "_gtk_size_group_queue_resize",
       "_gtk_size_group_compute_requisition",

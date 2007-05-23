@@ -10,8 +10,7 @@ Files:            library
 	gtk-module
 	gtk
 	properties
-c-source-files:	support.c
-Linker-Options:   $(guilflags)
+Linker-Options:  -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lfontconfig -lXext -lXrender -lXinerama -lXi -lXrandr -lXcursor -lXfixes -lpango-1.0 -lcairo -lX11 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 support.o
 Compilation-Mode: tight
 Target-Type:      dll
 
