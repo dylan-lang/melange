@@ -43,7 +43,9 @@ define method make(type :: subclass(<GTypeInstance>), #rest args,
       let g-type = g-type-from-instance(instance);
       let dylan-type = find-gtype(g-type);
       unless (dylan-type)
-        error("Unknown GType encountered. Re-run melange or implement dynamic class generation.");
+        
+        error("Unknown GType %= encountered. Re-run melange or implement dynamic class generation.",
+              as(<byte-string>, g-type-name(g-type)));
       end;
       let result = next-method(dylan-type, address: address);
       g-object-ref-sink(result);

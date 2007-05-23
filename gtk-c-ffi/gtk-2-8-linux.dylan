@@ -75,6 +75,9 @@ define constant <GdkColormap> = <_GdkColormap>;
 define C-subtype <_GdkGC> (<_GObject>) end;
 define constant <GdkGC> = <_GdkGC>;
 
+define C-subtype <_GdkGCX11> (<_GdkGC>) end;
+define constant <GdkGCX11> = <_GdkGCX11>;
+
 define C-pointer-type <GdkGC*> => <GdkGC>;
 define constant <GdkGC<@5>> = <GdkGC*>;
 define C-subtype <_GdkDrawable> (<_GObject>) end;
