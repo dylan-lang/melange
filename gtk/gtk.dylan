@@ -37,17 +37,21 @@ end;
 define method make(type :: subclass(<GTypeInstance>), #rest args, 
                    #key address, #all-keys)
  => (result :: <GTypeInstance>)
-  if(address & (as(<integer>, address) ~= 0))
-    let instance = next-method(<GTypeInstance>, address: address);
-    let g-type = g-type-from-instance(instance);
-    let dylan-type = find-gtype(g-type);
-    unless (dylan-type)
-      error("Unknown GType encountered. Re-run melange or implement dynamic class generation.");
-    end;
-    let result = next-method(dylan-type, address: address);
-    g-object-ref-sink(result);
-    finalize-when-unreachable(result);
-    result;
+  if(address)
+    if (as(<integer>, address) ~= 0)
+      let instance = next-method(<GTypeInstance>, address: address);
+      let g-type = g-type-from-instance(instance);
+      let dylan-type = find-gtype(g-type);
+      unless (dylan-type)
+        error("Unknown GType encountered. Re-run melange or implement dynamic class generation.");
+      end;
+      let result = next-method(dylan-type, address: address);
+      g-object-ref-sink(result);
+      finalize-when-unreachable(result);
+      result;
+    else
+      next-method();
+    end
   else
     // possible route: convert #rest args into GParamSpec, call g_object_newv()
     error("Can't create GTypeInstance on my own from %=", type.debug-name);

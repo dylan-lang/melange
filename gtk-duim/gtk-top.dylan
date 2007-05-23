@@ -378,9 +378,8 @@ end method update-mirror-attributes;
 define method install-event-handlers
     (sheet :: <gtk-top-level-sheet-mixin>, mirror :: <top-level-mirror>) => ()
   next-method();
-  let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "delete-event", method (#rest args) handle-gtk-delete-event(sheet) end);
-  g-signal-connect(widget, "configure-event", method (widget, event, #rest args) handle-gtk-configure-event(sheet, widget, event) end);
+  duim-g-signal-connect(sheet, #"delete-event") (#rest args) handle-gtk-delete-event(sheet) end;
+  duim-g-signal-connect(sheet, #"configure-event") (widget, event, #rest args) handle-gtk-configure-event(sheet, widget, event) end;
 end method install-event-handlers;
 
 

@@ -396,8 +396,7 @@ end class <gtk-button-mixin>;
 define method install-event-handlers
     (sheet :: <gtk-button-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "clicked", method (#rest args) handle-button-gadget-click(sheet) end);
+  duim-g-signal-connect(sheet, #"clicked") (#rest args) handle-button-gadget-click(sheet) end;
 end method install-event-handlers;
 
 define sealed method handle-gtk-clicked-event
@@ -527,9 +526,9 @@ end method make-gtk-mirror;
 define method update-mirror-attributes
     (gadget :: <gtk-radio-button>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = mirror.mirror-widget;
   let selected? = gadget-value(gadget);
-  with-disabled-event-handler (widget, #"clicked")
+  let widget = mirror-widget(mirror);
+  with-disabled-event-handler (mirror, #"clicked")
     gtk-toggle-button-set-active
       (widget, if (selected?) $true else $false end)
   end
@@ -597,9 +596,9 @@ end method make-gtk-mirror;
 define method update-mirror-attributes
     (gadget :: <gtk-check-button>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = mirror.mirror-widget;
   let selected? = gadget-value(gadget);
-  with-disabled-event-handler (widget, #"clicked")
+  let widget = mirror-widget(mirror);
+  with-disabled-event-handler (mirror, #"clicked")
     gtk-toggle-button-set-active
       (widget, if (selected?) $true else $false end)
   end
@@ -633,9 +632,8 @@ end class <gtk-text-gadget-mixin>;
 define method install-event-handlers
     (sheet :: <gtk-text-gadget-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "activate", method (#rest args) activate-gtk-gadget(sheet) end);
-  g-signal-connect(widget, "changed", method(#rest args) handle-text-gadget-changing(sheet) end);
+  duim-g-signal-connect(sheet, #"activate") (#rest args) activate-gtk-gadget(sheet) end;
+  duim-g-signal-connect(sheet, #"changed") (#rest args) handle-text-gadget-changing(sheet) end;
 end method install-event-handlers;
 
 define sealed method update-mirror-attributes
@@ -811,7 +809,7 @@ define sealed method update-gadget-text
   ignore(mirror);
   let widget = gadget-widget(gadget);
   let new-text = gadget-text-buffer(gadget);
-  with-disabled-event-handler (widget, #"changed")
+  with-disabled-event-handler (mirror, #"changed")
     with-c-string (c-text = new-text)
       gtk-entry-set-text(widget, c-text);
     end;
@@ -912,7 +910,7 @@ define sealed method update-gadget-text
     when (update?)
       block ()
 	gtk-text-freeze(widget);
-	with-disabled-event-handler (widget, #"changed")
+	with-disabled-event-handler (mirror, #"changed")
 	  set-text-widget-text(widget, new-text);
 	end;
       cleanup
@@ -1038,7 +1036,7 @@ define method install-event-handlers
     (sheet :: <gtk-scroll-bar>, mirror :: <gadget-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "value-changed", method (#rest args) gtk-adjustment-value-changed-signal-handler(sheet, widget) end);
+  duim-g-signal-connect(sheet, #"value-changed") (adjustment, #rest args) gtk-adjustment-value-changed-signal-handler(sheet, widget) end;
 end method install-event-handlers;
 
 define method gtk-adjustment-value-changed-signal-handler
@@ -1127,8 +1125,8 @@ define method install-event-handlers
     (sheet :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "select-row", method (widget, row, column, event, #rest args) handle-gtk-select-row-event(sheet, row, event) end);
-  g-signal-connect(widget, "button-press-event", method (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"select-row") (widget, row, column, event, #rest args) handle-gtk-select-row-event(sheet, row, event) end;
+  duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
   gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
 end method install-event-handlers;
 

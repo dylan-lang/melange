@@ -9,23 +9,8 @@ Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 
 /// GTK signals
 
-define function install-named-handlers
-    (mirror :: <gtk-mirror>, handlers :: <sequence>, #key adjustment) => ()
-  let widget = mirror-widget(mirror);
-  gtk-widget-add-events(widget,
-      logior($GDK-EXPOSURE-MASK, $GDK-LEAVE-NOTIFY-MASK,
-             if (member?(#"motion_notify_event", handlers))
-              logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK)
-             else
-              0
-             end,
-             if (member?(#"button_press_event", handlers))
-              logior($GDK-BUTTON-PRESS-MASK, $GDK-BUTTON-RELEASE-MASK)
-             else
-              0
-            end));
-end function install-named-handlers;
 
+  
 
 /// Install event handlers
 

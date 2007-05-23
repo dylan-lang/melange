@@ -363,8 +363,7 @@ end method make-gtk-mirror;
 define method install-event-handlers
     (sheet :: <gtk-menu-button-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "activate", method (#rest args) activate-gtk-gadget(sheet) end);
+  duim-g-signal-connect(sheet, #"activate") (#rest args) activate-gtk-gadget(sheet) end;
 end method install-event-handlers;
 
 // #"activate" signal

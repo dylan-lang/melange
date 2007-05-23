@@ -27,6 +27,7 @@ end method port-handles-repaint?;
 define open abstract class <gtk-mirror> (<mirror>)
   sealed slot mirror-sheet :: <sheet>,
     required-init-keyword: sheet:;
+  sealed slot signal-handler-ids :: <table> = make(<table>);
 end class <gtk-mirror>;
 
 define method initialize
@@ -311,11 +312,36 @@ define method do-make-gtk-mirror
        sheet:  sheet);
 end method do-make-gtk-mirror;
 
+define macro duim-g-signal-connect
+ { duim-g-signal-connect (?sheet:name, ?signal-name:expression) (?args:*) ?body:* end }
+  => { begin
+         let mirror = ?sheet.sheet-direct-mirror;
+         let widget = mirror-widget(mirror);
+         let handler-id = g-signal-connect(widget, as(<string>, ?signal-name),
+                                           method(?args) ?body end);
+         mirror.signal-handler-ids[?signal-name] := handler-id;
+       end; }
+end;
+                                             
+define macro with-disabled-event-handler
+  { with-disabled-event-handler (?mirror:expression, ?signal-name:expression)
+      ?body:*
+    end }
+ => { let signal-handler-id = element(?mirror.signal-handler-ids, ?signal-name);
+      let widget = mirror-widget(?mirror);
+      block()
+        g-signal-handler-block(widget, signal-handler-id);
+        ?body
+      cleanup
+        g-signal-handler-unblock(widget, signal-handler-id);
+      end; }
+end;
+
 define method install-event-handlers
     (sheet :: <mirrored-sheet-mixin>, mirror :: <fixed-container-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "expose-event", method (widget, event, #rest args) handle-gtk-expose-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"expose-event") (widget, event) handle-gtk-expose-event(sheet, event) end;
   gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
 end method install-event-handlers;
 
@@ -323,13 +349,13 @@ define method install-event-handlers
     (sheet :: <mirrored-sheet-mixin>, mirror :: <drawing-area-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
-  g-signal-connect(widget, "expose-event", method (widget, event, #rest args) handle-gtk-expose-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"expose-event") (widget, event) handle-gtk-expose-event(sheet, event) end;
   gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
-  g-signal-connect(widget, "button-press-event", method (widget, event) handle-gtk-button-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"button-press-event") (widget, event) handle-gtk-button-event(sheet, event) end;
   gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
-  g-signal-connect(widget, "button-release-event", method (widget, event) handle-gtk-button-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"button-release-event") (widget, event) handle-gtk-button-event(sheet, event) end;
   gtk-widget-add-events(widget, $GDK-BUTTON-RELEASE-MASK);
-  g-signal-connect(widget, "motion-notify-event", method (widget, event, #rest args) handle-gtk-motion-event(sheet, event) end);
+  duim-g-signal-connect(sheet, #"motion-notify-event") (widget, event) handle-gtk-motion-event(sheet, event) end;
   gtk-widget-add-events(widget, logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK));
 end method install-event-handlers;
 
