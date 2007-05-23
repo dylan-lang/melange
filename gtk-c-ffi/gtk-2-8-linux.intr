@@ -129,8 +129,26 @@ define interface
           "char*" => <byte-string>,
           "GCallback" => <function>},
     rename: {"gtk_init" => %gtk-init },
-    name-mapper: minimal-name-mapping;
+    name-mapper: gtk-name-mapping;
 
+  struct "struct _GTypeInstance",
+    superclasses: {<C-void*>};
+  struct "struct _AtkImplementorIface",
+    superclasses: {<C-void*>};
+  struct "struct _GtkTreeModel",
+    superclasses: {<C-void*>};
+  struct "struct _GtkTreeSortable",
+    superclasses: {<C-void*>};
+  struct "struct _GtkTreeDragSource",
+    superclasses: {<C-void*>};
+  struct "struct _GtkTreeDragDest",
+    superclasses: {<C-void*>};
+  struct "struct _GtkEditable",
+    superclasses: {<C-void*>};
+  struct "struct _GtkCellEditable",
+    superclasses: {<C-void*>};
+  struct "struct _GtkFileChooser",
+    superclasses: {<C-void*>};
   pointer "char**" => <c-string-vector>,
     superclasses: {<c-vector>};
   function "g_signal_connect_data",
@@ -141,6 +159,10 @@ define interface
     map-argument: { 2 => <object> };
   function "g_closure_new_simple",
     map-argument: { 2 => <object> };
+  function "gdk_window_get_pointer",
+    output-argument: 2,
+    output-argument: 3,
+    output-argument: 4;
   struct "struct _GObject",
     superclasses: {<_GTypeInstance>};
   struct "struct _GTypeModule",
@@ -312,7 +334,7 @@ define interface
   struct "struct _GtkFileChooserDialog",
     superclasses: {<_GtkDialog>, <_AtkImplementorIface>, <_GtkFileChooser>};
   struct "struct _GtkFileChooserWidget",
-    superclasses: {<_GtkVBox>, <_AtkImplementorIface>, <_GtkFileChooser>, <_GtkFileChooserEmbed>};
+    superclasses: {<_GtkVBox>, <_AtkImplementorIface>, <_GtkFileChooser>};
   struct "struct _GtkFileFilter",
     superclasses: {<_GtkObject>};
   struct "struct _GtkFileSelection",
