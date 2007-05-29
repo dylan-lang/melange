@@ -6125,6 +6125,11 @@ define C-pointer-type <GThreadFunctions> => <_GThreadFunctions>;
  /* Ignoring declaration for {instance of <variable-declaration>} "g-threads-got-initialized"*/
 define constant <anonymous-314> = <C-function-pointer>;
  /* Ignoring declaration for {instance of <variable-declaration>} "g-thread-gettime"*/
+define C-function g-thread-init
+  input parameter arg1 :: <GThreadFunctions>;
+  c-name: "g_thread_init";
+end;
+
 define C-pointer-type <GMutex*> => <GMutex>;
 define C-function g-static-mutex-get-mutex-impl
   input parameter arg1 :: <GMutex*>;

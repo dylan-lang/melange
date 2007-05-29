@@ -6,7 +6,6 @@ define interface
     exclude: {
       "g_scanner_cur_value", // returns a union of size 8
       "glib_dummy_decl",
-      "g_thread_init",
       "_g_param_type_register_static_constant",
       "g_thread_init_with_errorcheck_mutexes",
       "_gtk_container_clear_resize_widgets",

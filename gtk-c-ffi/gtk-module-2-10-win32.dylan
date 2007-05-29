@@ -12463,6 +12463,7 @@ define module gtk-internal
     g-thread-error-quark,
     g-thread-exit,
     g-thread-foreach,
+    g-thread-init,
     g-thread-join,
     g-thread-pool-free,
     g-thread-pool-get-max-idle-time,
