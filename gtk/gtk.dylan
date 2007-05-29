@@ -169,6 +169,9 @@ end function g-signal-connect;
 
 define function initialize-gtk
     () => ()
+  g-thread-init(null-pointer(<GThreadFunctions>));
+  gdk-threads-init();
+  gdk-threads-enter();
   let name = application-name();
   with-c-string (string = name)
     let string* = make(<C-string*>, element-count: 1);
