@@ -4,6 +4,7 @@ define module gtk-internal
   use common-dylan;
   use c-ffi;
   export
+    g-thread-init,
     $AIO-PRIO-DELTA-MAX,
     $ARG-MAX,
     $ATK-HYPERLINK-IS-INLINE,
