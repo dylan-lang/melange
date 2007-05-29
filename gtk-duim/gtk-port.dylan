@@ -25,8 +25,8 @@ end class <gtk-port>;
 
 define sealed method initialize
     (_port :: <gtk-port>, #key server-path) => ()
-  next-method();
   initialize-gtk();
+  next-method();
 /*---*** What to do here?
   let type    = head(server-path);
   let display = get-property(tail(server-path), #"display",
@@ -52,7 +52,7 @@ register-port-class(#"gtk", <gtk-port>, default?: #t);
 define sideways method class-for-make-port
     (type == #"gtk", #rest initargs, #key)
  => (class :: <class>, initargs :: false-or(<sequence>))
-  values(<gtk-port>, concatenate(initargs, #(event-processor-type:, #"n")))
+  values(<gtk-port>, concatenate(initargs, #(event-processor-type:, #"n+1")))
 end method class-for-make-port;
 
 define sealed method port-type

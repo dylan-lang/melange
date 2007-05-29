@@ -189,7 +189,9 @@ define sealed method map-mirror
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>) => ()
   let widget = mirror-widget(mirror);
   duim-debug-message("Showing %=", sheet);
-  gtk-widget-show(widget)
+  with-gdk-lock
+    gtk-widget-show(widget)
+  end
 end method map-mirror;
 
 define sealed method unmap-mirror

@@ -388,7 +388,9 @@ define sealed method map-mirror
      mirror :: <top-level-mirror>)
  => ()
   let widget = mirror-widget(mirror);
-  gtk-widget-show(widget)
+  with-gdk-lock
+    gtk-widget-show(widget)
+  end
 end method map-mirror;
 
 define sealed method unmap-mirror

@@ -28,7 +28,9 @@ define sealed method process-next-event
  => (timed-out? :: <boolean>)
   //--- We should do something with the timeout
   ignore(timeout);
-  gtk-main-iteration();
+  with-gdk-lock
+    gtk-main-iteration();
+  end;
   #f;
 end method process-next-event;
 

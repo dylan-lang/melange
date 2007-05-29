@@ -167,23 +167,35 @@ define function g-signal-connect(instance :: <GObject>,
                            if(run-after?) 1 else 0 end)
 end function g-signal-connect;
 
+define macro with-gdk-lock
+  { with-gdk-lock ?:body end }
+ =>
+  {  block()
+       gdk-threads-enter();
+       ?body
+     cleanup
+       gdk-threads-leave();
+     end }
+end;
+
 define function initialize-gtk
     () => ()
   g-thread-init(null-pointer(<GThreadFunctions>));
   gdk-threads-init();
-  gdk-threads-enter();
-  let name = application-name();
-  with-c-string (string = name)
-    let string* = make(<C-string*>, element-count: 1);
-    string*[0] := string;
-    let string** = make(<char***>);
-    string**[0] := string*;
-    let int* = make(<C-int*>);
-    int*[0] := 1;
-    %gtk-init(int*, string**);
-    destroy(string*);
-    destroy(string**);
-    destroy(int*)
+  with-gdk-lock
+    let name = application-name();
+    with-c-string (string = name)
+      let string* = make(<C-string*>, element-count: 1);
+      string*[0] := string;
+      let string** = make(<char***>);
+      string**[0] := string*;
+      let int* = make(<C-int*>);
+      int*[0] := 1;
+      %gtk-init(int*, string**);
+      destroy(string*);
+      destroy(string**);
+      destroy(int*)
+    end;
   end;
   automatic-finalization-enabled?() := #t;
 end function initialize-gtk;

@@ -14,5 +14,6 @@ define module gtk-support
     gtk-widget-get-window,
     gtk-widget-get-state,
     property-getter-definer,
-    property-setter-definer;
+    property-setter-definer,
+    \with-gdk-lock;
 end;  
