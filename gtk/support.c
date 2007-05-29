@@ -29,3 +29,8 @@ GdkWindow* gtk_widget_get_window (GtkWidget* widget) {
 int gtk_widget_get_state (GtkWidget* widget) {
     return GTK_WIDGET_STATE(widget);
 }
+
+struct GtkAllocation* gtk_widget_get_allocation (GtkWidget* widget) {
+    return &(widget->allocation);
+}
+

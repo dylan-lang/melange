@@ -13,6 +13,7 @@ define module gtk-support
   export g-signal-connect, initialize-gtk,
     gtk-widget-get-window,
     gtk-widget-get-state,
+    gtk-widget-get-allocation,
     property-getter-definer,
     property-setter-definer,
     \with-gdk-lock;

@@ -32,6 +32,12 @@ define C-function gtk-widget-get-state
   c-name: "gtk_widget_get_state";
 end;
 
+define C-function gtk-widget-get-allocation
+  input parameter widget :: <GtkWidget>;
+  result allocation :: <GtkAllocation>;
+  c-name: "gtk_widget_get_allocation";
+end;
+
 
 
 define method make(type :: subclass(<GTypeInstance>), #rest args, 

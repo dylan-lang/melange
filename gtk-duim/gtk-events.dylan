@@ -288,7 +288,7 @@ end method handle-gtk-state-change-no-config-event;
 define method handle-gtk-configure-event
     (sheet :: <sheet>, widget :: <GtkWidget>, event :: <GdkEventConfigure>)
  => (handled? :: <boolean>)
-  let allocation = widget.GtkWidget-allocation;
+  let allocation = widget.gtk-widget-get-allocation;
   let native-x  = event.GdkEventConfigure-x;
   let native-y  = event.GdkEventConfigure-y;
   let native-width  = allocation.GdkRectangle-width;
