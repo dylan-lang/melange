@@ -319,9 +319,11 @@ define macro duim-g-signal-connect
   => { begin
          let mirror = ?sheet.sheet-direct-mirror;
          let widget = mirror-widget(mirror);
-         let handler-id = g-signal-connect(widget, as(<string>, ?signal-name),
-                                           method(?args) ?body end);
-         mirror.signal-handler-ids[?signal-name] := handler-id;
+         with-gdk-lock
+           let handler-id = g-signal-connect(widget, as(<string>, ?signal-name),
+                                             method(?args) ?body end);
+                            mirror.signal-handler-ids[?signal-name] := handler-id;
+         end
        end; }
 end;
                                              
