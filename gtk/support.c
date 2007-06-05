@@ -34,3 +34,13 @@ struct GtkAllocation* gtk_widget_get_allocation (GtkWidget* widget) {
     return &(widget->allocation);
 }
 
+void g_value_nullify(GValue* gvalue) {
+    char* foo = (char*)gvalue;
+    int i;
+
+    for(i=0; i<sizeof(GValue); i++,foo++)
+      *foo = 0;
+}
+
+
+

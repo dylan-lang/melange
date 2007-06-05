@@ -335,15 +335,18 @@ define macro property-getter-definer
   }
 end;
 
+define C-function g-value-nullify
+  parameter gvalue :: <GValue>;
+  c-name: "g_value_nullify";
+end;
+
 define macro property-setter-definer
   { define property-setter ?:name :: ?type:name on ?class:name end }
   => { define method "@" ## ?name ## "-setter" (res, object :: ?class) => (res)
          with-stack-structure (gvalue :: <GValue>)
            // FIXME: hack, because we cannot request initialization with zero
            // from with-stack-structure
-           if (g-is-value(gvalue) ~= 0) 
-             g-value-unset(gvalue)
-           end;
+           g-value-nullify(gvalue);
            g-value-set-value(gvalue, res);
            g-object-set-property(object, ?"name", gvalue);
          end;

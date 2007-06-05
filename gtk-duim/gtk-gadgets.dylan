@@ -185,7 +185,7 @@ define sealed method note-gadget-disabled
   ignore(client);
   next-method();
   let widget = gadget-widget(gadget);
-  with-gdk-lock
+  widget & with-gdk-lock
     gtk-widget-set-sensitive(widget, $false)
   end
 end method note-gadget-disabled;

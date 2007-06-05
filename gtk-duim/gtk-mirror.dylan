@@ -391,6 +391,15 @@ define method set-mirror-parent
 		x, y)
 end method set-mirror-parent;
 
+define method set-mirror-parent
+    (child :: <widget-mirror>, parent :: <drawing-area-mirror>)
+ => ()
+  let (x, y) = sheet-native-edges(mirror-sheet(child));
+  gtk-fixed-put(mirror-widget(parent),
+		mirror-widget(child),
+		x, y)
+end method set-mirror-parent;
+
 /*
 define method set-mirror-parent
     (child :: <popup-menu-mirror>, parent :: <display-mirror>)
@@ -411,6 +420,14 @@ end method move-mirror;
 
 define method size-mirror
     (parent :: <fixed-container-mirror>, child :: <widget-mirror>,
+     width :: <integer>, height :: <integer>)
+ => ()
+  ignore(parent);
+  set-mirror-size(child, width, height)
+end method size-mirror;
+
+define method size-mirror
+    (parent :: <drawing-area-mirror>, child :: <widget-mirror>,
      width :: <integer>, height :: <integer>)
  => ()
   ignore(parent);
