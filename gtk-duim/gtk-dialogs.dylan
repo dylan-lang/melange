@@ -344,25 +344,28 @@ define sealed method do-choose-file
   ignore(if-exists);
   let _port     = port(owner);
   let parent-widget = mirror-widget(sheet-mirror(owner));
-  let mtitle = title | if (direction == #"output") "Save File" else "Open File" end;
-  let action = if (direction == #"output")
-                 $GTK-FILE-CHOOSER-ACTION-SAVE
-               else
-                 $GTK-FILE-CHOOSER-ACTION-OPEN
-               end;
-  let dialog = gtk-file-chooser-dialog-new (mtitle,
-                                            parent-widget,
-                                            action,
-                                            null-pointer(<gchar*>));
-  if (default)
-    gtk-file-chooser-set-filename(dialog, default)
-  end;
-  let filename =
-    if (gtk-dialog-run (dialog) == $GTK-RESPONSE-ACCEPT)
-      gtk-file-chooser-get-filename(dialog); // FIXME: leaks the filename C string
+  let (mtitle, action, second-name)
+    = if (direction == #"output")
+        values("Save File", $GTK-FILE-CHOOSER-ACTION-SAVE, $GTK-STOCK-SAVE)
+      else
+        values("Open File", $GTK-FILE-CHOOSER-ACTION-OPEN, $GTK-STOCK-OPEN);
+      end;
+  with-gdk-lock
+    let dialog
+      = gtk-file-chooser-dialog-new (title | mtitle, parent-widget, action,
+                                     null-pointer(<gchar*>));
+    gtk-dialog-add-button(dialog, $GTK-STOCK-CANCEL, $GTK-RESPONSE-CANCEL);
+    gtk-dialog-add-button(dialog, second-name, $GTK-RESPONSE-ACCEPT);
+    if (default)
+      gtk-file-chooser-set-filename(dialog, default)
     end;
-  gtk-widget-destroy(dialog);
-  values(filename, #f)
+    let filename =
+      if (gtk-dialog-run (dialog) == $GTK-RESPONSE-ACCEPT)
+        gtk-file-chooser-get-filename(dialog); // FIXME: leaks the filename C string
+      end;
+    gtk-widget-destroy(dialog);
+    values(filename, #f)
+  end;
 end method do-choose-file;
 
 
