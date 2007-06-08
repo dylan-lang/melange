@@ -175,7 +175,7 @@ define sealed method note-gadget-enabled
   ignore(client);
   next-method();
   let widget = gadget-widget(gadget);
-  with-gdk-lock
+  widget & with-gdk-lock
     gtk-widget-set-sensitive(widget, $true)
   end
 end method note-gadget-enabled;
@@ -1148,30 +1148,31 @@ define method update-mirror-attributes
   next-method();
   with-gdk-lock
     let widget = mirror.mirror-widget;
-    gtk-clist-set-selection-mode
-      (widget,
+    let selection = gtk-tree-view-get-selection(widget);
+    gtk-tree-selection-set-mode
+      (selection,
        select (gadget-selection-mode(gadget))
-         #"none"     => $GTK-SELECTION-BROWSE;
-         #"single"   => $GTK-SELECTION-SINGLE;
-         #"multiple" => $GTK-SELECTION-EXTENDED;
+         #"none"     => $GTK-SELECTION-NONE;
+         #"single"   => $GTK-SELECTION-BROWSE;
+         #"multiple" => $GTK-SELECTION-MULTIPLE;
        end);
-    gtk-clist-set-shadow-type(widget, $GTK-SHADOW-IN);
     if (instance?(gadget, <table-control>))
-      gtk-clist-column-titles-show(widget)
+      widget.@headers-visible := #t;
     else
-      gtk-clist-column-titles-hide(widget);
+      widget.@headers-visible := #f;
       //---*** How should we decide this?
-      gtk-clist-set-column-width(widget, 0, 500)
+//      gtk-clist-set-column-width(widget, 0, 500)
     end;
-    update-list-control-items(gadget, mirror)
-  end
+  end;
+  update-list-control-items(gadget, mirror)
 end method update-mirror-attributes;
 
 define method install-event-handlers
     (sheet :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
-  duim-g-signal-connect(sheet, #"select-row") (widget, row, column, event, #rest args) handle-gtk-select-row-event(sheet, row, event) end;
+  let selection = gtk-tree-view-get-selection(widget);
+  g-signal-connect(selection, "changed", method (#rest args) handle-gtk-select-row-event(sheet) end);
   duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
   with-gdk-lock
     gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
@@ -1179,12 +1180,34 @@ define method install-event-handlers
 end method install-event-handlers;
 
 define sealed method handle-gtk-select-row-event
-    (gadget :: <gtk-list-control-mixin>, row :: <integer>, event :: <GdkEventButton>)
+    (gadget :: <gtk-list-control-mixin>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on list control!");
-  let selection = list(row); //list-selection(gadget, sheet-direct-mirror(gadget));
-  gtk-debug("  Selection now %=", selection);
-  distribute-selection-changed-callback(gadget, selection);
+  let mirror = gadget.sheet-direct-mirror;
+  let widget = mirror-widget(mirror);
+  let selection = gtk-tree-view-get-selection(widget);
+  let new-selection = make(<stretchy-vector>);
+  
+  with-stack-structure (model :: <GtkTreeModel*>)
+    let selected-paths = glist-to-vector
+      (gtk-tree-selection-get-selected-rows
+         (selection, model),
+       <GtkTreePath>);
+
+    for (path in selected-paths)
+      with-stack-structure (iter :: <GtkTreeIter>)
+        gtk-tree-model-get-iter(model[0], iter, path);
+        with-stack-structure (value :: <GValue>)
+          g-value-nullify(value);
+          gtk-tree-model-get-value(model[0], iter, 0, value);
+          add!(new-selection, g-value-to-dylan(value));
+        end;
+      end;
+    end;
+  end;
+
+  gtk-debug("  Selection now %=", new-selection);
+  distribute-selection-changed-callback(gadget, new-selection);
   #t
 end method handle-gtk-select-row-event;
 
@@ -1208,15 +1231,6 @@ define sealed method handle-gtk-button-press-event
   end
 end method handle-gtk-button-press-event;
 
-define method list-selection
-    (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>)
- => (vector :: <vector>)
-/* TODO: GtkCList is deprecated in GTK2 */
-  let widget = mirror.mirror-widget;
-  let selection = widget.selection-value;
-  glist-to-vector(selection, <integer>)
-end method list-selection;
-
 define method glist-to-vector
     (GList :: <GList>, type :: <type>)
  => (vector :: <stretchy-object-vector>)
@@ -1227,8 +1241,8 @@ define method glist-to-vector
 	    null-pointer?(GList) =>
 	      #f;
 	    otherwise =>
-	      add!(vector, c-type-cast(type, glist.data-value));
-	      process-list(glist.next-value);
+	      add!(vector, c-type-cast(type, glist.GList-data));
+	      process-list(glist.GList-next);
 	  end
 	end;
   process-list(GList);
@@ -1256,16 +1270,25 @@ define sealed method update-list-control-items
   let items = gadget-items(gadget);
   let label-function = gadget-label-key(gadget);
   with-gdk-lock
-    gtk-clist-clear(widget);
-    with-stack-structure(string* :: <C-string*>)
-      for (item in items)
+    let type-vector = make(<GType*>, element-count: 2);
+    type-vector[0] := $G-TYPE-INT;
+    type-vector[1] := $G-TYPE-STRING;
+    let model = gtk-list-store-newv(2, type-vector);
+    with-stack-structure(iter :: <GtkTreeIter>)
+      for (item in items, i from 0)
         let label = label-function(item);
-        with-c-string (string = label)
-	  string*[0] := string;
-          gtk-clist-append(widget, pointer-cast(<gchar**>, string*))
+        gtk-list-store-append(model, iter);
+        with-stack-structure (gvalue :: <GValue>)
+          g-value-nullify(gvalue);
+          g-value-set-value(gvalue, i);
+          gtk-list-store-set-value(model, iter, 0, gvalue);
+          g-value-nullify(gvalue);
+          g-value-set-value(gvalue, label);
+          gtk-list-store-set-value(model, iter, 1, gvalue);
         end;
       end
     end;
+    widget.@model := model;
   end
 end method update-list-control-items;
 
@@ -1319,8 +1342,12 @@ define sealed method make-gtk-mirror
     (gadget :: <gtk-list-box>)
  => (mirror :: <gadget-mirror>)
   with-gdk-lock
-    let widget = gtk-clist-new(1);
-    assert(~null-pointer?(widget), "gtk-clist-new failed");
+    let widget = gtk-tree-view-new();
+    let renderer = gtk-cell-renderer-text-new();
+    let column = gtk-tree-view-column-new();
+    gtk-tree-view-column-pack-start(column, renderer, 0);
+    gtk-tree-view-column-add-attribute(column, renderer, "text", 1);
+    gtk-tree-view-append-column(widget, column);
     make(<gadget-mirror>,
          widget: widget,
          sheet:  gadget)
@@ -1347,8 +1374,12 @@ define sealed method make-gtk-mirror
     (gadget :: <gtk-list-control>)
  => (mirror :: <gadget-mirror>)
   with-gdk-lock
-    let widget = gtk-clist-new(1);
-    assert(~null-pointer?(widget), "gtk-clist-new failed");
+    let widget = gtk-tree-view-new();
+    let renderer = gtk-cell-renderer-text-new();
+    let column = gtk-tree-view-column-new();
+    gtk-tree-view-column-pack-start(column, renderer, 0);
+    gtk-tree-view-column-add-attribute(column, renderer, "text", 1);
+    gtk-tree-view-append-column(widget, column);
     make(<gadget-mirror>,
          widget: widget,
          sheet:  gadget)
@@ -1357,7 +1388,6 @@ end method make-gtk-mirror;
 
 // Table controls
 
-/*---*** Use the fake ones for now...
 define sealed class <gtk-table-control> 
     (<gtk-list-control-mixin>,
      <table-control>,
@@ -1374,39 +1404,73 @@ define sealed method make-gtk-mirror
     (gadget :: <gtk-table-control>)
  => (mirror :: <gadget-mirror>)
   let columns = table-control-columns(gadget);
-  with-gdk-lock
-    let widget = GTK-CLIST(gtk-clist-new(columns.size));
-    assert(~null-pointer?(widget), "gtk-clist-new failed");
-    make(<gadget-mirror>,
-         widget: widget,
-         sheet:  gadget)
-  end;
+  let res
+  = with-gdk-lock
+      let widget = gtk-tree-view-new();
+      let columns = table-control-columns(gadget);
+      for (c in columns, i from 1)
+        let renderer = gtk-cell-renderer-text-new();
+        let column = gtk-tree-view-column-new();
+        gtk-tree-view-column-pack-start(column, renderer, 0);
+        gtk-tree-view-column-add-attribute(column, renderer, "text", i);
+        gtk-tree-view-append-column(widget, column);
+      end;
+      make(<gadget-mirror>,
+           widget: widget,
+           sheet:  gadget);
+    end;
+  update-mirror-attributes(gadget, res);
+  res;
 end method make-gtk-mirror;
 
 define method update-mirror-attributes
     (gadget :: <gtk-table-control>, mirror :: <gadget-mirror>) => ()
   next-method();
-  let widget = GTK-CLIST(mirror.mirror-widget);
-  gtk-clist-column-titles-active(widget);
-  for (i :: <integer> from 0,
-       column :: <table-column> in table-control-columns(gadget))
-    let heading   = table-column-heading(column);
-    let width     = table-column-width(column);
-    let alignment = table-column-alignment(column);
-    with-c-string (c-string = heading)
-      gtk-clist-set-column-title(widget, i, c-string)
+  let widget = mirror.mirror-widget;
+  let columns = table-control-columns(gadget);
+  with-gdk-lock
+    for (c in columns, i from 0)
+      let column = gtk-tree-view-get-column(widget, i);
+      column.@title := c.table-column-heading;
+      column.@alignment
+        := select (c.table-column-alignment)
+             #"left"      => $GTK-JUSTIFY-LEFT;
+             #"right"     => $GTK-JUSTIFY-RIGHT;
+             #"center"    => $GTK-JUSTIFY-CENTER;
+           end;
+      column.@fixed-width := c.table-column-width;
+      gtk-tree-view-append-column(widget, column);
     end;
-    gtk-clist-set-column-width(widget, i, width);
-    gtk-clist-set-column-justification
-      (widget, i,
-       select (alignment)
-	 #"left"      => $GTK-JUSTIFY-LEFT;
-	 #"right"     => $GTK-JUSTIFY-RIGHT;
-	 #"center"    => $GTK-JUSTIFY-CENTER;
-       end)
-  end
+  end;
+  //gtk-clist-column-titles-active(widget);
 end method update-mirror-attributes;
 
+define sealed class <gtk-table-item> (<table-item>)
+  sealed slot %table :: false-or(<table-control>) = #f;
+end;
+
+define sealed domain make (singleton(<gtk-table-item>));
+define sealed domain initialize(<gtk-table-item>);
+
+define sealed method do-make-item
+    (pane :: <gtk-table-control>, class == <table-item>, #key object)
+ => (item :: <gtk-table-item>)
+  make(<gtk-table-item>, object: object);
+end;
+
+define sealed method do-add-item
+    (pane :: <gtk-table-control>, item :: <gtk-table-item>, #key after) => ()
+//  let items = pane.gadget-items;
+//  let index = (after & position(items, after)) | size(items);
+//  insert-at!(items, item, index);
+//  item.%table := pane;
+  let mirror = sheet-direct-mirror(pane);
+  when (mirror)
+    update-list-control-items(pane, mirror);
+  end;
+end;
+
+/*
 define method install-event-handlers
     (sheet :: <gtk-table-control>, mirror :: <gadget-mirror>) => ()
   next-method();
@@ -1428,34 +1492,49 @@ define sealed method handle-gtk-resize-column-event
   gtk-debug("Resized column!");
   #t
 end method handle-gtk-resize-column-event;
-
+*/
 define sealed method update-list-control-items
     (gadget :: <gtk-table-control>, mirror :: <gadget-mirror>)
  => ()
-  let widget = GTK-CLIST(mirror.mirror-widget);
+  let widget = mirror.mirror-widget;
   let items = gadget-items(gadget);
-  let label-function = gadget-label-key(gadget);
   let columns = table-control-columns(gadget);
   let no-of-columns = columns.size;
-  gtk-clist-clear(widget);
-  for (item in items)
-    let label = label-function(item);
-    let object = item-object(item);
-    let string* = make(<C-string*>, element-count: no-of-columns);
-    for (index :: <integer> from 0 below no-of-columns,
-	 column :: <table-column> in columns)
-      let generator = table-column-generator(column);
-      let label  = label-function(generator(object));
-      string*[index] := as(<C-string>, label)
+  with-gdk-lock
+    let type-vector = make(<GType*>, element-count: 1 + no-of-columns);
+    type-vector[0] := $G-TYPE-INT;
+    for (i from 1 to no-of-columns)
+      type-vector[i] := $G-TYPE-STRING;
     end;
-    block ()
-      gtk-clist-append(widget, string*);
-    cleanup
-      map(destroy, string*)
-    end
-  end
+    let model = gtk-list-store-newv(no-of-columns + 1, type-vector);
+    with-stack-structure(iter :: <GtkTreeIter>)
+      for (item in items, i from 0)
+        format-out("item %=\n", item);
+        //item := item-object(item);
+        gtk-list-store-append(model, iter);
+        with-stack-structure (gvalue :: <GValue>)
+          g-value-nullify(gvalue);
+          g-value-set-value(gvalue, i);
+          gtk-list-store-set-value(model, iter, 0, gvalue);
+          format-out("set first column\n");
+          for (c in columns, j from 1)
+            let generator = table-column-generator(c);
+            format-out("received generator for column\n");
+            let label = gadget-item-label(gadget, generator(item));
+            format-out("got label %= \n", label);
+            unless (instance?(label, <string>))
+              label := format-to-string("%=", label);
+            end;
+            g-value-nullify(gvalue);
+            g-value-set-value(gvalue, label);
+            gtk-list-store-set-value(model, iter, j, gvalue);
+          end;
+        end;
+      end;
+    end;
+    widget.@model := model;
+  end;
 end method update-list-control-items;
-*/
 
 
 /// Option boxes
@@ -1477,7 +1556,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-option-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = gtk-clist-new(1);
+  let widget = with-gdk-lock gtk-clist-new(1) end;
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1521,7 +1600,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-combo-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = gtk-clist-new(1);
+  let widget = with-gdk-lock gtk-combo-box-new() end;
   assert(~null-pointer?(widget), "gtk-clist-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1740,13 +1819,13 @@ end method class-for-make-pane;
 define method make-gtk-mirror
     (sheet :: <gtk-viewport>)
  => (mirror :: <widget-mirror>)
-// let widget = GTK-DRAWING-AREA(gtk-drawing-area-new());
- let widget = gtk-drawing-area-new();
-// gtk-drawing-area-size(widget, 200, 200);
- gtk-widget-set-size-request(widget, 200, 200);
- make(<drawing-area-mirror>,
-      widget: widget,
-      sheet:  sheet);
+  with-gdk-lock
+   let widget = gtk-drawing-area-new();
+   gtk-widget-set-size-request(widget, 200, 200);
+   make(<drawing-area-mirror>,
+        widget: widget,
+        sheet:  sheet);
+  end
 end method;
 
 
@@ -1876,7 +1955,7 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-horizontal-slider>)
  => (mirror :: <gadget-mirror>)
-  let widget = gtk-hscale-new(null-pointer(<GtkAdjustment>));
+  let widget = with-gdk-lock gtk-hscale-new(null-pointer(<GtkAdjustment>)) end;
   assert(~null-pointer?(widget), "gtk-hscale-new failed");
   make(<gadget-mirror>,
        widget: widget,
@@ -1886,7 +1965,7 @@ end method make-gtk-mirror;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-vertical-slider>)
  => (mirror :: <gadget-mirror>)
-  let widget = gtk-vscale-new(null-pointer(<GtkAdjustment>));
+  let widget = with-gdk-lock gtk-vscale-new(null-pointer(<GtkAdjustment>)) end;
   assert(~null-pointer?(widget), "gtk-vscale-new failed");
   make(<gadget-mirror>,
        widget: widget,

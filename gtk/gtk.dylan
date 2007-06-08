@@ -38,6 +38,31 @@ define C-function gtk-widget-get-allocation
   c-name: "gtk_widget_get_allocation";
 end;
 
+define C-function gtk-dialog-get-vbox
+  input parameter dialog :: <GtkDialog>;
+  result vbox :: <GtkWidget>;
+  c-name: "gtk_dialog_get_vbox";
+end;
+
+define C-function gtk-dialog-get-action-area
+  input parameter dialog :: <GtkDialog>;
+  result vbox :: <GtkWidget>;
+  c-name: "gtk_dialog_get_action_area";
+end;
+
+
+define macro with-gdk-lock
+  { with-gdk-lock ?:body end }
+ =>
+  {  block()
+       *holding-gdk-lock* > 0 | gdk-threads-enter();
+       *holding-gdk-lock* := *holding-gdk-lock* + 1;
+       ?body
+     cleanup
+       *holding-gdk-lock* := *holding-gdk-lock* - 1;
+       *holding-gdk-lock* > 0 | gdk-threads-leave();
+     end }
+end;
 
 
 define method make(type :: subclass(<GTypeInstance>), #rest args, 
@@ -68,7 +93,9 @@ end method make;
 
 define method finalize (instance :: <GTypeInstance>)
  => ();
-  g-object-unref(instance)
+  with-gdk-lock
+    g-object-unref(instance)
+  end with-gdk-lock;
 end;
 
 define function all-subclasses(x :: <class>)
@@ -102,6 +129,8 @@ end method find-gtype;
 
 define constant $all-gtype-instances = all-subclasses(<_GTypeInstance>);
 
+define thread variable *holding-gdk-lock* = 0;
+
 define function dylan-meta-marshaller (closure :: <GClosure>,
                                        return-value :: <GValue>,
                                        n-param-values :: <integer>,
@@ -125,7 +154,9 @@ define function dylan-meta-marshaller (closure :: <GClosure>,
 //    value*;
   end for;
   values := reverse!(values);
+  *holding-gdk-lock* := 1;
   let res = apply(import-c-dylan-object(c-type-cast(<C-dylan-object>, marshal-data)), values);
+  *holding-gdk-lock* := 0;
   if(return-value ~= null-pointer(<gvalue>))
     select(g-value-type(return-value))
       $G-TYPE-BOOLEAN => g-value-set-boolean(return-value, 
@@ -172,17 +203,6 @@ define function g-signal-connect(instance :: <GObject>,
                            closure,
                            if(run-after?) 1 else 0 end)
 end function g-signal-connect;
-
-define macro with-gdk-lock
-  { with-gdk-lock ?:body end }
- =>
-  {  block()
-       gdk-threads-enter();
-       ?body
-     cleanup
-       gdk-threads-leave();
-     end }
-end;
 
 define function initialize-gtk
     () => ()
@@ -311,11 +331,15 @@ define method g-value-set-value (gvalue :: <GValue>, value :: <single-float>)
   g-value-set-float(gvalue, value);
 end;
 define method g-value-set-value (gvalue :: <GValue>, value :: <integer>)
+  g-value-init(gvalue, $G-TYPE-INT);
+  g-value-set-int(gvalue, value);
+end;
+define method g-value-set-value (gvalue :: <GValue>, value :: <boolean>)
   g-value-init(gvalue, $G-TYPE-BOOLEAN);
-  g-value-set-boolean(gvalue, value);
+  g-value-set-boolean(gvalue, if (value) 1 else 0 end);
 end;
 define method g-value-set-value (gvalue :: <GValue>, value :: <GTypeInstance>)
-  g-value-init(gvalue, $G-TYPE-OBJECT);
+  g-value-init(gvalue, g-type-from-instance(value));
   g-value-set-object(gvalue, value);
 end;
 

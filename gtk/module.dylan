@@ -14,6 +14,11 @@ define module gtk-support
     gtk-widget-get-window,
     gtk-widget-get-state,
     gtk-widget-get-allocation,
+    gtk-dialog-get-vbox,
+    gtk-dialog-get-action-area,
+    g-value-nullify,
+    g-value-to-dylan,
+    g-value-set-value,
     property-getter-definer,
     property-setter-definer,
     \with-gdk-lock;
