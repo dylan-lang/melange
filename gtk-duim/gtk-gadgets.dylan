@@ -1439,7 +1439,6 @@ define method update-mirror-attributes
              #"center"    => $GTK-JUSTIFY-CENTER;
            end;
       column.@fixed-width := c.table-column-width;
-      gtk-tree-view-append-column(widget, column);
     end;
   end;
   //gtk-clist-column-titles-active(widget);
