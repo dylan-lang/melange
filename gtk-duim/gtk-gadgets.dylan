@@ -341,17 +341,14 @@ end method make-gtk-mirror;
 
 define sealed method update-mirror-label
     (gadget :: <gtk-label>, mirror :: <gadget-mirror>) => ()
-  with-c-string (c-string = defaulted-gadget-label(gadget))
-    let widget = mirror-widget(mirror);
-    with-gdk-lock
-      gtk-label-set-text(widget, c-string)
-    end
+  let widget = mirror-widget(mirror);
+  with-gdk-lock
+    gtk-label-set-text(widget, defaulted-gadget-label(gadget))
   end
 end method update-mirror-label;
 
 
 /// Separators
-/*---*** Use the default separators
 define sealed class <gtk-separator>
     (<gtk-gadget-mixin>,
      <separator>,
@@ -368,34 +365,16 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-separator>)
  => (mirror :: <gadget-mirror>)
-  let parent = sheet-device-parent(gadget);
-  let parent-widget = gadget-widget(parent);
-  let (foreground, background, font) = widget-attributes(_port, gadget);
-  ignore(font);
-  let resources
-    = vector(mapped-when-managed:, #f);
-  let widget
-    = xt/XtCreateManagedWidget("DUIMSeparator", xm/<XmSeparatorGadget>, parent-widget,
-			       resources:
-				 concatenate(resources, foreground, background));
-  values(widget, #f)
-end method make-gtk-mirror;
-
-define sealed method do-compose-space
-    (pane :: <gtk-separator>, #key width, height)
- => (space-requirement :: <space-requirement>)
-  select (gadget-orientation(pane))
-    #"horizontal" =>
-      make(<space-requirement>,
-	   min-width: 1, width: width | 1, max-width: $fill,
-	   height: 2);
-    #"vertical" =>
-      make(<space-requirement>,
-	   width: 2,
-	   min-height: 1, height: height | 1, max-height: $fill);
+  with-gdk-lock
+    let widget = select(gadget-orientation(gadget))
+                   #"horizontal" => gtk-hseparator-new();
+                   #"vertical"   => gtk-vseparator-new();
+                 end;
+      make(<gadget-mirror>,
+           widget: widget,
+           sheet:  gadget)
   end
-end method do-compose-space;
-*/
+end method make-gtk-mirror;
 
 
 /// Buttons
@@ -1404,23 +1383,20 @@ define sealed method make-gtk-mirror
     (gadget :: <gtk-table-control>)
  => (mirror :: <gadget-mirror>)
   let columns = table-control-columns(gadget);
-  let res
-  = with-gdk-lock
-      let widget = gtk-tree-view-new();
-      let columns = table-control-columns(gadget);
-      for (c in columns, i from 1)
-        let renderer = gtk-cell-renderer-text-new();
-        let column = gtk-tree-view-column-new();
-        gtk-tree-view-column-pack-start(column, renderer, 0);
-        gtk-tree-view-column-add-attribute(column, renderer, "text", i);
-        gtk-tree-view-append-column(widget, column);
-      end;
-      make(<gadget-mirror>,
-           widget: widget,
-           sheet:  gadget);
+  with-gdk-lock
+    let widget = gtk-tree-view-new();
+    let columns = table-control-columns(gadget);
+    for (c in columns, i from 1)
+      let renderer = gtk-cell-renderer-text-new();
+      let column = gtk-tree-view-column-new();
+      gtk-tree-view-column-pack-start(column, renderer, 0);
+      gtk-tree-view-column-add-attribute(column, renderer, "text", i);
+      gtk-tree-view-append-column(widget, column);
     end;
-  update-mirror-attributes(gadget, res);
-  res;
+    make(<gadget-mirror>,
+         widget: widget,
+         sheet:  gadget);
+  end;
 end method make-gtk-mirror;
 
 define method update-mirror-attributes
@@ -1814,13 +1790,13 @@ define sealed method class-for-make-pane
   values(<gtk-viewport>, #f)
 end method class-for-make-pane;
 
-// ---*** make viewports drawing areas for now so that we can see some content
 define method make-gtk-mirror
     (sheet :: <gtk-viewport>)
  => (mirror :: <widget-mirror>)
   with-gdk-lock
-   let widget = gtk-drawing-area-new();
-   gtk-widget-set-size-request(widget, 200, 200);
+   let widget = gtk-viewport-new(gtk-adjustment-new(0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0), 
+                                 gtk-adjustment-new(0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0));
+//   gtk-widget-set-size-request(widget, 200, 200);
    make(<drawing-area-mirror>,
         widget: widget,
         sheet:  sheet);

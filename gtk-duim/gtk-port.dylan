@@ -27,24 +27,6 @@ define sealed method initialize
     (_port :: <gtk-port>, #key server-path) => ()
   initialize-gtk();
   next-method();
-/*---*** What to do here?
-  let type    = head(server-path);
-  let display = get-property(tail(server-path), #"display",
-			     default: environment-variable("DISPLAY"));
-  ignore(type);
-  let (shell, context, unused-args)
-    = construct-application("DUIM port",	// class name -- defines resources
-			    display-name: display,
-			    app-context-name: format-to-string("DUIM port on %s", display),
-			    fallback-resources: $primitive-resources);
-  ignore(unused-args);
-  _port.%display      := xt/XtDisplay(shell);
-  _port.%app-shell    := shell;
-  _port.%app-context  := context;
-  _port.%modifier-map := initialize-modifier-map(_port.%display);
-  install-default-palette(_port);
-  install-default-text-style-mappings(_port);
-*/
 end method initialize;
 
 register-port-class(#"gtk", <gtk-port>, default?: #t);
@@ -170,14 +152,14 @@ define method grab-pointer
     //---*** Get real current time...
     let current-time = 0;
     result
-      := gdk-pointer-grab(widget,
-			  0,		// owner events
-			  logior($GDK-POINTER-MOTION-MASK,
-				 $GDK-BUTTON-PRESS-MASK,
-				 $GDK-BUTTON-RELEASE-MASK),
-			  null-pointer(<GdkWindow>),		// confine to
-			  null-pointer(<GdkCursor>),		// cursor
-			  current-time);
+      := with-gdk-lock gdk-pointer-grab(widget,
+                                        0,		// owner events
+                                        logior($GDK-POINTER-MOTION-MASK,
+                                               $GDK-BUTTON-PRESS-MASK,
+                                               $GDK-BUTTON-RELEASE-MASK),
+                                        null-pointer(<GdkWindow>),		// confine to
+                                        null-pointer(<GdkCursor>),		// cursor
+                                        current-time) end;
   end;
   result ~= 0
 end method grab-pointer;
@@ -192,7 +174,7 @@ define method ungrab-pointer
   if (widget)
     //---*** How do we get the current time?
     let current-time = 0;
-    gdk-pointer-ungrab(current-time);
+    with-gdk-lock gdk-pointer-ungrab(current-time) end;
     #t
   end
 end method ungrab-pointer;
