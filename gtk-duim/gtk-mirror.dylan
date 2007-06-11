@@ -197,7 +197,9 @@ end method map-mirror;
 define sealed method unmap-mirror
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>) => ()
   let widget = mirror-widget(mirror);
-  gtk-widget-hide(widget)
+  with-gdk-lock
+    gtk-widget-hide(widget)
+  end
 end method unmap-mirror;
 
 define sealed method raise-mirror 
@@ -208,20 +210,26 @@ define sealed method raise-mirror
     ignoring("activate? keyword to raise-mirror")
   end;
   let widget = mirror-widget(mirror);
-  gdk-window-raise(gtk-widget-get-window(widget))
+  with-gdk-lock
+    gdk-window-raise(gtk-widget-get-window(widget))
+  end
 end method raise-mirror;
 
 define sealed method lower-mirror
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>) => ()
   let widget = mirror-widget(mirror);
-  gdk-window-lower(widget.gtk-widget-get-window)
+  with-gdk-lock
+    gdk-window-lower(widget.gtk-widget-get-window)
+  end
 end method lower-mirror;
 
 define sealed method mirror-visible? 
     (_port :: <gtk-port>, sheet :: <sheet>, mirror :: <widget-mirror>)
  => (visible? :: <boolean>)
   let widget = mirror-widget(mirror);
-  gdk-window-is-visible(widget.gtk-widget-get-window) == $false
+  with-gdk-lock
+    gdk-window-is-visible(widget.gtk-widget-get-window) == $false
+  end
 end method mirror-visible?;
 
 
@@ -295,9 +303,9 @@ end method make-gtk-mirror;
 define method do-make-gtk-mirror 
     (sheet :: <mirrored-sheet-mixin>)
 => (mirror :: <widget-mirror>)
-  let widget = gtk-fixed-new();
+  let widget = with-gdk-lock gtk-fixed-new() end;
   //---*** We really want to switch this off entirely...
-  gtk-container-set-resize-mode(widget, $GTK-RESIZE-QUEUE);
+  //gtk-container-set-resize-mode(widget, $GTK-RESIZE-QUEUE);
   make(<fixed-container-mirror>,
        widget: widget,
        sheet:  sheet)
@@ -306,9 +314,9 @@ end method do-make-gtk-mirror;
 define method do-make-gtk-mirror
     (sheet :: <standard-repainting-mixin>)
   => (mirror :: <widget-mirror>)
-  let widget = gtk-drawing-area-new();
+  let widget = with-gdk-lock gtk-drawing-area-new() end;
 //  gtk-drawing-area-size(widget, 200, 200);
-  gtk-widget-set-size-request(widget, 200, 200);
+//  gtk-widget-set-size-request(widget, 200, 200);
   make(<drawing-area-mirror>,
        widget: widget,
        sheet:  sheet);
@@ -346,7 +354,9 @@ define method install-event-handlers
   next-method();
   let widget = mirror-widget(mirror);
   duim-g-signal-connect(sheet, #"expose-event") (widget, event) handle-gtk-expose-event(sheet, event) end;
-  gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
+  with-gdk-lock
+    gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
+  end
 end method install-event-handlers;
 
 define method install-event-handlers
@@ -354,13 +364,15 @@ define method install-event-handlers
   next-method();
   let widget = mirror-widget(mirror);
   duim-g-signal-connect(sheet, #"expose-event") (widget, event) handle-gtk-expose-event(sheet, event) end;
-  gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
   duim-g-signal-connect(sheet, #"button-press-event") (widget, event) handle-gtk-button-event(sheet, event) end;
-  gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
   duim-g-signal-connect(sheet, #"button-release-event") (widget, event) handle-gtk-button-event(sheet, event) end;
-  gtk-widget-add-events(widget, $GDK-BUTTON-RELEASE-MASK);
   duim-g-signal-connect(sheet, #"motion-notify-event") (widget, event) handle-gtk-motion-event(sheet, event) end;
-  gtk-widget-add-events(widget, logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK));
+  with-gdk-lock
+    gtk-widget-add-events(widget, $GDK-BUTTON-RELEASE-MASK);
+    gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
+    gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
+    gtk-widget-add-events(widget, logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK));
+  end
 end method install-event-handlers;
 
 define sealed method handle-gtk-expose-event
@@ -386,18 +398,22 @@ define method set-mirror-parent
     (child :: <widget-mirror>, parent :: <fixed-container-mirror>)
  => ()
   let (x, y) = sheet-native-edges(mirror-sheet(child));
-  gtk-fixed-put(mirror-widget(parent),
-		mirror-widget(child),
-		x, y)
+  with-gdk-lock
+    gtk-fixed-put(mirror-widget(parent),
+                  mirror-widget(child),
+                  x, y)
+  end
 end method set-mirror-parent;
 
 define method set-mirror-parent
     (child :: <widget-mirror>, parent :: <drawing-area-mirror>)
  => ()
   let (x, y) = sheet-native-edges(mirror-sheet(child));
-  gtk-fixed-put(mirror-widget(parent),
-		mirror-widget(child),
-		x, y)
+  with-gdk-lock
+    gtk-fixed-put(mirror-widget(parent),
+                  mirror-widget(child),
+                  x, y)
+  end
 end method set-mirror-parent;
 
 /*
@@ -413,9 +429,11 @@ define method move-mirror
     (parent :: <fixed-container-mirror>, child :: <widget-mirror>,
      x :: <integer>, y :: <integer>)
  => ()
-  gtk-fixed-move(mirror-widget(parent),
-		 mirror-widget(child),
-		 x, y)
+  with-gdk-lock
+    gtk-fixed-move(mirror-widget(parent),
+                   mirror-widget(child),
+                   x, y)
+  end
 end method move-mirror;
 
 define method size-mirror
@@ -438,13 +456,16 @@ define method set-mirror-size
     (mirror :: <widget-mirror>, width :: <integer>, height :: <integer>)
  => ()
   let widget = mirror.mirror-widget;
+  gtk-debug("set-pirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
   let (left, top) = box-position(mirror.%region);
   with-stack-structure (allocation :: <GtkAllocation>)
     allocation.GdkRectangle-x      := left;
     allocation.GdkRectangle-y      := top;
     allocation.GdkRectangle-width  := width;
     allocation.GdkRectangle-height := height;
-    gtk-widget-size-allocate(widget, allocation)
+    with-gdk-lock
+      gtk-widget-size-allocate(widget, allocation)
+    end
   end
   // ---*** debugging code
 //  let (new-width, new-height) = widget-size(widget);
@@ -457,5 +478,14 @@ define method set-mirror-size
     (mirror :: <drawing-area-mirror>, width :: <integer>, height :: <integer>)
  => ()
 //  gtk-drawing-area-size(mirror-widget(mirror), width, height);
-  gtk-widget-set-size-request(mirror-widget(mirror), width, height);
+  gtk-debug("set-pirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
+  with-gdk-lock
+    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
+  end
+end method set-mirror-size;
+
+define method set-mirror-size
+    (mirror :: <top-level-mirror>, width :: <integer>, height :: <integer>)
+ => ()
+// hack: ignore
 end method set-mirror-size;
