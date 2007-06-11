@@ -877,7 +877,7 @@ end method class-for-make-pane;
 /// Text editors
 
 define sealed class <gtk-text-editor>
-    (<gtk-text-gadget-mixin>,
+    (<gtk-gadget-mixin>,
      <text-editor>,
      <leaf-pane>,
      <sealed-constructor-mixin>)
@@ -897,16 +897,19 @@ define sealed method make-gtk-mirror
   let word-wrap? = text-field-word-wrap?(gadget);
   let text = gadget-text-buffer(gadget);
   with-gdk-lock
-    let widget = gtk-text-new(null-pointer(<GtkAdjustment>),
-                              null-pointer(<GtkAdjustment>));
+    let widget = gtk-text-view-new();
     assert(~null-pointer?(widget), "gtk-text-new failed");
     // Note that this is happening before install-event-handlers, so don't
     // need to disable events.
     when (lines | columns)
       ignoring("lines:/columns:")
     end;
-    gtk-text-set-word-wrap(widget, if (word-wrap?) $true else $false end);
-    set-text-widget-text(widget, text);
+    if (word-wrap?)
+      widget.@wrap-mode := $GTK-WRAP-WORD-CHAR;
+    end;
+    let buffer = gtk-text-view-get-buffer(widget);
+    format-out("Setting text to %=\n", text);
+    gtk-text-buffer-set-text(buffer, text, -1);
     make(<gadget-mirror>,
          widget: widget,
          sheet:  gadget)
@@ -919,36 +922,14 @@ define sealed method update-gadget-text
   let widget = gadget-widget(gadget);
   when (widget)
     with-gdk-lock
+      let buffer = gtk-text-view-get-buffer(widget);
       let new-text = gadget-text-buffer(gadget);
-      let old-text = gtk-editable-get-chars(widget, 0, -1);
-      let update? = old-text ~= new-text;
-      g-free(old-text);
-      when (update?)
-        block ()
-          gtk-text-freeze(widget);
-          with-disabled-event-handler (mirror, #"changed")
-	    set-text-widget-text(widget, new-text);
-          end;
-        cleanup
-          gtk-text-thaw(widget);
-        end
+      with-disabled-event-handler (mirror, #"changed")
+        gtk-text-buffer-set-text(buffer, new-text, -1);
       end;
     end
   end;
 end method update-gadget-text;
-
-define method set-text-widget-text (widget, text :: <string>)
-  with-c-string (c-text = text)
-    with-stack-structure (position :: <c-int*>)
-      with-gdk-lock
-        gtk-editable-delete-text(widget, 0, -1);
-        pointer-value(position) := 0;
-        gtk-editable-insert-text(widget, c-text, text.size,
-                                 pointer-cast(<gint*>, position));
-      end;
-    end
-  end;
-end set-text-widget-text;
 
 
 /// Scroll bars
@@ -1139,8 +1120,6 @@ define method update-mirror-attributes
       widget.@headers-visible := #t;
     else
       widget.@headers-visible := #f;
-      //---*** How should we decide this?
-//      gtk-clist-set-column-width(widget, 0, 500)
     end;
   end;
   update-list-control-items(gadget, mirror)

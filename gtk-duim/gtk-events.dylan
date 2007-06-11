@@ -7,11 +7,6 @@ License:      Functional Objects Library Public License Version 1.0
 Dual-license: GNU Lesser General Public License
 Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 
-/// GTK signals
-
-
-  
-
 /// Install event handlers
 
 define sealed method generate-trigger-event
