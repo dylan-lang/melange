@@ -139,24 +139,25 @@ define method handle-gtk-button-event
     let modifiers = 0;  //--- Do this!
     let event-class
       = select (type)
-    $GDK-2BUTTON-PRESS  => <double-click-event>;
-    $GDK-BUTTON-PRESS   => <button-press-event>;
-    $GDK-BUTTON-RELEASE => <button-release-event>;
-    otherwise           => #f;
-  end;
+          $GDK-2BUTTON-PRESS  => <double-click-event>;
+          $GDK-BUTTON-PRESS   => <button-press-event>;
+          $GDK-BUTTON-RELEASE => <button-release-event>;
+          otherwise           => #f;
+        end;
     if (event-class)
       let (x, y)
-  = untransform-position(sheet-native-transform(sheet), native-x, native-y);
+        = untransform-position(sheet-native-transform(sheet),
+                               native-x, native-y);
       port-modifier-state(_port)    := modifiers;
       let pointer = port-pointer(_port);
       pointer-button-state(pointer) := button;
       distribute-event(_port,
-           make(event-class,
-          sheet: sheet,
-          pointer: pointer,
-          button: button,
-          modifier-state: modifiers,
-          x: round(x), y: round(y)));
+                       make(event-class,
+                            sheet: sheet,
+                            pointer: pointer,
+                            button: button,
+                            modifier-state: modifiers,
+                            x: round(x), y: round(y)));
       #t
     end
   end

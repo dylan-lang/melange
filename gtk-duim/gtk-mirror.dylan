@@ -328,9 +328,10 @@ define macro duim-g-signal-connect
          let mirror = ?sheet.sheet-direct-mirror;
          let widget = mirror-widget(mirror);
          with-gdk-lock
-           let handler-id = g-signal-connect(widget, as(<string>, ?signal-name),
-                                             method(?args) ?body end);
-                            mirror.signal-handler-ids[?signal-name] := handler-id;
+           let handler-id
+             = g-signal-connect(widget, as(<string>, ?signal-name),
+                                method(?args) ?body end);
+           mirror.signal-handler-ids[?signal-name] := handler-id;
          end
        end; }
 end;
@@ -339,7 +340,8 @@ define macro with-disabled-event-handler
   { with-disabled-event-handler (?mirror:expression, ?signal-name:expression)
       ?body:*
     end }
- => { let signal-handler-id = element(?mirror.signal-handler-ids, ?signal-name);
+ => { let signal-handler-id
+        = element(?mirror.signal-handler-ids, ?signal-name);
       let widget = mirror-widget(?mirror);
       block()
         g-signal-handler-block(widget, signal-handler-id);

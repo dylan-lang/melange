@@ -1174,13 +1174,13 @@ define sealed method handle-gtk-button-press-event
     (gadget :: <gtk-list-control-mixin>, event :: <GdkEventButton>)
  => (handled? :: <boolean>)
   gtk-debug("Pressed button %=, type %=",
-		event.GdkEventButton-button,
-		select (event.GdkEventButton-type)
-		  $GDK-BUTTON-PRESS  => "button press";
-		  $GDK-2BUTTON-PRESS => "double click";
-		  $GDK-3BUTTON-PRESS => "treble click";
-		  otherwise => event.GdkEventButton-type;
-		end);
+            event.GdkEventButton-button,
+            select (event.GdkEventButton-type)
+              $GDK-BUTTON-PRESS  => "button press";
+              $GDK-2BUTTON-PRESS => "double click";
+              $GDK-3BUTTON-PRESS => "treble click";
+              otherwise => event.GdkEventButton-type;
+            end);
   if (event.GdkEventButton-type == $GDK-2BUTTON-PRESS)
     gtk-debug("Double clicked on list control!");
     when (gadget-activate-callback(gadget))
@@ -1489,19 +1489,14 @@ define sealed method update-list-control-items
     gtk-list-store-clear(model);
     with-stack-structure(iter :: <GtkTreeIter>)
       for (item in items, i from 0)
-        format-out("item %=\n", item);
-        //item := item-object(item);
         gtk-list-store-append(model, iter);
         with-stack-structure (gvalue :: <GValue>)
           g-value-nullify(gvalue);
           g-value-set-value(gvalue, i);
           gtk-list-store-set-value(model, iter, 0, gvalue);
-          format-out("set first column\n");
           for (c in columns, j from 1)
             let generator = table-column-generator(c);
-            format-out("received generator for column\n");
             let label = gadget-item-label(gadget, generator(item));
-            format-out("got label %= \n", label);
             unless (instance?(label, <string>))
               label := format-to-string("%=", label);
             end;
@@ -1633,7 +1628,7 @@ end;
 
 define method handle-row-expanded
   (sheet :: <gtk-tree-control>, parent :: <GtkTreeIter>, path :: <GtkTreePath>)
-  format-out("handling row expansion signal\n");
+  duim-debug-message("handling row expansion signal\n");
   let model = sheet.store-model;
   let children? = tree-control-children-predicate(sheet);
   let generator = tree-control-children-generator(sheet);
