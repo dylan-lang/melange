@@ -58,7 +58,7 @@ define method set-mirror-parent
       duim-debug-message("Creating submenu for menu bar");
       gtk-menu-item-set-submenu(widget, menu);
       gtk-menu-shell-append(mirror-widget(parent),
-                            widget)
+                            widget);
     end
   else
     next-method()
@@ -301,6 +301,19 @@ define sealed class <gtk-menu-bar>
      <multiple-child-composite-pane>)
   keyword gtk-fixed-height?: = #t;
 end class <gtk-menu-bar>;
+
+define method %gtk-fixed-width?
+    (gadget :: <gtk-menu-bar>)
+ => (fixed? :: <boolean>)
+  #f;
+end method;
+
+define method %gtk-fixed-height?
+    (gadget :: <gtk-menu-bar>)
+ => (fixed? :: <boolean>)
+  #t;
+end method;
+
 
 define sealed method class-for-make-pane
     (framem :: <gtk-frame-manager>, class == <menu-bar>, #key)

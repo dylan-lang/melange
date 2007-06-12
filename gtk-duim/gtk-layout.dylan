@@ -6,8 +6,7 @@ Copyright:    (c) 2007 Dylan Hackers
 License:      GNU Lesser General Public License
 Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 
-
-/// Separators
+/*
 define sealed class <gtk-column-layout>
     (<gtk-gadget-mixin>,
      <column-layout>,
@@ -30,3 +29,4 @@ define sealed method make-gtk-mirror
            sheet:  gadget)
   end
 end method make-gtk-mirror;
+*/

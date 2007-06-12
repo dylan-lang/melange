@@ -24,7 +24,7 @@ define sealed method process-next-event
   //--- We should do something with the timeout
   ignore(timeout);
   with-gdk-lock
-    gtk-main();
+    gtk-main-iteration();
   end;
   #f;
 end method process-next-event;

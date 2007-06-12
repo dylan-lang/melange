@@ -62,6 +62,7 @@ define sealed method do-make-mirror
  => (mirror :: <gtk-mirror>)
   let parent = sheet-device-parent(sheet);
   let mirror = make-gtk-mirror(sheet);
+  with-gdk-lock gtk-widget-realize(mirror.mirror-widget) end;
   install-event-handlers(sheet, mirror);
   update-mirror-attributes(sheet, mirror);
   set-mirror-parent(mirror, sheet-direct-mirror(parent));
@@ -475,7 +476,7 @@ define method set-mirror-size
     allocation.GdkRectangle-width  := width;
     allocation.GdkRectangle-height := height;
     with-gdk-lock
-//      gtk-widget-size-allocate(widget, allocation)
+      gtk-widget-size-allocate(widget, allocation)
     end
   end
   // ---*** debugging code
@@ -489,7 +490,7 @@ define method set-mirror-size
     (mirror :: <drawing-area-mirror>, width :: <integer>, height :: <integer>)
  => ()
 //  gtk-drawing-area-size(mirror-widget(mirror), width, height);
-  gtk-debug("set-mirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
+  gtk-debug("set-mirror-size for %= to %=x%= (ignored)", mirror-widget(mirror), width, height);
   with-gdk-lock
 //    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
   end
@@ -498,5 +499,8 @@ end method set-mirror-size;
 define method set-mirror-size
     (mirror :: <top-level-mirror>, width :: <integer>, height :: <integer>)
  => ()
-// hack: ignore
+  gtk-debug("set-mirror-size for %= to %=x%= (top-level)", mirror-widget(mirror), width, height);
+  with-gdk-lock
+    gtk-window-set-default-size(mirror-widget(mirror), width, height);
+  end
 end method set-mirror-size;

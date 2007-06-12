@@ -356,6 +356,24 @@ define sealed class <gtk-separator>
      <sealed-constructor-mixin>)
 end class <gtk-separator>;
 
+define method %gtk-fixed-width?
+    (gadget :: <gtk-separator>)
+ => (fixed? :: <boolean>)
+  select(gadget-orientation(gadget))
+    #"horizontal" => #f;
+    #"vertical"   => #t;
+  end;
+end method;
+
+define method %gtk-fixed-height?
+    (gadget :: <gtk-separator>)
+ => (fixed? :: <boolean>)
+  select(gadget-orientation(gadget))
+    #"horizontal" => #t;
+    #"vertical"   => #f;
+  end;
+end method;
+
 define sealed method class-for-make-pane
     (framem :: <gtk-frame-manager>, class == <separator>, #key)
  => (class :: <class>, options :: false-or(<sequence>))
