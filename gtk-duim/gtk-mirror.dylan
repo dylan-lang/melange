@@ -418,6 +418,15 @@ define method set-mirror-parent
   end
 end method set-mirror-parent;
 
+define method set-mirror-parent
+    (child :: <widget-mirror>, parent :: <widget-mirror>)
+ => ()
+  with-gdk-lock
+    gtk-container-add(mirror-widget(parent),
+                      mirror-widget(child))
+  end
+end;
+
 /*
 define method set-mirror-parent
     (child :: <popup-menu-mirror>, parent :: <display-mirror>)
@@ -458,7 +467,7 @@ define method set-mirror-size
     (mirror :: <widget-mirror>, width :: <integer>, height :: <integer>)
  => ()
   let widget = mirror.mirror-widget;
-  gtk-debug("set-pirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
+  gtk-debug("set-mirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
   let (left, top) = box-position(mirror.%region);
   with-stack-structure (allocation :: <GtkAllocation>)
     allocation.GdkRectangle-x      := left;
@@ -466,7 +475,7 @@ define method set-mirror-size
     allocation.GdkRectangle-width  := width;
     allocation.GdkRectangle-height := height;
     with-gdk-lock
-      gtk-widget-size-allocate(widget, allocation)
+//      gtk-widget-size-allocate(widget, allocation)
     end
   end
   // ---*** debugging code
@@ -480,9 +489,9 @@ define method set-mirror-size
     (mirror :: <drawing-area-mirror>, width :: <integer>, height :: <integer>)
  => ()
 //  gtk-drawing-area-size(mirror-widget(mirror), width, height);
-  gtk-debug("set-pirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
+  gtk-debug("set-mirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
   with-gdk-lock
-    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
+//    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
   end
 end method set-mirror-size;
 

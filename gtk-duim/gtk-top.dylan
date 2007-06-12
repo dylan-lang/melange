@@ -43,7 +43,6 @@ end method top-level-mirror;
 define method set-mirror-parent
     (child :: <widget-mirror>, parent :: <top-level-mirror>)
  => ()
-  let (x, y) = sheet-native-edges(mirror-sheet(child));
   with-gdk-lock
     gtk-container-add(mirror-widget(parent),
                       mirror-widget(child))

@@ -89,7 +89,7 @@ end method widget-attributes;
 define method do-compose-space
     (gadget :: <gtk-gadget-mixin>, #key width, height)
  => (space-req :: <space-requirement>)
-//  debug-message("do-compose-space(%= , %d, %d)", gadget, width, height);
+  debug-message("do-compose-space(%= , %d, %d)", gadget, width, height);
   let mirror = sheet-direct-mirror(gadget);
   if (mirror)
     let widget = mirror-widget(mirror);
@@ -1165,6 +1165,9 @@ define sealed method handle-gtk-select-row-event
     end;
   end;
   
+  unless (every?(rcurry(instance?, <integer>), new-selection))
+    new-selection := #[];
+  end;
   gtk-debug("  Selection now %=", new-selection);
   distribute-selection-changed-callback(gadget, new-selection);
   #t
@@ -1516,7 +1519,8 @@ define sealed class <gtk-tree-control>
     (<gtk-list-control-mixin>,
      <tree-control>,
      <leaf-pane>)
-  sealed constant slot %nodes :: <stretchy-object-vector> = make(<stretchy-vector>);
+  sealed constant slot %nodes :: <node-of-tree-control>
+    = make(<node-of-tree-control>, object: "root");
 end;
 
 define sealed method class-for-make-pane
@@ -1574,11 +1578,11 @@ end;
 define sealed method update-list-control-items
     (gadget :: <gtk-tree-control>, mirror :: <gadget-mirror>)
  => ()
-  gadget.%nodes.size := 0;
   let model = gadget.store-model;
   let roots = tree-control-roots(gadget);
   let children? = tree-control-children-predicate(gadget);
   let label-function = gadget-label-key(gadget);
+  gadget.%nodes.children.size := 0;
   with-gdk-lock
     gtk-tree-store-clear(model);
     let np = null-pointer(<GtkTreeIter>);
@@ -1593,7 +1597,8 @@ define sealed method update-list-control-items
           end;
           g-value-set-value(data, label);
           gtk-tree-store-set-value(model, iter, 0, data);
-          add!(gadget.%nodes, make(<node-of-tree-control>, object: tln));
+          add!(gadget.%nodes.children,
+               make(<node-of-tree-control>, object: tln));
           if (children?(tln))
             with-stack-structure (dummy :: <GtkTreeIter>)
               gtk-tree-store-insert-before(model, dummy, iter, np);
@@ -1635,7 +1640,8 @@ define method handle-row-expanded
   let label-function = gadget-label-key(sheet);
   with-gdk-lock
     let path = map(string-to-integer,
-                   split(gtk-tree-path-to-string(path), ':'));
+                   split(as(<byte-string>, gtk-tree-path-to-string(path)),
+                         ':'));
     let parent-tree = find-node-list(sheet, path);
     let object = parent-tree.real-object;
     with-stack-structure (iter :: <GtkTreeIter>)
