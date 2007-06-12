@@ -293,8 +293,10 @@ define function g-value-to-dylan(instance :: <GValue>)
   let g-type = g-value-type(instance);
   if(g-type ~= $G-TYPE-INVALID)
     let dylan-type = find-gtype(g-type);
+    let address-thunk = curry(compose(pointer-address, g-value-peek-pointer),
+                              instance);
     if(dylan-type & subtype?(dylan-type, <GTypeInstance>))
-      make(dylan-type, address: instance.g-value-peek-pointer.pointer-address)
+      make(dylan-type, address: address-thunk())
     else
       select(g-type)
         $G-TYPE-NONE    => #f;
@@ -307,8 +309,8 @@ define function g-value-to-dylan(instance :: <GValue>)
         $G-TYPE-ULONG   => g-value-get-ulong(instance);
         $G-TYPE-INT64   => g-value-get-int64(instance);
         $G-TYPE-UINT64  => g-value-get-uint64(instance);
-        $G-TYPE-ENUM    => signal("Can't handle $G-TYPE-ENUM yet.");
-        $G-TYPE-FLAGS   => signal("Can't handle $G-TYPE-FLAGS yet.");
+        $G-TYPE-ENUM    => error("Can't handle $G-TYPE-ENUM yet.");
+        $G-TYPE-FLAGS   => error("Can't handle $G-TYPE-FLAGS yet.");
         $G-TYPE-FLOAT   => g-value-get-float(instance);
         $G-TYPE-DOUBLE  => g-value-get-double(instance);
         $G-TYPE-STRING  => g-value-get-string(instance);
@@ -316,7 +318,13 @@ define function g-value-to-dylan(instance :: <GValue>)
         $G-TYPE-BOXED   => #f;
         $G-TYPE-PARAM   => #f;
         $G-TYPE-OBJECT  => #f;
-        gdk-event-get-type() => make-gdk-event(instance.g-value-peek-pointer.pointer-address);
+        gdk-event-get-type() 
+          => make-gdk-event(address-thunk());
+        gtk-tree-iter-get-type() 
+          => make(<GtkTreeIter>, address: address-thunk());
+        gtk-tree-path-get-type()
+          => make(<GtkTreePath>, address: address-thunk());
+        otherwise       => error("Unknown Gtype %=", g-type);
       end select;
     end if;
   end if;
