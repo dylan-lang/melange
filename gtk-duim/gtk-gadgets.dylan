@@ -1503,7 +1503,7 @@ define sealed method do-add-item
       gtk-list-store-append(model, iter);
       with-stack-structure (gvalue :: <GValue>)
         g-value-nullify(gvalue);
-        g-value-set-value(gvalue, gadget-items(gadget).size);
+        g-value-set-value(gvalue, gadget-items(gadget).size - 1);
         gtk-list-store-set-value(model, iter, 0, gvalue);
         for (c in columns, j from 1)
           let generator = table-column-generator(c);
