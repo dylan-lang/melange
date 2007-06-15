@@ -1391,6 +1391,36 @@ define sealed method class-for-make-pane
   values(<gtk-table-control>, #f)
 end method class-for-make-pane;
 
+define method do-compose-space
+    (gadget :: <gtk-table-control>, #key width, height)
+ => (space-req :: <space-requirement>)
+  debug-message("do-compose-space(%= , %d, %d)", gadget, width, height);
+  let mirror = sheet-direct-mirror(gadget);
+  if (mirror)
+    let widget = scrolled-window(mirror);
+    gtk-space-requirements(gadget, widget)
+  else
+    gtk-debug("Composing space on an unmirrored gadget!");
+    default-space-requirement(gadget, width: width, height: height)
+  end
+end method do-compose-space;
+
+
+define class <table-mirror> (<gadget-mirror>)
+  constant slot scrolled-window, required-init-keyword: scrolled-window:;
+end;
+
+define method set-mirror-parent (child :: <table-mirror>, parent :: <widget-mirror>) => ()
+  with-gdk-lock
+    gtk-container-add(parent.mirror-widget, child.scrolled-window);
+  end;
+end;
+
+define method set-mirror-size
+    (mirror :: <table-mirror>, width :: <integer>, height :: <integer>)
+ => ()
+  set-widget-size(mirror, mirror.scrolled-window, width, height);
+end;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-table-control>)
  => (mirror :: <gadget-mirror>)
@@ -1403,10 +1433,27 @@ define sealed method make-gtk-mirror
       let column = gtk-tree-view-column-new();
       gtk-tree-view-column-pack-start(column, renderer, 0);
       gtk-tree-view-column-add-attribute(column, renderer, "text", i);
+      //gtk-tree-view-column-set-resizable(column, 1);
       gtk-tree-view-append-column(widget, column);
     end;
-    make(<gadget-mirror>,
+    gtk-tree-view-set-fixed-height-mode(widget, 1);
+    let scrolled-win
+      = gtk-scrolled-window-new(null-pointer(<GtkAdjustment>),
+                                null-pointer(<GtkAdjustment>));
+    gtk-container-add(scrolled-win, widget);
+    let (#rest policies)
+      = select (gadget-scroll-bars(gadget))
+          #f, #"none" => values($GTK-POLICY-NEVER, $GTK-POLICY-NEVER);
+          #t, #"dynamic" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-AUTOMATIC);
+          #"both" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-ALWAYS);
+          #"horizontal" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-AUTOMATIC);
+          #"vertical" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-ALWAYS);
+        end;
+    apply(gtk-scrolled-window-set-policy, scrolled-win, policies);
+    gtk-widget-show(scrolled-win);
+    make(<table-mirror>,
          widget: widget,
+         scrolled-window: scrolled-win,
          sheet:  gadget);
   end;
 end method make-gtk-mirror;
@@ -1446,14 +1493,30 @@ define sealed method do-make-item
 end;
 
 define sealed method do-add-item
-    (pane :: <gtk-table-control>, item :: <gtk-table-item>, #key after) => ()
-//  let items = pane.gadget-items;
-//  let index = (after & position(items, after)) | size(items);
-//  insert-at!(items, item, index);
-//  item.%table := pane;
-  let mirror = sheet-direct-mirror(pane);
-  when (mirror)
-    update-list-control-items(pane, mirror);
+    (gadget :: <gtk-table-control>, item :: <gtk-table-item>, #key after) => ()
+  let mirror = sheet-direct-mirror(gadget);
+  let columns = table-control-columns(gadget);
+  let model = gadget.store-model;
+  let item = item-object(item);
+  mirror & with-gdk-lock
+    with-stack-structure (iter :: <GtkTreeIter>)
+      gtk-list-store-append(model, iter);
+      with-stack-structure (gvalue :: <GValue>)
+        g-value-nullify(gvalue);
+        g-value-set-value(gvalue, gadget-items(gadget).size);
+        gtk-list-store-set-value(model, iter, 0, gvalue);
+        for (c in columns, j from 1)
+          let generator = table-column-generator(c);
+          let label = gadget-item-label(gadget, generator(item));
+          unless (instance?(label, <string>))
+            label := format-to-string("%=", label);
+          end;
+          g-value-nullify(gvalue);
+          g-value-set-value(gvalue, label);
+          gtk-list-store-set-value(model, iter, j, gvalue);
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -1528,6 +1591,7 @@ define sealed method update-list-control-items
         end;
       end;
     end;
+    //gtk-tree-view-columns-autosize(widget);
   end;
 end method update-list-control-items;
 
@@ -1572,7 +1636,7 @@ define sealed class <gtk-tree-node> (<tree-node>)
 end;
 
 define sealed domain make (singleton(<gtk-tree-node>));
-define selaed domain initialize (<gtk-tree-node>);
+define sealed domain initialize (<gtk-tree-node>);
 
 define sealed method do-make-item
     (pane :: <gtk-tree-control>, class == <tree-node>, #key object)

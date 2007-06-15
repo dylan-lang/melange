@@ -45032,7 +45032,7 @@ define C-function gtk-file-chooser-button-set-focus-on-click
   c-name: "gtk_file_chooser_button_set_focus_on_click";
 end;
 
-define C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
+define open C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkFixed> = <_GtkFixed>;
 
 define C-struct <_GtkFixedClass>

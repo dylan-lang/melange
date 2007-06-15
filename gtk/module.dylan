@@ -10,6 +10,8 @@ define module gtk-support
   use dylan-primitives;
   use dylan-extensions, import: { debug-name, integer-as-raw, raw-as-integer };
 
+  export fixed-new;
+
   export g-signal-connect, initialize-gtk,
     gtk-widget-get-window,
     gtk-widget-get-state,

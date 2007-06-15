@@ -448,6 +448,7 @@ main (gint   argc,
 	    "define module gtk-properties\n\n"
 	    "  use common-dylan;\n"
 	    "  use gtk-internal;\n\n"
+            "  use gtk-support;\n\n"
 	    "  export\n");
 
   g_print("module: gtk-internal\n\n"

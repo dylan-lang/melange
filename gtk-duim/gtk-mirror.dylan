@@ -62,7 +62,9 @@ define sealed method do-make-mirror
  => (mirror :: <gtk-mirror>)
   let parent = sheet-device-parent(sheet);
   let mirror = make-gtk-mirror(sheet);
-  with-gdk-lock gtk-widget-realize(mirror.mirror-widget) end;
+  unless (instance?(mirror, <top-level-mirror>))
+    with-gdk-lock gtk-widget-show(mirror.mirror-widget) end;
+  end;
   install-event-handlers(sheet, mirror);
   update-mirror-attributes(sheet, mirror);
   set-mirror-parent(mirror, sheet-direct-mirror(parent));
@@ -304,7 +306,7 @@ end method make-gtk-mirror;
 define method do-make-gtk-mirror 
     (sheet :: <mirrored-sheet-mixin>)
 => (mirror :: <widget-mirror>)
-  let widget = with-gdk-lock gtk-fixed-new() end;
+  let widget = with-gdk-lock fixed-new() end;
   //---*** We really want to switch this off entirely...
   //gtk-container-set-resize-mode(widget, $GTK-RESIZE-QUEUE);
   make(<fixed-container-mirror>,
@@ -467,8 +469,11 @@ end method size-mirror;
 define method set-mirror-size
     (mirror :: <widget-mirror>, width :: <integer>, height :: <integer>)
  => ()
-  let widget = mirror.mirror-widget;
-  gtk-debug("set-mirror-size for %= to %=x%=", mirror-widget(mirror), width, height);
+  set-widget-size(mirror, mirror.mirror-widget, width, height);
+end;
+
+define method set-widget-size (mirror :: <widget-mirror>, widget :: <GtkWidget>, width :: <integer>, height :: <integer>)
+  gtk-debug("set-mirror-size for %= to %=x%=", widget, width, height);
   let (left, top) = box-position(mirror.%region);
   with-stack-structure (allocation :: <GtkAllocation>)
     allocation.GdkRectangle-x      := left;
@@ -478,13 +483,8 @@ define method set-mirror-size
     with-gdk-lock
       gtk-widget-size-allocate(widget, allocation)
     end
-  end
-  // ---*** debugging code
-//  let (new-width, new-height) = widget-size(widget);
-//  if (new-width ~== width | new-height ~== height)
-//    duim-debug-message("mirror not resized!: %= wanted: %d x %d, but still: %d x %d", mirror.mirror-sheet, width, height, new-width, new-height);
-//  end;
-end method set-mirror-size;
+  end;
+end method;
 
 define method set-mirror-size
     (mirror :: <drawing-area-mirror>, width :: <integer>, height :: <integer>)

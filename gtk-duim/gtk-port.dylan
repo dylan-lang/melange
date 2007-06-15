@@ -34,7 +34,10 @@ register-port-class(#"gtk", <gtk-port>, default?: #t);
 define sideways method class-for-make-port
     (type == #"gtk", #rest initargs, #key)
  => (class :: <class>, initargs :: false-or(<sequence>))
-  values(<gtk-port>, concatenate(initargs, #(event-processor-type:, #"n+1")))
+  values(<gtk-port>,
+         concatenate(initargs,
+                     list(event-processor-type:,
+                          if ($os-name == #"win32") #"n" else #"n+1" end)))
 end method class-for-make-port;
 
 define sealed method port-type
