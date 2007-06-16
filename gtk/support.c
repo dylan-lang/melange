@@ -79,7 +79,7 @@ GtkWidget* gtk_dialog_get_action_area (GtkDialog* dialog) {
     return GTK_DIALOG(dialog)->action_area;
 }
 
-struct GtkAllocation* gtk_widget_get_allocation (GtkWidget* widget) {
+GtkAllocation* gtk_widget_get_allocation (GtkWidget* widget) {
     return &(widget->allocation);
 }
 
