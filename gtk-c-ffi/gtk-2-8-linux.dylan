@@ -1860,12 +1860,6 @@ define C-function gtk-window-add-embedded-xid
   c-name: "gtk_window_add_embedded_xid";
 end;
 
-define C-function _gtk-window-get-group
-  input parameter arg1 :: <GtkWindow>;
-  result res :: <GtkWindowGroup>;
-  c-name: "_gtk_window_get_group";
-end;
-
 define constant <anonymous-3848> = <C-function-pointer>;
 define constant <GtkWindowKeysForeachFunc> = <anonymous-3848>;
 
@@ -23940,30 +23934,6 @@ define C-function gdk-screen-get-setting
   c-name: "gdk_screen_get_setting";
 end;
 
-define C-function gdk-screen-set-font-options-libgtk-only
-  input parameter arg1 :: <GdkScreen>;
-  input parameter arg2 :: <cairo-font-options-t>;
-  c-name: "gdk_screen_set_font_options_libgtk_only";
-end;
-
-define C-function gdk-screen-get-font-options-libgtk-only
-  input parameter arg1 :: <GdkScreen>;
-  result res :: <cairo-font-options-t>;
-  c-name: "gdk_screen_get_font_options_libgtk_only";
-end;
-
-define C-function gdk-screen-set-resolution-libgtk-only
-  input parameter arg1 :: <GdkScreen>;
-  input parameter arg2 :: <gdouble>;
-  c-name: "gdk_screen_set_resolution_libgtk_only";
-end;
-
-define C-function gdk-screen-get-resolution-libgtk-only
-  input parameter arg1 :: <GdkScreen>;
-  result res :: <gdouble>;
-  c-name: "gdk_screen_get_resolution_libgtk_only";
-end;
-
 define constant <anonymous-2420> = <C-function-pointer>;
 define constant <anonymous-2421> = <C-function-pointer>;
 define constant <anonymous-2422> = <C-function-pointer>;
@@ -36981,13 +36951,6 @@ define C-function gtk-entry-set-editable
   input parameter arg1 :: <GtkEntry>;
   input parameter arg2 :: <gboolean>;
   c-name: "gtk_entry_set_editable";
-end;
-
-define C-function _gtk-entry-get-borders
-  input parameter arg1 :: <GtkEntry>;
-  input parameter arg2 :: <gint*>;
-  input parameter arg3 :: <gint*>;
-  c-name: "_gtk_entry_get_borders";
 end;
 
 define constant <anonymous-5785> = <C-function-pointer>;
