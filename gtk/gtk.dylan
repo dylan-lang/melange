@@ -172,6 +172,7 @@ define function dylan-meta-marshaller (closure :: <GClosure>,
     select(g-value-type(return-value))
       $G-TYPE-BOOLEAN => g-value-set-boolean(return-value, 
                                              if(res) 1 else 0 end);
+      $G-TYPE-NONE, $G-TYPE-INVALID => ;
       otherwise error("Unsupported GType in return from signal handler.");
     end select;
   end if;

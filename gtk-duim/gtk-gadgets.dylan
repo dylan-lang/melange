@@ -1126,8 +1126,12 @@ define sealed class <gtk-list-control-mixin>
   slot store-model :: false-or(<GtkTreeModel>) = #f;
 end class <gtk-list-control-mixin>;
 
+define sealed class <gtk-tree-view-control-mixin>
+    (<gtk-list-control-mixin>)
+end;
+
 define method update-mirror-attributes
-    (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
+    (gadget :: <gtk-tree-view-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
   with-gdk-lock
     let widget = mirror.mirror-widget;
@@ -1145,23 +1149,22 @@ define method update-mirror-attributes
       widget.@headers-visible := #f;
     end;
   end;
-  update-list-control-items(gadget, mirror)
 end method update-mirror-attributes;
 
 define method install-event-handlers
-    (sheet :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
+    (sheet :: <gtk-tree-view-control-mixin>, mirror :: <gadget-mirror>) => ()
   next-method();
   let widget = mirror-widget(mirror);
   let selection = with-gdk-lock gtk-tree-view-get-selection(widget) end;
   g-signal-connect(selection, "changed", method (#rest args) handle-gtk-select-row-event(sheet) end);
-  duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
-  with-gdk-lock
-    gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
-  end
+  //duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
+  //with-gdk-lock
+  //  gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
+  //end
 end method install-event-handlers;
 
 define sealed method handle-gtk-select-row-event
-    (gadget :: <gtk-list-control-mixin>)
+    (gadget :: <gtk-tree-view-control-mixin>)
  => (handled? :: <boolean>)
   gtk-debug("Clicked on list control!");
   let mirror = gadget.sheet-direct-mirror;
@@ -1287,6 +1290,12 @@ define sealed method update-list-control-items
   end
 end method update-list-control-items;
 
+define method update-mirror-attributes
+    (gadget :: <gtk-list-control-mixin>, mirror :: <gadget-mirror>) => ()
+  next-method();
+  update-list-control-items(gadget, mirror);
+end;
+
 define sealed method update-gadget-selection
     (gadget :: <gtk-list-control-mixin>) => ()
   select (gadget-selection-mode(gadget))
@@ -1322,7 +1331,7 @@ end method handle-selection-changed;
 // List boxes
 
 define sealed class <gtk-list-box> 
-    (<gtk-list-control-mixin>,
+    (<gtk-tree-view-control-mixin>,
      <list-box>,
      <leaf-pane>)
 end class <gtk-list-box>;
@@ -1354,7 +1363,7 @@ end method make-gtk-mirror;
 
 //---*** Need to implement add-item etc...
 define sealed class <gtk-list-control> 
-    (<gtk-list-control-mixin>,
+    (<gtk-tree-view-control-mixin>,
      <list-control>,
      <leaf-pane>)
 end class <gtk-list-control>;
@@ -1384,7 +1393,7 @@ end method make-gtk-mirror;
 // Table controls
 
 define sealed class <gtk-table-control> 
-    (<gtk-list-control-mixin>,
+    (<gtk-tree-view-control-mixin>,
      <table-control>,
      <leaf-pane>)
 end class <gtk-table-control>;
@@ -1561,7 +1570,7 @@ define function generate-table-model (no-of-columns :: <integer>)
 end;
 
 define sealed method update-list-control-items
-    (gadget :: <gtk-table-control>, mirror :: <gadget-mirror>)
+    (gadget :: <gtk-table-control>, mirror :: <table-mirror>)
  => ()
   let widget = mirror.mirror-widget;
   let items = gadget-items(gadget);
@@ -1602,7 +1611,7 @@ end method update-list-control-items;
 // Tree control
 
 define sealed class <gtk-tree-control>
-    (<gtk-list-control-mixin>,
+    (<gtk-tree-view-control-mixin>,
      <tree-control>,
      <leaf-pane>)
   sealed constant slot %nodes :: <node-of-tree-control>
@@ -1726,7 +1735,7 @@ end;
 
 define method handle-row-expanded
   (sheet :: <gtk-tree-control>, parent :: <GtkTreeIter>, path :: <GtkTreePath>)
-  //duim-debug-message("handling row expansion signal\n");
+  //duim-debug-message("handling row expansion signal");
   let model = sheet.store-model;
   let children? = tree-control-children-predicate(sheet);
   let generator = tree-control-children-generator(sheet);
@@ -1738,11 +1747,6 @@ define method handle-row-expanded
     let parent-tree = find-node-list(sheet, path);
     let object = parent-tree.real-object;
     if (parent-tree.children.size == 0)
-      with-stack-structure (iter :: <GtkTreeIter>)
-        //remove the dummy entry
-        let res = gtk-tree-model-iter-children(model, iter, parent);
-        gtk-tree-store-remove(model, iter);
-      end;
       let np = null-pointer(<GtkTreeIter>);
       with-stack-structure (iter :: <GtkTreeIter>)
         with-stack-structure (data :: <GValue>)
@@ -1771,9 +1775,14 @@ define method handle-row-expanded
           end;
         end;
       end;
+      with-stack-structure (iter :: <GtkTreeIter>)
+        //remove the dummy entry
+        let res = gtk-tree-model-iter-children(model, iter, parent);
+        gtk-tree-store-remove(model, iter);
+      end;
     end;
   end;
-  #f;
+  #t;
 end;
 
 
@@ -1823,13 +1832,16 @@ end method note-gadget-value-changed;
 
 /// Combo boxes
 
-// A fake...
 define sealed class <gtk-combo-box> 
     (<gtk-list-control-mixin>,
      <combo-box>,
      <leaf-pane>,
      <sealed-constructor-mixin>)
 end class <gtk-combo-box>;
+
+define method %gtk-fixed-height? (obj :: <gtk-combo-box>) => (res :: <boolean>)
+  #t;
+end;
 
 define sealed method class-for-make-pane 
     (framem :: <gtk-frame-manager>, class == <combo-box>, #key)
@@ -1840,203 +1852,59 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-combo-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = with-gdk-lock gtk-combo-box-new() end;
-  assert(~null-pointer?(widget), "gtk-clist-new failed");
-  make(<gadget-mirror>,
-       widget: widget,
-       sheet:  gadget)
+  with-gdk-lock
+    let widget = gtk-combo-box-entry-new();
+    make(<gadget-mirror>,
+         widget: widget,
+         sheet:  gadget)
+  end
 end method make-gtk-mirror;
 
-/*---*** No combo boxes for now...
-define sealed class <gtk-combo-box> 
-    (<gtk-gadget-mixin>,
-     <combo-box>,
-     <leaf-pane>,
-     <sealed-constructor-mixin>)
-  sealed slot %changed? :: <boolean> = #f;
-end class <gtk-combo-box>;
-
-//--- If <gtk-combo-box> was a <text-field>, we would not need this
-define sealed method activate-gtk-gadget
-    (gadget :: <combo-box>) => (activated? :: <boolean>)
-  handle-text-gadget-changed(gadget);
-  next-method()
-end method activate-gtk-gadget;
-
-define sealed class <gtk-combo-box-text-field>
-    (<gtk-subgadget-mixin>,
-     <gtk-text-field>)
-end class <gtk-combo-box-text-field>;
-
-define sealed method class-for-make-pane 
-    (framem :: <gtk-frame-manager>, class == <combo-box>, #key)
- => (class :: <class>, options :: false-or(<sequence>))
-  values(<gtk-combo-box>, #f)
-end method class-for-make-pane;
-
-define sealed method make-gadget-control
-    (gadget :: <gtk-combo-box>, parent :: <HWND>, options :: <options-type>,
-     #key x, y, width, height)
- => (handle :: <HWND>)
-  let ext-style = if (border-type(gadget) == #"none") 0 else $WS-EX-CLIENTEDGE end;
-  let handle :: <HWND>
-    = CreateWindowEx(ext-style,
-		     "COMBOBOX",
-		     "",
-		     %logior(options, 
-			     $WS-GROUP, $WS-TABSTOP,
-			     $CBS-AUTOHSCROLL, $CBS-HASSTRINGS,
-			     $CBS-DROPDOWN),
-		     x, y, width, height,
-		     parent,
-		     $null-hMenu,
-		     application-instance-handle(),
-		     $NULL-VOID);
-  check-result("CreateWindowEx (COMBOBOX)", handle);
-  subclass-combo-box-text-field(gadget, handle);
-  handle
-end method make-gadget-control;
-
-define sealed method update-mirror-attributes
+define method update-mirror-attributes
     (gadget :: <gtk-combo-box>, mirror :: <gadget-mirror>) => ()
   next-method();
-  note-gadget-items-changed(gadget)
-end method update-mirror-attributes;
+  gtk-combo-box-entry-set-text-column(mirror.mirror-widget, 1);
+end;
 
-// This is a bizarre hack to subclass the text field which is
-// a child of the combo box.
-define function subclass-combo-box-text-field
-    (gadget :: <gtk-combo-box>, handle :: <HWND>) => ()
-  let edit-control = GetWindow(handle, $GW-CHILD);
-  check-result("Finding the combo box's edit control", edit-control);
-  // This is odd, but making this gadget actually does all the work
-  // to mirror and attach everything correctly.
-  make(<gtk-combo-box-text-field>,
-       owner: gadget, handle: edit-control);
-end function subclass-combo-box-text-field;
+define method install-event-handlers
+    (sheet :: <gtk-combo-box>, mirror :: <gadget-mirror>) => ()
+  next-method();
+  duim-g-signal-connect (sheet, #"changed") (#rest args) handle-changing-selection(sheet) end;
+  let gtkentry = with-gdk-lock gtk-bin-get-child(mirror.mirror-widget) end;
+  g-signal-connect(gtkentry, "activate", method(#rest args) handle-changed-selection(sheet) end);
+end;
 
-define sealed method do-compose-space 
-    (gadget :: <gtk-combo-box>, #key width, height)
- => (space-req :: <space-requirement>)
-  ignore(height);
-  let _port = port(gadget);
-  let text-style = get-default-text-style(_port, gadget);
-  let min-width = $minimum-visible-characters * font-width(text-style, _port);
-  let width = constrain-size(width | min-width, min-width, $fill);
-  //---*** How should we really calculate the constant below?
-  let height = font-height(text-style, _port) + $option-box-extra-height;
-  make(<space-requirement>,
-       width:  max(width, min-width), min-width: min-width, max-width: $fill,
-       height: height)
-end method do-compose-space;
+define method handle-changed-selection (gadget :: <gtk-combo-box>) => (handled? :: <boolean>)
+  let widget = mirror-widget(sheet-direct-mirror(gadget));
+  let text = as(<byte-string>, gtk-combo-box-get-active-text(widget));
+  distribute-text-changed-callback(gadget, text);
+  #t
+end;
 
-define sealed method gtk-combo-box-height
-    (gadget :: <gtk-combo-box>) => (height :: <integer>)
-  let _port = port(gadget);
-  let text-style = get-default-text-style(_port, gadget);
-  let n-items :: <integer> = size(gadget-items(gadget));
-  let line-height = font-height(text-style, _port);
-  let vsp         = $default-vertical-spacing;
-  let nlines      = max(n-items, 1);
-  //---*** How can we compute this for real?
-  line-height + $option-box-extra-height + 4
-    + min($option-box-maximum-popup-height,
-	  nlines * line-height + (nlines - 1) * vsp)
-end method gtk-combo-box-height;
+define method handle-changing-selection (gadget :: <gtk-combo-box>) => (handled? :: <boolean>)
+  let widget = mirror-widget(sheet-direct-mirror(gadget));
+  let row = gtk-combo-box-get-active(widget);
+  let text =
+    if (row = -1)
+      as(<byte-string>, gtk-combo-box-get-active-text(widget));
+    else
+      let gtkentry = gtk-bin-get-child(widget);
+      gtk-entry-set-text(gtkentry, gadget-items(gadget)[row]);
+      gtk-widget-grab-focus(gtkentry);
+      gadget-items(gadget)[row]
+    end;
+  distribute-text-changing-callback(gadget, text);
+  #t
+end;
 
 define sealed method note-gadget-items-changed
     (gadget :: <gtk-combo-box>) => ()
   next-method();
   let mirror = sheet-direct-mirror(gadget);
   when (mirror)
-    update-gadget-items(gadget, $CB-RESETCONTENT, $CB-ADDSTRING);
-    update-gadget-text(gadget, mirror);
-    // Call 'set-mirror-edges' to make sure that the drop-down menu
-    // is the correct size.
-    let _port = port(gadget);
-    let (left, top, right, bottom) = mirror-edges(_port, gadget, mirror);
-    set-mirror-edges(_port, gadget, mirror, left, top, right, bottom)
+    update-list-control-items(gadget, mirror);
   end
 end method note-gadget-items-changed;
-
-define sealed method note-gadget-text-changed 
-    (gadget :: <gtk-combo-box>) => ()
-  next-method();
-  let mirror = sheet-direct-mirror(gadget);
-  mirror & update-gadget-text(gadget, mirror)
-end method note-gadget-text-changed;
-
-define sealed method note-gadget-value-changed
-    (gadget :: <gtk-combo-box>) => ()
-  next-method();
-  let mirror = sheet-direct-mirror(gadget);
-  mirror & update-gadget-text(gadget, mirror)
-end method note-gadget-value-changed;
-
-define sealed method handle-selection-changed
-    (gadget :: <gtk-combo-box>) => (handled? :: <boolean>)
-  let handle = window-handle(gadget);
-  let selection = SendMessage(handle, $CB-GETCURSEL, 0, 0);
-  unless (selection = $CB-ERR)
-    let item = gadget-items(gadget)[selection];
-    let text = collection-gadget-item-label(gadget, item);
-    distribute-text-changed-callback(gadget, text);
-    #t
-  end
-end method handle-selection-changed;
-
-define sealed method handle-command
-    (gadget :: <gtk-combo-box>, mirror :: <gadget-mirror>,
-     id :: <integer>, event :: <integer>)
- => (handled? :: <boolean>)
-  ignore(mirror, id);
-  select (event)
-    $CBN-EDITCHANGE => handle-text-gadget-changing(gadget);
-    $CBN-SELENDOK   => handle-selection-changed(gadget);
-//---*** This doesn't seem to work, and also messes up
-//---*** the SELENDOK so I've taken it out for now.
-//  $EN-KILLFOCUS   => handle-text-gadget-changed(gadget);
-    otherwise       => next-method();
-  end
-end method handle-command;
-
-//--- This is a hack to wrestle the magic keys from the combo-box so
-//--- that we can correctly handle hitting return, escape or tab.
-define sealed method handle-control-message
-    (text-field :: <gtk-combo-box-text-field>, message :: <message-type>,
-     wParam :: <wparam-type>, lParam :: <lparam-type>)
- => (handled? :: <boolean>)
-  let gadget = subgadget-owner(text-field);
-  duim-debug-message("Handling message #x%x for subclassed %=",
-		     message, gadget);
-  when (message = $WM-KEYUP | message = $WM-CHAR | message = $WM-KEYDOWN)
-    let key-name = virtual-key->keysym(wParam);
-    duim-debug-message("Handling key-name %= for subclassed %=",
-		       key-name, gadget);
-    select (key-name)
-      #"return", #"escape" =>
-	message = $WM-KEYDOWN & handle-command-for-id(gadget, $IDOK);
-	#t;
-      #"tab" =>
-	//---*** We need to handle Tab and shift-Tab somehow, since
-	//---*** combo boxes won't do it for us.
-	duim-debug-message("Dropping Tab on the floor for %=!", gadget);
-	#t;
-      otherwise =>
-	#f;
-    end
-  end
-end method handle-control-message;
-
-define sealed method cancel-gadget 
-    (gadget :: <gtk-combo-box>) => (handled? :: <boolean>)
-  let handle = window-handle(gadget);
-  when (handle & (SendMessage(handle, $CB-GETDROPPEDSTATE, 0, 0) = $true))
-    SendMessage(handle, $CB-SHOWDROPDOWN, $false, 0);
-    #t
-  end
-end method cancel-gadget;
-*/
 
 
 /// Viewports
