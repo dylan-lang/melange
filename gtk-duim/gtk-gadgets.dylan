@@ -1157,16 +1157,16 @@ define method install-event-handlers
   let widget = mirror-widget(mirror);
   let selection = with-gdk-lock gtk-tree-view-get-selection(widget) end;
   g-signal-connect(selection, "changed", method (#rest args) handle-gtk-select-row-event(sheet) end);
-  //duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
-  //with-gdk-lock
-  //  gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
-  //end
+  duim-g-signal-connect(sheet, #"button-press-event") (widget, event, #rest args) handle-gtk-button-press-event(sheet, event) end;
+  with-gdk-lock
+    gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
+  end
 end method install-event-handlers;
 
 define sealed method handle-gtk-select-row-event
     (gadget :: <gtk-tree-view-control-mixin>)
  => (handled? :: <boolean>)
-  gtk-debug("Clicked on list control!");
+  gtk-debug("Selected list control item!");
   let mirror = gadget.sheet-direct-mirror;
   let widget = mirror-widget(mirror);
   let selection = gtk-tree-view-get-selection(widget);
@@ -1213,6 +1213,12 @@ define sealed method handle-gtk-button-press-event
     gtk-debug("Double clicked on list control!");
     when (gadget-activate-callback(gadget))
       distribute-activate-callback(gadget);
+    end;
+    #t
+  elseif ((event.GdkEventButton-type == $GDK-BUTTON-PRESS) & (event.GdkEventButton-button == 3)) //right click
+    gtk-debug("right clicked on list control!");
+    when (gadget-popup-menu-callback(gadget))
+      distribute-popup-menu-callback(gadget, 0, x: round(event.GdkEventButton-x), y: round(event.GdkEventButton-y));
     end;
     #t
   end

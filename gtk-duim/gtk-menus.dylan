@@ -30,6 +30,18 @@ define method set-mirror-parent
                           mirror-widget(child))
   end
 end method set-mirror-parent;
+
+define method set-mirror-parent
+    (child :: <menu-button-mirror>, parent :: <popup-menu-mirror>)
+ => ()
+  duim-debug-message("Adding %= to popup menu %=",
+		gadget-label(mirror-sheet(child)),
+		gadget-label(mirror-sheet(parent)));
+  with-gdk-lock
+    gtk-menu-shell-append(mirror-widget(parent),
+                          mirror-widget(child))
+  end
+end method set-mirror-parent;
     
 define method set-mirror-parent
     (child :: <menu-mirror>, parent :: <menu-mirror>)
@@ -405,12 +417,27 @@ define sealed class <gtk-menu>
   sealed slot menu-record-selection? = #f;
 end class <gtk-menu>;
 
+define sealed class <gtk-popup-menu> (<gtk-menu>)
+end;
 define sealed method class-for-make-pane 
-    (framem :: <gtk-frame-manager>, class == <menu>, #key)
+    (framem :: <gtk-frame-manager>, class == <menu>, #key owner)
  => (class :: <class>, options :: false-or(<sequence>))
-  values(<gtk-menu>, #f)
+  if (owner)
+    values(<gtk-popup-menu>, #f);
+  else
+    values(<gtk-menu>, #f)
+  end;
 end method class-for-make-pane;
 
+define sealed method make-gtk-mirror
+  (gadget :: <gtk-popup-menu>) => (mirror :: <menu-mirror>)
+  let widget = with-gdk-lock gtk-menu-new() end;
+  let selection-owner = menu-record-selection?(gadget) & gadget;
+  make(<popup-menu-mirror>, 
+       widget: widget,
+       sheet:  gadget, 
+       selection-owner: selection-owner)
+end;   
 define sealed method make-gtk-mirror
     (gadget :: <gtk-menu>)
  => (mirror :: <menu-mirror>)
@@ -420,34 +447,26 @@ define sealed method make-gtk-mirror
     ignoring("menu with image")
   end;
   let widget = with-gdk-lock gtk-menu-item-new-with-label(text) end;
-  let owner = menu-owner(gadget);
-  let owner = if (frame?(owner)) top-level-sheet(owner) else owner end;
-  make-menu-mirror-for-owner(owner, gadget, widget)
-end method make-gtk-mirror;
-
-define sealed method make-menu-mirror-for-owner
-    (owner :: <sheet>, gadget :: <gtk-menu>, widget :: <GtkMenuItem>)
- => (mirror :: <popup-menu-mirror>)
-  let selection-owner = menu-record-selection?(gadget) & gadget;
-  make(<popup-menu-mirror>, 
-       widget: widget,
-       sheet:  gadget, 
-       selection-owner: selection-owner)
-end method make-menu-mirror-for-owner;
-
-define sealed method make-menu-mirror-for-owner
-    (owner == #f, gadget :: <gtk-menu>, widget :: <GtkMenuItem>)
- => (mirror :: <menu-mirror>)
   make(<menu-mirror>,
        widget: widget,
        sheet:  gadget)
-end method make-menu-mirror-for-owner;
+end method make-gtk-mirror;
 
 define sealed method map-mirror
-    (_port :: <gtk-port>, menu :: <gtk-menu>, 
+    (_port :: <gtk-port>, menu :: <gtk-popup-menu>, 
      mirror :: <popup-menu-mirror>) => ()
-  ignoring("map-mirror on a popup menu")
+  next-method();
+  with-gdk-lock
+    gtk-menu-popup(mirror.mirror-widget, null-pointer(<GtkWidget>), null-pointer(<GtkWidget>), null-pointer(<GtkMenuPositionFunc>),
+                   null-pointer(<GPointer>), 3, 0);
+  end
 end method map-mirror;
+
+define sealed method set-mirror-parent (menu :: <popup-menu-mirror>, widget :: <gtk-mirror>) => ()
+  with-gdk-lock
+    gtk-menu-attach-to-widget(menu.mirror-widget, menu.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror.mirror-widget, null-pointer(<GtkMenuDetachFunc>));
+  end
+end;
 
 /*---*** Should be called just before a menu pops up
 define method handle-menu-update
