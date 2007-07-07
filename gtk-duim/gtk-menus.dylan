@@ -420,11 +420,6 @@ end class <gtk-menu>;
 define sealed class <gtk-popup-menu> (<gtk-menu>)
 end;
 
-define method sheet-handles-repaint?
-    (sheet :: <gtk-popup-menu>) => (true? :: <boolean>)
-  #t
-end method sheet-handles-repaint?;
-
 define sealed method class-for-make-pane 
     (framem :: <gtk-frame-manager>, class == <menu>, #key owner)
  => (class :: <class>, options :: false-or(<sequence>))
