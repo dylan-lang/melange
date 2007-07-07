@@ -457,16 +457,21 @@ define sealed method map-mirror
      mirror :: <popup-menu-mirror>) => ()
   next-method();
   with-gdk-lock
-    gtk-widget-set-size-request(mirror.mirror-widget, 100, 100);
-    gtk-menu-popup(mirror.mirror-widget, null-pointer(<GtkWidget>), null-pointer(<GtkWidget>), null-pointer(<GtkMenuPositionFunc>),
-                   null-pointer(<GPointer>), 3, 0);
+    //with-disabled-event-handler (mirror.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror, #"expose-event")
+      popup-gtk-menu(mirror.mirror-widget, 3);
+    //end
+//    gtk-menu-popup(mirror.mirror-widget, null-pointer(<GtkWidget>), 
+//                   null-pointer(<GtkWidget>), null-pointer(<GtkMenuPositionFunc>),
+//                   null-pointer(<GPointer>), 3, 0);
+    //gtk-menu-shell-set-ignore-enter(mirror.mirror-widget, 0);
+    
   end
 end method map-mirror;
 
 define sealed method set-mirror-parent (menu :: <popup-menu-mirror>, widget :: <gtk-mirror>) => ()
   with-gdk-lock
-    gtk-menu-attach-to-widget(menu.mirror-widget, menu.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror.mirror-widget, null-pointer(<GtkMenuDetachFunc>));
-    gtk-menu-set-screen(menu.mirror-widget, null-pointer(<GdkScreen>));
+    //gtk-menu-attach-to-widget(menu.mirror-widget, menu.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror.mirror-widget, null-pointer(<GtkMenuDetachFunc>));
+    //gtk-menu-set-screen(menu.mirror-widget, null-pointer(<GdkScreen>));
   end
 end;
 

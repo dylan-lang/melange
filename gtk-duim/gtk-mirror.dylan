@@ -344,13 +344,17 @@ define macro with-disabled-event-handler
       ?body:*
     end }
  => { let signal-handler-id
-        = element(?mirror.signal-handler-ids, ?signal-name);
+        = element(?mirror.signal-handler-ids, ?signal-name, default: #f);
       let widget = mirror-widget(?mirror);
-      block()
-        g-signal-handler-block(widget, signal-handler-id);
-        ?body
-      cleanup
-        g-signal-handler-unblock(widget, signal-handler-id);
+      if (signal-handler-id)
+        block()
+          g-signal-handler-block(widget, signal-handler-id);
+          ?body
+        cleanup
+          g-signal-handler-unblock(widget, signal-handler-id);
+        end;
+      else
+        duim-debug-message("key %= not found in table %=", ?signal-name, ?mirror.signal-handler-ids.key-sequence);
       end; }
 end;
 

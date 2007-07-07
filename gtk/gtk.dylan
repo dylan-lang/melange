@@ -50,6 +50,29 @@ define C-function gtk-dialog-get-action-area
   c-name: "gtk_dialog_get_action_area";
 end;
 
+define C-function gtk-menu-shell-set-ignore-enter
+  input parameter menu :: <GtkMenuShell>;
+  input parameter enabled? :: <gboolean>;
+  c-name: "gtk_menu_shell_set_ignore_enter";
+end;
+
+define C-function gdk-x11-get-server-time
+  input parameter window :: <GdkWindow>;
+  result time :: <guint32>;
+  c-name: "gdk_x11_get_server_time";
+end;
+
+define C-function popup-gtk-menu
+  input parameter menu :: <GtkMenu>;
+  input parameter button :: <guint>;
+  c-name: "popup_gtk_menu";
+end;
+
+define C-function gtk-set-button-time
+  input parameter event :: <GdkEventButton>;
+  c-name: "gtk_set_button_time";
+end;
+
 define C-subtype <_Fixed> (<_GtkFixed>) end;
 define constant <Fixed> = <_Fixed>;
 define C-function fixed-new

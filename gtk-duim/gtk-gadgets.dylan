@@ -1218,6 +1218,7 @@ define sealed method handle-gtk-button-press-event
   elseif ((event.GdkEventButton-type == $GDK-BUTTON-PRESS) & (event.GdkEventButton-button == 3)) //right click
     gtk-debug("right clicked on list control!");
     when (gadget-popup-menu-callback(gadget))
+      gtk-set-button-time(event);
       distribute-popup-menu-callback(gadget, 0, x: round(event.GdkEventButton-x), y: round(event.GdkEventButton-y));
     end;
     #t

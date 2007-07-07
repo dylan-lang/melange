@@ -3,6 +3,9 @@
 #include <gdk/gdkwindow.h>
 #include <gtk/gtkdialog.h>
 #include <gtk/gtkfixed.h>
+#include <gtk/gtkmenushell.h>
+#include <gtk/gtkmenu.h>
+#include <gdk/gdkx.h>
 
 typedef GtkFixed Fixed;
 typedef GtkFixedClass FixedClass;
@@ -91,5 +94,16 @@ void g_value_nullify(GValue* gvalue) {
       *foo = 0;
 }
 
+void gtk_menu_shell_set_ignore_enter (GtkMenuShell* menu, gboolean value) {
+  menu->ignore_enter = value ? TRUE : FALSE;
+}
 
-
+guint32 mytime = 0;
+void gtk_set_button_time (GdkEventButton *button) {
+  mytime = button->time;
+}
+  
+void popup_gtk_menu (GtkMenu* menu, guint button) {
+  g_print("%d mytime\n", mytime);
+  gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, mytime);
+}
