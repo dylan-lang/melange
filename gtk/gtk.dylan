@@ -56,12 +56,6 @@ define C-function gtk-menu-shell-set-ignore-enter
   c-name: "gtk_menu_shell_set_ignore_enter";
 end;
 
-define C-function gdk-x11-get-server-time
-  input parameter window :: <GdkWindow>;
-  result time :: <guint32>;
-  c-name: "gdk_x11_get_server_time";
-end;
-
 define C-function popup-gtk-menu
   input parameter menu :: <GtkMenu>;
   input parameter button :: <guint>;

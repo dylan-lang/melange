@@ -5,7 +5,6 @@
 #include <gtk/gtkfixed.h>
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkmenu.h>
-#include <gdk/gdkx.h>
 
 typedef GtkFixed Fixed;
 typedef GtkFixedClass FixedClass;

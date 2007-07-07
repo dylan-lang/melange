@@ -19,7 +19,6 @@ define module gtk-support
     gtk-dialog-get-vbox,
     gtk-dialog-get-action-area,
     gtk-menu-shell-set-ignore-enter,
-    gdk-x11-get-server-time,
     popup-gtk-menu,
     gtk-set-button-time,
     g-value-nullify,
