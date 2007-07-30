@@ -930,7 +930,7 @@ define sealed method make-gtk-mirror
       widget.@wrap-mode := $GTK-WRAP-WORD-CHAR;
     end;
     let buffer = gtk-text-view-get-buffer(widget);
-    format-out("Setting text to %=\n", text);
+    //duim-debug-message("Setting text to %=", text);
     gtk-text-buffer-set-text(buffer, text, -1);
     make(<gadget-mirror>,
          widget: widget,
@@ -940,18 +940,25 @@ end method make-gtk-mirror;
 
 define sealed method update-gadget-text
     (gadget :: <gtk-text-editor>, mirror :: <gadget-mirror>) => ()
-  ignore(mirror);
+  //duim-debug-message("Updating text-editors text");
   let widget = gadget-widget(gadget);
   when (widget)
     with-gdk-lock
       let buffer = gtk-text-view-get-buffer(widget);
       let new-text = gadget-text-buffer(gadget);
-      with-disabled-event-handler (mirror, #"changed")
-        gtk-text-buffer-set-text(buffer, new-text, -1);
-      end;
+      gtk-text-buffer-set-text(buffer, new-text, size(new-text));
     end
   end;
 end method update-gadget-text;
+
+
+define method gadget-text-setter
+    (text :: <string>, gadget :: <gtk-text-editor>, #key do-callback? = #f)
+ => (text :: <string>)
+  gadget-text-buffer(gadget) := text;
+  update-gadget-text(gadget, sheet-direct-mirror(gadget));
+  text;
+end;
 
 
 /// Scroll bars
@@ -1450,12 +1457,13 @@ define method init-scrolled-window
           #"horizontal" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-AUTOMATIC);
           #"vertical" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-ALWAYS);
         end;
-    //duim-debug-message("scroll-bar %=\n", gadget-scroll-bars(gadget));
+    //duim-debug-message("scroll-bar %=", gadget-scroll-bars(gadget));
     apply(gtk-scrolled-window-set-policy, scrolled-win, policies);
     gtk-widget-show(scrolled-win);
     scrolled-win;
   end;
 end;
+
 
 // Table controls
 
@@ -1596,7 +1604,7 @@ define function generate-table-model (no-of-columns :: <integer>)
 end;
 
 define sealed method update-list-control-items
-    (gadget :: <gtk-table-control>, mirror :: <scrolled-mirror>)
+    (gadget :: <gtk-table-control>, mirror :: <gadget-mirror>)
  => ()
   let widget = mirror.mirror-widget;
   let items = gadget-items(gadget);
