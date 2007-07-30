@@ -1434,20 +1434,23 @@ define method do-compose-space
   end
 end method do-compose-space;
 
-define method init-scrolled-window (widget :: <GtkWidget>, scroll-bar)
+define method init-scrolled-window
+    (widget :: <GtkWidget>, gadget :: <scrolled-mixin>)
   with-gdk-lock
     let scrolled-win
       = gtk-scrolled-window-new(null-pointer(<GtkAdjustment>),
                                 null-pointer(<GtkAdjustment>));
     gtk-container-add(scrolled-win, widget);
     let (#rest policies)
-      = select (scroll-bar)
+      = select (gadget-scroll-bars(gadget))
           #f, #"none" => values($GTK-POLICY-NEVER, $GTK-POLICY-NEVER);
           #t, #"dynamic" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-AUTOMATIC);
           #"both" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-ALWAYS);
+          //#"both" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-AUTOMATIC);
           #"horizontal" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-AUTOMATIC);
           #"vertical" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-ALWAYS);
         end;
+    //duim-debug-message("scroll-bar %=\n", gadget-scroll-bars(gadget));
     apply(gtk-scrolled-window-set-policy, scrolled-win, policies);
     gtk-widget-show(scrolled-win);
     scrolled-win;
@@ -1486,7 +1489,7 @@ define sealed method make-gtk-mirror
     end;
     gtk-tree-view-set-fixed-height-mode(widget, 1);
     let scrolled-win
-      = init-scrolled-window(widget, gadget-scroll-bars(gadget));
+      = init-scrolled-window(widget, gadget);
     make(<scrolled-mirror>,
          widget: widget,
          scrolled-window: scrolled-win,
@@ -1634,7 +1637,8 @@ end method update-list-control-items;
 // Tree control
 
 define sealed class <gtk-tree-control>
-    (<gtk-tree-view-control-mixin>,
+    (<scrolled-mixin>,
+     <gtk-tree-view-control-mixin>,
      <tree-control>,
      <leaf-pane>)
   sealed constant slot %nodes :: <node-of-tree-control>
@@ -1661,8 +1665,10 @@ define sealed method make-gtk-mirror
     let model = gtk-tree-store-newv(1, type-vector);
     gadget.store-model := model;
     widget.@model := model;
-    make(<gadget-mirror>,
+    let scrolled-win = init-scrolled-window(widget, gadget);
+    make(<scrolled-mirror>,
          widget: widget,
+         scrolled-window: scrolled-win,
          sheet: gadget);
   end;
 end;
