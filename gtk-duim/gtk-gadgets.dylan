@@ -1397,22 +1397,31 @@ define sealed method make-gtk-mirror
   end
 end method make-gtk-mirror;
 
-// Table controls
+// Scrolled mixins
+define sealed class <scrolled-mixin>
+    (<gtk-gadget-mixin>)
+end;
 
-define sealed class <gtk-table-control> 
-    (<gtk-tree-view-control-mixin>,
-     <table-control>,
-     <leaf-pane>)
-end class <gtk-table-control>;
+define sealed class <scrolled-mirror> (<gadget-mirror>)
+  constant slot scrolled-window, required-init-keyword: scrolled-window:;
+end;
 
-define sealed method class-for-make-pane 
-    (framem :: <gtk-frame-manager>, class == <table-control>, #key)
- => (class :: <class>, options :: false-or(<sequence>))
-  values(<gtk-table-control>, #f)
-end method class-for-make-pane;
+define method set-mirror-parent
+    (child :: <scrolled-mirror>, parent :: <widget-mirror>)
+ => ()
+  with-gdk-lock
+    gtk-container-add(parent.mirror-widget, child.scrolled-window);
+  end;
+end;
+
+define method set-mirror-size
+    (mirror :: <scrolled-mirror>, width :: <integer>, height :: <integer>)
+ => ()
+  set-widget-size(mirror, mirror.scrolled-window, width, height);
+end;
 
 define method do-compose-space
-    (gadget :: <gtk-table-control>, #key width, height)
+    (gadget :: <scrolled-mixin>, #key width, height)
  => (space-req :: <space-requirement>)
   debug-message("do-compose-space(%= , %d, %d)", gadget, width, height);
   let mirror = sheet-direct-mirror(gadget);
@@ -1425,22 +1434,41 @@ define method do-compose-space
   end
 end method do-compose-space;
 
-
-define class <table-mirror> (<gadget-mirror>)
-  constant slot scrolled-window, required-init-keyword: scrolled-window:;
-end;
-
-define method set-mirror-parent (child :: <table-mirror>, parent :: <widget-mirror>) => ()
+define method init-scrolled-window (widget :: <GtkWidget>, scroll-bar)
   with-gdk-lock
-    gtk-container-add(parent.mirror-widget, child.scrolled-window);
+    let scrolled-win
+      = gtk-scrolled-window-new(null-pointer(<GtkAdjustment>),
+                                null-pointer(<GtkAdjustment>));
+    gtk-container-add(scrolled-win, widget);
+    let (#rest policies)
+      = select (scroll-bar)
+          #f, #"none" => values($GTK-POLICY-NEVER, $GTK-POLICY-NEVER);
+          #t, #"dynamic" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-AUTOMATIC);
+          #"both" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-ALWAYS);
+          #"horizontal" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-AUTOMATIC);
+          #"vertical" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-ALWAYS);
+        end;
+    apply(gtk-scrolled-window-set-policy, scrolled-win, policies);
+    gtk-widget-show(scrolled-win);
+    scrolled-win;
   end;
 end;
 
-define method set-mirror-size
-    (mirror :: <table-mirror>, width :: <integer>, height :: <integer>)
- => ()
-  set-widget-size(mirror, mirror.scrolled-window, width, height);
-end;
+// Table controls
+
+define sealed class <gtk-table-control> 
+    (<scrolled-mixin>,
+     <gtk-tree-view-control-mixin>,
+     <table-control>,
+     <leaf-pane>)
+end class <gtk-table-control>;
+
+define sealed method class-for-make-pane 
+    (framem :: <gtk-frame-manager>, class == <table-control>, #key)
+ => (class :: <class>, options :: false-or(<sequence>))
+  values(<gtk-table-control>, #f)
+end method class-for-make-pane;
+
 define sealed method make-gtk-mirror
     (gadget :: <gtk-table-control>)
  => (mirror :: <gadget-mirror>)
@@ -1458,20 +1486,8 @@ define sealed method make-gtk-mirror
     end;
     gtk-tree-view-set-fixed-height-mode(widget, 1);
     let scrolled-win
-      = gtk-scrolled-window-new(null-pointer(<GtkAdjustment>),
-                                null-pointer(<GtkAdjustment>));
-    gtk-container-add(scrolled-win, widget);
-    let (#rest policies)
-      = select (gadget-scroll-bars(gadget))
-          #f, #"none" => values($GTK-POLICY-NEVER, $GTK-POLICY-NEVER);
-          #t, #"dynamic" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-AUTOMATIC);
-          #"both" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-ALWAYS);
-          #"horizontal" => values($GTK-POLICY-ALWAYS, $GTK-POLICY-AUTOMATIC);
-          #"vertical" => values($GTK-POLICY-AUTOMATIC, $GTK-POLICY-ALWAYS);
-        end;
-    apply(gtk-scrolled-window-set-policy, scrolled-win, policies);
-    gtk-widget-show(scrolled-win);
-    make(<table-mirror>,
+      = init-scrolled-window(widget, gadget-scroll-bars(gadget));
+    make(<scrolled-mirror>,
          widget: widget,
          scrolled-window: scrolled-win,
          sheet:  gadget);
@@ -1577,7 +1593,7 @@ define function generate-table-model (no-of-columns :: <integer>)
 end;
 
 define sealed method update-list-control-items
-    (gadget :: <gtk-table-control>, mirror :: <table-mirror>)
+    (gadget :: <gtk-table-control>, mirror :: <scrolled-mirror>)
  => ()
   let widget = mirror.mirror-widget;
   let items = gadget-items(gadget);
