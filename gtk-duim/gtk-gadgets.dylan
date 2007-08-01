@@ -685,10 +685,10 @@ define sealed method handle-text-gadget-changing
                      gadget.gadget-text-buffer := gtk-copy-text(chars);
                    end;
     g-free(chars);
-  end;
-  when (new-text)
-    gadget.%changed? := #t;
-    distribute-text-changing-callback(gadget, new-text)
+    when (new-text)
+      gadget.%changed? := #t;
+      distribute-text-changing-callback(gadget, new-text)
+    end;
   end;
 end method handle-text-gadget-changing;
 
