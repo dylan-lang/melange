@@ -941,6 +941,12 @@ end method make-gtk-mirror;
 define sealed method update-gadget-text
     (gadget :: <gtk-text-editor>, mirror :: <gadget-mirror>) => ()
   //duim-debug-message("Updating text-editors text");
+  ignore(mirror);
+  note-gadget-text-changed(gadget);
+end method update-gadget-text;
+
+define method note-gadget-text-changed
+    (gadget :: <gtk-text-editor>) => ()
   let widget = gadget-widget(gadget);
   when (widget)
     with-gdk-lock
@@ -949,14 +955,13 @@ define sealed method update-gadget-text
       gtk-text-buffer-set-text(buffer, new-text, size(new-text));
     end
   end;
-end method update-gadget-text;
-
+end;
 
 define method gadget-text-setter
     (text :: <string>, gadget :: <gtk-text-editor>, #key do-callback? = #f)
  => (text :: <string>)
   gadget-text-buffer(gadget) := text;
-  update-gadget-text(gadget, sheet-direct-mirror(gadget));
+  note-gadget-text-changed(gadget);
   text;
 end;
 
@@ -1825,7 +1830,6 @@ end;
 
 /// Option boxes
 
-// A fake...
 define sealed class <gtk-option-box> 
     (<gtk-list-control-mixin>,
      <option-box>,
@@ -1842,8 +1846,8 @@ end method class-for-make-pane;
 define sealed method make-gtk-mirror
     (gadget :: <gtk-option-box>)
  => (mirror :: <gadget-mirror>)
-  let widget = with-gdk-lock gtk-clist-new(1) end;
-  assert(~null-pointer?(widget), "gtk-clist-new failed");
+  let widget = with-gdk-lock gtk-combo-box-new() end;
+  assert(~null-pointer?(widget), "gtk-combo-box-new failed");
   make(<gadget-mirror>,
        widget: widget,
        sheet:  gadget)
