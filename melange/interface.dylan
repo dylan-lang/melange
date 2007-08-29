@@ -578,8 +578,10 @@ define method write-module-stream
     for(separator = "" then ",", name in names)
 			// If a type is created in the module, export it
 	      format(module-stream, concatenate(separator, "\n    %s"), name);
+        force-output(module-stream);
     end for;
     format(module-stream, ";\nend module;\n");
+    force-output(module-stream);
   end if;
 end method write-module-stream;
 
