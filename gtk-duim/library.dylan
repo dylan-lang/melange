@@ -19,6 +19,7 @@ define library gtk-duim
 
   use gtk;
 
+  use stack-walker;
   export gtk-duim;
 
 end library gtk-duim;

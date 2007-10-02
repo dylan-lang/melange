@@ -439,6 +439,7 @@ define sealed method make-gtk-mirror
        sheet:  gadget, 
        selection-owner: selection-owner)
 end;   
+
 define sealed method make-gtk-mirror
     (gadget :: <gtk-menu>)
  => (mirror :: <menu-mirror>)
@@ -456,24 +457,20 @@ end method make-gtk-mirror;
 define sealed method map-mirror
     (_port :: <gtk-port>, menu :: <gtk-popup-menu>, 
      mirror :: <popup-menu-mirror>) => ()
-  next-method();
-  with-gdk-lock
-    //with-disabled-event-handler (mirror.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror, #"expose-event")
-      popup-gtk-menu(mirror.mirror-widget, 3);
-    //end
-//    gtk-menu-popup(mirror.mirror-widget, null-pointer(<GtkWidget>), 
-//                   null-pointer(<GtkWidget>), null-pointer(<GtkMenuPositionFunc>),
-//                   null-pointer(<GPointer>), 3, 0);
-    //gtk-menu-shell-set-ignore-enter(mirror.mirror-widget, 0);
-    
-  end
+  with-gdk-lock popup-gtk-menu(mirror.mirror-widget, 3); end
 end method map-mirror;
 
-define sealed method set-mirror-parent (menu :: <popup-menu-mirror>, widget :: <gtk-mirror>) => ()
-  with-gdk-lock
-    //gtk-menu-attach-to-widget(menu.mirror-widget, menu.mirror-sheet.menu-owner.top-level-sheet.sheet-direct-mirror.mirror-widget, null-pointer(<GtkMenuDetachFunc>));
-    //gtk-menu-set-screen(menu.mirror-widget, null-pointer(<GdkScreen>));
-  end
+define method sheet-mapped?-setter 
+    (mapped? == #f, menu :: <gtk-popup-menu>, 
+     #key do-repaint? = #t, clear? = do-repaint?)
+ => (mapped? :: <boolean>)
+  #f;
+end;
+
+define sealed method set-mirror-parent
+    (menu :: <popup-menu-mirror>, widget :: <gtk-mirror>) => ()
+  //what are we supposed to do here?
+  //nothing works just great!
 end;
 
 /*---*** Should be called just before a menu pops up
