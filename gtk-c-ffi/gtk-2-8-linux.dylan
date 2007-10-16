@@ -661,7 +661,7 @@ define C-pointer-type <GdkEventProximity> => <_GdkEventProximity>;
 
 define constant <gushort> = <C-unsigned-short>;
 
-define C-pointer-type <char*> => <C-signed-char>;
+define constant <char*> = <C-string>;
 define constant <char<@20>> = <char*>;
 define C-pointer-type <short*> => <C-signed-short>;
 define constant <short<@10>> = <short*>;

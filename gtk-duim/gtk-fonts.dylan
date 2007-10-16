@@ -12,8 +12,8 @@ Warranty:     Distributed WITHOUT WARRANTY OF ANY KIND
 define sealed class <gtk-font> (<object>)
   sealed slot %font-name :: <string>,
     required-init-keyword: name:;
-  sealed slot %font-id :: false-or(<GdkFont>) = #f;
-  sealed slot %font-struct = #f;
+  sealed slot %font-description :: <PangoFontDescription>,
+    required-init-keyword: description:;
 end class <gtk-font>;
 
 define sealed domain make (singleton(<gtk-font>));
@@ -51,13 +51,11 @@ end method condition-to-string;
 
 /// Font mapping
 
-/*---*** Not used yet!
 define constant $gtk-font-families :: <list>
-  = #(#(#"fix",        "courier"),
-      #(#"sans-serif", "helvetica"),
-      #(#"serif",      "times", "charter", "new century schoolbook"),
+  = #(#(#"fix",        "Monospace"),
+      #(#"sans-serif", "Sans"),
+      #(#"serif",      "Serif"),
       #(#"symbol",     "symbol"));
-*/
 
 //--- We should compute the numbers based on either device characteristics
 //--- or some user option
@@ -70,7 +68,6 @@ define constant $gtk-logical-sizes :: <simple-object-vector>
 	#[#"tiny",        5],
 	#[#"huge",       18]];
 
-/*---*** Not used yet!
 define method install-default-text-style-mappings
     (_port :: <gtk-port>) => ()
   ignoring("install-default-text-style-mappings");
@@ -89,24 +86,25 @@ define method scaleable-font-name-at-size
  => (font-name :: <integer>)
   not-yet-implemented("scaleable-font-name-at-size")
 end method scaleable-font-name-at-size;
-*/
-
 
 define sealed method do-text-style-mapping
     (_port :: <gtk-port>, text-style :: <standard-text-style>, character-set)
  => (font :: <gtk-font>)
   ignore(character-set);
-  let text-style
-    = standardize-text-style(_port, text-style,
-			     character-set: character-set);
-  let table :: <object-table> = port-font-mapping-table(_port);
-  let font = gethash(table, text-style);
-  font
-    | begin
-	ignoring("do-text-style-mapping");
-	//---*** This is not right!
-	make(<gtk-font>, name: "fake")
-      end
+  let table = port-font-mapping-table(_port);
+  let (font, found?) = gethash(table, text-style);
+  if (found?)
+    font
+  else
+    let font-name
+      = format-to-string("%s %d",
+                         second(find-pair($gtk-font-families, text-style-family(text-style))),
+                         text-style-size(text-style));
+    let font-description = pango-font-description-from-string(font-name); 
+    let font = make(<gtk-font>, name: font-name, description: font-description);
+    table[text-style] := font;
+    font
+  end;
 end method do-text-style-mapping;
 
 //--- This approach seems unnecessarily clumsy; we might as well just have 
@@ -184,8 +182,14 @@ define sealed method gtk-font-metrics
     (font :: <gtk-font>, _port :: <gtk-port>)
  => (font :: <gtk-font>,
      width :: <integer>, height :: <integer>, ascent :: <integer>, descent :: <integer>)
-  ignoring("gtk-font-metrics");
-  values(font, 100, 10, 8, 2)
+  let widget = _port.port-displays.first.sheet-children.first.sheet-direct-mirror.mirror-widget; // YUCK!
+  let pango-context = gtk-widget-get-pango-context(widget);
+  let metrics = pango-context-get-metrics(pango-context, font.%font-description, pango-language-get-default());
+  values(font,
+         truncate/(pango-font-metrics-get-approximate-char-width(metrics), $PANGO-SCALE),
+         truncate/(pango-font-description-get-size(font.%font-description), $PANGO-SCALE),
+         truncate/(pango-font-metrics-get-ascent(metrics), $PANGO-SCALE),
+         truncate/(pango-font-metrics-get-descent(metrics), $PANGO-SCALE));
 end method gtk-font-metrics;
 
 
