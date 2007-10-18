@@ -459,6 +459,12 @@ define sealed method draw-text
   let length :: <integer> = size(string);
   let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = update-drawing-state(medium, font: font);
+  let screen = gdk-drawable-get-screen(drawable);
+//  let renderer = gdk-pango-renderer-get-default(screen);
+//  gdk-pango-renderer-set-gc(renderer, gcontext);
+  let context = gdk-pango-context-get-for-screen(screen);
+  let layout = pango-layout-new(context);
+  pango-layout-set-font-description(layout, font.%font-description);
   let transform = medium-device-transform(medium);
   with-device-coordinates (transform, x, y)
     when (towards-x & towards-y)
@@ -466,44 +472,40 @@ define sealed method draw-text
     end;
     //---*** What about x and y alignment?
     if (do-tabs?)
-      ignoring("draw-text with do-tabs?: #t");
-      /*---*** Not yet implemented!
       let tab-width  = text-size(medium, " ") * 8;
       let tab-origin = if (do-tabs? == #t) x else do-tabs? end;
       let x = 0;
       let s = _start;
       block (break)
 	while (#t)
-	  let e = position(string, '\t', start: s, end: _end);
-	  //---*** It would be great if 'with-c-string' took start & end!
+	  let e = position(string, '\t', start: s, end: _end) | string.size;
 	  let substring = copy-sequence(string, start: s, end: e);
-	  with-c-string (c-string = substring)
-	    gdk-draw-text(drawable, font, gcontext,
-			  tab-origin + x, y, string, e - s)
-	  end;
+          pango-layout-set-text(layout, substring, e - s);
+//          pango-layout-context-changed(layout);
+//          pango-renderer-draw-layout(renderer, layout, tab-origin + x, y);
+          gdk-draw-line(drawable, gcontext, 0, 0, 100, 100);
+          gdk-draw-layout(drawable, gcontext, tab-origin + x, y + 50, layout);
 	  if (e = _end)
 	    break()
 	  else
-	    let (x1, y1, x2, y2) = GET-STRING-EXTENT(drawable, string, font, s, e);
-	    ignore(x1, y1, y2);
-	    x := floor/(x + x2 + tab-width, tab-width) * tab-width;
-	    s := min(e + 1, _end)
+            with-stack-structure (rectangle :: <PangoRectangle>)
+              pango-layout-get-pixel-extents(layout, null-pointer(<PangoRectangle>), rectangle);
+              x := floor/(x + rectangle.PangoRectangle-x + rectangle.PangoRectangle-width 
+                            + tab-width, tab-width) * tab-width;
+              s := min(e + 1, _end)
+            end;
 	  end
 	end
       end
-      */
     else
-      ignoring("draw-text");
-      /*---*** Fonts not working yet!
-      //---*** It would be great if 'with-c-string' took start & end!
       let substring
 	= if (_start = 0 & _end = length) string
 	  else copy-sequence(string, start: _start, end: _end) end;
-      with-c-string (c-string = substring)
-	gdk-draw-string(drawable, font, gcontext,
-			x, y, c-string)
-      end
-      */
+      pango-layout-set-text(layout, substring, -1);
+      //pango-layout-context-changed(layout);
+      //pango-renderer-draw-layout(renderer, layout, x, y);
+      gdk-draw-layout(drawable, gcontext, x, y, layout);
     end
   end
 end method draw-text;
+
