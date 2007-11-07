@@ -1,5 +1,12 @@
 module: gtk-internal
 
+define inline-only function log-entry(c-function-name, #rest args) => ();
+  format-out("entering %s %=", c-function-name, args);
+end;
+define inline-only function log-exit(c-function-name, #rest results) => ();
+  format-out(" => %=\n", results);
+end;
+
 define constant <gsize> = <C-unsigned-int>;
 
 define constant <GType> = <gsize>;
@@ -34,7 +41,7 @@ define constant <GObject> = <_GObject>;
 
 define constant <gchar> = <C-signed-char>;
 
-define C-pointer-type <gchar*> => <gchar>;
+define constant <gchar*> = <C-string>;
 define constant <GParamFlags> = <C-int>;
 define constant $G-PARAM-READABLE = 1;
 define constant $G-PARAM-WRITABLE = 2;
@@ -201,6 +208,9 @@ define constant <GdkColormap> = <_GdkColormap>;
 
 define C-subtype <_GdkGC> (<_GObject>) end;
 define constant <GdkGC> = <_GdkGC>;
+
+define C-subtype <_GdkGCX11> (<_GdkGC>) end;
+define constant <GdkGCX11> = <_GdkGCX11>;
 
 define C-pointer-type <GdkGC*> => <GdkGC>;
 define constant <GdkGC<@5>> = <GdkGC*>;
@@ -644,7 +654,7 @@ define C-pointer-type <GdkEventProximity> => <_GdkEventProximity>;
 
 define constant <gushort> = <C-unsigned-short>;
 
-define C-pointer-type <char*> => <C-signed-char>;
+define constant <char*> = <C-string>;
 define constant <char<@20>> = <char*>;
 define C-pointer-type <short*> => <C-signed-short>;
 define constant <short<@10>> = <short*>;
@@ -4456,10 +4466,6 @@ define constant $G-MAXUINT8 = 255;
 
 define constant $G-MAXUINT16 = 65535;
 
-define constant $G-MAXUINT32 = #ex00000000FFFFFFFF;
-
-define constant $G-MAXINT64 = #ex7FFFFFFFFFFFFFFF;
-
 define constant $G-LITTLE-ENDIAN = 1234;
 
 define constant $G-BIG-ENDIAN = 4321;
@@ -4500,18 +4506,6 @@ define constant $G-MAXSHORT = 32767;
 
 define constant $G-MAXUSHORT = 65535;
 
-define constant $G-MININT = #exFFFFFFFF80000000;
-
-define constant $G-MAXINT = #ex000000007FFFFFFF;
-
-define constant $G-MAXUINT = #ex00000000FFFFFFFF;
-
-define constant $G-MINLONG = #exFFFFFFFF80000000;
-
-define constant $G-MAXLONG = #ex000000007FFFFFFF;
-
-define constant $G-MAXULONG = #ex00000000FFFFFFFF;
-
 define constant $G-GINT16-MODIFIER = "h";
 
 define constant $G-GINT16-FORMAT = "hi";
@@ -4543,12 +4537,6 @@ define constant $G-GSIZE-MODIFIER = "";
 define constant $G-GSSIZE-FORMAT = "i";
 
 define constant $G-GSIZE-FORMAT = "u";
-
-define constant $G-MAXSIZE = #ex00000000FFFFFFFF;
-
-define constant $G-MINSSIZE = #exFFFFFFFF80000000;
-
-define constant $G-MAXSSIZE = #ex000000007FFFFFFF;
 
 define constant $GLIB-MAJOR-VERSION = 2;
 
@@ -4599,18 +4587,6 @@ define constant $SHRT-MIN = -32768;
 define constant $SHRT-MAX = 32767;
 
 define constant $USHRT-MAX = 65535;
-
-define constant $INT-MIN = #exFFFFFFFF80000000;
-
-define constant $INT-MAX = #ex000000007FFFFFFF;
-
-define constant $UINT-MAX = #ex00000000FFFFFFFF;
-
-define constant $LONG-MAX = #ex000000007FFFFFFF;
-
-define constant $LONG-MIN = #exFFFFFFFF80000000;
-
-define constant $ULONG-MAX = #ex00000000FFFFFFFF;
 
 define constant $_BITS-POSIX2-LIM-H = 1;
 
@@ -4720,8 +4696,6 @@ define constant $_POSIX-UIO-MAXIOV = 16;
 
 define constant $_POSIX-CLOCKRES-MIN = 20000000;
 
-define constant $SSIZE-MAX = #ex000000007FFFFFFF;
-
 define constant $_POSIX-THREAD-KEYS-MAX = 128;
 
 define constant $PTHREAD-KEYS-MAX = 1024;
@@ -4736,8 +4710,6 @@ define constant $AIO-PRIO-DELTA-MAX = 20;
 
 define constant $PTHREAD-STACK-MIN = 16384;
 
-define constant $DELAYTIMER-MAX = #ex000000007FFFFFFF;
-
 define constant $TTY-NAME-MAX = 32;
 
 define constant $LOGIN-NAME-MAX = 256;
@@ -4745,8 +4717,6 @@ define constant $LOGIN-NAME-MAX = 256;
 define constant $HOST-NAME-MAX = 64;
 
 define constant $MQ-PRIO-MAX = 32768;
-
-define constant $SEM-VALUE-MAX = #ex000000007FFFFFFF;
 
 define constant $NGROUPS-MAX = 65536;
 
@@ -4821,8 +4791,6 @@ define constant $_SYS-CDEFS-H = 1;
 define constant <__signed> = <C-signed-int>;
 
 define constant <__ptr-t> = <C-void*>;
-
-define constant <__long-double-t> = <C-extended>;
 
 define constant $G-GNUC-FUNCTION = "";
 
@@ -6544,8 +6512,6 @@ define C-function g-once-init-leave
   input parameter arg2 :: <gsize>;
   c-name: "g_once_init_leave";
 end;
-
-define constant $G-MUTEX-DEBUG-MAGIC = #ex00000000F8E18AD7;
 
 define C-function g-atomic-int-exchange-and-add
   input parameter arg1 :: <gint*>;
@@ -16845,13 +16811,13 @@ define C-function pango-trim-string
 end;
 
 define C-struct <_IO-marker>
-  slot IO_marker-_next :: <_IO-marker>;
-  slot IO_marker-_sbuf :: <_IO-FILE>;
+  slot IO_marker-_next :: <C-void*>; //<_IO-marker>;
+  slot IO_marker-_sbuf :: <C-void*>; //<_IO-FILE>;
   slot IO_marker-_pos :: <C-signed-int>;
 end;
 
 define constant <char<@1>> = <char*>;
-define constant <_IO-lock-t> = <void>;
+define constant <_IO-lock-t> = <void*>;
 
 define C-pointer-type <_IO-lock-t*> => <_IO-lock-t>;
 define constant <char<@40>> = <char*>;
@@ -16869,7 +16835,7 @@ define C-struct <_IO-FILE>
   slot IO_FILE-_IO-backup-base :: <char*>;
   slot IO_FILE-_IO-save-end :: <char*>;
   slot IO_FILE-_markers :: <_IO-marker>;
-  slot IO_FILE-_chain :: <_IO-FILE>;
+  slot IO_FILE-_chain :: <C-void*>; //<_IO-FILE>;
   slot IO_FILE-_fileno :: <C-signed-int>;
   slot IO_FILE-_flags2 :: <C-signed-int>;
   slot IO_FILE-_old-offset :: <C-signed-long>;
@@ -18607,7 +18573,7 @@ define C-struct <__gconv-trans-data>
   slot _gconv_trans_data-__trans-context-fct :: <anonymous-2301>;
   slot _gconv_trans_data-__trans-end-fct :: <anonymous-2304>;
   slot _gconv_trans_data-__data :: <C-void*>;
-  slot _gconv_trans_data-__next :: <__gconv-trans-data>;
+  slot _gconv_trans_data-__next :: <C-void*>; //<__gconv-trans-data>;
 end;
 
 define C-struct <__gconv-step-data>
@@ -18695,12 +18661,6 @@ define constant $_IOS-NOCREATE = 32;
 define constant $_IOS-NOREPLACE = 64;
 
 define constant $_IOS-BIN = 128;
-
-define constant $_IO-MAGIC = #ex00000000FBAD0000;
-
-define constant $_OLD-STDIO-MAGIC = #ex00000000FABC0000;
-
-define constant $_IO-MAGIC-MASK = #ex00000000FFFF0000;
 
 define constant $_IO-USER-BUF = 1;
 
@@ -18869,10 +18829,6 @@ define constant $_GCONV-H = 1;
 define constant $__mbstate-t-defined = 1;
 
 define constant $_BITS-WCHAR-H = 1;
-
-define constant $__WCHAR-MIN = #exFFFFFFFF80000000;
-
-define constant $__WCHAR-MAX = #ex000000007FFFFFFF;
 
 define C-struct <_PangoTabArray>
 end;
@@ -21857,7 +21813,7 @@ define constant $GDK-FILTER-CONTINUE = 0;
 define constant $GDK-FILTER-TRANSLATE = 1;
 define constant $GDK-FILTER-REMOVE = 2;
 
-define constant <GdkXEvent> = <void>;
+define constant <GdkXEvent> = <C-int>;
 
 define C-pointer-type <GdkXEvent*> => <GdkXEvent>;
 define constant <anonymous-2672> = <C-function-pointer>;
@@ -22175,9 +22131,9 @@ end;
 
 define C-function gdk-window-get-pointer
   input parameter arg1 :: <GdkWindow>;
-  output parameter arg2 :: <gint>;
-  output parameter arg3 :: <gint>;
-  output parameter arg4 :: <GdkModifierType>;
+  output parameter arg2 :: <gint*>;
+  output parameter arg3 :: <gint*>;
+  output parameter arg4 :: <GdkModifierType*>;
   result res :: <GdkWindow>;
   c-name: "gdk_window_get_pointer";
 end;
@@ -48310,7 +48266,7 @@ define C-function gtk-file-chooser-button-set-focus-on-click
   c-name: "gtk_file_chooser_button_set_focus_on_click";
 end;
 
-define C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
+define open C-subtype <_GtkFixed> (<_GtkContainer>, <_AtkImplementorIface>) end;
 define constant <GtkFixed> = <_GtkFixed>;
 
 define C-struct <_GtkFixedClass>
@@ -54311,4 +54267,3 @@ define C-function gtk-about-dialog-set-url-hook
   result res :: <GtkAboutDialogActivateLinkFunc>;
   c-name: "gtk_about_dialog_set_url_hook";
 end;
-
