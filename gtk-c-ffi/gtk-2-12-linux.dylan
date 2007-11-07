@@ -16817,7 +16817,7 @@ define C-struct <_IO-marker>
 end;
 
 define constant <char<@1>> = <char*>;
-define constant <_IO-lock-t> = <void*>;
+define constant <_IO-lock-t> = <C-void*>;
 
 define C-pointer-type <_IO-lock-t*> => <_IO-lock-t>;
 define constant <char<@40>> = <char*>;
