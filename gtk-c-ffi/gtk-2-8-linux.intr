@@ -6,6 +6,7 @@ define interface
     exclude: {
       "g_scanner_cur_value", // returns a union of size 8
       "glib_dummy_decl",
+      "_g_utf8_make_valid",
       "g_string_append_c_inline", //why that?
       "clock_gettime", "clock_settime", "clock_getres", "alloca", //kludge
       "_g_param_type_register_static_constant",
