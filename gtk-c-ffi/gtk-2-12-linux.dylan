@@ -805,6 +805,9 @@ define C-pointer-type <cairo-font-options-t> => <_cairo-font-options>;
 define C-subtype <_GdkScreen> (<_GObject>) end;
 define constant <GdkScreen> = <_GdkScreen>;
 
+define C-subtype <_GdkScreenX11> (<_GdkScreen>) end;
+define constant <GdkScreenX11> = <_GdkScreenX11>;
+
 define C-pointer-type <GdkScreen*> => <GdkScreen>;
 define C-pointer-type <GdkModifierType*> => <GdkModifierType>;
 define constant <anonymous-2713> = <C-function-pointer>;
