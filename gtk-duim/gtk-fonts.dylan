@@ -101,10 +101,19 @@ define sealed method do-text-style-mapping
                else
                  second(find-pair($gtk-logical-sizes, text-style-size(text-style)))
                end;
+    let attributes = "";
+    if (text-style-weight(text-style) == #"bold")
+      attributes := concatenate(attributes, "bold ");
+    end;
+    if (text-style-slant(text-style) == #"italic")
+      attributes := concatenate(attributes, "italic ");
+    end;
     let font-name
-      = format-to-string("%s %d",
+      = format-to-string("%s %s%d",
                          second(find-pair($gtk-font-families, text-style-family(text-style))),
+                         attributes,
                          size);
+    duim-debug-message("do-text-style-mapping: %s", font-name);
     let font-description = pango-font-description-from-string(font-name); 
     let font = make(<gtk-font>, name: font-name, description: font-description);
     table[text-style] := font;
@@ -189,16 +198,23 @@ define function gtk-get-pango-context-from-port (port :: <gtk-port>) => (context
 end;
 
 define sealed method gtk-font-metrics
-    (font :: <gtk-font>, _port :: <gtk-port>)
+    (font :: <gtk-font>, pango-context :: <PangoContext>)
  => (font :: <gtk-font>,
      width :: <integer>, height :: <integer>, ascent :: <integer>, descent :: <integer>)
-  let pango-context = gtk-get-pango-context-from-port(_port);
   let metrics = pango-context-get-metrics(pango-context, font.%font-description, pango-language-get-default());
   values(font,
          round/(pango-font-metrics-get-approximate-char-width(metrics), $PANGO-SCALE),
          round/(pango-font-metrics-get-ascent(metrics) + pango-font-metrics-get-descent(metrics), $PANGO-SCALE),
          round/(pango-font-metrics-get-ascent(metrics), $PANGO-SCALE),
          round/(pango-font-metrics-get-descent(metrics), $PANGO-SCALE));
+end;
+
+define sealed method gtk-font-metrics
+    (font :: <gtk-font>, _port :: <gtk-port>)
+ => (font :: <gtk-font>,
+     width :: <integer>, height :: <integer>, ascent :: <integer>, descent :: <integer>)
+  let pango-context = gtk-get-pango-context-from-port(_port);
+  gtk-font-metrics(font, pango-context);
 end method gtk-font-metrics;
 
 

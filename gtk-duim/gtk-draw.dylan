@@ -463,6 +463,7 @@ define sealed method draw-text
 //  let renderer = gdk-pango-renderer-get-default(screen);
 //  gdk-pango-renderer-set-gc(renderer, gcontext);
   let context = gdk-pango-context-get-for-screen(screen);
+  let (_font, _width, _height, ascent) = gtk-font-metrics(font, context);
   let layout = pango-layout-new(context);
   pango-layout-set-font-description(layout, font.%font-description);
   let transform = medium-device-transform(medium);
@@ -483,8 +484,7 @@ define sealed method draw-text
           pango-layout-set-text(layout, substring, e - s);
 //          pango-layout-context-changed(layout);
 //          pango-renderer-draw-layout(renderer, layout, tab-origin + x, y);
-          gdk-draw-line(drawable, gcontext, 0, 0, 100, 100);
-          gdk-draw-layout(drawable, gcontext, tab-origin + x, y + 50, layout);
+          gdk-draw-layout(drawable, gcontext, tab-origin + x, y - ascent, layout);
 	  if (e = _end)
 	    break()
 	  else
@@ -504,7 +504,7 @@ define sealed method draw-text
       pango-layout-set-text(layout, substring, -1);
       //pango-layout-context-changed(layout);
       //pango-renderer-draw-layout(renderer, layout, x, y);
-      gdk-draw-layout(drawable, gcontext, x, y, layout);
+      gdk-draw-layout(drawable, gcontext, x, y - ascent, layout);
     end
   end
 end method draw-text;

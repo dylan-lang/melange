@@ -21,6 +21,11 @@ define method port-handles-repaint?
   #t
 end method port-handles-repaint?;
 
+define method port-handles-repaint?
+    (_port :: <gtk-port>, sheet :: <sheet-with-repainting-mixin>)
+ => (true? :: <boolean>)
+  #f
+end method port-handles-repaint?;
 
 /// GTK mirrors
 
@@ -306,7 +311,7 @@ end method make-gtk-mirror;
 define method do-make-gtk-mirror 
     (sheet :: <mirrored-sheet-mixin>)
 => (mirror :: <widget-mirror>)
-  let widget = with-gdk-lock fixed-new() end;
+  let widget = with-gdk-lock gtk-fixed-new() end;
   //---*** We really want to switch this off entirely...
   //gtk-container-set-resize-mode(widget, $GTK-RESIZE-QUEUE);
   make(<fixed-container-mirror>,
@@ -319,7 +324,7 @@ define method do-make-gtk-mirror
   => (mirror :: <widget-mirror>)
   let widget = with-gdk-lock gtk-drawing-area-new() end;
 //  gtk-drawing-area-size(widget, 200, 200);
-//  gtk-widget-set-size-request(widget, 200, 200);
+  gtk-widget-set-size-request(widget, 200, 200);
   make(<drawing-area-mirror>,
        widget: widget,
        sheet:  sheet);
@@ -454,6 +459,17 @@ define method move-mirror
   end
 end method move-mirror;
 
+define method move-mirror
+    (parent :: <fixed-container-mirror>, child :: <scrolled-mirror>,
+     x :: <integer>, y :: <integer>)
+ => ()
+  with-gdk-lock
+    gtk-fixed-move(mirror-widget(parent),
+                   scrolled-window(child),
+                   x, y)
+  end
+end method move-mirror;
+
 define method size-mirror
     (parent :: <fixed-container-mirror>, child :: <widget-mirror>,
      width :: <integer>, height :: <integer>)
@@ -478,7 +494,10 @@ end;
 
 define method set-widget-size (mirror :: <widget-mirror>, widget :: <GtkWidget>, width :: <integer>, height :: <integer>)
   gtk-debug("set-mirror-size for %= to %=x%=", widget, width, height);
-  let (left, top) = box-position(mirror.%region);
+  with-gdk-lock
+    gtk-widget-set-size-request(widget, width, height);
+  end;
+/*let (left, top) = box-position(mirror.%region);
   with-stack-structure (allocation :: <GtkAllocation>)
     allocation.GdkRectangle-x      := left;
     allocation.GdkRectangle-y      := top;
@@ -487,7 +506,7 @@ define method set-widget-size (mirror :: <widget-mirror>, widget :: <GtkWidget>,
     with-gdk-lock
       gtk-widget-size-allocate(widget, allocation)
     end
-  end;
+  end;*/
 end method;
 
 define method set-mirror-size
@@ -496,7 +515,7 @@ define method set-mirror-size
 //  gtk-drawing-area-size(mirror-widget(mirror), width, height);
   gtk-debug("set-mirror-size for %= to %=x%= (ignored)", mirror-widget(mirror), width, height);
   with-gdk-lock
-//    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
+    gtk-widget-set-size-request(mirror-widget(mirror), width, height);
   end
 end method set-mirror-size;
 
