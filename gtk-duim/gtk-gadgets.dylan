@@ -1663,8 +1663,6 @@ define sealed class <gtk-tree-control>
      <gtk-tree-view-control-mixin>,
      <tree-control>,
      <leaf-pane>)
-  sealed constant slot %nodes :: <node-of-tree-control>
-    = make(<node-of-tree-control>, object: "root");
 end;
 
 define sealed method class-for-make-pane
@@ -1680,11 +1678,12 @@ define sealed method make-gtk-mirror
     let renderer = gtk-cell-renderer-text-new();
     let column = gtk-tree-view-column-new();
     gtk-tree-view-column-pack-start(column, renderer, 0);
-    gtk-tree-view-column-add-attribute(column, renderer, "text", 0);
+    gtk-tree-view-column-add-attribute(column, renderer, "text", 1);
     gtk-tree-view-append-column(widget, column);
-    let type-vector = make(<GType*>, element-count: 1);
-    type-vector[0] := $G-TYPE-STRING;
-    let model = gtk-tree-store-newv(1, type-vector);
+    let type-vector = make(<GType*>, element-count: 2);
+    type-vector[0] := $G-TYPE-INT;
+    type-vector[1] := $G-TYPE-STRING;
+    let model = gtk-tree-store-newv(2, type-vector);
     gadget.store-model := model;
     widget.@model := model;
     let scrolled-win = init-scrolled-window(widget, gadget);
@@ -1696,30 +1695,87 @@ define sealed method make-gtk-mirror
 end;
 
 define sealed class <gtk-tree-node> (<tree-node>)
-  sealed slot %tree :: false-or(<tree-control>) = #f;
+  sealed slot gtk-iter :: false-or(<GtkTreeIter>) = #f,
+    init-keyword: gtk-iter:;
 end;
 
 define sealed domain make (singleton(<gtk-tree-node>));
 define sealed domain initialize (<gtk-tree-node>);
 
-define sealed method do-make-item
-    (pane :: <gtk-tree-control>, class == <tree-node>, #key object)
+define sealed method do-make-node
+    (pane :: <gtk-tree-control>, class == <tree-node>, #rest rest, #key, #all-keys )
  => (item :: <gtk-tree-node>)
-  make(<gtk-tree-node>, object: object);
+  apply(make, <gtk-tree-node>, rest);
 end;
 
 define sealed method do-add-node
     (pane :: <gtk-tree-control>, parent, item :: <gtk-tree-node>, #key after) => ()
   let mirror = sheet-direct-mirror(pane);
   when (mirror)
-    update-list-control-items(pane, mirror);
+    //insert into tree control and gadget-items
+    //remember index into gadget-items (for selection)
+    let index = gadget-items(pane).size - 1;
+    let np = null-pointer(<GtkTreeIter>);
+    let gtk-parent = gtk-iter(parent) | np;
+    let children? = tree-control-children-predicate(pane);
+    with-gdk-lock
+      with-stack-structure (iter :: <GtkTreeIter>)
+        let model = pane.store-model;
+        gtk-tree-store-insert-before(model, iter, gtk-parent, np);
+        with-stack-structure (data :: <GValue>)
+          g-value-nullify(data);
+          g-value-set-value(data, index);
+          gtk-tree-store-set-value(model, iter, 0, data);
+          let label = pane.gadget-label-key(item.node-object);
+          unless (instance?(label, <string>))
+            label := format-to-string("%=", label);
+          end;
+          g-value-nullify(data);
+          g-value-set-value(data, label);
+          gtk-tree-store-set-value(model, iter, 1, data);
+          if (children?(item.node-object))
+            with-stack-structure (dummy :: <GtkTreeIter>)
+              with-stack-structure (dummy-value :: <GValue>)
+                gtk-tree-store-insert-before(model, dummy, iter, np);
+                g-value-nullify(dummy-value);
+                g-value-set-value(dummy-value, "this is just a dummy");
+                gtk-tree-store-set-value(model, dummy, 1, dummy-value);
+                g-value-nullify(dummy-value);
+                g-value-set-value(dummy-value, -1);
+                gtk-tree-store-set-value(model, dummy, 0, dummy-value);
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
-define class <node-of-tree-control> (<object>)
-  constant slot real-object, init-keyword: object:;
-  constant slot children :: <stretchy-vector> = make(<stretchy-vector>);
-end;
+define sealed method do-add-nodes
+    (pane :: <gtk-tree-control>, parent, nodes :: <sequence>, #key after) => ()
+  //let selected-nodes = gadget-selected-nodes(pane);
+  //gadget-selection(pane) := #[];
+  for (node in nodes)
+    add-node(pane, parent, node, after: after)
+  end;
+  //gadget-selection(pane) := compute-gadget-selection(pane, selected-nodes)
+end method do-add-nodes;
+
+define sealed method do-expand-node
+    (pane :: <gtk-tree-control>, node :: <gtk-tree-node>) => ()
+//are we supposed to do something here?
+/*  unless (empty?(node-children(node)))
+    let mirror = sheet-direct-mirror(pane);
+    when (mirror)
+      let handle = window-handle(mirror);
+      let item-handle :: <HTREEITEM> = node.%handle;
+      duim-debug-message("Expanding node object %= for tree %=",
+                         node-object(node), pane);
+      SendMessage(handle, $TVM-EXPAND, $TVE-EXPAND, pointer-address(item-handle))
+    end
+  end */
+end method do-expand-node;
 
 define sealed method update-list-control-items
     (gadget :: <gtk-tree-control>, mirror :: <gadget-mirror>)
@@ -1728,29 +1784,37 @@ define sealed method update-list-control-items
   let roots = tree-control-roots(gadget);
   let children? = tree-control-children-predicate(gadget);
   let label-function = gadget-label-key(gadget);
-  gadget.%nodes.children.size := 0;
   with-gdk-lock
     gtk-tree-store-clear(model);
+    gadget-items(gadget).size := 0;
     let np = null-pointer(<GtkTreeIter>);
     with-stack-structure (iter :: <GtkTreeIter>)
       with-stack-structure (data :: <GValue>)
-        for (tln in roots)
+        for (tln in roots, i from 0)
           gtk-tree-store-insert-before(model, iter, np, np);
+          let node = do-make-node(gadget, <tree-node>,
+                                  object: tln, gtk-iter: iter);
+          add!(tree-control-root-nodes(gadget), node);
           g-value-nullify(data);
           let label = label-function(tln);
           unless (instance?(label, <string>))
             label := format-to-string("%=", label);
           end;
           g-value-set-value(data, label);
+          gtk-tree-store-set-value(model, iter, 1, data);
+          g-value-nullify(data);
+          g-value-set-value(data, i);
           gtk-tree-store-set-value(model, iter, 0, data);
-          add!(gadget.%nodes.children,
-               make(<node-of-tree-control>, object: tln));
+          add!(gadget.gadget-items, tln);
           if (children?(tln))
             with-stack-structure (dummy :: <GtkTreeIter>)
               with-stack-structure (dummy-value :: <GValue>)
                 gtk-tree-store-insert-before(model, dummy, iter, np);
                 g-value-nullify(dummy-value);
                 g-value-set-value(dummy-value, "this is just a dummy");
+                gtk-tree-store-set-value(model, dummy, 1, dummy-value);
+                g-value-nullify(dummy-value);
+                g-value-set-value(dummy-value, -1);
                 gtk-tree-store-set-value(model, dummy, 0, dummy-value);
               end;
             end;
@@ -1771,65 +1835,40 @@ end;
 
 define function find-node-list
     (gadget :: <gtk-tree-control>, indices :: <collection>)
- => (res :: false-or(<node-of-tree-control>))
-  let node-list = gadget.%nodes;
-  for (index in indices)
-    node-list := node-list.children[index];
+ => (res :: false-or(<tree-node>))
+  let roots = tree-control-root-nodes(gadget);
+  let node = roots[indices[0]];
+  for (i from 1 below indices.size)
+    node := node.node-children[indices[i]];
   end;
-  node-list;
+  node;
 end;
 
 define sealed method note-tree-control-roots-changed
      (pane :: <gtk-tree-control>, #key value = $unsupplied) => ()
+  //change root nodes!
+  //clear store and gadget-items
   update-list-control-items(pane, sheet-direct-mirror(pane))
 end;
 
 define method handle-row-expanded
-  (sheet :: <gtk-tree-control>, parent :: <GtkTreeIter>, path :: <GtkTreePath>)
+  (sheet :: <gtk-tree-control>, iter :: <GtkTreeIter>, path :: <GtkTreePath>)
   //duim-debug-message("handling row expansion signal");
   let model = sheet.store-model;
-  let children? = tree-control-children-predicate(sheet);
-  let generator = tree-control-children-generator(sheet);
-  let label-function = gadget-label-key(sheet);
-  with-gdk-lock
-    let path = map(string-to-integer,
-                   split(as(<byte-string>, gtk-tree-path-to-string(path)),
-                         ':'));
-    let parent-tree = find-node-list(sheet, path);
-    let object = parent-tree.real-object;
-    if (parent-tree.children.size == 0)
-      let np = null-pointer(<GtkTreeIter>);
-      with-stack-structure (iter :: <GtkTreeIter>)
-        with-stack-structure (data :: <GValue>)
-          for (node in generator(object))
-            gtk-tree-store-insert-before(model, iter, parent, np);
-            g-value-nullify(data);
-            let label = label-function(node);
-            unless (instance?(label, <string>))
-              label := format-to-string("%=", label);
-            end;
-            //duim-debug-message("adding node %=", label);
-            g-value-set-value(data, label);
-            gtk-tree-store-set-value(model, iter, 0, data);
-            add!(parent-tree.children,
-                 make(<node-of-tree-control>, object: node));
-            if (children?(node))
-              with-stack-structure (dummy :: <GtkTreeIter>)
-                with-stack-structure (dummy-value :: <GValue>)
-                  gtk-tree-store-insert-before(model, dummy, iter, np);
-                  g-value-nullify(dummy-value);
-                  g-value-set-value(dummy-value, "this is just a dummy");
-                  gtk-tree-store-set-value(model, dummy, 0, dummy-value);
-                end;
-              end;
-            end;
-          end;
-        end;
-      end;
-      with-stack-structure (iter :: <GtkTreeIter>)
-        //remove the dummy entry
-        let res = gtk-tree-model-iter-children(model, iter, parent);
-        gtk-tree-store-remove(model, iter);
+  let path = map(string-to-integer,
+                 split(as(<byte-string>, gtk-tree-path-to-string(path)),
+                       ':'));
+  let tree-node = find-node-list(sheet, path);
+  tree-node.gtk-iter := iter;
+  expand-node(sheet, tree-node);
+  with-stack-structure (iter2 :: <GtkTreeIter>)
+    //remove the dummy entry
+    let res = gtk-tree-model-iter-children(model, iter2, iter);
+    with-stack-structure (value :: <GValue>)
+      g-value-nullify(value);
+      gtk-tree-model-get-value(model, iter2, 0, value);
+      if (g-value-to-dylan(value) == -1)
+        gtk-tree-store-remove(model, iter2);
       end;
     end;
   end;
