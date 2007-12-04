@@ -19,6 +19,7 @@ define sealed class <gtk-medium> (<basic-medium>)
   sealed slot %background-color :: false-or(<GdkColor>) = #f;
   // Cached clipping region
   sealed slot %clip-mask = #f;		// #f, #"none", or an X region
+  sealed slot %gcontext = #f;
 end class <gtk-medium>;
 
 define sealed domain make (singleton(<gtk-medium>));
@@ -171,18 +172,14 @@ end method synchronize-display;
 define inline method get-gcontext
     (medium :: <gtk-medium>)
  => (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
-  let sheet = medium.medium-sheet;
-  let mirror = sheet.sheet-mirror;
-  let widget = mirror.mirror-widget;
   let drawable = medium-drawable(medium);
-  // let gcontext = widget.gtk-widget-get-style.GtkStyle-black-gc;
-  // let gcontext = widget.gtk-widget-get-style.GtkStyle-fg-gc[widget.gtk-widget-get-state];
   unless (drawable)
+    let widget = medium.medium-sheet.sheet-mirror.mirror-widget;
     drawable := widget.gtk-widget-get-window;
     medium-drawable(medium) := drawable;
+    %gcontext(medium) := gdk-gc-new(drawable);
   end;
-  let gcontext = gdk-gc-new(drawable);
-  values(drawable, gcontext)
+  values(drawable, %gcontext(medium))
 end method get-gcontext;
 
 // Note that the brush defaults to 'medium-brush(medium)',

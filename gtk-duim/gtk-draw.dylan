@@ -426,11 +426,21 @@ define sealed method clear-box
     (medium :: <gtk-medium>, left, top, right, bottom) => ()
   let (drawable :: <GdkDrawable>, gcontext :: <GdkGC>)
     = get-gcontext(medium);
+  let colormap = gdk-gc-get-colormap(gcontext);
+  with-stack-structure (color :: <GdkColor>)
+    gdk-color-white(colormap, color);
+    gdk-gc-set-foreground(gcontext, color);
+  end;
   let sheet = medium-sheet(medium);
   let transform = sheet-device-transform(sheet);
   with-device-coordinates (transform, left, top, right, bottom)
-    gdk-window-clear-area(drawable, left, top, right - left, bottom - top)
-  end
+    //gdk-window-clear-area(drawable, left, top, right - left, bottom - top)
+    gdk-draw-rectangle(drawable, gcontext, $true, left, top, right - left, bottom - top); 
+  end;
+  with-stack-structure (color :: <GdkColor>)
+    gdk-color-black(colormap, color);
+    gdk-gc-set-foreground(gcontext, color);
+  end;
 end method clear-box;
 
 
