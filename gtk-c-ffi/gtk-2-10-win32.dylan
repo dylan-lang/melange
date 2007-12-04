@@ -201,6 +201,9 @@ define C-pointer-type <cairo-font-options-t> => <_cairo-font-options>;
 define C-subtype <_GdkScreen> (<_GObject>) end;
 define constant <GdkScreen> = <_GdkScreen>;
 
+define C-subtype <_GdkScreenWin32> (<_GdkScreen>) end;
+define constant <GdkScreenWin32> = <_GdkScreenWin32>;
+
 define C-subtype <_GtkWindow> (<_GtkBin>, <_AtkImplementorIface>) end;
 define constant <GParamFlags> = <C-int>;
 define constant $G-PARAM-READABLE = 1;
