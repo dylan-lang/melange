@@ -1202,9 +1202,6 @@ define sealed method handle-gtk-select-row-event
     end;
   end;
   
-  unless (every?(rcurry(instance?, <integer>), new-selection))
-    new-selection := #[];
-  end;
   gtk-debug("  Selection now %=", new-selection);
   distribute-selection-changed-callback(gadget, new-selection);
   #t
