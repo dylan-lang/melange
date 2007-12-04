@@ -250,6 +250,7 @@ define sealed method text-size
 	 => (x1 :: <integer>, y1 :: <integer>, 
 	     x2 :: <integer>, y2 :: <integer>)
           let layout = pango-layout-new(gtk-get-pango-context-from-port(_port));
+          pango-layout-set-font-description(layout, font.%font-description);
           pango-layout-set-text(layout,
                                 copy-sequence(string, start: _start, end: _end),
                                 _end - _start); 

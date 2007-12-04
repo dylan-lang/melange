@@ -479,7 +479,7 @@ define sealed method draw-text
       let s = _start;
       block (break)
 	while (#t)
-	  let e = position(string, '\t', start: s, end: _end) | string.size;
+	  let e = position(string, '\t', start: s, end: _end) | _end;
 	  let substring = copy-sequence(string, start: s, end: e);
           pango-layout-set-text(layout, substring, e - s);
 //          pango-layout-context-changed(layout);

@@ -20,8 +20,6 @@ define module gtk-duim
 
   use gtk;
 
-  use stack-walker;
-
   // Basic classes
   export <gtk-port>,
          <gtk-medium>,

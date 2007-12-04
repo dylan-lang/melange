@@ -23,9 +23,15 @@ define sealed method process-next-event
  => (timed-out? :: <boolean>)
   //--- We should do something with the timeout
   ignore(timeout);
-  sleep(3);
-  with-gdk-lock
-    gtk-main();
+  if ($os-name == #"win32")
+    with-gdk-lock
+      gtk-main-iteration();
+    end;
+  else
+    sleep(3);
+    with-gdk-lock
+      gtk-main();
+    end;
   end;
   #f;
 end method process-next-event;
