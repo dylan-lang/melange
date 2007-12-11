@@ -114,7 +114,7 @@ define sealed method do-text-style-mapping
                          attributes,
                          size);
     duim-debug-message("do-text-style-mapping: %s", font-name);
-    let font-description = pango-font-description-from-string(font-name); 
+    let font-description = with-gdk-lock pango-font-description-from-string(font-name) end; 
     let font = make(<gtk-font>, name: font-name, description: font-description);
     table[text-style] := font;
     font
@@ -201,12 +201,14 @@ define sealed method gtk-font-metrics
     (font :: <gtk-font>, pango-context :: <PangoContext>)
  => (font :: <gtk-font>,
      width :: <integer>, height :: <integer>, ascent :: <integer>, descent :: <integer>)
-  let metrics = pango-context-get-metrics(pango-context, font.%font-description, pango-language-get-default());
-  values(font,
-         round/(pango-font-metrics-get-approximate-char-width(metrics), $PANGO-SCALE),
-         round/(pango-font-metrics-get-ascent(metrics) + pango-font-metrics-get-descent(metrics), $PANGO-SCALE),
-         round/(pango-font-metrics-get-ascent(metrics), $PANGO-SCALE),
-         round/(pango-font-metrics-get-descent(metrics), $PANGO-SCALE));
+  with-gdk-lock
+    let metrics = pango-context-get-metrics(pango-context, font.%font-description, pango-language-get-default());
+    values(font,
+           round/(pango-font-metrics-get-approximate-char-width(metrics), $PANGO-SCALE),
+           round/(pango-font-metrics-get-ascent(metrics) + pango-font-metrics-get-descent(metrics), $PANGO-SCALE),
+           round/(pango-font-metrics-get-ascent(metrics), $PANGO-SCALE),
+           round/(pango-font-metrics-get-descent(metrics), $PANGO-SCALE));
+  end;
 end;
 
 define sealed method gtk-font-metrics
@@ -249,16 +251,18 @@ define sealed method text-size
 	     _start :: <integer>, _end :: <integer>)
 	 => (x1 :: <integer>, y1 :: <integer>, 
 	     x2 :: <integer>, y2 :: <integer>)
-          let layout = pango-layout-new(gtk-get-pango-context-from-port(_port));
-          pango-layout-set-font-description(layout, font.%font-description);
-          pango-layout-set-text(layout,
-                                copy-sequence(string, start: _start, end: _end),
-                                _end - _start); 
-          with-stack-structure (rectangle :: <PangoRectangle>)
-            pango-layout-get-pixel-extents(layout, null-pointer(<PangoRectangle>), rectangle);
-            values(rectangle.PangoRectangle-x, rectangle.PangoRectangle-y,
-                   rectangle.PangoRectangle-x + rectangle.PangoRectangle-width,
-                   rectangle.PangoRectangle-y + rectangle.PangoRectangle-height)
+          with-gdk-lock
+            let layout = pango-layout-new(gtk-get-pango-context-from-port(_port));
+            pango-layout-set-font-description(layout, font.%font-description);
+            pango-layout-set-text(layout,
+                                  copy-sequence(string, start: _start, end: _end),
+                                  _end - _start); 
+            with-stack-structure (rectangle :: <PangoRectangle>)
+              pango-layout-get-pixel-extents(layout, null-pointer(<PangoRectangle>), rectangle);
+              values(rectangle.PangoRectangle-x, rectangle.PangoRectangle-y,
+                     rectangle.PangoRectangle-x + rectangle.PangoRectangle-width,
+                     rectangle.PangoRectangle-y + rectangle.PangoRectangle-height)
+            end;
           end;
 	end method measure-string;
   case
