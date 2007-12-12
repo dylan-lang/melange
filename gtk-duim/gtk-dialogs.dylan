@@ -364,7 +364,11 @@ define sealed method do-choose-file
         gtk-file-chooser-get-filename(dialog); // FIXME: leaks the filename C string
       end;
     gtk-widget-destroy(dialog);
-    values(as(<byte-string>, filename), #f)
+    if (filename)
+      values(as(<byte-string>, filename), #f)
+    else
+      values(#f, #f);
+    end;
   end;
 end method do-choose-file;
 
