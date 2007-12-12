@@ -211,18 +211,14 @@ define sealed method make-caret
        width:  width  | $caret-width,
        height: height | (sheet-line-height(sheet) + sheet-line-spacing(sheet)))
 end method make-caret;
-
 define sealed method do-set-caret-position
     (caret :: <gtk-caret>, x :: <integer>, y :: <integer>) => ()
-  let transform = sheet-device-transform(caret-sheet(caret));
-  with-device-coordinates (transform, x, y)
-    ignoring("do-set-caret-position")
-  end
+  ignoring("do-set-caret-position");
 end method do-set-caret-position;
 
 define sealed method do-set-caret-size
     (caret :: <gtk-caret>, width :: <integer>, height :: <integer>) => ()
-  ignoring("do-set-caret-size")
+  ignoring("do-set-caret-size");
 end method do-set-caret-size;
 
 define sealed method do-show-caret
@@ -230,8 +226,10 @@ define sealed method do-show-caret
   ignore(tooltip?);
   let sheet  = caret-sheet(caret);
   let widget = sheet & mirror-widget(sheet-mirror(sheet));
+  let (x, y) = caret-position(caret);
+  let (width, height) = caret-size(caret);
   when (widget)
-    ignoring("do-show-caret")
+    draw-rectangle(sheet-medium(sheet), x, y, x + width, y + height, filled?: #t);
   end
 end method do-show-caret;
 
@@ -241,7 +239,10 @@ define sealed method do-hide-caret
   let sheet  = caret-sheet(caret);
   let widget = sheet & mirror-widget(sheet-mirror(sheet));
   when (widget)
-    ignoring("do-hide-caret")
+    let (x, y) = caret-position(caret);
+    let (width, height) = caret-size(caret);
+    clear-box(sheet-medium(sheet), x, y, x + width, y + height);
+    // queue-repaint(sheet, make(<general-box>, left: x, right: x + width, top: y + height, bottom: y));
   end
 end method do-hide-caret;
 

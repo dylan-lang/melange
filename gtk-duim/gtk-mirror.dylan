@@ -322,12 +322,15 @@ end method do-make-gtk-mirror;
 define method do-make-gtk-mirror
     (sheet :: <standard-repainting-mixin>)
   => (mirror :: <widget-mirror>)
-  let widget = with-gdk-lock gtk-drawing-area-new() end;
-//  gtk-drawing-area-size(widget, 200, 200);
-  gtk-widget-set-size-request(widget, 200, 200);
-  make(<drawing-area-mirror>,
-       widget: widget,
-       sheet:  sheet);
+  with-gdk-lock
+    let widget = gtk-drawing-area-new();
+    //  gtk-drawing-area-size(widget, 200, 200);
+    gtk-widget-set-size-request(widget, 200, 200);
+    widget.@can-focus := $true;
+    make(<drawing-area-mirror>,
+         widget: widget,
+         sheet:  sheet);
+  end;
 end method do-make-gtk-mirror;
 
 define macro duim-g-signal-connect
@@ -378,14 +381,20 @@ define method install-event-handlers
   next-method();
   let widget = mirror-widget(mirror);
   duim-g-signal-connect(sheet, #"expose-event") (widget, event) handle-gtk-expose-event(sheet, event) end;
-  duim-g-signal-connect(sheet, #"button-press-event") (widget, event) handle-gtk-button-event(sheet, event) end;
+  duim-g-signal-connect(sheet, #"button-press-event") (widget, event) 
+     gtk-widget-grab-focus(widget);
+     handle-gtk-button-event(sheet, event)
+  end;
   duim-g-signal-connect(sheet, #"button-release-event") (widget, event) handle-gtk-button-event(sheet, event) end;
   duim-g-signal-connect(sheet, #"motion-notify-event") (widget, event) handle-gtk-motion-event(sheet, event) end;
+  duim-g-signal-connect(sheet, #"key-press-event") (widget, event) handle-gtk-key-event(sheet, event) end;
+  duim-g-signal-connect(sheet, #"key-release-event") (widget, event) handle-gtk-key-event(sheet, event) end;
   with-gdk-lock
     gtk-widget-add-events(widget, $GDK-BUTTON-RELEASE-MASK);
     gtk-widget-add-events(widget, $GDK-EXPOSURE-MASK);
     gtk-widget-add-events(widget, $GDK-BUTTON-PRESS-MASK);
     gtk-widget-add-events(widget, logior($GDK-POINTER-MOTION-MASK, $GDK-POINTER-MOTION-HINT-MASK));
+    gtk-widget-add-events(widget, logior($GDK-KEY-PRESS-MASK, $GDK-KEY-RELEASE-MASK));
   end
 end method install-event-handlers;
 
