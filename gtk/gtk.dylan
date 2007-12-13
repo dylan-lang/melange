@@ -97,8 +97,8 @@ define method make(type :: subclass(<GTypeInstance>), #rest args,
                    #key address, #all-keys)
  => (result :: <GTypeInstance>)
   if(address)
-    if (as(<integer>, address) ~= 0)
-      let instance = next-method(<GTypeInstance>, address: address);
+    let instance = next-method(<GTypeInstance>, address: address);
+    if (~ null-pointer?(instance))
       let g-type = g-type-from-instance(instance);
       let dylan-type = find-gtype(g-type);
       unless (dylan-type)
