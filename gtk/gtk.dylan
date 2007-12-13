@@ -67,18 +67,6 @@ define C-function gtk-set-button-time
   c-name: "gtk_set_button_time";
 end;
 
-define C-subtype <_Fixed> (<_GtkFixed>) end;
-define constant <Fixed> = <_Fixed>;
-define C-function fixed-new
-  result fixed :: <GtkWidget>;
-  c-name: "fixed_new";
-end;
-
-define C-function fixed-get-type
-  result type :: <GType>;
-  c-name: "fixed_get_type";
-end;
-
 define macro with-gdk-lock
   { with-gdk-lock ?:body end }
  =>
@@ -353,8 +341,6 @@ define function g-value-to-dylan(instance :: <GValue>)
           => make(<GtkTreeIter>, address: address-thunk());
         gtk-tree-path-get-type()
           => make(<GtkTreePath>, address: address-thunk());
-        fixed-get-type()
-          => make(<Fixed>, address: address-thunk());
         otherwise       => error("Unknown Gtype %=", g-type);
       end select;
     end if;

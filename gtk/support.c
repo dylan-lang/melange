@@ -2,48 +2,9 @@
 #include <gtk/gtkwidget.h>
 #include <gdk/gdkwindow.h>
 #include <gtk/gtkdialog.h>
-#include <gtk/gtkfixed.h>
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkmenu.h>
 
-typedef GtkFixed Fixed;
-typedef GtkFixedClass FixedClass;
-
-static void fixed_size_allocate (GtkWidget *widget, GtkAllocation *allocation);
-
-G_DEFINE_TYPE (Fixed, fixed, GTK_TYPE_FIXED)
-
-static void
-fixed_class_init (FixedClass *class) {
-  GTK_WIDGET_CLASS(class)->size_allocate = fixed_size_allocate;
-}
-
-static void
-fixed_init (Fixed *fixed) {
-}
-
-GtkWidget *
-fixed_new (void)
-{
-  return g_object_new (fixed_get_type (), NULL);
-}
-
-static void
-fixed_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
-{
-
-  widget->allocation = *allocation;
-
-  if (!GTK_WIDGET_NO_WINDOW (widget))
-    {
-      if (GTK_WIDGET_REALIZED (widget))
-	gdk_window_move_resize (widget->window,
-				allocation->x, 
-				allocation->y,
-				allocation->width, 
-				allocation->height);
-    }
-}
 
 GType g_type_from_instance (GTypeInstance* instance) {
     return G_TYPE_FROM_INSTANCE(instance);
@@ -103,6 +64,5 @@ void gtk_set_button_time (GdkEventButton *button) {
 }
   
 void popup_gtk_menu (GtkMenu* menu, guint button) {
-  g_print("%d mytime\n", mytime);
   gtk_menu_popup(menu, NULL, NULL, NULL, NULL, button, mytime);
 }
