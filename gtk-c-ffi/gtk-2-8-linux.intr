@@ -9,6 +9,33 @@ define interface
       "_g_utf8_make_valid",
       "g_string_append_c_inline", //why that?
       "clock_gettime", "clock_settime", "clock_getres", "alloca", //kludge
+      "_gtk_tooltip_focus_out",
+      "_gtk_tooltip_handle_event"
+      "_gtk_widget_get_cursor_color"
+      "_gtk_rc_style_set_rc_property"
+      "_gtk_icon_theme_ensure_builtin_cache",
+      "_gtk_rc_match_widget_class",
+      "_gtk_rc_style_get_color_hashes",
+      "_gtk_binding_parse_binding",
+      "_gtk_cell_layout_buildable_custom_tag_end",
+      "_gtk_action_sync_sensitive",
+      "_gtk_binding_entry_add_signall",
+      "_gtk_widget_propagate_composited_changed",
+      "_gtk_action_sync_menu_visible",
+      "_gtk_rc_style_unset_rc_property",
+      "_gtk_rc_parse_widget_class_path",
+      "_gtk_tooltip_toggle_keyboard_mode",
+      "_gtk_rc_free_widget_class_path",
+      "_gtk_cell_layout_buildable_custom_tag_start",
+      "_gtk_action_sync_visible",
+      "_gtk_recent_manager_sync",
+      "_gtk_cell_layout_buildable_add_child",
+      "_gtk_menu_item_popdown_submenu",
+      "_gtk_tooltip_focus_in",
+      "_gtk_tooltip_hide",
+      "_gtk_rc_context_destroy",
+      "_gtk_style_shade",
+      "_gtk_widget_get_cursor_gc",
       "_g_param_type_register_static_constant",
       "g_thread_init_with_errorcheck_mutexes",
       "_gtk_container_clear_resize_widgets",

@@ -2946,11 +2946,6 @@ define C-function gtk-requisition-free
   c-name: "gtk_requisition_free";
 end;
 
-define C-function _gtk-widget-propagate-composited-changed
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_widget_propagate_composited_changed";
-end;
-
 define C-function atk-role-register
   input parameter arg1 :: <gchar*>;
   result res :: <AtkRole>;
@@ -15668,26 +15663,6 @@ end;
 
 define C-pointer-type <GtkRcStyleClass> => <_GtkRcStyleClass>;
 
-define C-function _gtk-rc-parse-widget-class-path
-  input parameter arg1 :: <gchar*>;
-  result res :: <GSList>;
-  c-name: "_gtk_rc_parse_widget_class_path";
-end;
-
-define C-function _gtk-rc-free-widget-class-path
-  input parameter arg1 :: <GSList>;
-  c-name: "_gtk_rc_free_widget_class_path";
-end;
-
-define C-function _gtk-rc-match-widget-class
-  input parameter arg1 :: <GSList>;
-  input parameter arg2 :: <gint>;
-  input parameter arg3 :: <gchar*>;
-  input parameter arg4 :: <gchar*>;
-  result res :: <gboolean>;
-  c-name: "_gtk_rc_match_widget_class";
-end;
-
 define C-function gtk-rc-add-default-file
   input parameter arg1 :: <gchar*>;
   c-name: "gtk_rc_add_default_file";
@@ -15917,30 +15892,6 @@ define C-struct <_GtkRcProperty>
 end;
 
 define C-pointer-type <GtkRcProperty> => <_GtkRcProperty>;
-
-define C-function _gtk-rc-style-set-rc-property
-  input parameter arg1 :: <GtkRcStyle>;
-  input parameter arg2 :: <GtkRcProperty>;
-  c-name: "_gtk_rc_style_set_rc_property";
-end;
-
-define C-function _gtk-rc-style-unset-rc-property
-  input parameter arg1 :: <GtkRcStyle>;
-  input parameter arg2 :: <GQuark>;
-  input parameter arg3 :: <GQuark>;
-  c-name: "_gtk_rc_style_unset_rc_property";
-end;
-
-define C-function _gtk-rc-style-get-color-hashes
-  input parameter arg1 :: <GtkRcStyle>;
-  result res :: <GSList>;
-  c-name: "_gtk_rc_style_get_color_hashes";
-end;
-
-define C-function _gtk-rc-context-destroy
-  input parameter arg1 :: <GtkSettings>;
-  c-name: "_gtk_rc_context_destroy";
-end;
 
 define C-struct <_GtkBorder>
   slot GtkBorder-left :: <C-signed-int>;
@@ -16746,13 +16697,6 @@ define C-function gtk-border-free
   c-name: "gtk_border_free";
 end;
 
-define C-function _gtk-style-shade
-  input parameter arg1 :: <GdkColor>;
-  input parameter arg2 :: <GdkColor>;
-  input parameter arg3 :: <gdouble>;
-  c-name: "_gtk_style_shade";
-end;
-
 define C-function gtk-draw-string
   input parameter arg1 :: <GtkStyle>;
   input parameter arg2 :: <GdkWindow>;
@@ -16787,18 +16731,6 @@ define C-function gtk-draw-insertion-cursor
   input parameter arg6 :: <GtkTextDirection>;
   input parameter arg7 :: <gboolean>;
   c-name: "gtk_draw_insertion_cursor";
-end;
-
-define C-function _gtk-widget-get-cursor-gc
-  input parameter arg1 :: <GtkWidget>;
-  result res :: <GdkGC>;
-  c-name: "_gtk_widget_get_cursor_gc";
-end;
-
-define C-function _gtk-widget-get-cursor-color
-  input parameter arg1 :: <GtkWidget>;
-  input parameter arg2 :: <GdkColor>;
-  c-name: "_gtk_widget_get_cursor_color";
 end;
 
 define C-function pango-split-file-list
@@ -32089,23 +32021,6 @@ define C-function gtk-action-set-accel-group
   c-name: "gtk_action_set_accel_group";
 end;
 
-define C-function _gtk-action-sync-sensitive
-  input parameter arg1 :: <GtkAction>;
-  c-name: "_gtk_action_sync_sensitive";
-end;
-
-define C-function _gtk-action-sync-visible
-  input parameter arg1 :: <GtkAction>;
-  c-name: "_gtk_action_sync_visible";
-end;
-
-define C-function _gtk-action-sync-menu-visible
-  input parameter arg1 :: <GtkAction>;
-  input parameter arg2 :: <GtkWidget>;
-  input parameter arg3 :: <gboolean>;
-  c-name: "_gtk_action_sync_menu_visible";
-end;
-
 define constant <GtkTreeViewColumnSizing> = <C-int>;
 define constant $GTK-TREE-VIEW-COLUMN-GROW-ONLY = 0;
 define constant $GTK-TREE-VIEW-COLUMN-AUTOSIZE = 1;
@@ -37133,31 +37048,6 @@ define C-function gtk-tooltip-trigger-tooltip-query
   c-name: "gtk_tooltip_trigger_tooltip_query";
 end;
 
-define C-function _gtk-tooltip-focus-in
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_tooltip_focus_in";
-end;
-
-define C-function _gtk-tooltip-focus-out
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_tooltip_focus_out";
-end;
-
-define C-function _gtk-tooltip-toggle-keyboard-mode
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_tooltip_toggle_keyboard_mode";
-end;
-
-define C-function _gtk-tooltip-handle-event
-  input parameter arg1 :: <GdkEvent>;
-  c-name: "_gtk_tooltip_handle_event";
-end;
-
-define C-function _gtk-tooltip-hide
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_tooltip_hide";
-end;
-
 define C-struct <_GtkToolItemPrivate>
 end;
 
@@ -37463,11 +37353,6 @@ define C-function gtk-menu-item-set-accel-path
   input parameter arg1 :: <GtkMenuItem>;
   input parameter arg2 :: <gchar*>;
   c-name: "gtk_menu_item_set_accel_path";
-end;
-
-define C-function _gtk-menu-item-popdown-submenu
-  input parameter arg1 :: <GtkWidget>;
-  c-name: "_gtk_menu_item_popdown_submenu";
 end;
 
 define C-function gtk-menu-item-remove-submenu
@@ -41894,10 +41779,6 @@ define C-function gtk-recent-info-match
   input parameter arg2 :: <GtkRecentInfo>;
   result res :: <gboolean>;
   c-name: "gtk_recent_info_match";
-end;
-
-define C-function _gtk-recent-manager-sync
-  c-name: "_gtk_recent_manager_sync";
 end;
 
 define C-struct <_GtkRecentFilter>
@@ -46878,10 +46759,6 @@ define C-function gtk-icon-info-get-display-name
   c-name: "gtk_icon_info_get_display_name";
 end;
 
-define C-function _gtk-icon-theme-ensure-builtin-cache
-  c-name: "_gtk_icon_theme_ensure_builtin_cache";
-end;
-
 define constant <anonymous-6879> = <C-function-pointer>;
 define constant <anonymous-6880> = <C-function-pointer>;
 define constant <anonymous-6881> = <C-function-pointer>;
@@ -51080,34 +50957,6 @@ end;
 
 define C-pointer-type <GtkBuilder> => <_GtkBuilder>;
 
-define C-function _gtk-cell-layout-buildable-custom-tag-start
-  input parameter arg1 :: <GtkBuildable>;
-  input parameter arg2 :: <GtkBuilder>;
-  input parameter arg3 :: <GObject>;
-  input parameter arg4 :: <gchar*>;
-  input parameter arg5 :: <GMarkupParser>;
-  input parameter arg6 :: <gpointer*>;
-  result res :: <gboolean>;
-  c-name: "_gtk_cell_layout_buildable_custom_tag_start";
-end;
-
-define C-function _gtk-cell-layout-buildable-custom-tag-end
-  input parameter arg1 :: <GtkBuildable>;
-  input parameter arg2 :: <GtkBuilder>;
-  input parameter arg3 :: <GObject>;
-  input parameter arg4 :: <gchar*>;
-  input parameter arg5 :: <gpointer*>;
-  c-name: "_gtk_cell_layout_buildable_custom_tag_end";
-end;
-
-define C-function _gtk-cell-layout-buildable-add-child
-  input parameter arg1 :: <GtkBuildable>;
-  input parameter arg2 :: <GtkBuilder>;
-  input parameter arg3 :: <GObject>;
-  input parameter arg4 :: <gchar*>;
-  c-name: "_gtk_cell_layout_buildable_add_child";
-end;
-
 define constant <anonymous-5032> = <C-function-pointer>;
 define constant <anonymous-5033> = <C-function-pointer>;
 define constant <anonymous-5034> = <C-function-pointer>;
@@ -51611,21 +51460,6 @@ define C-function gtk-binding-set-add-path
   input parameter arg3 :: <gchar*>;
   input parameter arg4 :: <GtkPathPriorityType>;
   c-name: "gtk_binding_set_add_path";
-end;
-
-define C-function _gtk-binding-parse-binding
-  input parameter arg1 :: <GScanner>;
-  result res :: <guint>;
-  c-name: "_gtk_binding_parse_binding";
-end;
-
-define C-function _gtk-binding-entry-add-signall
-  input parameter arg1 :: <GtkBindingSet>;
-  input parameter arg2 :: <guint>;
-  input parameter arg3 :: <GdkModifierType>;
-  input parameter arg4 :: <gchar*>;
-  input parameter arg5 :: <GSList>;
-  c-name: "_gtk_binding_entry_add_signall";
 end;
 
 define constant gtk-binding-entry-add = gtk-binding-entry-clear;
