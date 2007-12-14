@@ -4,13 +4,15 @@ Author:           Hannes Mehnert, Andreas Bogk
 Copyright:        (C) 2007,.  All rights reserved.
 Major-Version:    1
 Minor-Version:    0
+c-source-files:   support.c
 Files:            library
 	module
 	properties-module
 	gtk-module
 	gtk
 	properties
-Linker-Options:  -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lfontconfig -lXext -lXrender -lXinerama -lXi -lXrandr -lXcursor -lXfixes -lpango-1.0 -lcairo -lX11 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 support.o
 Compilation-Mode: tight
 Target-Type:      dll
+jam-includes:     gtk.jam
+
 
