@@ -170,9 +170,9 @@ define function dylan-meta-marshaller (closure :: <GClosure>,
 //    value*;
   end for;
   values := reverse!(values);
-  *holding-gdk-lock* := 1;
+  *holding-gdk-lock* := *holding-gdk-lock* + 1;
   let res = apply(import-c-dylan-object(c-type-cast(<C-dylan-object>, marshal-data)), values);
-  *holding-gdk-lock* := 0;
+  *holding-gdk-lock* := *holding-gdk-lock* - 1;
   if(return-value ~= null-pointer(<gvalue>))
     select(g-value-type(return-value))
       $G-TYPE-BOOLEAN => g-value-set-boolean(return-value, 
