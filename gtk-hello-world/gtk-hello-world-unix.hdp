@@ -6,7 +6,6 @@ files:	library
 	gtk-hello-world
 base-address:	0x63FE0000
 start-function:	main
-linker-options: support.o -lglib-2.0
 major-version:	1
 minor-version:	0
 library-pack:	0
