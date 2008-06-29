@@ -11,6 +11,7 @@ define method main () => ()
   let button = gtk-button-new-with-label("Hello, world!");
   gtk-container-add(window, button);
   g-signal-connect(button, "clicked", method(#rest args) button.@label := format-to-string("Hello world! %=\n", args) end);
+  g-signal-connect(window, "destroy", method(#rest args) gtk-main-quit() end);
   gtk-widget-show(button);
   gtk-widget-show(window);
   gtk-main();
