@@ -459,7 +459,7 @@ for (index from 0 below reserved-words.size by 2)
 end for;
 
 // Looks for special classes of tokens and acts appropriately.  This includes
-// reserved words, keywods, symbolic literals, and punctuation.  These are
+// reserved words, keywords, symbolic literals, and punctuation.  These are
 // identified by entries in reserved-word-table.
 //
 define method lex-identifier
@@ -483,7 +483,7 @@ define method lex-identifier
 end method lex-identifier;
 
 // This is complicated by the need to insure that we *don't* match octal and
-// hexedecimal integer literals.
+// hexadecimal integer literals.
 //
 define constant match-ID
   = curry(regex-position, compile-regex("^(#[^xXoO]|[!&*<=>|^$%@_a-zA-Z])("
@@ -493,7 +493,7 @@ define constant match-ID
 			    "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*):?"));
 
 // Attempts to match "words" (i.e. identifiers or reserved words) or
-// keywords.  Returns a token if the match is succesful and #f otherwise.
+// keywords.  Returns a token if the match is successful and #f otherwise.
 //
 define method try-identifier
     (state :: <tokenizer>, position :: <integer>)
@@ -515,7 +515,7 @@ end method try-identifier;
 define constant match-punctuation
   = curry(regex-position, compile-regex("^(=>|[,;{}])"));
 
-// Attempts to match "punctuation".  Returns a token if the match is succesful
+// Attempts to match "punctuation".  Returns a token if the match is successful
 // and #f otherwise.
 //
 define method try-punctuation (state :: <tokenizer>, position :: <integer>)

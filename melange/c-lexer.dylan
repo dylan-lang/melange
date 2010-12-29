@@ -761,7 +761,7 @@ define function lex-identifier
 end function lex-identifier;
 
 // Attempts to match "words" (i.e. identifiers or reserved words).  Returns a
-// token if the match is succesful and #f otherwise.
+// token if the match is successful and #f otherwise.
 //
 define function try-identifier
     (state :: <tokenizer>, position :: <integer>, #key expand = #t, cpp-line = #f)
@@ -787,7 +787,7 @@ define multistring-checker match-punctuation
    ";", ",", "(", ")", ".", "&", "*", "+", "~", "!", "/", "%", "<", ">", "^",
    "|", "?", ":", "=", "{", "}", "-", "[", "]");
 
-// Attempts to match "punctuation".  Returns a token if the match is succesful
+// Attempts to match "punctuation".  Returns a token if the match is successful
 // and #f otherwise.
 //
 define method try-punctuation (state :: <tokenizer>, position :: <integer>)

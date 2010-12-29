@@ -621,7 +621,7 @@ define multistring-positioner do-skip-matcher("#", "/*");
 //define constant do-skip-matcher
 //  = curry(regex-position, compile-regex("#|/\\*", case-sensitive: #t));
 
-// Checks to see whether we are looking at a preproccessor directive.  If so,
+// Checks to see whether we are looking at a preprocessor directive.  If so,
 // we handle the directive and return #t.  The state may change drastically,
 // so we expect the caller to re-invoke "get-token" afterwards.  If we aren't
 // looking at a preprocessor directive, we return #f and the caller can
