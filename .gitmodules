@@ -1,0 +1,6 @@
+[submodule "ext/regular-expressions"]
+	path = ext/regular-expressions
+	url = git://github.com/dylan-lang/regular-expressions.git
+[submodule "ext/command-line-parser"]
+	path = ext/command-line-parser
+	url = git://github.com/dylan-lang/command-line-parser.git
