@@ -82,7 +82,6 @@ define library melange
   use common-dylan;
   use string-extensions;
   use collection-extensions;
-  use regular-expressions;
   use io;
   use system;
   use command-line-parser;
@@ -97,7 +96,6 @@ define module int-lexer
                string-to-integer, integer-to-string };
   use self-organizing-list;
   use string-conversions;
-  use regular-expressions;
   use character-type;
   use streams;
   export
@@ -164,7 +162,6 @@ define module define-interface
 */
 
   // From string-extensions
-  use regular-expressions;
   use substring-search;
   use character-type;
 

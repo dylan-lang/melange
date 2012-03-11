@@ -1,13 +1,13 @@
 library: melange-c
 unique-id-base: 10000
-shared-library: no
+target-type: dll
 Files:	c-exports
 	source-location
 	parse-conditions
 	multistring
 	c-lexer
 	c-lexer-cpp
-	linux-portability
+	x86-linux-portability
 	c-parse
 	alignment
 	c-decl-state
