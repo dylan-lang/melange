@@ -32,12 +32,10 @@ define library parsergen
   use dylan;
   use io;
   use system;
-  use string-extensions;
-  use regular-expressions;
 end library parsergen;
 
 define module lisp-read
-  use common-dylan;
+  use common-dylan, exclude: { format-to-string };
   use dylan-extensions;
   use streams;
   use print;
@@ -50,13 +48,12 @@ define module lisp-read
 end module lisp-read;
 
 define module parsergen
-  use common-dylan;
+  use common-dylan, exclude: { format-to-string };
   use dylan-extensions;
   use streams;
   use print;
   use format;
   use standard-io;
   use file-system;
-  use regular-expressions;
   use lisp-read, import: { lisp-read };
 end module parsergen;
