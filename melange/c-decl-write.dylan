@@ -143,7 +143,7 @@ end class <written-name-record>;
 define method all-written-names( record :: <written-name-record> )
 => ( names :: <collection> )
 	key-sequence( record.written-name-table );
-end method written-names;
+end method all-written-names;
 
 define class <written-declaration> (<object>)
   constant slot written-declaration :: <declaration>,
