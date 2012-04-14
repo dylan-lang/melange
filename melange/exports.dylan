@@ -85,6 +85,7 @@ define library melange
   use io;
   use system;
   use command-line-parser;
+  use regular-expressions;
   use melange-c;
   export
     name-mappers;
@@ -97,6 +98,7 @@ define module int-lexer
   use string-conversions;
   use character-type;
   use streams;
+  use regular-expressions;
   export
     <tokenizer>, get-token, unget-token, <token>, value, string-value,
     generator, parse-error, position, token-id,

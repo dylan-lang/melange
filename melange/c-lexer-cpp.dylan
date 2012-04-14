@@ -405,12 +405,12 @@ define method angle-include-next( state, filename )
   let name = copy-sequence(state.file-name);
   if (first(filename) == '/')
     let (found,match-end,path-start,path-end,filename-start,filename-end) 
-      = regexp-position(filename, "^(.*)/([^/]+)");
+      = regex-position(compile-regex("^(.*)/([^/]+)"), filename);
     filename := copy-sequence(filename,start: filename-start, end: filename-end);
   end if;
   if (first(name) == '/')
     let (found,match-end,path-start,path-end,filename-start,filename-end) 
-      = regexp-position(state.file-name, "^(.*)/([^/]+)");
+      = regex-position(compile-regex("^(.*)/([^/]+)"), state.file-name);
     if(found)
       let file-path = copy-sequence(name,start: path-start, end: path-end);      
       let full-name = next-file-in-include-path(state,file-path,filename);
@@ -440,7 +440,7 @@ define method quote-include( state, contents, quote-start, quote-end )
                                 end: quote-end - 1);
     let absolute-name = "";
     // if (name is not an absolute path) [drive/UNC optional on win32 systems]
-    if (regexp-position(name, "((.:)|\\\\)?(\\\\|/)"))
+    if (regex-position(compile-regex("((.:)|\\\\)?(\\\\|/)"), name))
         absolute-name := name;
     else
         // Turn the a relative pathname into an absolute pathname by
@@ -453,9 +453,9 @@ define method quote-include( state, contents, quote-start, quote-end )
         // letter, this will do something horribly wrong.  Then
         // again, I suspect Melange will have crapped out long
         // before now if a user tried that.
-        absolute-name := regexp-replace(state.file-name, 
-                                            "[^\\\\/]+$", 
-                                            name);
+        absolute-name := regex-replace(state.file-name,
+                                       compile-regex("[^\\\\/]+$"),
+                                       name);
     end if;
     
     if (absolute-name.file-is-header?)
@@ -473,7 +473,8 @@ end;
 define method cpp-include (state :: <tokenizer>, pos :: <integer>) => ();
   let contents :: <string> = state.contents;
   let (found, match-end, angle-start, angle-end, quote-start, quote-end)
-    = regexp-position(contents, "^(<[^>]+>)|(\"[^\"]+\")", start: pos);
+    = regex-position(compile-regex("^(<[^>]+>)|(\"[^\"]+\")"), contents,
+                     start: pos);
   state.position := match-end;
   let generator
     = if (~found)
@@ -497,7 +498,8 @@ end method cpp-include;
 define method cpp-include-next (state :: <tokenizer>, pos :: <integer>) => ();
   let contents :: <string> = state.contents;
   let (found, match-end, angle-start, angle-end, quote-start, quote-end)
-    = regexp-position(contents, "^(<[^>]+>)|(\"[^\"]+\")", start: pos);
+    = regex-position(compile-regex("^(<[^>]+>)|(\"[^\"]+\")"), contents,
+                     start: pos);
   state.position := match-end;
   let filename = "";
   if (angle-start & angle-end) 
@@ -601,17 +603,16 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
 end method cpp-define;
 
 //define constant preprocessor-match
-//  = make-regexp-positioner("^#[ \t]*(define|undef|include|ifdef|ifndef|if"
+//  = curry(regex-position, compile-regex("^#[ \t]*(define|undef|include|ifdef|ifndef|if"
 //			     "|else|elif|line|endif|error|pragma)\\b",
-//			   byte-characters-only: #t, case-sensitive: #t);
+//			     case-sensitive: #t));
 define multistring-checker preprocessor-match
   ("define", "undef", "include", "include_next", "ifdef", "ifndef", "if",
    "else", "elif", "line", "endif", "error", "warning", "pragma");
 define multistring-positioner do-skip-matcher("#", "/*");
 
 //define constant do-skip-matcher
-//  = make-regexp-positioner("#|/\\*",
-//			   byte-characters-only: #t, case-sensitive: #t);
+//  = curry(regex-position, compile-regex("#|/\\*", case-sensitive: #t));
 
 // Checks to see whether we are looking at a preproccessor directive.  If so,
 // we handle the directive and return #t.  The state may change drastically,

@@ -486,11 +486,11 @@ end method lex-identifier;
 // hexedecimal integer literals.
 //
 define constant match-ID
-  = make-regexp-positioner("^(#[^xXoO]|[!&*<=>|^$%@_a-zA-Z])("
-			     "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
-			     "|[0-9][-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
-			     "[a-zA-Z][a-zA=Z]"
-			     "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*):?");
+  = curry(regex-position, compile-regex("^(#[^xXoO]|[!&*<=>|^$%@_a-zA-Z])("
+			    "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
+			    "|[0-9][-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
+			    "[a-zA-Z][a-zA=Z]"
+			    "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*):?"));
 
 // Attempts to match "words" (i.e. identifiers or reserved words) or
 // keywords.  Returns a token if the match is succesful and #f otherwise.
@@ -513,7 +513,7 @@ define method try-identifier
 end method try-identifier;
 
 define constant match-punctuation
-  = make-regexp-positioner("^(=>|[,;{}])", byte-characters-only: #t);
+  = curry(regex-position, compile-regex("^(=>|[,;{}])"));
 
 // Attempts to match "punctuation".  Returns a token if the match is succesful
 // and #f otherwise.
@@ -551,8 +551,7 @@ define method is-prefix?
 end method is-prefix?;
 
 define constant match-comment-component
-  = make-regexp-positioner("\\*/|(/\\*|//)",
-			   byte-characters-only: #t);
+  = curry(regex-position, compile-regex("\\*/|(/\\*|//)"));
 
 // Skip over whitespace characters (including newlines) and comments.
 //
@@ -606,10 +605,9 @@ end method skip-whitespace;
 //   [7, 8] -- start and end of integer literal
 //
 define constant match-literal
-  = make-regexp-positioner("^('(\\\\?.)'|"
-			     "(#?\"([^\"]|\\\\\")*\")|"
-			     "(([1-9][0-9]*)|(#[xX][0-9a-fA-F]+)|(#[oO][0-7]*)))",
-			   byte-characters-only: #t);
+  = curry(regex-position, compile-regex("^('(\\\\?.)'|"
+			    "(#?\"([^\"]|\\\\\")*\")|"
+			    "(([1-9][0-9]*)|(#[xX][0-9a-fA-F]+)|(#[oO][0-7]*)))"));
 
 // Returns a <token> object and updates state to reflect the token's
 // consumption. 

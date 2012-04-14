@@ -483,7 +483,7 @@ define method initialize (value :: <tokenizer>,
 			       parent, typedefs-from, 
 			       defines :: false-or(<table>))
   // We just read the entire file into a string for the tokenizer to use.
-  // This simplifies things since we can use regexp searches to find things,
+  // This simplifies things since we can use regex searches to find things,
   // even across line boundaries.
   if (name) value.file-name := name end if;
 
@@ -901,10 +901,10 @@ end method skip-cpp-whitespace;
 //   [13, 14] -- start and end of integer literal
 //
 define constant match-literal
-  = make-regexp-positioner("^('(([^\\\\']|\\\\.)*)'|"
-			     "\"(([^\\\\\"]|\\\\.)*)\"|"
-			     "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*))",
-			   byte-characters-only: #t, case-sensitive: #t);
+  = curry(regex-position, compile-regex("^('(([^\\\\']|\\\\.)*)'|"
+			    "\"(([^\\\\\"]|\\\\.)*)\"|"
+			    "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*))",
+			  case-sensitive: #t));
 
 // get-token -- exported function.
 //

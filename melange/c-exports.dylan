@@ -45,6 +45,7 @@ define library melange-c
   use big-integers;
   use string-extensions;
   use collection-extensions;
+  use regular-expressions;
   use system;
   use io;
 
