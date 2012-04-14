@@ -844,9 +844,9 @@ define method main (program, args)
     end case;
 
   // Handle -I.
-     // translate \ to /, because \ does bad things when inside a
-     // string literal, like c-include("d:\foo\bar.h")
-  include-dirs := map(rcurry(translate, "\\\\", "/"), include-dirs);
+  // translate \ to /, because \ does bad things when inside a
+  // string literal, like c-include("d:\foo\bar.h")
+  include-dirs := map(rcurry(substring-replace, "\\\\", "/"), include-dirs);
   for (dir in include-dirs)
     push(include-path, dir);
   end for;

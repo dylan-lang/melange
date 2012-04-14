@@ -149,7 +149,7 @@ define module portability
   use dylan;
   use c-lexer, import: {include-path, *handle-c++-comments*, *framework-paths*};
   use operating-system, import: {environment-variable};  // win32 only
-  use regular-expressions;       // win32 only
+  use substring-search;          // win32 only
   use common-extensions;
   export
     $default-defines,
