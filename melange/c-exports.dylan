@@ -110,7 +110,7 @@ end module multistring-match;
 define module c-lexer
   use common-dylan,
     exclude: { format, format-to-string, 
-               string-to-integer, integer-to-string, split, position };
+               split, position };
   use format;
   use big-integers;
   use table-extensions;

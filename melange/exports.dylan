@@ -92,8 +92,7 @@ end library melange;
 
 define module int-lexer
   use common-dylan,
-    exclude: { format-to-string, position, split,
-               string-to-integer, integer-to-string };
+    exclude: { format-to-string, position, split };
   use self-organizing-list;
   use string-conversions;
   use character-type;
