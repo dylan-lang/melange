@@ -12,4 +12,5 @@ files: c-exports.dylan
        alignment.dylan
        c-decl-state.dylan
        c-decl-write.dylan
+       c-decl-write-c-ffi.dylan
        c-decl.dylan
