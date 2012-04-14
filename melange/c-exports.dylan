@@ -42,7 +42,6 @@ copyright: see below
 define library melange-c
   use dylan;
   use common-dylan;
-  use big-integers;
   use string-extensions;
   use collection-extensions;
   use regular-expressions;
@@ -113,7 +112,6 @@ define module c-lexer
     exclude: { format, format-to-string, 
                split, position };
   use format;
-  use big-integers;
   use table-extensions;
   use self-organizing-list;
   use string-conversions;
@@ -165,7 +163,6 @@ end module portability;
 
 define module c-parse
   use common-dylan, exclude: { format-to-string };
-  use big-integers;
   use self-organizing-list;
   use c-lexer;
   use streams;
@@ -190,7 +187,6 @@ end module c-parse;
 
 define module c-declarations
   use common-dylan, exclude: { format-to-string, split };
-  use big-integers;
   use dylan-extensions;
   use regular-expressions;
   use streams;
