@@ -54,6 +54,8 @@ copyright: see below
 define constant $default-defines
   = #["const", "",
       "volatile", "",
+      "restrict", "",
+      "__restrict", "",
       "__STDC__", "",
 
       // The following six declarations should be removed someday, as soon as 

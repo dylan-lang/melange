@@ -51,6 +51,8 @@ define constant $default-defines
       // Basics
       "const", "",
       "volatile", "",
+      "restrict", "",
+      "__restrict", "",
       
       "GNUC", "(1)",
       "__GNUC__", "2",

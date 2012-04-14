@@ -55,6 +55,8 @@ copyright: see below
 define constant $default-defines
   = #["const", "",
       "volatile", "",
+      "restrict", "",
+      "__restrict", "",
       "_MSC_VER", "1020", 
       "_M_IX86", "400",
       // The rest of these, I'm not sure the compiler defines, but
