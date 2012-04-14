@@ -115,6 +115,8 @@ end function find-source-location;
 define function parse-error
     (context, format-string, #rest format-args)
  => does-not-return :: <bottom>;
+  force-output(*standard-output*);
+  force-output(*standard-error*);
   error(make(<simple-parse-error>,
 	     source-location: find-source-location(context),
 	     format-string: format-string,
