@@ -76,7 +76,11 @@ define variable *frameworks* :: <table> = make( <table> );
 define method file-is-header?(path :: <pathname>)
  => (header? :: <boolean>)
   let path = as(<file-system-locator>, path);
-  path.file-exists? & path.file-type = #"file";
+  path.file-exists? & select(path.file-type)
+                        #"file" => #t;
+                        #"link" => link-target(path).file-type == #"file";
+                        otherwise => #f;
+                      end select;
 end;
 
 // These routines support finding frameworks at run time
