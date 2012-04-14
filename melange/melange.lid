@@ -1,7 +1,7 @@
 library: melange
-files:	exports
-	int-parse
-	interface
-	name-map
-	int-lexer
-	run
+files: exports
+       int-parse
+       interface
+       name-map
+       int-lexer
+       run
