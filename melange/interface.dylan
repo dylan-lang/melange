@@ -32,7 +32,7 @@ copyright: see below
 //======================================================================
 // interface.dylan contains the complete contents of module
 // "define-interface".  This module provides the top level "program" for
-// mindy-Melange.  It parses "interface definition" files (with a bit of help
+// Melange.  It parses "interface definition" files (with a bit of help
 // from "int-lexer" and "int-parse") and writes out Dylan code files (as well
 // as possible auxiliary definition files), calling routines from "c-parse"
 // and "c-declarations" to do most of the work.
@@ -645,7 +645,7 @@ end method show-copyright;
 define method show-usage(stream :: <stream>) => ()
   format(stream,
 "Usage: melange [-v] [--headers]\n"
-"               [--mindy|--d2c|--Ttarget] [--no-struct-accessors]\n"
+"               [--c-ffi|--d2c|--Ttarget] [--no-struct-accessors]\n"
 "               [-Ddef[=val]...] [-Uundef...]\n"
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
@@ -690,7 +690,7 @@ define method show-help(stream :: <stream>) => ()
 "  -v, --verbose          Print progress messages while parsing.\n"
 "                         (Includes --headers.)\n"
 "  --headers              Print each header file included while parsing.\n"
-"  --mindy                Generate output for use only with Mindy.\n"
+"  --c-ffi                Generate output for use only with Open Dylan.\n"
 "  --d2c                  Generate output for use only with d2c.\n"
 "  -T, --target           Generate output for use only with the named target.\n"
 "  --no-struct-accessors  Do not generate accessor functions for C struct\n"
@@ -830,7 +830,7 @@ define method main (program, args)
     *inhibit-struct-accessors?* := #t;
   end if;
 
-  // Handle --mindy, --d2c, -T.
+  // Handle --c-ffi, --d2c, -T.
   if (size(choose(identity, list(d2c?, c-ffi?, target))) > 1)
     format(*standard-error*,
 	   "melange: only one of --d2c, --c-ffi or -T may be specified.\n");
