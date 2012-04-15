@@ -476,7 +476,7 @@ end method process-clause;
 // High level processing routines for interface definitions
 //----------------------------------------------------------------------
 
-define variable target-switch :: <symbol> = #"all";
+define variable target-switch :: <symbol> = #"c-ffi";
 
 // Process-parse-state does all necessary processing for the required
 // "#include" clause and invokes process clause for all other clauses in the
