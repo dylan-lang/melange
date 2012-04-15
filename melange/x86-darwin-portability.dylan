@@ -53,26 +53,26 @@ define constant $default-defines
       "volatile", "",
       "restrict", "",
       "__restrict", "",
-      
-      "GNUC", "(1)",
-      "__GNUC__", "2",
-      "__GNUC_MINOR__", "95",
-      "__STDC__", "",
-      "__STDC_VERSION__", "199901L",
 
-      "__APPLE__", "",
-      "__APPLE_CC__", "934",
-      "__ppc__", "",
-      "__NATURAL_ALIGNMENT__", "",
-      "__MACH__", "",
-      "__BIG_ENDIAN__", "",
-      "__DYNAMIC__", "",
+      "__APPLE__", "1",
+      "__APPLE_CC__", "5621",
+      "__DYNAMIC__", "1",
+      "__GNUC_MINOR__", "2",
+      "__GNUC_PATCHLEVEL__", "1",
+      "__GNUC__", "4",
+      "__i386", "1",
+      "__i386__", "1",
+      "__LITTLE_ENDIAN__", "1",
+      "__MACH__", "1",
+      "__STDC__", "1",
+      "__STDC_VERSION__", "199901L",
+      "i386", "1",
       "__signed__", "",
       "__signed", "",
       "__inline__", "",
       "__inline", "",
       "__builtin_va_list", "void*",
-      
+
       // Parameterized macros which remove various GCC extensions from our
       // source code. The last item in the list is the right-hand side of
       // the define; all the items preceding it are named parameters.
