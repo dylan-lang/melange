@@ -89,7 +89,7 @@ define method framework-exists?( path :: <string>, name :: <string> )
 => ( exists :: <boolean> )
     let framework-header :: <string> =
         concatenate( path, name, ".h" );
-    path.file-is-header?;
+    framework-header.file-is-header?;
 end method framework-exists?;
 
 define method find-frameworks( frameworks :: <vector> )
