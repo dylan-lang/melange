@@ -108,7 +108,7 @@ define module int-lexer
     <symbol-literal-token>, <string-literal-token>, <comma-token>,
     <semicolon-token>, <lbrace-token>, <rbrace-token>, <arrow-token>,
     <define-token>, <interface-token>, <end-token>, <include-token>,
-    <object-file-token>, <define-macro-token>, <undefine-token>,
+    <define-macro-token>, <undefine-token>,
     <name-mapper-token>, <import-token>, <prefix-token>, <exclude-token>,
     <exclude-file-token>, <rename-token>, <mapping-token>, <equate-token>,
     <superclass-token>, <all-token>, <all-recursive-token>, <none-token>,
@@ -120,7 +120,7 @@ define module int-lexer
     <setter-token>, <read-only-token>, <seal-token>, <seal-functions-token>,
     <boolean-token>, <sealed-token>, <open-token>, <inline-token>,
     <value-token>, <function-type-token>, <callback-maker-token>,
-    <callout-function-token>, <literal-token>, <mindy-inc-token>;
+    <callout-function-token>, <literal-token>;
 end module int-lexer;
 
 define module int-parse
@@ -132,7 +132,7 @@ define module int-parse
   use format;
   use int-lexer;
   export
-    parse, <parse-state>, include-files, object-files, mindy-include-file,
+    parse, <parse-state>, include-files,
     container-options, macro-defines, macro-undefines, clauses,
     <container-options>, name-mapper, global-imports, global-import-mode,
     file-imports, file-import-modes, prefix, exclude, excluded-files, rename,
@@ -152,15 +152,6 @@ end module name-mappers;
 define module define-interface
   // From Dylan
   use common-dylan, exclude: { format-to-string, split, position };
-/*
-  use %hash-tables;
-#if (~mindy)
-  use System,
-     import: {import-string,
-	      copy-bytes, call-out, c-expr, buffer-address, <raw-pointer>,
-	      pointer-deref};
-#endif
-*/
 
   // From string-extensions
   use substring-search;

@@ -235,7 +235,6 @@ define module c-declarations
     <written-name-record>,
 		all-written-names,
     write-declaration, 
-    write-file-load, write-mindy-includes,
 
     // Miscellaneous
     getter, setter, sealed-string, excluded?,

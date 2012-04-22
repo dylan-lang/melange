@@ -93,8 +93,6 @@ end class <container-options>;
 define class <parse-state> (<object>)
   slot tokenizer :: <tokenizer>, required-init-keyword: #"tokenizer";
   slot include-files :: false-or(<sequence>) = #f;
-  slot object-files :: <deque>, init-function: curry(make, <deque>);
-  slot mindy-include-file :: <string?>, init-value: #f;
   slot macro-defines :: <deque>, init-function: curry(make, <deque>);
   slot macro-undefines :: <deque>, init-function: curry(make, <deque>);
   slot container-options :: <container-options>;
@@ -243,8 +241,6 @@ define constant <source-location> = false-or(<parse-state>);
 :token <interface-token> <reserved-word-token> 
 :token <end-token> <reserved-word-token> 
 :token <include-token> <reserved-word-token> 
-:token <object-file-token> <reserved-word-token> 
-:token <mindy-inc-token> <reserved-word-token> 
 :token <define-macro-token> <reserved-word-token> 
 :token <undefine-token> <reserved-word-token> 
 :token <name-mapper-token> <reserved-word-token> 
@@ -371,19 +367,6 @@ file-option-list ()
 
 file-option-list (file-option-list <comma-token> file-option)
   pair(%3, %1);
-%
-
-file-option (<object-file-token> <string-literal-token>)
-  push-last(@0.object-files, %2.value);
-  pair(#"object-file", %2.value);
-%
-
-file-option (<mindy-inc-token> <string-literal-token>)
-  if (@0.mindy-include-file) 
-    parse-error(%1,
-                "More than one mindy-include-file: in interface definition.")
-  end if;
-  pair(#"mindy-file", @0.mindy-include-file := %2.value);
 %
 
 file-option (<define-macro-token> <lbrace-token> macro-definitions

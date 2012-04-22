@@ -100,31 +100,11 @@ end method class-sealing;
 // Exported function declarations.
 //------------------------------------------------------------------------
 
-// Writes out a list of symbols which must be defined, in a format compatible
-// with make-init.pl.  This should provide a portable mechanism for handling
-// static linking of libraries.
-//
-define generic write-mindy-includes
-    (file :: false-or(<string>), decls :: <sequence>) => ();
-
-// Writes out appropriate code to load object file and insure that all desired
-// objects are included.  Returns a string which can be included in a
-// "find-c-function" call so that the symbols will be found.
-//
-define generic write-file-load
-    (include-files :: <sequence>,
-     object-files :: false-or(<sequence>),
-     decls :: <sequence>,
-     stream :: <stream>)
- => (load-string :: <string>);
-
 // Writes out all the Dylan code corresponding to one <declaration>.  The
 // exact behavior can, of course, vary widely depending on the variety of
-// declaration.  "Load-string" is a magic cookie which is passed to any calss
-// to "find-c-pointer" or "find-c-function" -- it specifies the
-// <foreign-file> (if any) which should contain the desired definition. 
+// declaration.
 //
-// Most of the code in this file goes to support this single operations.
+// Most of the code in this file goes to support this single operation.
 //
 define generic write-declaration
     (decl :: <declaration>, back-end :: <back-end>) => ();
@@ -1041,72 +1021,3 @@ define method write-declaration
            subclass-type(decl.dylan-name), target-type.c-type-size);
   end if;
 end method write-declaration;
-
-// Writes out appropriate code to load object file and insure that all desired
-// objects are included.  Returns a string which can be included in a
-// "find-c-function" call so that the symbols will be found.
-//
-
-// LAST CALL
-define method write-file-load
-    (include-files :: <sequence>,
-     object-files :: false-or(<sequence>),
-     decls :: <sequence>,
-     stream :: <stream>)
- => (load-string :: <string>);
-  select(melange-target)
-    #"mindy" =>
-      begin
-	if (~empty?(object-files))
-	  let names = map(simple-name,
-			  choose(rcurry(instance?, <value-declaration>),
-				 decls));
-	  let file-name = anonymous-name();
-	  format(stream, "define constant %s\n  "
-		         "= load-object-file(#(", file-name);
-	  for (comma = #f then #t, file in object-files)
-	    if (comma) write(stream, ", ") end if;
-	    format(stream, "\"%s\"", file);
-	  end for;
-	  write(stream, "), include: #(");
-	  for (comma = #f then #t, name in names)
-	    if (comma) write(stream, ", ") end if;
-	    format(stream, "\"%s\"", name);
-	  end for;
-	  format(stream, "));\n\n");
-	  concatenate(", file: ", file-name);
-	else
-	  ""
-	end if;
-      end;
-    #"d2c" =>
-      begin
-	// Ignore object files, since they will be statically linked into
-	// the d2c compiled binaries.
-	for (file in include-files)
-	  format(stream, "c-include(\"%s\");\n", file);
-	end for;
-	format(stream, "\n");
-	"";
-      end;
-  end select;
-end method write-file-load;
-
-// Writes out a list of symbols which must be defined, in a format compatible
-// with make-init.pl.  This should provide a portable mechanism for handling
-// static linking of libraries.
-//
-define method write-mindy-includes
-    (file :: false-or(<string>), decls :: <sequence>) => ();
-  if (file)
-    let stream = make(<file-stream>, locator: file, direction: #"output");
-    for (decl in decls)
-      select (decl by instance?)
-	<function-declaration> => format(stream, "%s()\n", decl.simple-name);
-	<object-declaration> => format(stream, "%s\n", decl.simple-name);
-	otherwise => #f;
-      end select;
-    end for;
-    close(stream);
-  end if;
-end method write-mindy-includes;

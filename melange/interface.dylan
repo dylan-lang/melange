@@ -549,9 +549,6 @@ define method process-parse-state
     apply(apply-options, decl, opts) 
   end for;
   let back-end = make-backend-for-target(target-switch, out-stream);
-  write-file-load(full-names,
-                  state.object-files, decls, out-stream);
-  write-mindy-includes(state.mindy-include-file, decls);
   do(rcurry(write-declaration, back-end), decls);
   write-module-stream(back-end.written-names, module-stream, module-line);
 end method process-parse-state;
