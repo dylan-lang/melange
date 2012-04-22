@@ -239,5 +239,5 @@ define module c-declarations
     // Miscellaneous
     getter, setter, sealed-string, excluded?,
     declarations, *inhibit-struct-accessors?*,
-    melange-target, make-backend-for-target, written-names;
+    make-backend-for-target, written-names;
 end module c-declarations;
