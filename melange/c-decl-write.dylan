@@ -58,13 +58,6 @@ define abstract class <back-end> (<object>)
   constant slot written-names :: <written-name-record> = make(<written-name-record>);
 end;
 
-define class <c-ffi-back-end> (<back-end>)
-end;
-
-define method make-backend-for-target (target == #"c-ffi", stream :: <stream>)
-  make(<c-ffi-back-end>, stream: stream)
-end;
-
 //------------------------------------------------------------------------
 // Exported function declarations.
 //------------------------------------------------------------------------

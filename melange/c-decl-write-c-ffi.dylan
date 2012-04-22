@@ -1,5 +1,12 @@
 module: c-declarations
 
+define class <c-ffi-back-end> (<back-end>)
+end;
+
+define method make-backend-for-target (target == #"c-ffi", stream :: <stream>)
+  make(<c-ffi-back-end>, stream: stream)
+end;
+
 define method write-declaration (decl :: <declaration>, back-end :: <c-ffi-back-end>)
  => ();
   format(back-end.stream, " /* Ignoring declaration for %= %=*/\n", decl, decl.dylan-name)
