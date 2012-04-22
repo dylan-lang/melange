@@ -642,7 +642,7 @@ end method show-copyright;
 define method show-usage(stream :: <stream>) => ()
   format(stream,
 "Usage: melange [-v] [--headers]\n"
-"               [--c-ffi|--d2c|--Ttarget] [--no-struct-accessors]\n"
+"               [--c-ffi|--Ttarget] [--no-struct-accessors]\n"
 "               [-Ddef[=val]...] [-Uundef...]\n"
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
@@ -688,7 +688,6 @@ define method show-help(stream :: <stream>) => ()
 "                         (Includes --headers.)\n"
 "  --headers              Print each header file included while parsing.\n"
 "  --c-ffi                Generate output for use only with Open Dylan.\n"
-"  --d2c                  Generate output for use only with d2c.\n"
 "  -T, --target           Generate output for use only with the named target.\n"
 "  --no-struct-accessors  Do not generate accessor functions for C struct\n"
 "                         members.\n"
@@ -748,9 +747,6 @@ define method main (program, args)
 			    long-options: #("headers"));
   add-option-parser-by-type(*argp*,
 			    <simple-option-parser>,
-			    long-options: #("d2c"));
-  add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
 			    long-options: #("c-ffi"));
   add-option-parser-by-type(*argp*,
 			    <parameter-option-parser>,
@@ -801,7 +797,6 @@ define method main (program, args)
   // Retrieve our regular options.
   let verbose? = option-value-by-long-name(*argp*, "verbose");
   let headers? = option-value-by-long-name(*argp*, "headers");
-  let d2c? = option-value-by-long-name(*argp*, "d2c");
   let c-ffi? = option-value-by-long-name(*argp*, "c-ffi");
   let target = option-value-by-long-name(*argp*, "target");
   let module-file = option-value-by-long-name(*argp*, "module-file");
@@ -827,15 +822,14 @@ define method main (program, args)
     *inhibit-struct-accessors?* := #t;
   end if;
 
-  // Handle --c-ffi, --d2c, -T.
-  if (size(choose(identity, list(d2c?, c-ffi?, target))) > 1)
+  // Handle --c-ffi, -T.
+  if (size(choose(identity, list(c-ffi?, target))) > 1)
     format(*standard-error*,
-	   "melange: only one of --d2c, --c-ffi or -T may be specified.\n");
+	   "melange: only one of --c-ffi or -T may be specified.\n");
     show-usage-and-exit();
   end if;
   target-switch :=
     case
-      d2c? => #"d2c";
       c-ffi? => #"c-ffi";
       target => as(<symbol>, target);
       otherwise => target-switch;
