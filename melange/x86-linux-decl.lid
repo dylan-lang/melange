@@ -13,4 +13,5 @@ files: c-exports
        c-decl-state
        c-decl-write
        c-decl-write-c-ffi
+       c-decl-write-debug
        c-decl
