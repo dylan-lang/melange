@@ -10,6 +10,8 @@ Be sure that you cloned this repository recursively or have otherwise
 initialized and updated the git submodules. This will not build without
 the submodules present.
 
+::
+
     export OPEN_DYLAN_USER_REGISTRIES=`pwd`/registry
     dylan-compiler -build parsergen
     ~/Open-Dylan/bin/parsergen melange/c-parse.input melange/c-parse.dylan
