@@ -701,20 +701,9 @@ define method pointer-to
     found-type;
   else
     let new-type
-      = select (target-type.true-type by instance?)
-	  <pointer-declaration>,
-	  <enum-declaration>,
-	  <predefined-type-declaration> =>
-	    make(<pointer-declaration>, 
-                 name: concatenate(target-type.simple-name, "*"),
-		 referent: target-type);
-	  otherwise =>
-	    // Pointers to struct types are the same as the types themselves.
-	    // Therefore we create a dummy entry with the same name.  This
-	    // gets special treatment in several places.
-	    make(<pointer-declaration>, referent: target-type,
-		 name: target-type.simple-name);
-	end select;
+      = make(<pointer-declaration>, 
+             name: concatenate(target-type.simple-name, "*"),
+             referent: target-type);
     state.pointers[target-type] := new-type;
     new-type;
   end if;
