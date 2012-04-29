@@ -75,12 +75,32 @@ define method write-declaration
     register-written-name(back-end.written-names, decl.dylan-name, decl);
   end if;
 end method write-declaration;
+
 define method write-declaration (decl :: <union-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   register-written-name(back-end.written-names, decl.dylan-name, decl);
-  let supers = decl.superclasses | #("<C-void*>");
-  format(back-end.stream, "define C-subtype %s (%s) end;\n",
-         decl.dylan-name, as(<byte-string>, apply(join, ", ", supers)));
+  if (decl.superclasses)
+    format(back-end.stream, "define C-subtype %s (%s) end;\n",
+           decl.dylan-name, apply(join, ", ", decl.superclasses));
+  else
+    let stream = back-end.stream;
+    format(stream, "define C-union %s\n", decl.dylan-name);
+
+    decl.members
+      & do(method(slot)
+             if (instance?(slot.type, <vector-declaration>))
+               format(stream, "  array slot %s :: %s, length: %d;\n",
+                      slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)
+             else
+               format(stream, "  slot %s :: %s;\n",
+                      slot.dylan-name, slot.type.true-type.type-name)
+             end;
+             register-written-name(back-end.written-names, slot.dylan-name, decl);
+             register-written-name(back-end.written-names,
+                                   concatenate(slot.dylan-name, "-setter"), decl);
+           end, decl.members);
+    format(stream, "end;\n\n");
+  end;
 end;
 
 define method write-declaration (decl :: <pointer-declaration>, back-end :: <c-ffi-back-end>)
