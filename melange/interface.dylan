@@ -6,6 +6,7 @@ copyright: see below
 //
 // Copyright (c) 1994, 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998 - 2004  Gwydion Dylan Maintainers
+// Copyright (c) 2005 - 2012  Dylan Hackers
 // All rights reserved.
 // 
 // Use and copying of this software and preparation of derivative
@@ -633,10 +634,11 @@ end function protect;
 //----------------------------------------------------------------------
 
 define method show-copyright(stream :: <stream>) => ()
-  format(stream, "Melange (Gwydion Dylan)\n");
+  format(stream, "Melange (OpenDylan)\n");
   format(stream, "Turns C headers into Dylan libraries.\n");
   format(stream, "Copyright 1994-1997 Carnegie Mellon University\n");
   format(stream, "Copyright 1998-2004 Gwydion Dylan Maintainers\n");
+  format(stream, "Copyright 2005-2012 Dylan Hackers\n");
 end method show-copyright;
 
 define method show-usage(stream :: <stream>) => ()
@@ -647,6 +649,7 @@ define method show-usage(stream :: <stream>) => ()
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
 "       melange --defines\n"
+"       melange --includes\n"
 "       melange --help\n"
 "       melange --version\n");
 end method show-usage;
@@ -678,6 +681,13 @@ define method show-default-defines(stream :: <stream>) => ()
   end for;
 end method show-default-defines;
 
+define method show-default-includes(stream :: <stream>) => ()
+  for (i from 0 below include-path.size)
+    let name = include-path[i];
+    format(stream, "%s\n", name);
+  end for;
+end method show-default-includes;
+
 define method show-help(stream :: <stream>) => ()
   show-copyright(stream);
   format(stream, "\n");
@@ -708,6 +718,7 @@ define method show-help(stream :: <stream>) => ()
 "  -m, --module-file      Create a Dylan interchange file with a module\n"
 "                         definition that exports the interface names.\n"
 "  --defines              Show the default C preprocessor definitions.\n"
+"  --includes             Show the default C preprocessor include directories.\n"
 "  --help                 Show this help text.\n"
 "  --version              Show version number.\n"
 );
@@ -739,6 +750,9 @@ define method main (program, args)
   add-option-parser-by-type(*argp*,
 			    <simple-option-parser>,
 			    long-options: #("defines"));
+  add-option-parser-by-type(*argp*,
+			    <simple-option-parser>,
+			    long-options: #("includes"));
   add-option-parser-by-type(*argp*,
 			    <simple-option-parser>,
 			    long-options: #("verbose"),
@@ -787,6 +801,10 @@ define method main (program, args)
   // Handle our informational options.
   if (option-value-by-long-name(*argp*, "defines"))
     show-default-defines(*standard-output*);
+    exit-application(0);
+  end if;
+  if (option-value-by-long-name(*argp*, "includes"))
+    show-default-includes(*standard-output*);
     exit-application(0);
   end if;
   if (option-value-by-long-name(*argp*, "help"))
