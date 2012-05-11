@@ -14,7 +14,7 @@ the submodules present.
 
     export OPEN_DYLAN_USER_REGISTRIES=`pwd`/registry
     dylan-compiler -build parsergen
-    ~/Open-Dylan/bin/parsergen melange/c-parse.input melange/c-parse.dylan
+    ~/Open-Dylan/bin/parsergen melange-parser/c-parse.input melange-parser/c-parse.dylan
     ~/Open-Dylan/bin/parsergen melange/int-parse.input melange/int-parse.dylan
     dylan-compiler -build melange
 
