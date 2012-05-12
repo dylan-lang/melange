@@ -1,4 +1,3 @@
-
 OPEN_DYLAN_USER_REGISTRIES = $(CURDIR)/registry
 
 PARSERGEN = ~/Open-Dylan/bin/parsergen
