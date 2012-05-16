@@ -1027,8 +1027,7 @@ define generic ignored?-setter
     (value :: <boolean>, decl :: <result-declaration>) 
  => (result :: <boolean>);
 
-// Sets the "direction" for the given argument and recomputes "type" and
-// "original-type" if necessary.
+// Sets the "direction" for the given argument.
 //
 define generic argument-direction-setter
     (dir :: <symbol>, decl :: <arg-declaration>) => (dir :: <symbol>);
@@ -1227,8 +1226,6 @@ define method argument-direction-setter
     if (~instance?(decl.type.true-type, <pointer-declaration>))
       error("'Out' parameter is not an instance of a pointer type.");
     end if;
-    decl.original-type := decl.type;
-    decl.type := decl.type.true-type.referent;
   end if;
   decl.direction := dir;
 end method argument-direction-setter;
