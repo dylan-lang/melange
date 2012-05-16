@@ -120,18 +120,18 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   format(stream, "define C-function %s\n", decl.dylan-name);
   for (param in decl.type.parameters)
     unless (instance?(param, <varargs-declaration>))
-      format(stream, "  %s parameter %s :: %s;\n", 
+      format(stream, "  %s parameter %s :: %s;\n",
              select(param.direction)
                #"default", #"in" => "input";
                #"out" => "output";
                #"in-out" => "input output";
              end,
-             param.dylan-name, param.type-name)
+             param.dylan-name, param.mapped-name)
     end;
   end;
   let result-type = decl.type.result.type;
   if (result-type ~= void-type)
-    format(stream, "  result res :: %s;\n", result-type.dylan-name);
+    format(stream, "  result res :: %s;\n", result-type.mapped-name);
   end;
   format(stream, "  c-name: \"%s\";\n", decl.simple-name);
   format(stream, "end;\n\n");
