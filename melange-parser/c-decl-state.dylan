@@ -359,7 +359,9 @@ define method process-declarator
 			end if;
       for (count from 1,
 	   param in params)
-	param.dylan-name := format-to-string("arg%d", count);
+        if (param.simple-name == "")
+          param.dylan-name := format-to-string("arg%d", count);
+        end if;
       end for;
 
       // Force K&R semantics only (see above).
