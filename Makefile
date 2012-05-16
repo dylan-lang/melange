@@ -13,8 +13,8 @@ melange: $(MELANGE)
 $(PARSERGEN):
 	dylan-compiler -build parsergen
 
-melange/c-parse.dylan: parsergen melange/c-parse.input
-	$(PARSERGEN) melange/c-parse.input melange/c-parse.dylan
+melange/c-parse.dylan: parsergen melange-parser/c-parse.input
+	$(PARSERGEN) melange-parser/c-parse.input melange-parser/c-parse.dylan
 
 melange/int-parse.dylan: parsergen melange/int-parse.input
 	$(PARSERGEN) melange/int-parse.input melange/int-parse.dylan
