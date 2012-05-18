@@ -22,20 +22,20 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
     let stream = back-end.stream;
     format(stream, "define C-struct %s\n", decl.dylan-name);
 
-    decl.members 
+    decl.members
       & do(method(slot)
              if (instance?(slot.type, <bitfield-declaration>))
                format(stream, "  bitfield slot %s :: %s, width: %d;\n",
-                      slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)  
+                      slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)
              elseif (instance?(slot.type, <vector-declaration>))
                format(stream, "  array slot %s :: %s, length: %d;\n",
-                      slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)  
+                      slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)
              else
                format(stream, "  slot %s :: %s;\n",
                       slot.dylan-name, slot.type.true-type.type-name)
              end;
              register-written-name(back-end.written-names, slot.dylan-name, decl);
-             register-written-name(back-end.written-names, 
+             register-written-name(back-end.written-names,
                                    concatenate(slot.dylan-name, "-setter"), decl);
            end, decl.members);
     format(stream, "end;\n\n");
@@ -48,7 +48,7 @@ define method write-declaration
   let stream = back-end.stream;
   // We must special case this one since there are so many declarations of the
   // form "typedef struct foo foo".
-  if (~decl.equated? 
+  if (~decl.equated?
         & decl.simple-name ~= decl.type.simple-name)
     if (instance?(decl.type, <struct-declaration>))
       if (decl.type.superclasses)
@@ -150,8 +150,8 @@ define method write-declaration (decl :: <vector-declaration>, back-end :: <c-ff
   let stream = back-end.stream;
   register-written-name(back-end.written-names, decl.dylan-name, decl);
 
-    format(stream, "define constant %s = %s;\n",
-           decl.dylan-name, decl.pointer-equiv.dylan-name);
+  format(stream, "define constant %s = %s;\n",
+         decl.dylan-name, decl.pointer-equiv.dylan-name);
 end;
 
 define method write-declaration
@@ -167,14 +167,14 @@ define method write-declaration
     end if;
     if (decl.members)
       for (literal in decl.members)
-	let name = literal.dylan-name;
-	let int-value = literal.constant-value;
+        let name = literal.dylan-name;
+        let int-value = literal.constant-value;
         unless (instance?(int-value, <double-integer>))
           format(stream, "define constant %s = %d;\n", name, int-value);
           register-written-name(back-end.written-names, name, decl, subname?: #t);
         end;
       finally
-	new-line(stream);
+        new-line(stream);
       end for;
     end if;
   end if;
