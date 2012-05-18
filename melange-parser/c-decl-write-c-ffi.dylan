@@ -161,10 +161,6 @@ define method write-declaration
   if (~decl.equated?)
     // This may still be an "incomplete type".  If so, we just define the class
     // as a synonym for <integer>
-    if (~decl.anonymous?)
-      format(stream, "define constant %s = <C-int>;\n", decl.dylan-name);
-      register-written-name(back-end.written-names, decl.dylan-name, decl);
-    end if;
     if (decl.members)
       for (literal in decl.members)
         let name = literal.dylan-name;
@@ -176,6 +172,21 @@ define method write-declaration
       finally
         new-line(stream);
       end for;
+      if (~decl.anonymous?)
+        format(stream, "define constant %s = one-of(\n", decl.dylan-name);
+        for (literal in decl.members, first? = #t then #f)
+          let name = literal.dylan-name;
+          let int-value = literal.constant-value;
+          unless (instance?(int-value, <double-integer>))
+            if (~first?)
+              format(stream, ",\n");
+            end;
+            format(stream, "    %s", name);
+          end;
+        finally
+          format(stream, "\n  );\n\n")
+        end for;
+      end if;
     end if;
   end if;
 end method write-declaration;
