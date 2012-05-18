@@ -155,15 +155,6 @@ end method anonymous-name;
 
 define variable *inhibit-struct-accessors?* = #f;
 
-define method write-declaration
-    (decl :: <enum-slot-declaration>, back-end :: <back-end>)
- => ();
-  // The routine for <enum-declaration> will already have written these, so we
-  // need do nothing.
-  #f;
-end method write-declaration;
-
-
 // Typedefs are just aliases.  Define a constant which is initialized to the
 // original type.  Because "typedef struct foo foo" is such a common case and
 // would lead to conflicts, we check for it specially and ignore the typedef

@@ -179,3 +179,11 @@ define method write-declaration
     end if;
   end if;
 end method write-declaration;
+
+define method write-declaration
+    (decl :: <enum-slot-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  // The routine for <enum-declaration> will already have written these, so we
+  // need do nothing.
+  #f;
+end method write-declaration;
