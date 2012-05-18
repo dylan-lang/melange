@@ -129,9 +129,9 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
              param.dylan-name, param.mapped-name)
     end;
   end;
-  let result-type = decl.type.result.type;
-  if (result-type ~= void-type)
-    format(stream, "  result res :: %s;\n", result-type.mapped-name);
+  let result = decl.type.result;
+  if (result.type ~= void-type)
+    format(stream, "  result res :: %s;\n", result.mapped-name);
   end;
   format(stream, "  c-name: \"%s\";\n", decl.simple-name);
   format(stream, "end;\n\n");
