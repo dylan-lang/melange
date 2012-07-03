@@ -133,8 +133,8 @@ define function do-coalesce-members (decl :: <structured-type-declaration>)
 				composite := make(<coalesced-bitfields>, name: name, dylan-name: name);
 				result := pair(composite, result);
       end if;
-      decl-type.composite-field := composite;
-      decl-type.start-bit := composite.bit-size;
+//unused      decl-type.composite-field := composite;
+//unused      decl-type.start-bit := composite.bit-size;
       composite.fields := add!(composite.fields, member);
       let size = composite.bit-size + decl-type.bits-in-field;
       if (size > composite.type.unix-type-size)
