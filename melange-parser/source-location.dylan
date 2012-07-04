@@ -109,9 +109,9 @@ define class <file-source-location> (<source-location>)
   constant slot source-line :: <integer>,
     required-init-keyword: line:;
 
-//  constant slot source-line-position :: false-or(<integer>),
-//    init-keyword: line-position:,
-//    init-value: #f;
+  constant slot source-line-position :: false-or(<integer>),
+    init-keyword: line-position:,
+    init-value: #f;
 end;
 
 define sealed domain make (singleton(<file-source-location>));

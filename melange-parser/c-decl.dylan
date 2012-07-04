@@ -93,7 +93,7 @@ copyright: see below
 //       <object-declaration>
 //           operations include equated and read-only
 //         <variable-declaration>
-//             operations include getter and setter, read-only, external-linkage
+//             operations include getter and setter
 //         <slot-declaration>
 //             operations include excluded?
 //         <result-declaration>
@@ -126,8 +126,8 @@ define abstract class <declaration> (<object>)
     init-value: #f, init-keyword: #"dylan-name";
   slot map-type :: false-or(<string>), init-value: #f;
   slot declared? :: <boolean>, init-value: #f;
-//unused  constant slot abstract-type? :: <boolean>, 
-//    init-value: #f, init-keyword: abstract-type?:;
+  constant slot abstract-type? :: <boolean>, 
+    init-value: #f, init-keyword: abstract-type?:;
 end class <declaration>;
 
 define abstract class <typed> (<object>)
@@ -167,7 +167,7 @@ define generic dylan-name-setter
 //
 define generic compute-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
 
 // Find-dylan-name provlides low level support for "apply-options".  It checks
@@ -177,7 +177,7 @@ define generic compute-dylan-name
 //
 define generic find-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
 
 // Sets the dylan name for this object or type.  (External interface.)
@@ -220,7 +220,7 @@ define generic pointer-to
 //
 define generic apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     read-only :: <boolean>, sealing :: <string>)
  => ();
 
 //------------------------------------------------------------------------
@@ -246,11 +246,11 @@ end method remap;
 //
 define method find-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing, external));
+					 read-only, sealing));
 end method find-dylan-name;
 
 define method dylan-name (decl :: <declaration>) => (result :: <string>);
@@ -289,9 +289,9 @@ end method compute-closure;
 
 define method apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     read-only :: <boolean>, sealing :: <string>)
  => ();
-  find-dylan-name(decl, map-function, prefix, #(), read-only, sealing, external );
+  find-dylan-name(decl, map-function, prefix, #(), read-only, sealing);
 end method apply-options;
 
 // Exclude-decl -- exported.
@@ -333,7 +333,7 @@ end method equate;
 
 define method compute-dylan-name
     (decl :: <type-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -403,7 +403,7 @@ define generic make-struct-type
 define generic apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, external :: <boolean>)
+     sealing :: <string>)
  => ();
 
 define method compute-closure 
@@ -544,18 +544,18 @@ end method exclude-slots;
 define method find-dylan-name
     (decl :: <structured-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, read-only :: <boolean>,
-     sealing :: <string>, external :: <boolean>)
+     sealing :: <string>)
  => (result :: <string>);
   unless (decl.d-name)
     decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                      read-only, sealing, external);
+                                      read-only, sealing);
     // Take care of the contained objects as well.  Some of these may
     // already have been handled by "container" declarations.
     let sub-containers = list(decl.simple-name);
     if (decl.members)
       for (sub-decl in decl.members)
         find-dylan-name(sub-decl, mapper, prefix, sub-containers,
-                        read-only, sealing, external);
+                        read-only, sealing);
       end for;
     end if;
   end;
@@ -565,13 +565,13 @@ end method find-dylan-name;
 define method apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, external :: <boolean>)
+     sealing :: <string>)
  => ();
   let sub-containers = list(decl.simple-name);
   if (decl.members)
     for (elem in decl.members)
       find-dylan-name(elem, map-function, prefix, sub-containers, read-only,
-		      sealing, external);
+		      sealing);
     end for;
   end if;
 end method apply-container-options;
@@ -579,13 +579,13 @@ end method apply-container-options;
 //------------------------------------------------------------------------
 
 define class <pointer-declaration> (<new-static-pointer>, <type-declaration>)
-  constant slot referent :: <type-declaration>, required-init-keyword: #"referent";
-//unused  slot accessors-written?, init-value: #f;
+  slot referent :: <type-declaration>, required-init-keyword: #"referent";
+  slot accessors-written?, init-value: #f;
 end class;
 
 define class <vector-declaration> (<new-static-pointer>, <type-declaration>)
-  constant slot pointer-equiv :: <type-declaration>, required-init-keyword: #"equiv";
-  constant slot length :: false-or(<integer>),
+  slot pointer-equiv :: <type-declaration>, required-init-keyword: #"equiv";
+  slot length :: false-or(<integer>),
     required-init-keyword: #"length";
 end class <vector-declaration>;
 
@@ -653,10 +653,10 @@ end method canonical-name;
 
 define method compute-dylan-name
     (decl :: <pointer-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   if (decl.simple-name = decl.referent.simple-name)
-    find-dylan-name(decl.referent, mapper, prefix, #(), rd-only, sealing, external );
+    find-dylan-name(decl.referent, mapper, prefix, #(), rd-only, sealing);
   else
     mapper(#"type", prefix, decl.simple-name, containers);
   end if;
@@ -675,7 +675,7 @@ end method compute-closure;
 
 define method compute-dylan-name
     (decl :: <vector-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -735,8 +735,8 @@ end method vector-of;
 //------------------------------------------------------------------------
 
 define class <function-type-declaration> (<type-declaration>)
-  constant slot result :: <result-declaration>, required-init-keyword: #"result";
-  constant slot parameters :: <sequence>, required-init-keyword: #"params";
+  slot result :: <result-declaration>, required-init-keyword: #"result";
+  slot parameters :: <sequence>, required-init-keyword: #"params";
   slot local-name-mapper :: false-or(<function>) = #f;
   slot callback-maker-name :: false-or(<symbol>) = #f;
   slot callout-function-name :: false-or(<symbol>) = #f;
@@ -758,25 +758,25 @@ end method canonical-name;
 define method find-dylan-name
     (decl :: <function-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, read-only :: <boolean>,
-     sealing :: <string>, external :: <boolean>)
+     sealing :: <string>)
  => (result :: <string>);
   find-dylan-name(decl.result, mapper, prefix, #(), read-only,
-		  sealing, external);
+		  sealing);
   for (elem in decl.parameters)
     if (~instance?(elem, <varargs-declaration>))
-      find-dylan-name(elem, mapper, prefix, #(), read-only, sealing, external);
+      find-dylan-name(elem, mapper, prefix, #(), read-only, sealing);
     end if; 
   end for;
 
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing, external));
+					 read-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <function-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, rd-only :: <boolean>,
-     sealing :: <string>, external :: <boolean>)
+     sealing :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -811,7 +811,7 @@ end method mapped-name;
 
 define method compute-dylan-name
     (decl :: <typedef-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -844,20 +844,20 @@ end method true-type;
 define class <incomplete-type-declaration> (<type-declaration>) end class;
 
 define class <predefined-type-declaration> (<type-declaration>) 
-  constant slot type-size-slot :: <integer>, required-init-keyword: #"size";
+  slot type-size-slot :: <integer>, required-init-keyword: #"size";
 end class;
 
 define class <integer-type-declaration> (<predefined-type-declaration>)
   // Accessor-name specifies the "dereference" function to call in order to
   // retrieve the correct number of bytes.
-//unused  slot accessor-name :: <string>, required-init-keyword: #"accessor";
+  slot accessor-name :: <string>, required-init-keyword: #"accessor";
 end class;
 
 define class <signed-integer-type-declaration>   (<integer-type-declaration>) end class;
 define class <unsigned-integer-type-declaration> (<integer-type-declaration>) end class;
 
 define class <float-type-declaration> (<predefined-type-declaration>)
-//unused  slot accessor-name :: <string>, required-init-keyword: #"accessor";
+  slot accessor-name :: <string>, required-init-keyword: #"accessor";
 end class;
 
 define constant unknown-type = make(<incomplete-type-declaration>,
@@ -867,7 +867,7 @@ define constant unsigned-type = make(<incomplete-type-declaration>,
 define constant signed-type = make(<incomplete-type-declaration>,
 				   name: "unknown-type");
 define constant void-type = make(<predefined-type-declaration>,
-				 dylan-name: "<c-void>",
+				 dylan-name: "<void>",
                                  abstract-type?: #t,
 				 name: "void-type", size: 0);
 
@@ -964,10 +964,10 @@ end method compute-closure;
 // "do-coalesce-members" function).
 
 define class <bitfield-declaration> (<type-declaration>)
-  constant slot bits-in-field :: <integer>, required-init-keyword: #"bits";
-//unused  slot base-type :: <type-declaration>, required-init-keyword: #"base";
-//unused  slot composite-field :: false-or(<coalesced-bitfields>) = #f;
-//unused  slot start-bit :: <integer> = 0;	// only meaningful if composite ~= #f
+  slot bits-in-field :: <integer>, required-init-keyword: #"bits";
+  slot base-type :: <type-declaration>, required-init-keyword: #"base";
+  slot composite-field :: false-or(<coalesced-bitfields>) = #f;
+  slot start-bit :: <integer> = 0;	// only meaningful if composite ~= #f
 end class <bitfield-declaration>;
 
 define class <coalesced-bitfields> (<declaration>)
@@ -997,7 +997,6 @@ end class;
 define class <variable-declaration> (<object-declaration>)
   slot getter :: false-or(<string>), init-value: #f;
   slot setter :: false-or(<string>), init-value: #f;
-  slot external-linkage :: type-union(<boolean>, <empty-list>), init-value: #();
 end class;
 define class <slot-declaration> (<object-declaration>)
   slot excluded? :: <boolean>, init-value: #f, init-keyword: #"excluded?";
@@ -1005,7 +1004,7 @@ end class;
 define class <result-declaration> (<object-declaration>) end class;
 define class <arg-declaration> (<object-declaration>)
   slot direction :: <symbol>, init-value: #"default";
-  constant slot original-type :: false-or(<type-declaration>),
+  slot original-type :: false-or(<type-declaration>),
     init-value: #f;
 end class;
 define class <varargs-declaration> (<arg-declaration>) end class;
@@ -1042,19 +1041,19 @@ end method equate;
 
 define method find-dylan-name
     (decl :: <function-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
-  find-dylan-name(decl.type, mapper, prefix, #(), read-only, sealing, external);
+  find-dylan-name(decl.type, mapper, prefix, #(), read-only, sealing);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing, external));
+					 read-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <function-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
-  find-dylan-name(decl.type, mapper, prefix, containers, rd-only, sealing, external);
+  find-dylan-name(decl.type, mapper, prefix, containers, rd-only, sealing);
   mapper(#"function", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
@@ -1090,40 +1089,39 @@ end method type-name;
 
 define method find-dylan-name
     (decl :: <value-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   if (decl.sealed-string = "") decl.sealed-string := sealing end if;
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing, external));
+					 read-only, sealing));
 end method find-dylan-name;
 
 define method find-dylan-name
     (decl :: <object-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   if (decl.sealed-string = "") decl.sealed-string := sealing end if;
   if (decl.read-only == #()) decl.read-only := rd-only end if;
-  find-dylan-name(decl.type, mapper, prefix, #(), rd-only, sealing, external);
+  find-dylan-name(decl.type, mapper, prefix, #(), rd-only, sealing);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 rd-only, sealing, external));
+					 rd-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <object-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"variable", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
 define method find-dylan-name
     (decl :: <variable-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>,
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
      #next next-method)
  => (result :: <string>);
   next-method();
-  if (decl.external-linkage == #()) decl.external-linkage := external end if;
   decl.getter := decl.getter | decl.d-name;
   decl.setter := decl.setter | concatenate(decl.d-name, "-setter");
   decl.d-name;
@@ -1141,19 +1139,19 @@ end method compute-closure;
 
 define method find-dylan-name
     (decl :: <arg-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>,
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
      #next next-method)
  => (result :: <string>);
   if (decl.original-type)
     find-dylan-name(decl.original-type, mapper, prefix, #(), rd-only,
-		    sealing, external);
+		    sealing);
   end if;
   next-method();
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <arg-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"variable", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -1244,7 +1242,7 @@ end class;
 
 define method compute-dylan-name
     (decl :: <enum-slot-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   
   // (Do not emit container prefixes for enum constants. C semantics
@@ -1275,7 +1273,7 @@ define generic add-cpp-declaration
 
 define method compute-dylan-name
     (decl :: <constant-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   mapper(#"constant", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -1306,7 +1304,7 @@ end method compute-closure;
 
 define method compute-dylan-name
     (decl :: <macro-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>, external :: <boolean>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
   // If we are aliasing another declaration, we should use the same category.
   // We should only use #"constant" if we are renaming a constant or have an

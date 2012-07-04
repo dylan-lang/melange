@@ -74,7 +74,7 @@ copyright: see below
 define abstract class <parse-state> (<object>)
   slot objects :: <table>;
   slot structs :: <table>;
-  constant slot tokenizer :: <tokenizer>, required-init-keyword: #"tokenizer";
+  slot tokenizer :: <tokenizer>, required-init-keyword: #"tokenizer";
   slot pointers :: <table>;
   slot vectors :: <table>;
   slot verbose :: <boolean>;
@@ -91,11 +91,11 @@ define class <parse-file-state> (<parse-state>)
   // ".h" file.
   slot declarations :: <deque> = make(<deque>);
   slot current-file :: <string> = "<top-level>";
-  constant slot recursive-files-stack :: <deque> = make(<deque>);
+  slot recursive-files-stack :: <deque> = make(<deque>);
   // maps a filename into a sequence of files which it recursively includes
-  constant slot recursive-include-table :: <table> = make(<string-table>);
+  slot recursive-include-table :: <table> = make(<string-table>);
   // maps a filename into a sequence of declarations from that file
-  constant slot recursive-declaration-table :: <table> = make(<string-table>);
+  slot recursive-declaration-table :: <table> = make(<string-table>);
 end class;
 
 define method initialize (value :: <parse-file-state>, #key)

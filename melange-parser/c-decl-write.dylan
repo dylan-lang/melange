@@ -78,7 +78,7 @@ define generic write-declaration
 //------------------------------------------------------------------------
 
 define class <written-name-record> (<object>)
-  constant slot written-name-table :: <table> /* <symbol> => <declaration> */
+  slot written-name-table :: <table> /* <symbol> => <declaration> */
     = make(<table>);
 end class <written-name-record>;
 

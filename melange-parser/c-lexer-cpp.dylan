@@ -49,7 +49,7 @@ copyright: see below
 // themselves have entries in the table.  Macro expansion will, therefore,
 // recursively expand each "expanded" token, recursing as deeply as necessary.
 //
-//unused define constant default-cpp-table = make(<string-table>);
+define constant default-cpp-table = make(<string-table>);
 
 // include-path -- exported constant.
 //
@@ -425,8 +425,6 @@ define method angle-include-next( state, filename )
         state.include-tokenizer
           := make(<tokenizer>, contents: "", parent: state);
       end if;
-    else
-      parse-error(state,"Filename not found %s",name);
     end if;
   else
     parse-error(state,"Filename is not absolute %s",name);

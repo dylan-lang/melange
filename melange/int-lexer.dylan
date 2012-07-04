@@ -89,11 +89,11 @@ copyright: see below
 // The public view of tokenizers is described above.  
 //
 define primary class <tokenizer> (<object>)
-  constant slot file-name :: false-or(<string>),
+  slot file-name :: false-or(<string>),
     init-value: #f, init-keyword: #"source-file";
-  constant slot contents :: <string>, required-init-keyword: #"source-string";
+  slot contents :: <string>, required-init-keyword: #"source-string";
   slot position :: <integer>, init-keyword: #"start", init-value: 0;
-  constant slot unget-stack :: <deque>, init-function: curry(make, <deque>);
+  slot unget-stack :: <deque>, init-function: curry(make, <deque>);
 end class <tokenizer>;
 
 // Exported operations -- described in module header
@@ -133,8 +133,8 @@ define generic unget-token
 
 define abstract primary class <token> (<object>)
   constant slot token-id :: <integer> = -1;
-  constant slot string-value :: <string>, required-init-keyword: #"string";
-  constant slot generator, required-init-keyword: #"generator";
+  slot string-value :: <string>, required-init-keyword: #"string";
+  slot generator, required-init-keyword: #"generator";
   slot position, init-value: #f, init-keyword: #"position";
 end;
 
@@ -218,15 +218,14 @@ define token <value-token> :: <reserved-word-token> = 49;
 define token <function-type-token> :: <reserved-word-token> = 50;
 define token <callback-maker-token> :: <reserved-word-token> = 51;
 define token <callout-function-token> :: <reserved-word-token> = 52;
-define token <external-linkage-token> :: <reserved-word-token> = 53;
 
 // A whole bunch of punctuation
 
-define token <semicolon-token> :: <punctuation-token> = 54;
-define token <comma-token> :: <punctuation-token> = 55;
-define token <lbrace-token> :: <punctuation-token> = 56;
-define token <rbrace-token> :: <punctuation-token> = 57;
-define token <arrow-token> :: <punctuation-token> = 58;
+define token <semicolon-token> :: <punctuation-token> = 53;
+define token <comma-token> :: <punctuation-token> = 54;
+define token <lbrace-token> :: <punctuation-token> = 55;
+define token <rbrace-token> :: <punctuation-token> = 56;
+define token <arrow-token> :: <punctuation-token> = 57;
 
 define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
@@ -274,9 +273,9 @@ end method value;
 // Integer tokens can be in one of three different radices.  Figure out which
 // and then compute an integer value.
 //
-define method value (token :: <integer-token>) => (result :: <string>);
+define method value (token :: <integer-token>) => (result :: <integer>);
   let string = token.string-value;
-/*  case
+  case
     string.first ~= '#' =>
       string-to-integer(string);
     string.second == 'o' | string.second == 'O' =>
@@ -284,8 +283,6 @@ define method value (token :: <integer-token>) => (result :: <string>);
     otherwise =>
       string-to-integer(copy-sequence(string, start: 2), base: 16);
   end case;
-*/
-  string;
 end method value;
 
 // non-alphanumeric characters.  This routine translates the second character
@@ -435,7 +432,6 @@ define constant reserved-words
 	   "function-type", <function-type-token>,
 	   "callback-maker:", <callback-maker-token>,
 	   "callout-function:", <callout-function-token>,
-	   "external:", <external-linkage-token>, 
 	   "#t", <true-token>,
 	   "#f", <false-token>,
 	   ",", <comma-token>,
@@ -783,8 +779,6 @@ define sealed domain make(singleton(<function-type-token>));
 define sealed domain make(singleton(<callback-maker-token>));
 // <callout-function-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<callout-function-token>));
-// <external-linkage-token> -- subclass of <reserved-word-token>
-define sealed domain make(singleton(<external-linkage-token>));
 // <semicolon-token> -- subclass of <punctuation-token>
 define sealed domain make(singleton(<semicolon-token>));
 // <comma-token> -- subclass of <punctuation-token>

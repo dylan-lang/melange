@@ -241,17 +241,15 @@ end method process-imports;
 define method merge-container-options
     (first :: <container-options>, #rest rest)
  => (mapper :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, external-linkage :: <boolean>);
+     sealing :: <string>);
   let mapper = first.name-mapper;
   let pre = first.prefix;
   let rd-only = first.read-only;
-  let ext-linkage = first.external-linkage;
   let sealing = first.seal-string;
   for (next in rest)
     if (mapper == undefined) mapper := next.name-mapper end if;
     if (pre == undefined) pre := next.prefix end if;
     if (rd-only == undefined) rd-only := next.read-only end if;
-    if (ext-linkage == undefined) ext-linkage := next.external-linkage end if;
     if (sealing == undefined) sealing := next.seal-string end if;
   end for;
   if (mapper == undefined)
@@ -259,9 +257,8 @@ define method merge-container-options
   end if;
   if (pre == undefined) pre := "" end if;
   if (rd-only == undefined) rd-only := #f end if;
-  if (ext-linkage == undefined) ext-linkage := #f end if;
   if (sealing == undefined) sealing := "sealed" end if;
-  values(curry(map-name, mapper), pre, rd-only, sealing, ext-linkage);
+  values(curry(map-name, mapper), pre, rd-only, sealing);
 end method merge-container-options;
 
 //----------------------------------------------------------------------
@@ -311,7 +308,6 @@ define method process-clause
       #"setter" => if (body) decl.setter := body else decl.read-only := #t end;
       #"getter" => decl.getter := body;
       #"read-only" => decl.read-only := body;
-      #"external" => decl.external-linkage := body;
       #"seal" => decl.sealed-string := body;
       #"equate" => equate(decl, body);
       #"map" => remap(decl, body);
