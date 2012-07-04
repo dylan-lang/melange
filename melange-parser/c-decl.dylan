@@ -866,7 +866,7 @@ define constant unsigned-type = make(<incomplete-type-declaration>,
 define constant signed-type = make(<incomplete-type-declaration>,
                                    name: "unknown-type");
 define constant void-type = make(<predefined-type-declaration>,
-                                 dylan-name: "<void>",
+                                 dylan-name: "<c-void>",
                                  abstract-type?: #t,
                                  name: "void-type", size: 0);
 
