@@ -12,6 +12,25 @@ define method write-declaration (decl :: <declaration>, back-end :: <c-ffi-back-
   format(back-end.stream, " /* Ignoring declaration for %= %=*/\n", decl, decl.dylan-name)
 end;
 
+define method write-declaration (decl :: <variable-declaration>, back-end :: <c-ffi-back-end>)
+ => ()
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
+  let stream = back-end.stream;
+  if ( instance?(decl.type, <struct-declaration>) | instance?(decl.type, <union-declaration>) )
+    format(stream, "define c-address %s :: %s\n", decl.dylan-name, decl.type.dylan-name);
+  else
+    format(stream, "define c-variable %s :: %s\n", decl.dylan-name, decl.mapped-name);
+  end;
+  if ( decl.read-only )
+    format(stream, "  setter: #f,\n");
+  end;
+  if ( decl.external-linkage == #t )
+    format(stream, "  import: #t,\n");
+  end;
+  format(stream, "  c-name: \"%s\"\n", decl.simple-name);
+  format(stream, "end;\n\n"); 
+end;
+
 define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   register-written-name(back-end.written-names, decl.dylan-name, decl);
