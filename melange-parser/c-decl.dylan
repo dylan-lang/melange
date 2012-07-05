@@ -93,7 +93,7 @@ copyright: see below
 //       <object-declaration>
 //           operations include equated and read-only
 //         <variable-declaration>
-//             operations include getter and setter
+//             operations include getter and setter, read-only, external-linkage
 //         <slot-declaration>
 //             operations include excluded?
 //         <result-declaration>
@@ -101,7 +101,7 @@ copyright: see below
 //         <arg-declaration>
 //             operations include direction, original-type,
 //             argument-direction-setter
-//           <varargs-declaration>
+//          <varargs-declaration>
 //     <constant-declaration>
 //         operations include constant-value
 //       <enum-slot-declaration>
@@ -126,8 +126,8 @@ define abstract class <declaration> (<object>)
     init-value: #f, init-keyword: #"dylan-name";
   slot map-type :: false-or(<string>), init-value: #f;
   slot declared? :: <boolean>, init-value: #f;
-  constant slot abstract-type? :: <boolean>, 
-    init-value: #f, init-keyword: abstract-type?:;
+//unused  constant slot abstract-type? :: <boolean>, 
+//    init-value: #f, init-keyword: abstract-type?:;
 end class <declaration>;
 
 define abstract class <typed> (<object>)
@@ -579,13 +579,13 @@ end method apply-container-options;
 //------------------------------------------------------------------------
 
 define class <pointer-declaration> (<new-static-pointer>, <type-declaration>)
-  slot referent :: <type-declaration>, required-init-keyword: #"referent";
-  slot accessors-written?, init-value: #f;
+  constant slot referent :: <type-declaration>, required-init-keyword: #"referent";
+//unused  slot accessors-written?, init-value: #f;
 end class;
 
 define class <vector-declaration> (<new-static-pointer>, <type-declaration>)
-  slot pointer-equiv :: <type-declaration>, required-init-keyword: #"equiv";
-  slot length :: false-or(<integer>),
+  constant slot pointer-equiv :: <type-declaration>, required-init-keyword: #"equiv";
+  constant slot length :: false-or(<integer>),
     required-init-keyword: #"length";
 end class <vector-declaration>;
 
@@ -735,8 +735,8 @@ end method vector-of;
 //------------------------------------------------------------------------
 
 define class <function-type-declaration> (<type-declaration>)
-  slot result :: <result-declaration>, required-init-keyword: #"result";
-  slot parameters :: <sequence>, required-init-keyword: #"params";
+  constant slot result :: <result-declaration>, required-init-keyword: #"result";
+  constant slot parameters :: <sequence>, required-init-keyword: #"params";
   slot local-name-mapper :: false-or(<function>) = #f;
   slot callback-maker-name :: false-or(<symbol>) = #f;
   slot callout-function-name :: false-or(<symbol>) = #f;
@@ -844,20 +844,20 @@ end method true-type;
 define class <incomplete-type-declaration> (<type-declaration>) end class;
 
 define class <predefined-type-declaration> (<type-declaration>) 
-  slot type-size-slot :: <integer>, required-init-keyword: #"size";
+  constant slot type-size-slot :: <integer>, required-init-keyword: #"size";
 end class;
 
 define class <integer-type-declaration> (<predefined-type-declaration>)
   // Accessor-name specifies the "dereference" function to call in order to
   // retrieve the correct number of bytes.
-  slot accessor-name :: <string>, required-init-keyword: #"accessor";
+//unused  slot accessor-name :: <string>, required-init-keyword: #"accessor";
 end class;
 
 define class <signed-integer-type-declaration>   (<integer-type-declaration>) end class;
 define class <unsigned-integer-type-declaration> (<integer-type-declaration>) end class;
 
 define class <float-type-declaration> (<predefined-type-declaration>)
-  slot accessor-name :: <string>, required-init-keyword: #"accessor";
+//unused  slot accessor-name :: <string>, required-init-keyword: #"accessor";
 end class;
 
 define constant unknown-type = make(<incomplete-type-declaration>,
@@ -964,10 +964,10 @@ end method compute-closure;
 // "do-coalesce-members" function).
 
 define class <bitfield-declaration> (<type-declaration>)
-  slot bits-in-field :: <integer>, required-init-keyword: #"bits";
-  slot base-type :: <type-declaration>, required-init-keyword: #"base";
-  slot composite-field :: false-or(<coalesced-bitfields>) = #f;
-  slot start-bit :: <integer> = 0;	// only meaningful if composite ~= #f
+  constant slot bits-in-field :: <integer>, required-init-keyword: #"bits";
+//unused  slot base-type :: <type-declaration>, required-init-keyword: #"base";
+//unused  slot composite-field :: false-or(<coalesced-bitfields>) = #f;
+//unused  slot start-bit :: <integer> = 0;	// only meaningful if composite ~= #f
 end class <bitfield-declaration>;
 
 define class <coalesced-bitfields> (<declaration>)
@@ -1004,7 +1004,7 @@ end class;
 define class <result-declaration> (<object-declaration>) end class;
 define class <arg-declaration> (<object-declaration>)
   slot direction :: <symbol>, init-value: #"default";
-  slot original-type :: false-or(<type-declaration>),
+  constant slot original-type :: false-or(<type-declaration>),
     init-value: #f;
 end class;
 define class <varargs-declaration> (<arg-declaration>) end class;

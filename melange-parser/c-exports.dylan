@@ -112,7 +112,6 @@ define module c-lexer
     exclude: { format, format-to-string, 
                split, position };
   use format;
-  use table-extensions;
   use self-organizing-list;
   use string-conversions;
   use regular-expressions;
