@@ -120,7 +120,7 @@ define module int-lexer
     <setter-token>, <read-only-token>, <seal-token>, <seal-functions-token>,
     <boolean-token>, <sealed-token>, <open-token>, <inline-token>,
     <value-token>, <function-type-token>, <callback-maker-token>,
-    <callout-function-token>, <literal-token>;
+    <callout-function-token>, <literal-token>, <external-linkage-token>;
 end module int-lexer;
 
 define module int-parse
@@ -139,7 +139,7 @@ define module int-parse
     mappings, equates, read-only, seal-string, <clause>, <function-clause>,
     <struct-clause>, <union-clause>, <pointer-clause>, <constant-clause>,
     <variable-clause>, <function-type-clause>, name, options, <undefined>,
-    undefined;
+    undefined, external-linkage;
 end module int-parse;
 
 define module name-mappers

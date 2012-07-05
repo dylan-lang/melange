@@ -222,7 +222,7 @@ define module c-declarations
     argument-direction-setter, constant-value-setter, getter-setter,
     setter-setter, read-only-setter, sealed-string-setter, excluded?-setter,
     exclude-slots, equate, remap, rename, superclasses-setter, pointer-equiv,
-    dylan-name, exclude-decl, 
+    dylan-name, exclude-decl, external-linkage-setter, 
 
     // "Import declarations phase" 
     declaration-closure, // also calls compute-closure

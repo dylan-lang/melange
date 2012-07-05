@@ -218,14 +218,15 @@ define token <value-token> :: <reserved-word-token> = 49;
 define token <function-type-token> :: <reserved-word-token> = 50;
 define token <callback-maker-token> :: <reserved-word-token> = 51;
 define token <callout-function-token> :: <reserved-word-token> = 52;
+define token <external-linkage-token> :: <reserved-word-token> = 53;
 
 // A whole bunch of punctuation
 
-define token <semicolon-token> :: <punctuation-token> = 53;
-define token <comma-token> :: <punctuation-token> = 54;
-define token <lbrace-token> :: <punctuation-token> = 55;
-define token <rbrace-token> :: <punctuation-token> = 56;
-define token <arrow-token> :: <punctuation-token> = 57;
+define token <semicolon-token> :: <punctuation-token> = 54;
+define token <comma-token> :: <punctuation-token> = 55;
+define token <lbrace-token> :: <punctuation-token> = 56;
+define token <rbrace-token> :: <punctuation-token> = 57;
+define token <arrow-token> :: <punctuation-token> = 58;
 
 define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
@@ -432,6 +433,7 @@ define constant reserved-words
 	   "function-type", <function-type-token>,
 	   "callback-maker:", <callback-maker-token>,
 	   "callout-function:", <callout-function-token>,
+	   "external:", <external-linkage-token>, 
 	   "#t", <true-token>,
 	   "#f", <false-token>,
 	   ",", <comma-token>,
@@ -779,6 +781,8 @@ define sealed domain make(singleton(<function-type-token>));
 define sealed domain make(singleton(<callback-maker-token>));
 // <callout-function-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<callout-function-token>));
+// <external-linkage-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<external-linkage-token>));
 // <semicolon-token> -- subclass of <punctuation-token>
 define sealed domain make(singleton(<semicolon-token>));
 // <comma-token> -- subclass of <punctuation-token>
