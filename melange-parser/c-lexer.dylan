@@ -74,7 +74,7 @@ define /* exported */ primary class <tokenizer> (<object>)
   slot file-name :: <string> = "<unknown-file>";
   slot contents :: <long-byte-string> = make(<long-byte-string>);
   slot position :: <integer> = 0;
-  slot unget-stack :: <deque>, init-function: curry(make, <deque>);
+  constant slot unget-stack :: <deque>, init-function: curry(make, <deque>);
   /* exported */ slot cpp-table :: <table>;
   slot cpp-stack :: <list> = #();
   /* exported */ slot cpp-decls :: false-or(<deque>) = #f;
@@ -114,8 +114,8 @@ end class <tokenizer>;
 //
 define /* exported */ abstract primary class <token> (<object>)
   constant /* exported */ slot token-id :: <integer> = -1;
-  slot string-value :: <byte-string>, required-init-keyword: #"string";
-  /* exported */ slot generator, required-init-keyword: #"generator";
+  constant slot string-value :: <byte-string>, required-init-keyword: #"string";
+  constant /* exported */ slot generator, required-init-keyword: #"generator";
   slot position, init-value: #f, init-keyword: #"position";
 end;
 
@@ -133,7 +133,7 @@ define /* exported */ abstract class <literal-token> (<token>) end class;
 // <end-include-token> will be a subclass of this.
 //
 define /* exported */ class <ei-token> (<token>)
-  slot value :: <deque>, required-init-keyword: #"value";
+  constant slot value :: <deque>, required-init-keyword: #"value";
 end class;
 define /* exported */ abstract class <name-token> (<token>) end class;
 

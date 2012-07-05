@@ -54,11 +54,11 @@ copyright: See LICENSE file in this distribution.
 // The public view of tokenizers is described above.
 //
 define primary class <tokenizer> (<object>)
-  slot file-name :: false-or(<string>),
+  constant slot file-name :: false-or(<string>),
     init-value: #f, init-keyword: #"source-file";
-  slot contents :: <string>, required-init-keyword: #"source-string";
+  constant slot contents :: <string>, required-init-keyword: #"source-string";
   slot position :: <integer>, init-keyword: #"start", init-value: 0;
-  slot unget-stack :: <deque>, init-function: curry(make, <deque>);
+  constant slot unget-stack :: <deque>, init-function: curry(make, <deque>);
 end class <tokenizer>;
 
 // Exported operations -- described in module header
@@ -98,8 +98,8 @@ define generic unget-token
 
 define abstract primary class <token> (<object>)
   constant slot token-id :: <integer> = -1;
-  slot string-value :: <string>, required-init-keyword: #"string";
-  slot generator, required-init-keyword: #"generator";
+  constant slot string-value :: <string>, required-init-keyword: #"string";
+  constant slot generator, required-init-keyword: #"generator";
   slot position, init-value: #f, init-keyword: #"position";
 end;
 

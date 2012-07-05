@@ -8,21 +8,12 @@ copyright: See LICENSE file in this distribution.
 // This file contains functions which emulate the functionality of CPP.  These
 // functions are then called by the general lexing routines in
 // "c-lexer.dylan".  The only items directly exported from this file are
-// "default-cpp-table" and "include-path", which are made available to other
+// "include-path" and "framework-paths", which are made available to other
 // modules so that they can add elements before the parse begins.  In
 // particular, module "portability" is expected to define the "standard"
 // definitions for whatever machine we are compiling for as well as the
 // standard "include" directories.
 //======================================================================
-
-// This table maps strings defined by the preprocessor into tokens.  Initial
-// values are taken from the appropriate portability module.  Entries should
-// be sequences of tokens in reverse order.  These sequences will not
-// themselves be "expanded".  In other words, some of the tokens may
-// themselves have entries in the table.  Macro expansion will, therefore,
-// recursively expand each "expanded" token, recursing as deeply as necessary.
-//
-define constant default-cpp-table = make(<string-table>);
 
 // include-path -- exported constant.
 //
@@ -398,9 +389,11 @@ define method angle-include-next (state, filename)
         state.include-tokenizer
           := make(<tokenizer>, contents: "", parent: state);
       end if;
+    else
+      parse-error(state, "Filename not found %s", name);
     end if;
   else
-    parse-error(state,"Filename is not absolute %s",name);
+    parse-error(state, "Filename is not absolute %s", name);
   end if;
 end;
 

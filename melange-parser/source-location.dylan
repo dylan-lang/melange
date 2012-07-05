@@ -86,6 +86,8 @@ define class <file-source-location> (<source-location>)
     init-value: #f;
 end;
 
+ignore(source-line-position);
+
 define sealed domain make (singleton(<file-source-location>));
 define sealed domain initialize (<file-source-location>);
 

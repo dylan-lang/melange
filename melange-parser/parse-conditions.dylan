@@ -50,7 +50,7 @@ push(*default-parse-context*, #f);
 //  other such classes if they are needed.
 
 define abstract class <parse-condition> (<condition>)
-  slot parse-condition-source-location :: <source-location>,
+  constant slot parse-condition-source-location :: <source-location>,
     required-init-keyword: source-location:;
 end;
 
@@ -67,8 +67,8 @@ define class <simple-parse-warning> (<warning>,
 end;
 
 define class <parse-progress-report> (<format-string-parse-condition>)
-  slot parse-progress-level :: <parse-progress-level> = $parse-progress-level-all,
-    init-keyword: level:;
+  constant slot parse-progress-level :: <parse-progress-level> = $parse-progress-level-all,
+    required-init-keyword: level:;
 end;
 
 

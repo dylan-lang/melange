@@ -39,10 +39,6 @@ copyright: See LICENSE file in this distribution.
 // Simple parser support
 //----------------------------------------------------------------------
 
-// Designates an "optional" string.
-//
-define constant <string?> = false-or(<string>);
-
 // Undefined values are useful for values that may need to be defaulted.  This
 // is superior to simply filling in the default value at the start, since it
 // allows us to merge several <container-option>s before doing the defaulting.
@@ -60,9 +56,9 @@ define class <container-options> (<object>)
   // each element of imports is either #"all" or an import list
   slot global-import-mode
     :: one-of(#"all", #"all-recursive", #"none", #"undecided") = #"undecided";
-  slot global-imports :: <sequence> = make(<stretchy-vector>);
-  slot file-import-modes = make(<string-table>) /* of #"all", #"none" */;
-  slot file-imports = make(<string-table>) /* of <sequence> */;
+  constant slot global-imports :: <sequence> = make(<stretchy-vector>);
+  constant slot file-import-modes = make(<string-table>) /* of #"all", #"none" */;
+  constant slot file-imports = make(<string-table>) /* of <sequence> */;
   slot prefix :: type-union(<string>, <undefined>), init-value: undefined;
   constant slot exclude = make(<deque>);
   constant slot excluded-files = make(<deque>);
@@ -82,10 +78,10 @@ end class <container-options>;
 // order.
 //
 define class <parse-state> (<object>)
-  slot tokenizer :: <tokenizer>, required-init-keyword: #"tokenizer";
+  constant slot tokenizer :: <tokenizer>, required-init-keyword: #"tokenizer";
   slot include-files :: false-or(<sequence>) = #f;
-  slot macro-defines :: <deque>, init-function: curry(make, <deque>);
-  slot macro-undefines :: <deque>, init-function: curry(make, <deque>);
+  constant slot macro-defines :: <deque>, init-function: curry(make, <deque>);
+  constant slot macro-undefines :: <deque>, init-function: curry(make, <deque>);
   slot container-options :: <container-options>;
   slot clauses :: <sequence>, init-value: #();
 end class <parse-state>;
@@ -186,8 +182,8 @@ end method process-container-options;
 // some of the options in a more convenient format.
 //
 define class <clause> (<object>)
-  slot name :: <string>, required-init-keyword: #"name";
-  slot options :: <sequence>, required-init-keyword: #"options";
+  constant slot name :: <string>, required-init-keyword: #"name";
+  constant slot options :: <sequence>, required-init-keyword: #"options";
 end class;
 
 define class <function-clause> (<clause>) end class;
