@@ -739,95 +739,97 @@ end method show-help;
 
 define method main (program, args)
   // Describe our arguments and create appropriate parser objects.
-  let *argp* = make(<argument-list-parser>);
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("help"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("version"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("defines"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("includes"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("verbose"),
-                            short-options: #("v"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("headers"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("debug"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("c-ffi"));
-  add-option-parser-by-type(*argp*,
-                            <parameter-option-parser>,
-                            long-options: #("target"),
-                            short-options: #("T"));
-  add-option-parser-by-type(*argp*,
-                            <parameter-option-parser>,
-                            long-options: #("module-file"),
-                            short-options: #("m"));
-  add-option-parser-by-type(*argp*,
-                            <repeated-parameter-option-parser>,
-                            long-options: #("includedir"),
-                            short-options: #("I"));
-  add-option-parser-by-type(*argp*,
-                            <keyed-option-parser>,
-                            long-options: #("define"),
-                            short-options: #("D"));
-  add-option-parser-by-type(*argp*,
-                            <repeated-parameter-option-parser>,
-                            long-options: #("undefine"),
-                            short-options: #("U"));
-  add-option-parser-by-type(*argp*,
-                            <repeated-parameter-option-parser>,
-                            long-options: #("framework"));
-  add-option-parser-by-type(*argp*,
-                            <simple-option-parser>,
-                            long-options: #("no-struct-accessors"));
+  let *argp* = make(<command-line-parser>);
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("help")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("version")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("defines")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("includes")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("verbose"),
+                  short-names: #("v")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("headers")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("debug")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("c-ffi")));
+  add-option(*argp*,
+             make(<parameter-option>,
+                  names: #("target"),
+                  short-names: #("T")));
+  add-option(*argp*,
+             make(<parameter-option>,
+                  names: #("module-file"),
+                  short-names: #("m")));
+  add-option(*argp*,
+             make(<repeated-parameter-option>,
+                  names: #("includedir"),
+                  short-names: #("I")));
+  add-option(*argp*,
+             make(<keyed-option>,
+                  names: #("define"),
+                  short-names: #("D")));
+  add-option(*argp*,
+             make(<repeated-parameter-option>,
+                  names: #("undefine"),
+                  short-names: #("U")));
+  add-option(*argp*,
+             make(<repeated-parameter-option>,
+                  names: #("framework")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("no-struct-accessors")));
 
   // Parse our command-line arguments.
-  unless (parse-arguments(*argp*, args))
+  block ()
+    parse-command-line(*argp*, args);
+  exception (ex :: <usage-error>)
     show-usage-and-exit();
-  end unless;
+  end;
 
   // Handle our informational options.
-  if (option-value-by-long-name(*argp*, "defines"))
+  if (get-option-value(*argp*, "defines"))
     show-default-defines(*standard-output*);
     exit-application(0);
   end if;
-  if (option-value-by-long-name(*argp*, "includes"))
+  if (get-option-value(*argp*, "includes"))
     show-default-includes(*standard-output*);
     exit-application(0);
   end if;
-  if (option-value-by-long-name(*argp*, "help"))
+  if (get-option-value(*argp*, "help"))
     show-help(*standard-output*);
     exit-application(0);
   end if;
-  if (option-value-by-long-name(*argp*, "version"))
+  if (get-option-value(*argp*, "version"))
     show-copyright(*standard-output*);
     exit-application(0);
   end if;
 
   // Retrieve our regular options.
-  let verbose? = option-value-by-long-name(*argp*, "verbose");
-  let headers? = option-value-by-long-name(*argp*, "headers");
-  let debug? = option-value-by-long-name(*argp*, "debug");
-  let c-ffi? = option-value-by-long-name(*argp*, "c-ffi");
-  let target = option-value-by-long-name(*argp*, "target");
-  let module-file = option-value-by-long-name(*argp*, "module-file");
-  let include-dirs = option-value-by-long-name(*argp*, "includedir");
-  let defines = option-value-by-long-name(*argp*, "define");
-  let undefines = option-value-by-long-name(*argp*, "undefine");
-  let regular-args = regular-arguments(*argp*);
-  let framework-dirs = option-value-by-long-name( *argp*, "framework" );
-  let no-struct-accessors? = option-value-by-long-name( *argp*, "no-struct-accessors" );
+  let verbose? = get-option-value(*argp*, "verbose");
+  let headers? = get-option-value(*argp*, "headers");
+  let debug? = get-option-value(*argp*, "debug");
+  let c-ffi? = get-option-value(*argp*, "c-ffi");
+  let target = get-option-value(*argp*, "target");
+  let module-file = get-option-value(*argp*, "module-file");
+  let include-dirs = get-option-value(*argp*, "includedir");
+  let defines = get-option-value(*argp*, "define");
+  let undefines = get-option-value(*argp*, "undefine");
+  let regular-args = positional-options(*argp*);
+  let framework-dirs = get-option-value(*argp*, "framework");
+  let no-struct-accessors? = get-option-value(*argp*, "no-struct-accessors");
 
   // Handle --headers.
   if (headers?)
