@@ -518,15 +518,13 @@ define method try-punctuation (state :: <tokenizer>, position :: <integer>)
  => result :: false-or(<token>);
   let contents :: <string> = state.contents;
 
-  if (punctuation?(contents[position]))
-    let (start-index, end-index)
-      = match-punctuation(contents, start: position);
-    if (start-index ~= #f)
-      state.position := end-index;
-      let string-value = copy-sequence(contents,
-				       start: position, end: end-index);
-      lex-identifier(state, position, string-value);
-    end if;
+  let (start-index, end-index)
+    = match-punctuation(contents, start: position);
+  if (start-index ~= #f)
+    state.position := end-index;
+    let string-value = copy-sequence(contents,
+				     start: position, end: end-index);
+    lex-identifier(state, position, string-value);
   end if;
 end method try-punctuation;
 

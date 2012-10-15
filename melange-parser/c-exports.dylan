@@ -42,9 +42,9 @@ copyright: see below
 define library melange-c
   use dylan;
   use common-dylan;
-  use string-extensions;
   use collection-extensions;
   use regular-expressions;
+  use strings;
   use system;
   use io;
 
@@ -114,10 +114,7 @@ define module c-lexer
   use format;
   use table-extensions;
   use self-organizing-list;
-  use string-conversions;
   use regular-expressions;
-  use substring-search;
-  use character-type;
   use streams;
   use file-system;
   use locators;
@@ -127,6 +124,9 @@ define module c-lexer
     export: {parse-error,
 	     parse-warning,
 	     parse-progress-report};
+  use strings;
+  use %strings,
+    import: { make-substring-positioner };
   use multistring-match;
   create cpp-parse;
   export
@@ -148,8 +148,8 @@ define module portability
   use dylan;
   use c-lexer, import: {include-path, *handle-c++-comments*, *framework-paths*};
   use operating-system, import: {environment-variable};  // win32 only
-  use substring-search;          // win32 only
   use common-extensions;
+  use strings;
   export
     $default-defines,
     $enum-size,

@@ -48,10 +48,10 @@ copyright: see below
 // "define interface", since there may be variable numbers of spaces between
 // the words.
 //
-define constant match-define = make-substring-positioner("define");
+define constant match-define = make-substring-positioner("define", #f);
 
-define constant match-module = make-substring-positioner("module: ");
-define constant match-newline = make-substring-positioner("\n");
+define constant match-module = make-substring-positioner("module: ", #f);
+define constant match-newline = make-substring-positioner("\n", #t);
 
 // Check to see whether the specified "long" (sub-)string begins with the
 // short string.  This routine should probably be in string-extensions
@@ -862,7 +862,7 @@ define method main (program, args)
   // Handle -I.
   // translate \ to /, because \ does bad things when inside a
   // string literal, like c-include("d:\foo\bar.h")
-  include-dirs := map(rcurry(substring-replace, "\\\\", "/"), include-dirs);
+  include-dirs := map(rcurry(replace-substrings, "\\\\", "/"), include-dirs);
   for (dir in include-dirs)
     push(include-path, dir);
   end for;

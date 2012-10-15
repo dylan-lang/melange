@@ -80,11 +80,11 @@ copyright: see below
 
 define library melange
   use common-dylan;
-  use string-extensions;
   use collection-extensions;
   use io;
   use system;
   use command-line-parser;
+  use strings;
   use regular-expressions;
   use melange-c;
   export
@@ -95,9 +95,8 @@ define module int-lexer
   use common-dylan,
     exclude: { format-to-string, position, split };
   use self-organizing-list;
-  use string-conversions;
-  use character-type;
   use streams;
+  use strings;
   use regular-expressions;
   export
     <tokenizer>, get-token, unget-token, <token>, value, string-value,
@@ -144,7 +143,7 @@ end module int-parse;
 
 define module name-mappers
   use dylan;
-  use character-type;
+  use strings;
   export
     map-name, hyphenate-case-breaks;
 end module name-mappers;
@@ -152,10 +151,6 @@ end module name-mappers;
 define module define-interface
   // From Dylan
   use common-dylan, exclude: { format-to-string, split, position };
-
-  // From string-extensions
-  use substring-search;
-  use character-type;
 
   // From io
   use streams;
@@ -165,6 +160,11 @@ define module define-interface
 
   // From io
   use standard-io;
+
+  // From strings
+  use strings;
+  use %strings,
+    import: { make-substring-positioner };
 
   // From system
   use file-system;

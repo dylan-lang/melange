@@ -320,12 +320,32 @@ define method value (token :: <integer-token>) => (result :: <integer>);
   case
     string.first ~= '0' => my-string-to-integer(string);
     string.size == 1 => 0;
-    string.second.digit? =>
+    decimal-digit?(string.second) =>
       my-string-to-integer(copy-sequence(string, start: 1), base: 8);
     otherwise =>
       my-string-to-integer(copy-sequence(string, start: 2), base: 16);
   end case;
 end method value;
+
+define method my-digit-to-integer (c :: <character>) => digit :: <integer>;
+  if (~alphanumeric?(c))
+    error("Invalid digit %=", c);
+  end if;
+  select (c)
+    '0' => 0;
+    '1' => 1;
+    '2' => 2;
+    '3' => 3;
+    '4' => 4;
+    '5' => 5;
+    '6' => 6;
+    '7' => 7;
+    '8' => 8;
+    '9' => 9;
+    otherwise =>
+      as(<integer>, as-lowercase(c)) - as(<integer>, 'a') + 10;
+  end select;
+end method my-digit-to-integer;
 
 define method my-string-to-integer (string :: <sequence>, #key base = 10)
  => (int :: <integer>);
@@ -333,7 +353,7 @@ define method my-string-to-integer (string :: <sequence>, #key base = 10)
   let sign = if (string[0] == '-')  -1  else  1  end if;
   let start-index = if (sign = -1)  1  else  0  end if;
   for (i from start-index below string.size)
-    let digit = digit-to-integer(string[i]);
+    let digit = my-digit-to-integer(string[i]);
     if (digit >= base)
       error("\"%s\" isn't in base %d\n", string, base);
     else
@@ -769,7 +789,7 @@ define function try-identifier
   let contents :: <long-byte-string> = state.contents;
 
   let pos = if (contents[position] == '#') position + 1 else position end if;
-  if (alpha?(contents[pos]) | contents[pos] == '_')
+  if (alphabetic?(contents[pos]) | contents[pos] == '_')
     for (index from pos + 1 below contents.size,
 	 until: ~alphanumeric?(contents[index]) & contents[index] ~= '_')
     finally
@@ -787,6 +807,17 @@ define multistring-checker match-punctuation
    ";", ",", "(", ")", ".", "&", "*", "+", "~", "!", "/", "%", "<", ">", "^",
    "|", "?", ":", "=", "{", "}", "-", "[", "]");
 
+define inline function punctuation? (c :: <character>) => answer :: <boolean>;
+  select (c)
+    ',', '.', '/', '<', '>', '?', ';', '\'', ':', '"',
+    '|', '\\', '[', ']', '{', '}',
+    '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+    '-', '=', '_', '+', '`', '~'
+      => #t;
+    otherwise => #f;
+  end select;
+end function punctuation?;
+
 // Attempts to match "punctuation".  Returns a token if the match is successful
 // and #f otherwise.
 //
@@ -803,7 +834,7 @@ define method try-punctuation (state :: <tokenizer>, position :: <integer>)
   end if;
 end method try-punctuation;
 
-define constant match-comment-end = make-substring-positioner("*/");
+define constant match-comment-end = make-substring-positioner("*/", #t);
 
 // *handle-c++-comments* -- xported variable.
 //

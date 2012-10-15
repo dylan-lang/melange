@@ -85,7 +85,7 @@ begin
   // Translate backslashes to front slashes, because if we try to use
   // backslashes in string literals (esp. inside of a "c-include"
   // statement), it does bad things.
-  let include-env-variable = substring-replace(include-env-variable, "\\\\", "/");
+  let include-env-variable = replace-substrings(include-env-variable, "\\\\", "/");
 
   let include-dirs = split(include-env-variable, ';');
   for (dir in include-dirs)
