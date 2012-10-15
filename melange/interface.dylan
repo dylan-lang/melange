@@ -742,7 +742,7 @@ define method main (program, args)
   let *argp* = make(<command-line-parser>);
   add-option(*argp*,
              make(<flag-option>,
-                  names: #("help")));
+                  names: #("help", "h")));
   add-option(*argp*,
              make(<flag-option>,
                   names: #("version")));
@@ -754,8 +754,7 @@ define method main (program, args)
                   names: #("includes")));
   add-option(*argp*,
              make(<flag-option>,
-                  names: #("verbose"),
-                  short-names: #("v")));
+                  names: #("verbose", "v")));
   add-option(*argp*,
              make(<flag-option>,
                   names: #("headers")));
@@ -767,24 +766,19 @@ define method main (program, args)
                   names: #("c-ffi")));
   add-option(*argp*,
              make(<parameter-option>,
-                  names: #("target"),
-                  short-names: #("T")));
+                  names: #("target", "T")));
   add-option(*argp*,
              make(<parameter-option>,
-                  names: #("module-file"),
-                  short-names: #("m")));
+                  names: #("module-file", "m")));
   add-option(*argp*,
              make(<repeated-parameter-option>,
-                  names: #("includedir"),
-                  short-names: #("I")));
+                  names: #("includedir", "I")));
   add-option(*argp*,
              make(<keyed-option>,
-                  names: #("define"),
-                  short-names: #("D")));
+                  names: #("define", "D")));
   add-option(*argp*,
              make(<repeated-parameter-option>,
-                  names: #("undefine"),
-                  short-names: #("U")));
+                  names: #("undefine", "U")));
   add-option(*argp*,
              make(<repeated-parameter-option>,
                   names: #("framework")));
