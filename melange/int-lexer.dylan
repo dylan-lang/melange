@@ -5,34 +5,34 @@ synopsis: Provides a rough approximation of the lexical conventions of the
           Dylan language, or at least the protions which concern the
           "define interface" form.
 copyright: see below
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
+           This code was produced by the Gwydion Project at Carnegie Mellon
+           University.  If you are interested in using this code, contact
+           "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 //
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -52,13 +52,13 @@ copyright: see below
 // with assorted operations, subclasses, and constants.
 //
 //   <tokenizer>
-//      Given some input source, produces a stream of tokens.  Tokenizers 
+//      Given some input source, produces a stream of tokens.  Tokenizers
 //      maintain local state.  At present this consists of the current
 //      position in the input stream.
 //
 //   Tokenizers support the following operations:
 //     make(<tokenizer>, #key source) -- source may either be a file name or
-//       a stream. 
+//       a stream.
 //     get-token(tokenizer) -- returns the next token
 //     unget-token(tokenizer, token) -- returns a previously "gotten" token
 //       to the beginning of the sequence of available tokens.
@@ -69,7 +69,7 @@ copyright: see below
 //      string which generated the token; and the typed "value" of the token.
 //      There are numerous subclasses of <token> representing specific
 //      reserved words or semantic types (e.g. <semicolon-token> or
-//      <string-literal-token>). 
+//      <string-literal-token>).
 //
 //    All tokens support the following operations:
 //      value(token) -- returns the abstract "value" of the token.  The
@@ -77,7 +77,7 @@ copyright: see below
 //      string-value(token) -- returns the sequence of characters from which
 //        the token's value was derived
 //      generator(token) -- returns the tokenizer which generated the
-//        token. 
+//        token.
 //      parse-error(token, format, args) -- invokes the standard "error" with
 //        file and location information prepended to the format string.
 //======================================================================
@@ -86,7 +86,7 @@ copyright: see below
 // Definitions specific to <tokenizer>s
 //------------------------------------------------------------------------
 
-// The public view of tokenizers is described above.  
+// The public view of tokenizers is described above.
 //
 define primary class <tokenizer> (<object>)
   slot file-name :: false-or(<string>),
@@ -157,8 +157,8 @@ define abstract class <boolean-token> (<literal-token>) end class;
 define macro token-definer
   { define token ?:name :: ?super:expression = ?value:expression }
     => { define class ?name (?super)
-	   inherited slot token-id = ?value;
-	 end class ?name;
+           inherited slot token-id = ?value;
+         end class ?name;
        }
 end macro;
 
@@ -231,7 +231,7 @@ define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
 define sealed generic parse-error
     (token :: <token>, format :: <string>, #rest args)
- => ();				// never returns
+ => ();                                // never returns
 
 // Literal tokens (and those not otherwise modified) evaluate to themselves.
 //
@@ -252,7 +252,7 @@ define class <keyword-token> (<token>) end class;
 //
 define method value (token :: <keyword-token>) => (result :: <symbol>);
   as(<symbol>, copy-sequence(token.string-value,
-			     end: token.string-value.size - 1))
+                             end: token.string-value.size - 1))
 end method value;
 
 // Boolean tokens may be #t or #f.  Figure out which.
@@ -267,7 +267,7 @@ end method value;
 define method value
     (token :: <symbol-literal-token>) => (result :: <symbol>);
   as(<symbol>, copy-sequence(token.string-value,
-			     start: 2, end: token.string-value.size - 1))
+                             start: 2, end: token.string-value.size - 1))
 end method value;
 
 // Integer tokens can be in one of three different radices.  Figure out which
@@ -312,7 +312,7 @@ define method value (token :: <character-token>) => (result :: <character>);
     string[1];
   end if;
 end method value;
-  
+
 // String literals evaluate to strings (without the bracketing quotation
 // marks).  Handling is complicated by the possibility that there will be
 // "character escape"s in the string.
@@ -322,16 +322,16 @@ define method value (token :: <string-literal-token>) => (result :: <string>);
   let new = make(<stretchy-vector>);
 
   local method process-char (position :: <integer>) => ();
-	  let char = string[position];
-	  if (char == '\\')
-	    add!(new, escaped-character(string[position + 1]));
-	    process-char(position + 2);
-	  elseif (char ~= '"')
-	    add!(new, char);
-	    process-char(position + 1);
+          let char = string[position];
+          if (char == '\\')
+            add!(new, escaped-character(string[position + 1]));
+            process-char(position + 2);
+          elseif (char ~= '"')
+            add!(new, char);
+            process-char(position + 1);
           // else we're done, so fall through
-	  end if;
-	end method process-char;
+          end if;
+        end method process-char;
   process-char(1);
   as(<string>, new);
 end method value;
@@ -341,7 +341,7 @@ end method value;
 // used saved character positions to precisely identify the location.
 //
 define method parse-error (token :: <token>, format :: <string>, #rest args)
- => ();	// never returns
+ => ();        // never returns
   let source-string = token.generator.contents;
   let line-num = 1;
   let last-CR = -1;
@@ -355,7 +355,7 @@ define method parse-error (token :: <token>, format :: <string>, #rest args)
 
   let char-num = (token.position | 0) - last-CR;
   apply(error, concatenate("%s:line %d: ", format),
-	token.generator.file-name | "<unknown-file>", line-num, args);
+        token.generator.file-name | "<unknown-file>", line-num, args);
 end method parse-error;
 
 //========================================================================
@@ -376,35 +376,35 @@ end method unget-token;
 
 // Internal error messages generated by the lexer.  We have to go through some
 // messy stuff to get to the "current" file name.
-// 
+//
 define method lex-error (generator :: <tokenizer>, format :: <string>,
-			 #rest args)
- => ();	// never returns
+                         #rest args)
+ => ();        // never returns
   apply(error, concatenate("%s:char %d: ", format),
-	"<unknown-file>", generator.position | -1, args);
+        "<unknown-file>", generator.position | -1, args);
 end method lex-error;
 
 // Each pair of elements in this vector specifies a literal constant
 // corresponding to a C reserved word and the token class it belongs to.
 define constant reserved-words
   = vector("define", <define-token>,
-	   "interface", <interface-token>,
-	   "end", <end-token>,
-	   "#include", <include-token>,
-	   "define:", <define-macro-token>,
-	   "undefine:", <undefine-token>,
-	   "name-mapper:", <name-mapper-token>,
-	   "import:", <import-token>,
-	   "prefix:", <prefix-token>,
-	   "exclude:", <exclude-token>,
-	   "exclude-file:", <exclude-file-token>,
-	   "rename:", <rename-token>,
-	   "map:", <mapping-token>,
-	   "equate:", <equate-token>,
-	   "superclasses:", <superclass-token>,
-	   "all", <all-token>,
-	   "none", <none-token>,
-	   "all-recursive", <all-recursive-token>,
+           "interface", <interface-token>,
+           "end", <end-token>,
+           "#include", <include-token>,
+           "define:", <define-macro-token>,
+           "undefine:", <undefine-token>,
+           "name-mapper:", <name-mapper-token>,
+           "import:", <import-token>,
+           "prefix:", <prefix-token>,
+           "exclude:", <exclude-token>,
+           "exclude-file:", <exclude-file-token>,
+           "rename:", <rename-token>,
+           "map:", <mapping-token>,
+           "equate:", <equate-token>,
+           "superclasses:", <superclass-token>,
+           "all", <all-token>,
+           "none", <none-token>,
+           "all-recursive", <all-recursive-token>,
            "function", <function-token>,
            "map-result:", <map-result-token>,
            "equate-result:", <equate-result-token>,
@@ -414,31 +414,31 @@ define constant reserved-words
            "input-argument:", <input-argument-token>,
            "output-argument:", <output-argument-token>,
            "input-output-argument:", <input-output-argument-token>,
-	   "struct", <struct-token>,
-	   "union", <union-token>,
-	   "pointer", <pointer-token>,
+           "struct", <struct-token>,
+           "union", <union-token>,
+           "pointer", <pointer-token>,
 //          Again, no clue what this is supposed to be.
-//	   "constant", <constant-token>,
-	   "variable", <variable-token>,
-	   "getter:", <getter-token>,
-	   "setter:", <setter-token>,
-	   "read-only:", <read-only-token>,
-	   "seal:", <seal-token>,
-	   "seal-functions:", <seal-functions-token>,
-	   "sealed", <sealed-token>,
-	   "open", <open-token>,
-	   "inline", <inline-token>,
-	   "value:", <value-token>,
-	   "function-type", <function-type-token>,
-	   "callback-maker:", <callback-maker-token>,
-	   "callout-function:", <callout-function-token>,
-	   "#t", <true-token>,
-	   "#f", <false-token>,
-	   ",", <comma-token>,
-	   ";", <semicolon-token>,
-	   "{", <lbrace-token>,
-	   "}", <rbrace-token>,
-	   "=>", <arrow-token>);
+//           "constant", <constant-token>,
+           "variable", <variable-token>,
+           "getter:", <getter-token>,
+           "setter:", <setter-token>,
+           "read-only:", <read-only-token>,
+           "seal:", <seal-token>,
+           "seal-functions:", <seal-functions-token>,
+           "sealed", <sealed-token>,
+           "open", <open-token>,
+           "inline", <inline-token>,
+           "value:", <value-token>,
+           "function-type", <function-type-token>,
+           "callback-maker:", <callback-maker-token>,
+           "callout-function:", <callout-function-token>,
+           "#t", <true-token>,
+           "#f", <false-token>,
+           ",", <comma-token>,
+           ";", <semicolon-token>,
+           "{", <lbrace-token>,
+           "}", <rbrace-token>,
+           "=>", <arrow-token>);
 
 // This table maps reserved words (as "symbol" literals) to the corresponding
 // token class.  It is initialized from the "reserved-words" vector defined
@@ -451,7 +451,7 @@ define constant reserved-word-table =
 //
 for (index from 0 below reserved-words.size by 2)
   reserved-word-table[as(<symbol>, reserved-words[index])]
-    := reserved-words[index + 1]; 
+    := reserved-words[index + 1];
 end for;
 
 // Looks for special classes of tokens and acts appropriately.  This includes
@@ -468,13 +468,13 @@ define method lex-identifier
       lex-error(tokenizer, "Bad keyword.");
     end if;
     make(token-class, position: position, string: string,
-	 generator: tokenizer);
+         generator: tokenizer);
   else
     let default
       = if (string.last == ':') <keyword-token> else <identifier-token> end;
     let token-class = element(reserved-word-table, symbol, default: default);
     make(token-class, position: position, string: string,
-	 generator: tokenizer);
+         generator: tokenizer);
   end if;
 end method lex-identifier;
 
@@ -483,10 +483,10 @@ end method lex-identifier;
 //
 define constant match-ID
   = curry(regex-position, compile-regex("^(#[^xXoO]|[!&*<=>|^$%@_a-zA-Z])("
-			    "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
-			    "|[0-9][-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
-			    "[a-zA-Z][a-zA=Z]"
-			    "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*):?"));
+                            "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
+                            "|[0-9][-!&*<=>|^$%@_+~?/a-zA-Z0-9]*"
+                            "[a-zA-Z][a-zA=Z]"
+                            "[-!&*<=>|^$%@_+~?/a-zA-Z0-9]*):?"));
 
 // Attempts to match "words" (i.e. identifiers or reserved words) or
 // keywords.  Returns a token if the match is successful and #f otherwise.
@@ -503,7 +503,7 @@ define method try-identifier
   else
     state.position := end-index;
     let string-value = copy-sequence(contents,
-				     start: position, end: end-index);
+                                     start: position, end: end-index);
     lex-identifier(state, position, string-value);
   end if;
 end method try-identifier;
@@ -523,7 +523,7 @@ define method try-punctuation (state :: <tokenizer>, position :: <integer>)
   if (start-index ~= #f)
     state.position := end-index;
     let string-value = copy-sequence(contents,
-				     start: position, end: end-index);
+                                     start: position, end: end-index);
     lex-identifier(state, position, string-value);
   end if;
 end method try-punctuation;
@@ -536,8 +536,8 @@ define method is-prefix?
   else
     block (return)
       for (short-char in short,
-	   index from start)
-	if (short-char ~= long[index]) return(#f) end if;
+           index from start)
+        if (short-char ~= long[index]) return(#f) end if;
       end for;
       #t;
     end block;
@@ -556,26 +556,26 @@ define method skip-whitespace (contents :: <string>, position :: <integer>)
   local
     method find-comment-end (index :: <integer>) => (end-index :: <integer>);
       let (first, last, nested?) =
-	match-comment-component(contents, start: index);
+        match-comment-component(contents, start: index);
       if (nested?)
-	find-comment-end(skip-comment(first));
+        find-comment-end(skip-comment(first));
       else
-	last;
+        last;
       end if;
     end method find-comment-end,
     method skip-comment (index :: <integer>) => (end-index :: <integer>);
       // The string literal looks odd, but things that look like comments
       // can really confuse the emacs mode....
       if (is-prefix?("/" "/", contents, start: index))
-	for (j from index + 2 below sz,
-	     until: contents[j] == '\n')
-	finally
-	  j
-	end for;
+        for (j from index + 2 below sz,
+             until: contents[j] == '\n')
+        finally
+          j
+        end for;
       elseif (is-prefix?("/*", contents, start: index))
-	find-comment-end(index + 2);
+        find-comment-end(index + 2);
       else
-	index;
+        index;
       end if;
     end method skip-comment;
   for (i from position below sz,
@@ -600,11 +600,11 @@ end method skip-whitespace;
 //
 define constant match-literal
   = curry(regex-position, compile-regex("^('(\\\\?.)'|"
-			    "(#?\"([^\"]|\\\\\")*\")|"
-			    "(([1-9][0-9]*)|(#[xX][0-9a-fA-F]+)|(#[oO][0-7]*)))"));
+                            "(#?\"([^\"]|\\\\\")*\")|"
+                            "(([1-9][0-9]*)|(#[xX][0-9a-fA-F]+)|(#[oO][0-7]*)))"));
 
 // Returns a <token> object and updates state to reflect the token's
-// consumption. 
+// consumption.
 //
 define method get-token
     (state :: <tokenizer>, #key position: init-position)
@@ -619,15 +619,15 @@ define method get-token
 
     let contents = state.contents;
     local method string-value(start-index, end-index)
-	    copy-sequence(contents, start: start-index, end: end-index);
-	  end method string-value;
+            copy-sequence(contents, start: start-index, end: end-index);
+          end method string-value;
 
     // Get rid of whitespace, whether it be spaces, newlines, or comments
     let pos = skip-whitespace(contents, pos);
     if (pos = contents.size)
       state.position := pos;
       return(make(<eof-token>, position: pos, generator: state,
-		  string: ""));
+                  string: ""));
     end if;
 
     // Do the appropriate matching, and return an <error-token> if we don't
@@ -637,8 +637,8 @@ define method get-token
     if (token?) return(token?) end if;
 
     let (start-index, end-index, dummy1, dummy2, char-start, char-end,
-	 string-start, string-end, string-contents-start, string-contents-end,
-	 int-start, int-end)
+         string-start, string-end, string-contents-start, string-contents-end,
+         int-start, int-end)
       = match-literal(contents, start: pos);
 
     if (start-index)
@@ -646,17 +646,17 @@ define method get-token
       // for that one and build the appropriate token.
       state.position := end-index;
       let token-type = case
-			 char-start =>
-			   <character-token>;
-			 string-start & contents[string-start] == '#' =>
-			   <symbol-literal-token>;
-			 string-start =>
-			   <string-literal-token>;
-			 int-start =>
-			   <integer-token>;
-		       end case;
+                         char-start =>
+                           <character-token>;
+                         string-start & contents[string-start] == '#' =>
+                           <symbol-literal-token>;
+                         string-start =>
+                           <string-literal-token>;
+                         int-start =>
+                           <integer-token>;
+                       end case;
       return(make(token-type, position: pos,
-		  string: string-value(pos, end-index), generator: state));
+                  string: string-value(pos, end-index), generator: state));
     end if;
 
     // None of our searches matched, so we haven't the foggiest what this is.

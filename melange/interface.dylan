@@ -8,25 +8,25 @@ copyright: see below
 // Copyright (c) 1998 - 2004  Gwydion Dylan Maintainers
 // Copyright (c) 2005 - 2012  Dylan Hackers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -65,7 +65,7 @@ define method is-prefix?
   else
     block (return)
       for (short-char in short, index from start)
-	if (short-char ~== long[index]) return(#f) end if;
+        if (short-char ~== long[index]) return(#f) end if;
       end for;
       #t;
     end block;
@@ -91,7 +91,7 @@ end method count-whitespace;
 // the interesting work.
 //
 define method process-interface-file
-    (in-file :: <string>, out-stream :: <stream>, 
+    (in-file :: <string>, out-stream :: <stream>,
      #key verbose, structs, module-stream :: false-or(<stream>),
           defines, undefines) => ();
   let in-stream = make(<file-stream>, locator: in-file);
@@ -103,39 +103,39 @@ define method process-interface-file
   end unless;
   let module-line-end = match-newline(input-string, start: module-line-start);
 
-  let module-line 
-    = module-line-start 
-    & module-line-end 
-    & copy-sequence(input-string, 
-                    start: module-line-start + 8, 
+  let module-line
+    = module-line-start
+    & module-line-end
+    & copy-sequence(input-string,
+                    start: module-line-start + 8,
                     end: module-line-end + 1);
-  
+
   local method try-define (position :: <integer>) => ();
-	  let new-position = match-define(input-string, start: position);
-	  write(out-stream, input-string, start: position,
-		end: new-position | sz);
-	  if (new-position)
-	    let index = new-position + 6;
-	    let space-count = count-whitespace(input-string, index);
-	    if (space-count > 0
-		  & is-prefix?("interface", input-string,
-			       start: index + space-count))
-	      let newer-position
-		= process-define-interface(in-file, input-string,
-					   new-position, out-stream,
-					   verbose: verbose,
+          let new-position = match-define(input-string, start: position);
+          write(out-stream, input-string, start: position,
+                end: new-position | sz);
+          if (new-position)
+            let index = new-position + 6;
+            let space-count = count-whitespace(input-string, index);
+            if (space-count > 0
+                  & is-prefix?("interface", input-string,
+                               start: index + space-count))
+              let newer-position
+                = process-define-interface(in-file, input-string,
+                                           new-position, out-stream,
+                                           verbose: verbose,
                                            module-stream: module-stream,
                                            module-line: module-line,
                                            defines: defines,
                                            undefines: undefines);
-	      if (newer-position < sz) try-define(newer-position) end if;
-	    else
-	      write(out-stream, input-string, start: new-position,
-		    end: index + space-count);
-	      try-define(index + space-count);
-	    end if;
-	  end if;
-	end method try-define;
+              if (newer-position < sz) try-define(newer-position) end if;
+            else
+              write(out-stream, input-string, start: new-position,
+                    end: index + space-count);
+              try-define(index + space-count);
+            end if;
+          end if;
+        end method try-define;
   try-define(0);
   force-output(out-stream);
   if (verbose)
@@ -165,7 +165,7 @@ define generic process-clause
 // Handles the different types of mapping: type renaming, type mapping, and
 // type equation.  "find-decl" should be a function which maps a string into a
 // declaration -- likely this will be a curried call to "parse-type" or
-// "find-slot". 
+// "find-slot".
 //
 define method process-mappings
     (options :: <container-options>, find-decl :: <function>) => ();
@@ -202,7 +202,7 @@ define method process-imports
 
   local method process-imports-aux(decl-sequence :: <sequence>,
                                    import-table :: <table>)
-          for (import in decl-sequence) 
+          for (import in decl-sequence)
             if (instance?(import, <pair>))
               let decl = import.head.find-decl;
               decl & (import-table[decl] := as(<string>, import.tail));
@@ -212,12 +212,11 @@ define method process-imports
             end if;
           end for;
         end method process-imports-aux;
-          
 
   let imports = make(<table>);
   process-imports-aux(options.global-imports, imports);
   let import-all? :: <boolean> = (options.global-import-mode ~== #"none");
-    
+
   let file-imps = make(<string-table>);
   for (imp-sequence keyed-by file in options.file-imports)
     let new-table = (file-imps[file] := make(<table>));
@@ -237,7 +236,7 @@ end method process-imports;
 // Given one or more <container-options>s, merge them all together (with
 // conflicts resolving to the first <container-option> which gives a value for
 // the particular field) and fill in defaults for any unspecified fields.
-// 
+//
 define method merge-container-options
     (first :: <container-options>, #rest rest)
  => (mapper :: <function>, prefix :: <string>, read-only :: <boolean>,
@@ -278,17 +277,17 @@ define method process-clause
     let body = option.tail;
     select (tag)
       #"equate-result" =>
-	equate(decl.find-result, body);
+        equate(decl.find-result, body);
       #"map-result" =>
-	remap(decl.find-result, body);
+        remap(decl.find-result, body);
       #"ignore-result" =>
-	if (body) decl.find-result.ignored? := #t end if;
+        if (body) decl.find-result.ignored? := #t end if;
       #"equate-arg" =>
-	equate(find-parameter(decl, body.head), body.tail);
+        equate(find-parameter(decl, body.head), body.tail);
       #"map-arg" =>
-	remap(find-parameter(decl, body.head), body.tail);
+        remap(find-parameter(decl, body.head), body.tail);
       otherwise =>
-	find-parameter(decl, body).argument-direction := tag;
+        find-parameter(decl, body).argument-direction := tag;
     end select;
   end for;
 end method process-clause;
@@ -337,19 +336,19 @@ define method process-clause
      c-state :: <c-parse-state>)
  => ();
   let decl = parse-type(clause.name, c-state);
-  if (instance?(decl, <typedef-declaration>)) decl := true-type(decl) end if; 
+  if (instance?(decl, <typedef-declaration>)) decl := true-type(decl) end if;
   if (~instance?(decl, <struct-declaration>))
     error("Struct clause names a non-struct: %s", clause.name);
   end if;
 
   let (#rest opts) = merge-container-options(clause.container-options,
-					     state.container-options);
+                                             state.container-options);
   apply(apply-container-options, decl, opts);
 
   let find-decl = protect(curry(find-slot, decl));
   process-mappings(clause.container-options, find-decl);
   let (imports, import-all?) = process-imports(clause.container-options,
-					       find-decl);
+                                               find-decl);
   exclude-slots(decl, imports, import-all?);
   for (option in clause.options)
     let tag = option.head;
@@ -357,13 +356,13 @@ define method process-clause
     select (tag)
       #"superclass" =>
 //  This should be done in the back end instead
-//	let supers
-//	  = if (member?("<statically-typed-pointer>", body, test: \=))
-//	      body
-//	    else
-//	      concatenate(body, #("<statically-typed-pointer>"));
-//	    end if;
-	decl.superclasses := body;
+//        let supers
+//          = if (member?("<statically-typed-pointer>", body, test: \=))
+//              body
+//            else
+//              concatenate(body, #("<statically-typed-pointer>"));
+//            end if;
+        decl.superclasses := body;
     end select;
   end for;
 end method process-clause;
@@ -373,30 +372,30 @@ define method process-clause
      c-state :: <c-parse-state>)
  => ();
   let decl = parse-type(clause.name, c-state);
-  if (instance?(decl, <typedef-declaration>)) decl := true-type(decl) end if; 
+  if (instance?(decl, <typedef-declaration>)) decl := true-type(decl) end if;
   if (~instance?(decl, <union-declaration>))
     error("Union clause names a non-union: %s", clause.name);
   end if;
   let (#rest opts) = merge-container-options(clause.container-options,
-					     state.container-options);
+                                             state.container-options);
   apply(apply-container-options, decl, opts);
 
   let find-decl = protect(curry(find-slot, decl));
   process-mappings(clause.container-options, find-decl);
   let (imports, import-all?) = process-imports(clause.container-options,
-					       find-decl);
+                                               find-decl);
   exclude-slots(decl, imports, import-all?);
   for (option in clause.options)
     let tag = option.head;
     let body = option.tail;
     select (tag)
       #"superclass" =>
-	let supers = if (member?("<statically-typed-pointer>", body))
-		       body
-		     else
-		       concatenate(body, #("<statically-typed-pointer>"));
-		     end if;
-	decl.superclasses := supers;
+        let supers = if (member?("<statically-typed-pointer>", body))
+                       body
+                     else
+                       concatenate(body, #("<statically-typed-pointer>"));
+                     end if;
+        decl.superclasses := supers;
     end select;
   end for;
 end method process-clause;
@@ -406,9 +405,9 @@ define method process-clause
      c-state :: <c-parse-state>)
  => ();
   let decl = parse-type(clause.name, c-state);
-  if (instance?(decl, <pointer-declaration>)) decl := true-type(decl) end if; 
+  if (instance?(decl, <pointer-declaration>)) decl := true-type(decl) end if;
   if (~instance?(decl,
-		 type-union(<pointer-declaration>, <vector-declaration>)))
+                 type-union(<pointer-declaration>, <vector-declaration>)))
     error("Pointer clause names a non-pointer: %s", clause.name);
   end if;
 
@@ -417,19 +416,19 @@ define method process-clause
     let body = option.tail;
     select (tag)
       #"superclass" =>
-	if (instance?(decl, <vector-declaration>))
-	  let supers = concatenate(body, list(decl.pointer-equiv.dylan-name,
-					      "<c-vector>",
-					      "<statically-typed-pointer>"));
-	  decl.superclasses := remove-duplicates!(supers);
-	else
-	  let supers = if (member?("<statically-typed-pointer>", body))
-			 body;
-		       else
-			 concatenate(body, #("<statically-typed-pointer>"));
-		       end if;
-	  decl.superclasses := supers;
-	end if;
+        if (instance?(decl, <vector-declaration>))
+          let supers = concatenate(body, list(decl.pointer-equiv.dylan-name,
+                                              "<c-vector>",
+                                              "<statically-typed-pointer>"));
+          decl.superclasses := remove-duplicates!(supers);
+        else
+          let supers = if (member?("<statically-typed-pointer>", body))
+                         body;
+                       else
+                         concatenate(body, #("<statically-typed-pointer>"));
+                       end if;
+          decl.superclasses := supers;
+        end if;
     end select;
   end for;
 end method process-clause;
@@ -456,18 +455,18 @@ define method process-clause
   decl.local-name-mapper :=
     method (alternate-prefix, name)
       concatenate(alternate-prefix, "-",
-		  mapper(#"function", prefix, name, #()));
+                  mapper(#"function", prefix, name, #()));
     end;
-  
+
   // Process our options.
   for (option in clause.options)
     let tag = option.head;
     let body = option.tail;
     select (tag)
       #"callback-maker" =>
-	decl.callback-maker-name := body;
+        decl.callback-maker-name := body;
       #"callout-function" =>
-	decl.callout-function-name := body;
+        decl.callout-function-name := body;
       otherwise => #f;
     end select;
   end for;
@@ -488,7 +487,7 @@ define variable target-switch :: <symbol> = #"c-ffi";
 // write-declaration for final processing.
 //
 define method process-parse-state
-    (state :: <parse-state>, out-stream :: <stream>, 
+    (state :: <parse-state>, out-stream :: <stream>,
      #key verbose, structs, module-stream :: false-or(<stream>),
      module-line, defines: cmd-defines, undefines: cmd-undefines)
  => ();
@@ -501,7 +500,7 @@ define method process-parse-state
     unless (full-name) error("File not found: %s", name) end;
     full-names[index] := full-name;
   end for;
-  
+
   let defines = make(<string-table>);
   for (i from 0 below $default-defines.size by 2)
     defines[$default-defines[i]] := $default-defines[i + 1];
@@ -540,14 +539,14 @@ define method process-parse-state
   let (imports, import-all?, file-imports)
     = process-imports(state.container-options, find-decl);
   let decls = declaration-closure(c-state, full-names,
-				  state.container-options.excluded-files,
-				  imports,
-				  file-imports,
-				  state.container-options.global-import-mode,
-				  state.container-options.file-import-modes);
+                                  state.container-options.excluded-files,
+                                  imports,
+                                  file-imports,
+                                  state.container-options.global-import-mode,
+                                  state.container-options.file-import-modes);
   let (#rest opts) = merge-container-options(state.container-options);
-  for (decl in decls) 
-    apply(apply-options, decl, opts) 
+  for (decl in decls)
+    apply(apply-options, decl, opts)
   end for;
   let back-end = make-backend-for-target(target-switch, out-stream);
   do(rcurry(write-declaration, back-end), decls);
@@ -559,7 +558,7 @@ end method process-parse-state;
 define method write-module-stream
     (written-name-record :: <written-name-record>, module-stream :: false-or(<stream>),
      module-line :: false-or(<string>)) => ()
-	let names :: <sequence> = all-written-names( written-name-record );
+        let names :: <sequence> = all-written-names( written-name-record );
   if(module-stream & names.size > 0)
     format(module-stream, "module: dylan-user\n\n");
     if(module-line)
@@ -567,15 +566,15 @@ define method write-module-stream
     else
       format(module-stream, "define module foo", module-line)
     end if;
-    format(module-stream, 
+    format(module-stream,
            "  use common-dylan;\n"
            "  use c-ffi;\n"
            "  export");
-		// The names are returned in hash order, so we sort them before writing them
-		names := sort!( names, test: method( a, b ) as(<string>, a) < as(<string>, b) end );
+                // The names are returned in hash order, so we sort them before writing them
+                names := sort!( names, test: method( a, b ) as(<string>, a) < as(<string>, b) end );
     for(separator = "" then ",", name in names)
-			// If a type is created in the module, export it
-	      format(module-stream, concatenate(separator, "\n    %s"), name);
+                        // If a type is created in the module, export it
+              format(module-stream, concatenate(separator, "\n    %s"), name);
         force-output(module-stream);
     end for;
     format(module-stream, ";\nend module;\n");
@@ -595,11 +594,11 @@ define method process-define-interface
      module-line, defines, undefines)
  => (end-position :: <integer>);
   let tokenizer = make(<tokenizer>, source-string: string,
-		       source-file: file-name, start: start);
+                       source-file: file-name, start: start);
   let state = make(<parse-state>, tokenizer: tokenizer);
   // If there is a problem with the parse, it will simply signal an error
   parse(state);
-  process-parse-state(state, out-stream, 
+  process-parse-state(state, out-stream,
                       verbose: verbose,
                       module-stream: module-stream,
                       module-line: module-line,
@@ -663,7 +662,7 @@ define method show-default-defines(stream :: <stream>) => ()
   for (i from 0 below $default-defines.size by 2)
     let name = $default-defines[i];
     let value = $default-defines[i + 1];
-    
+
     if (instance?(value, <string>))
       // Print a simple macro: NAME value
       format(stream,
@@ -742,62 +741,62 @@ define method main (program, args)
   // Describe our arguments and create appropriate parser objects.
   let *argp* = make(<argument-list-parser>);
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("help"));
+                            <simple-option-parser>,
+                            long-options: #("help"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("version"));
+                            <simple-option-parser>,
+                            long-options: #("version"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("defines"));
+                            <simple-option-parser>,
+                            long-options: #("defines"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("includes"));
+                            <simple-option-parser>,
+                            long-options: #("includes"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("verbose"),
-			    short-options: #("v"));
+                            <simple-option-parser>,
+                            long-options: #("verbose"),
+                            short-options: #("v"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("headers"));
+                            <simple-option-parser>,
+                            long-options: #("headers"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("debug"));
+                            <simple-option-parser>,
+                            long-options: #("debug"));
   add-option-parser-by-type(*argp*,
-			    <simple-option-parser>,
-			    long-options: #("c-ffi"));
+                            <simple-option-parser>,
+                            long-options: #("c-ffi"));
   add-option-parser-by-type(*argp*,
-			    <parameter-option-parser>,
-			    long-options: #("target"),
-			    short-options: #("T"));
+                            <parameter-option-parser>,
+                            long-options: #("target"),
+                            short-options: #("T"));
   add-option-parser-by-type(*argp*,
-			    <parameter-option-parser>,
-			    long-options: #("module-file"),
-			    short-options: #("m"));
+                            <parameter-option-parser>,
+                            long-options: #("module-file"),
+                            short-options: #("m"));
   add-option-parser-by-type(*argp*,
-			    <repeated-parameter-option-parser>,
-			    long-options: #("includedir"),
-			    short-options: #("I"));
+                            <repeated-parameter-option-parser>,
+                            long-options: #("includedir"),
+                            short-options: #("I"));
   add-option-parser-by-type(*argp*,
-			    <keyed-option-parser>,
-			    long-options: #("define"),
-			    short-options: #("D"));
+                            <keyed-option-parser>,
+                            long-options: #("define"),
+                            short-options: #("D"));
   add-option-parser-by-type(*argp*,
-			    <repeated-parameter-option-parser>,
-			    long-options: #("undefine"),
-			    short-options: #("U"));
+                            <repeated-parameter-option-parser>,
+                            long-options: #("undefine"),
+                            short-options: #("U"));
   add-option-parser-by-type(*argp*,
-			    <repeated-parameter-option-parser>,
-			    long-options: #("framework"));
+                            <repeated-parameter-option-parser>,
+                            long-options: #("framework"));
   add-option-parser-by-type(*argp*,
                             <simple-option-parser>,
                             long-options: #("no-struct-accessors"));
-  
+
   // Parse our command-line arguments.
   unless (parse-arguments(*argp*, args))
     show-usage-and-exit();
   end unless;
-  
+
   // Handle our informational options.
   if (option-value-by-long-name(*argp*, "defines"))
     show-default-defines(*standard-output*);
@@ -815,7 +814,7 @@ define method main (program, args)
     show-copyright(*standard-output*);
     exit-application(0);
   end if;
-  
+
   // Retrieve our regular options.
   let verbose? = option-value-by-long-name(*argp*, "verbose");
   let headers? = option-value-by-long-name(*argp*, "headers");
@@ -834,7 +833,7 @@ define method main (program, args)
   if (headers?)
     *show-parse-progress-level* := $parse-progress-level-headers;
   end if;
-  
+
   // Handle --verbose; overrides --headers.
   if (verbose?)
     *show-parse-progress-level* := $parse-progress-level-all;
@@ -848,7 +847,7 @@ define method main (program, args)
   // Handle --c-ffi, --debug, -T.
   if (size(choose(identity, list(c-ffi?, debug?, target))) > 1)
     format(*standard-error*,
-	   "melange: only one of --c-ffi, --debug or -T may be specified.\n");
+           "melange: only one of --c-ffi, --debug or -T may be specified.\n");
     show-usage-and-exit();
   end if;
   target-switch :=
@@ -867,7 +866,7 @@ define method main (program, args)
     push(include-path, dir);
   end for;
   push(include-path, "./");
-  
+
   // Handle --framework.
   for (dir in framework-dirs)
     *framework-paths* := add(*framework-paths*, dir);
@@ -883,8 +882,8 @@ define method main (program, args)
     2 =>
       in-file := regular-args[0];
       out-file := make(<file-stream>,
-		       locator: regular-args[1],
-		       direction: #"output");
+                       locator: regular-args[1],
+                       direction: #"output");
     otherwise =>
       show-usage-and-exit();
   end select;
@@ -896,7 +895,7 @@ define method main (program, args)
 
   // Do our real work.
   process-interface-file(in-file, out-file | *standard-output*,
-			 verbose: verbose?,
+                         verbose: verbose?,
                          module-stream: module-stream,
                          defines: defines,
                          undefines: undefines);
