@@ -1,8 +1,5 @@
-
-OPEN_DYLAN_USER_REGISTRIES = $(CURDIR)/registry
-
-PARSERGEN = ~/Open-Dylan/bin/parsergen
-MELANGE = ~/Open-Dylan/bin/melange
+PARSERGEN = _build/bin/parsergen
+MELANGE = _build/bin/melange
 
 .PHONY: parsergen melange check clean all
 
@@ -26,6 +23,7 @@ check: $(MELANGE)
 	@echo "All is well."
 
 clean:
+	rm -rf _build
 	rm -f melange/c-parse.dylan
 	rm -f melange/int-parse.dylan
 

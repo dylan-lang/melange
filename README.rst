@@ -12,11 +12,13 @@ the submodules present.
 
 ::
 
-    export OPEN_DYLAN_USER_REGISTRIES=`pwd`/registry
     dylan-compiler -build parsergen
-    ~/Open-Dylan/bin/parsergen melange-parser/c-parse.input melange-parser/c-parse.dylan
-    ~/Open-Dylan/bin/parsergen melange/int-parse.input melange/int-parse.dylan
+    _build/bin/parsergen melange-parser/c-parse.input melange-parser/c-parse.dylan
+    _build/bin/parsergen melange/int-parse.input melange/int-parse.dylan
     dylan-compiler -build melange
+
+You should be using a pre-release build of Open Dylan 2012.1 from
+October 15, 2012 or later.
 
 Usage
 -----
