@@ -1,4 +1,5 @@
 module: c-declarations
+copyright: See LICENSE file in this distribution.
 
 define class <debug-back-end> (<back-end>)
 end;

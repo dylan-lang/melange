@@ -1,5 +1,5 @@
 module: portability
-copyright: Same as the rest of melange.
+copyright: See LICENSE file in this distribution.
 
 define function add-to-include-path (directories)
   for (dir in directories)

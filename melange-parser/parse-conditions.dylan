@@ -1,7 +1,7 @@
 module: parse-conditions
 author: Eric Kidd <eric.kidd@pobox.com>
 copyright: Copyright 1998 Gwydion Dylan Maintainers
-license: CMU Gwydion Dylan License
+copyright: See LICENSE file in this distribution.
 
 //======================================================================
 //  Parse Conditions
