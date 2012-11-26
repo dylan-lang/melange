@@ -1,4 +1,3 @@
-documented: #t
 module:  int-lexer
 author:  Robert Stockton (rgs@cs.cmu.edu)
 synopsis: Provides a rough approximation of the lexical conventions of the

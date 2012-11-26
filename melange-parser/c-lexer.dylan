@@ -1,4 +1,3 @@
-documented: #t
 module:  c-lexer
 author:  Robert Stockton (rgs@cs.cmu.edu)
 synopsis: Encapsulates the lexical conventions of the C language.  Along with

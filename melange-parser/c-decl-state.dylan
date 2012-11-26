@@ -1,4 +1,3 @@
-documented: #t
 module: c-declarations
 copyright: see below
            This code was produced by the Gwydion Project at Carnegie Mellon

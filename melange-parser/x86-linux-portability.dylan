@@ -1,4 +1,3 @@
-documented: #t
 module: portability
 copyright: see below
 

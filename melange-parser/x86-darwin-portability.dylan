@@ -1,4 +1,3 @@
-documented: #t
 module: portability
 copyright: see below
            This code was produced by the Gwydion Project at Carnegie Mellon

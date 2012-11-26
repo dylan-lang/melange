@@ -1,4 +1,3 @@
-documented: #t
 module: define-interface
 copyright: see below
 

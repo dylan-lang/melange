@@ -1,4 +1,3 @@
-documented: #t
 module: int-parse
 author:  Robert Stockton (rgs@cs.cmu.edu)
 copyright: see below
