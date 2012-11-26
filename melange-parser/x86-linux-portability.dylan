@@ -86,11 +86,12 @@ define constant $default-defines
       "__builtin_va_list", "void*"];
 
 define constant linux-include-directories
-  = #["/usr/include", "/usr/lib/gcc/i686-pc-linux-gnu/4.1.2/include", "/usr/include/linux", "/usr/include/gtk-2.0", "/usr/lib/gtk-2.0/include",  "/usr/include/atk-1.0", "/usr/include/cairo",  "/usr/include/pango-1.0", "/usr/include/glib-2.0",  "/usr/lib/glib-2.0/include"];
+  = #["/usr/local/include",
+      "/usr/include/linux",
+      "/usr/include"];
 
-for (dir in linux-include-directories)
-  push-last(include-path, dir);
-end for;
+add-to-include-path(linux-include-directories);
+add-to-include-path(get-compiler-include-directories("gcc -print-file-name=include"));
 
 
 // These constants should be moved here in the future.  Until the module

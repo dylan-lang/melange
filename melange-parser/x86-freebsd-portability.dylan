@@ -85,11 +85,11 @@ define constant $default-defines
       "unix", "1"];
 
 define constant FreeBSD-include-directories
-  = #["/usr/local/include", "/usr/include"];
+  = #["/usr/local/include",
+      "/usr/include"];
 
-for (dir in FreeBSD-include-directories)
-  push-last(include-path, dir);
-end for;
+add-to-include-path(FreeBSD-include-directories);
+add-to-include-path(get-compiler-include-directories("gcc -print-file-name=include"));
 
 
 // These constants should be moved here in the future.  Until the module

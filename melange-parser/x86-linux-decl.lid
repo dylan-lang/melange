@@ -7,6 +7,7 @@ files: c-exports
        multistring
        c-lexer
        c-lexer-cpp
+       portability-helpers
        x86-linux-portability
        c-parse
        alignment

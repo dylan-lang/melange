@@ -146,8 +146,9 @@ end module c-lexer;
 define module portability
   use dylan;
   use c-lexer, import: {include-path, *handle-c++-comments*, *framework-paths*};
-  use operating-system, import: {environment-variable};  // win32 only
+  use operating-system, import: {with-application-output, environment-variable};  // win32 only
   use common-extensions;
+  use streams;
   use strings;
   export
     $default-defines,

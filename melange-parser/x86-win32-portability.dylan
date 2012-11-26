@@ -88,9 +88,7 @@ begin
   let include-env-variable = replace-substrings(include-env-variable, "\\\\", "/");
 
   let include-dirs = split(include-env-variable, ';');
-  for (dir in include-dirs)
-    push-last(include-path, dir);
-  end for;
+  add-to-include-path(include-dirs);
 end;
 
 

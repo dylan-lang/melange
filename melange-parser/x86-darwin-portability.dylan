@@ -86,9 +86,8 @@ define constant macos-include-directories
   = #["/usr/local/include",
       "/usr/include"];
 
-for (dir in macos-include-directories)
-  push-last(include-path, dir);
-end for;
+add-to-include-path(macos-include-directories);
+add-to-include-path(get-compiler-include-directories("clang -print-file-name=include"));
 
 *framework-paths* := #[ "/System/Library/Frameworks/", "/Library/Frameworks/", "~/Library/Frameworks/" ];
 
