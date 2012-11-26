@@ -1,7 +1,8 @@
-This is a port to Open Dylan of the ``melange`` tool from Gwydion Dylan.
-
 ``melange`` is used to generate C-FFI bindings to libraries with a C API
 by parsing C header files.
+
+``melange`` was originally part of Gwydion Dylan. It has been converted to
+work with Open Dylan and ``c-ffi``.
 
 Build
 -----
