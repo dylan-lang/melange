@@ -480,7 +480,7 @@ define variable target-switch :: <symbol> = #"c-ffi";
 
 // Process-parse-state does all necessary processing for the required
 // "#include" clause and invokes process clause for all other clauses in the
-// interface defintion.
+// interface definition.
 //
 // When all of the clauses have been processed, we end up with a list of
 // annotated declarations.  These are passed, along with out-stream, to

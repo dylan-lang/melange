@@ -2,7 +2,7 @@ documented: #t
 module:  int-lexer
 author:  Robert Stockton (rgs@cs.cmu.edu)
 synopsis: Provides a rough approximation of the lexical conventions of the
-          Dylan language, or at least the protions which concern the
+          Dylan language, or at least the portions which concern the
           "define interface" form.
 copyright: see below
            This code was produced by the Gwydion Project at Carnegie Mellon
