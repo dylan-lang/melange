@@ -838,7 +838,7 @@ define constant match-comment-end = make-substring-positioner("*/", #t);
 
 // *handle-c++-comments* -- xported variable.
 //
-define /* xported */ variable *handle-c++-comments* :: <boolean> = #f;
+define /* xported */ variable *handle-c++-comments* :: <boolean> = #t;
 
 define multistring-checker comment-matcher("/*", "//", "\\\n", "\\\r\n");
 

@@ -94,9 +94,6 @@ begin
 end;
 
 
-*handle-c++-comments* := #t;
-
-
 // These constants should be moved here in the future.  Until the module
 // declarations can be sufficiently rearranged to allow their definition
 // here, they will remain commented out.  -- panda

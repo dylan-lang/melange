@@ -90,8 +90,6 @@ for (dir in macos-include-directories)
   push-last(include-path, dir);
 end for;
 
-*handle-c++-comments* := #t;
-
 *framework-paths* := #[ "/System/Library/Frameworks/", "/Library/Frameworks/", "~/Library/Frameworks/" ];
 
 
