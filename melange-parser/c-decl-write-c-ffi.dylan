@@ -114,7 +114,7 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   for (param in decl.type.parameters)
     unless (instance?(param, <varargs-declaration>))
       format(stream, "  %s parameter %s :: %s;\n",
-             select(param.direction)
+             select (param.direction)
                #"default", #"in" => "input";
                #"out" => "output";
                #"in-out" => "input output";
@@ -189,7 +189,7 @@ end method write-declaration;
 //   #define foo 3
 // will yield
 //   define constant $foo 3
-// and 
+// and
 //   #define bar "char *"
 // might yield
 //   define constant <bar> = <c-string>
@@ -203,25 +203,25 @@ define method write-declaration
   let stream = back-end.stream;
   let raw-value = decl.constant-value;
   let value = select (raw-value by instance?)
-		<declaration> => raw-value.dylan-name;
-		<integer>, <float> => format-to-string("%=", raw-value);
-		<string> => format-to-string("\"%s\"", 
+                <declaration> => raw-value.dylan-name;
+                <integer>, <float> => format-to-string("%=", raw-value);
+                <string> => format-to-string("\"%s\"",
                                              escape-characters(raw-value));
-		<token> => raw-value.string-value;
-		<character> => "1"; // for #define FOO\n, suggested by dauclair
-	      end select;
-  unless(decl.dylan-name = value)
-    unless(register-written-name(back-end.written-names, decl.dylan-name, decl))
+                <token> => raw-value.string-value;
+                <character> => "1"; // for #define FOO\n, suggested by dauclair
+              end select;
+  unless (decl.dylan-name = value)
+    unless (register-written-name(back-end.written-names, decl.dylan-name, decl))
       format(stream, "define constant %s = %s;\n\n", decl.dylan-name, value);
     end unless;
   end unless;
 end method write-declaration;
 
-define method escape-characters(s :: <string>) => (s* :: <string>)
+define method escape-characters (s :: <string>) => (s* :: <string>)
   let new = make(<stretchy-vector>);
 
-  for(char in s)
-    select(char)
+  for (char in s)
+    select (char)
       '\\'      => do(curry(add!, new), "\\\\");
       '"'       => do(curry(add!, new), "\\\"");
       '\n'      => do(curry(add!, new), "\\n\"\n\"");

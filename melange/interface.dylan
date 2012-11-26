@@ -225,7 +225,7 @@ define method process-imports
 
   do(method (name)
        let decl = find-decl(name);
-       if(decl)
+       if (decl)
          exclude-decl(decl);
          imports[decl] := #f;
        end if;
@@ -558,10 +558,10 @@ end method process-parse-state;
 define method write-module-stream
     (written-name-record :: <written-name-record>, module-stream :: false-or(<stream>),
      module-line :: false-or(<string>)) => ()
-        let names :: <sequence> = all-written-names( written-name-record );
-  if(module-stream & names.size > 0)
+  let names :: <sequence> = all-written-names(written-name-record);
+  if (module-stream & names.size > 0)
     format(module-stream, "module: dylan-user\n\n");
-    if(module-line)
+    if (module-line)
       format(module-stream, "define module %s", module-line)
     else
       format(module-stream, "define module foo", module-line)
@@ -571,11 +571,11 @@ define method write-module-stream
            "  use c-ffi;\n"
            "  export");
                 // The names are returned in hash order, so we sort them before writing them
-                names := sort!( names, test: method( a, b ) as(<string>, a) < as(<string>, b) end );
-    for(separator = "" then ",", name in names)
-                        // If a type is created in the module, export it
-              format(module-stream, concatenate(separator, "\n    %s"), name);
-        force-output(module-stream);
+                names := sort!(names, test: method(a, b) as(<string>, a) < as(<string>, b) end);
+    for (separator = "" then ",", name in names)
+      // If a type is created in the module, export it
+      format(module-stream, concatenate(separator, "\n    %s"), name);
+      force-output(module-stream);
     end for;
     format(module-stream, ";\nend module;\n");
     force-output(module-stream);
@@ -616,8 +616,8 @@ end method process-define-interface;
 // except that it returns #f when catching an unhandled condition
 //
 define function protect (f :: <function>) => (f* :: <function>)
-  method(#rest arguments)
-    block()
+  method (#rest arguments)
+    block ()
       apply(f, arguments)
     exception(condition :: <condition>)
       format(*standard-error*, "%s\n", condition);
@@ -632,7 +632,7 @@ end function protect;
 // Built-in help.
 //----------------------------------------------------------------------
 
-define method show-copyright(stream :: <stream>) => ()
+define method show-copyright (stream :: <stream>) => ()
   format(stream, "Melange (OpenDylan)\n");
   format(stream, "Turns C headers into Dylan libraries.\n");
   format(stream, "Copyright 1994-1997 Carnegie Mellon University\n");
@@ -640,7 +640,7 @@ define method show-copyright(stream :: <stream>) => ()
   format(stream, "Copyright 2005-2012 Dylan Hackers\n");
 end method show-copyright;
 
-define method show-usage(stream :: <stream>) => ()
+define method show-usage (stream :: <stream>) => ()
   format(stream,
 "Usage: melange [-v] [--headers]\n"
 "               [--c-ffi|--debug|--Ttarget] [--no-struct-accessors]\n"
@@ -653,12 +653,12 @@ define method show-usage(stream :: <stream>) => ()
 "       melange --version\n");
 end method show-usage;
 
-define method show-usage-and-exit() => ()
+define method show-usage-and-exit () => ()
   show-usage(*standard-error*);
   exit-application(1);
 end method show-usage-and-exit;
 
-define method show-default-defines(stream :: <stream>) => ()
+define method show-default-defines (stream :: <stream>) => ()
   for (i from 0 below $default-defines.size by 2)
     let name = $default-defines[i];
     let value = $default-defines[i + 1];
@@ -680,14 +680,14 @@ define method show-default-defines(stream :: <stream>) => ()
   end for;
 end method show-default-defines;
 
-define method show-default-includes(stream :: <stream>) => ()
+define method show-default-includes (stream :: <stream>) => ()
   for (i from 0 below include-path.size)
     let name = include-path[i];
     format(stream, "%s\n", name);
   end for;
 end method show-default-includes;
 
-define method show-help(stream :: <stream>) => ()
+define method show-help (stream :: <stream>) => ()
   show-copyright(stream);
   format(stream, "\n");
   show-usage(stream);

@@ -9,25 +9,25 @@ copyright: see below
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998 - 2003  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -64,16 +64,16 @@ define /* exported */ constant include-path :: <deque> = make(<deque>);
 
 // *framework-path* -- exported variable
 
-define variable *framework-paths* :: <vector> = make( <vector> );
+define variable *framework-paths* :: <vector> = make(<vector>);
 
 // *frameworks* -- private variable
 // This is the table of (MacOSX/Darwin-style) framework include paths
 // keyed by framework name
 // This is of little interest outside Mac OS X but is here to make the code simpler
 
-define variable *frameworks* :: <table> = make( <table> );
+define variable *frameworks* :: <table> = make(<table>);
 
-define method file-is-header?(path :: <pathname>)
+define method file-is-header? (path :: <pathname>)
  => (header? :: <boolean>)
   let path = as(<file-system-locator>, path);
   path.file-exists? & select(path.file-type)
@@ -85,48 +85,48 @@ end;
 
 // These routines support finding frameworks at run time
 
-define method framework-exists?( path :: <string>, name :: <string> )
-=> ( exists :: <boolean> )
+define method framework-exists? (path :: <string>, name :: <string>)
+=> (exists :: <boolean>)
     let framework-header :: <string> =
-        concatenate( path, name, ".h" );
+        concatenate(path, name, ".h");
     framework-header.file-is-header?;
 end method framework-exists?;
 
-define method find-frameworks( frameworks :: <vector> )
+define method find-frameworks (frameworks :: <vector>)
 => ()
-    for( framework :: <string> in frameworks )
-        find-framework( framework );
+    for (framework :: <string> in frameworks)
+        find-framework(framework);
     end for;
 end method find-frameworks;
 
 define method find-framework
-    ( framework-name :: <string> )
- => ( framework-path :: false-or(<string>) )
-  let framework-key = as( <symbol>, framework-name );
-  
+    (framework-name :: <string>)
+ => (framework-path :: false-or(<string>))
+  let framework-key = as(<symbol>, framework-name);
+
   // First, see if we've already got the framework path cached.
-  element( *frameworks*, framework-key, default: #f )
+  element(*frameworks*, framework-key, default: #f)
     | block (return)
         for (path :: <string> in *framework-paths*)
-          let full-path :: <string> = concatenate( path, framework-name, ".framework" );
-          
+          let full-path :: <string> = concatenate(path, framework-name, ".framework");
+
           // If it has a headers directory
-          let framework-headers-path :: <string> = concatenate( full-path, "/Headers/" );
-          if (framework-exists?( framework-headers-path, framework-name ))
-            *frameworks*[ framework-key ] := framework-headers-path;
-            
+          let framework-headers-path :: <string> = concatenate(full-path, "/Headers/");
+          if (framework-exists?(framework-headers-path, framework-name))
+            *frameworks*[framework-key] := framework-headers-path;
+
             // Add it to the end of the normal include paths as well
             // so non-prefixed includes within framework headers can be found
-            push-last( include-path, framework-headers-path );
-            
+            push-last(include-path, framework-headers-path);
+
             // Guess that it has a frameworks directory and add this
             // It's a little wasteful, but it isolates us from file-system
             // And the path won't be added if we don't find a header
             // Note that this means that parent frameworks must be listed before children
-            let recursive-path :: <string> = concatenate( full-path, "/Frameworks/" );
-            *framework-paths* := add!( *framework-paths*, recursive-path );
+            let recursive-path :: <string> = concatenate(full-path, "/Frameworks/");
+            *framework-paths* := add!(*framework-paths*, recursive-path);
 
-            return( framework-headers-path );
+            return(framework-headers-path);
           end if;
         end for;
       end block;
@@ -151,10 +151,10 @@ define function get-macro-params
   for (token = get-token(state) then get-token(state, expand: expand),
        list = #() then pair(token, list),
        until: (paren-count == 0
-		& instance?(token, type-union(<rparen-token>, <comma-token>))))
+                & instance?(token, type-union(<rparen-token>, <comma-token>))))
     select (token by instance?)
       <eof-token>, <error-token> =>
-	parse-error(state, "Badly formed macro use.");
+        parse-error(state, "Badly formed macro use.");
       <lparen-token> => paren-count := paren-count + 1;
       <rparen-token> => paren-count := paren-count - 1;
       otherwise => #f;
@@ -190,10 +190,10 @@ define constant empty-table = make(<self-organizing-list>);
 // back to front, but this seems not to yield any particular problems on
 // existing header files.  It is, however, possible that some *very* obscure
 // hacks might fail.
-// 
+//
 // Note that the pushed tokens are newly generated copies of the ones in
 // cpp-table.  Thus they will have appropriate location information for error
-// reporting. 
+// reporting.
 //
 // Added forbidden-expansions to prevent recursive macro
 // expansion. [obsolete: This is insufficient by itself; we're also supposed to tag
@@ -215,61 +215,61 @@ define /* exported */ function check-cpp-expansion
      forbidden-expansions = #(),
      current-depth = 0)
  => (result :: <boolean>);
-  let headless-string 
+  let headless-string
     = if (string.first == '#') copy-sequence(string, start: 1) else string end;
   let token-list :: false-or(<sequence>)
     = (element(parameter-table, headless-string, default: #f)
-	 | element(tokenizer.cpp-table, string, default: #f));
+         | element(tokenizer.cpp-table, string, default: #f));
 
   local method expand-inner(token-list :: <sequence>, #key parameters = empty-table)
-  	let forbidden = pair(string, forbidden-expansions);
-	for (token in token-list)
-	  unless (check-cpp-expansion(token.string-value, tokenizer,
-				      parameters: parameters,
-				      current-depth: current-depth + 1,
-				      forbidden-expansions: forbidden))
-	    // Successful call will have already pushed the expanded tokens
-	    let cls = element(reserved-word-table,
-			      token.string-value, default: #f);
-	    if (cls)
-	      let reserved-word-token = make(cls,
-					     position: tokenizer.position,
-					     string: string-value(token),
-					     generator: tokenizer);
-	      push(tokenizer.unget-stack, reserved-word-token);
-	    else
-	      push(tokenizer.unget-stack, copy-token(token, tokenizer));
-	    end if;
-	  end unless;
-	finally
-	  #t;
-	end for;
+          let forbidden = pair(string, forbidden-expansions);
+        for (token in token-list)
+          unless (check-cpp-expansion(token.string-value, tokenizer,
+                                      parameters: parameters,
+                                      current-depth: current-depth + 1,
+                                      forbidden-expansions: forbidden))
+            // Successful call will have already pushed the expanded tokens
+            let cls = element(reserved-word-table,
+                              token.string-value, default: #f);
+            if (cls)
+              let reserved-word-token = make(cls,
+                                             position: tokenizer.position,
+                                             string: string-value(token),
+                                             generator: tokenizer);
+              push(tokenizer.unget-stack, reserved-word-token);
+            else
+              push(tokenizer.unget-stack, copy-token(token, tokenizer));
+            end if;
+          end unless;
+        finally
+          #t;
+        end for;
       end method expand-inner;
 
   case
     current-depth >= $maximum-cpp-expansion-depth =>
       parse-error(tokenizer, "Preprocessor macro expansion of ~s too deep",
-		  string);
+                  string);
     member?(string, forbidden-expansions, test: \=) =>
       #f;
     string.first == '#' =>
       if (string = "##")
-	// Special case for <pound-pound-token>
-	#f;
+        // Special case for <pound-pound-token>
+        #f;
       else
-	if (~token-list)
-	  parse-error(tokenizer, "%s in macro not matched.", string)
-	end if;
+        if (~token-list)
+          parse-error(tokenizer, "%s in macro not matched.", string)
+        end if;
 
-	// Concatenate the parameter's string-values, bracketed by double
-	// quotes so that we get a string literal.  We won't do expansion --
-	// hopefully this won't cause problems in "real" code.
-	let reversed-strings = map(string-value, token-list);
-	let quoted = pair("\"", reverse!(pair("\"", reversed-strings)));
-	push(tokenizer.unget-stack,
-	     make(<string-literal-token>, position: tokenizer.position,
-		  generator: tokenizer, string: apply(concatenate, quoted)));
-	#t;
+        // Concatenate the parameter's string-values, bracketed by double
+        // quotes so that we get a string literal.  We won't do expansion --
+        // hopefully this won't cause problems in "real" code.
+        let reversed-strings = map(string-value, token-list);
+        let quoted = pair("\"", reverse!(pair("\"", reversed-strings)));
+        push(tokenizer.unget-stack,
+             make(<string-literal-token>, position: tokenizer.position,
+                  generator: tokenizer, string: apply(concatenate, quoted)));
+        #t;
       end if;
     ~token-list =>
       #f;
@@ -280,23 +280,23 @@ define /* exported */ function check-cpp-expansion
       // hairy expansion.
       let lparen-token = get-token(tokenizer);
       if (~instance?(lparen-token, <lparen-token>))
-	// Apparently some systems (i.e. VC++) accept non-parenthesized uses
-	// of parameterized macros as ordinary symbols.  Therefore, we'd
-	// better do likewise.
-	push(tokenizer.unget-stack, lparen-token);
-	#f;
+        // Apparently some systems (i.e. VC++) accept non-parenthesized uses
+        // of parameterized macros as ordinary symbols.  Therefore, we'd
+        // better do likewise.
+        push(tokenizer.unget-stack, lparen-token);
+        #f;
       else
-	let params = get-macro-params(tokenizer, #(), expand: forbidden-expansions);
-	let formal-params = token-list.head;
-	if (params.size ~= formal-params.size)
-	  parse-error(tokenizer, "Wrong number of parameters in macro use.")
-	end if;
-	let params-table = make(<self-organizing-list>, test: \=);
-	// Add params to params table, keyed by formal params.
-	for (key in formal-params, value in params)
-	  params-table[key] := value;
-	end for;
-	expand-inner(token-list.tail, parameters: params-table);
+        let params = get-macro-params(tokenizer, #(), expand: forbidden-expansions);
+        let formal-params = token-list.head;
+        if (params.size ~= formal-params.size)
+          parse-error(tokenizer, "Wrong number of parameters in macro use.")
+        end if;
+        let params-table = make(<self-organizing-list>, test: \=);
+        // Add params to params table, keyed by formal params.
+        for (key in formal-params, value in params)
+          params-table[key] := value;
+        end for;
+        expand-inner(token-list.tail, parameters: params-table);
       end if;
     otherwise =>
       // Depends upon the fact that tokens are stored in reverse order in the
@@ -308,22 +308,22 @@ end function check-cpp-expansion;
 // framework-include
 // Check for #include<Framework/Framework.h>
 
-define method framework-include( filename :: <string> )
- => (full-name :: false-or( <string> ))
-  
+define method framework-include (filename :: <string>)
+ => (full-name :: false-or(<string>))
+
   // Break the include down into a framework name and a file name
-  let slash-position :: false-or( <integer> ) = subsequence-position( filename, "/" );
+  let slash-position :: false-or(<integer>) = subsequence-position(filename, "/");
   if (slash-position)
-    let framework-name :: <string> = copy-sequence( filename, end: slash-position );
-    
+    let framework-name :: <string> = copy-sequence(filename, end: slash-position);
+
     // Try to find the framework
-    let framework-path :: false-or( <string> ) = find-framework( framework-name );
-    
+    let framework-path :: false-or(<string>) = find-framework(framework-name);
+
     // If we found it, try to open the file
     if (framework-path)
-      let file-name :: <string> = copy-sequence( filename, start: slash-position + 1 );
-      let full-path :: <string> = concatenate( framework-path, file-name );
-      if(full-path.file-is-header?) full-path else #f end;
+      let file-name :: <string> = copy-sequence(filename, start: slash-position + 1);
+      let full-path :: <string> = concatenate(framework-path, file-name);
+      if (full-path.file-is-header?) full-path else #f end;
     else
       // It may be a nested framework
       // Try to find it
@@ -341,29 +341,29 @@ end method framework-include;
 define /* exported */ function file-in-include-path (name :: <string>,
                                                      #key skip-to)
  => (full-name :: false-or(<string>));
-  
+
   if (first(name) == '/')
-    if(name.file-is-header?) name else #f end;
+    if (name.file-is-header?) name else #f end;
   else
 
     // We don't have any "file-exists" functions, so we just keep trying
     // to open files until one of them fails to signal an error.
     block (return)
       let search-path =
-        if(skip-to)
+        if (skip-to)
           // XXX
         else
           include-path;
         end if;
-        
+
       for (dir in search-path)
         block ()
                 let full-name = concatenate(dir, "/", name);
-                if(full-name.file-is-header?) return(full-name) end;
+                if (full-name.file-is-header?) return(full-name) end;
         end block;
       finally
         // Try looking in the frameworks
-        framework-include( name );
+        framework-include(name);
       end for;
     end block;
   end if;
@@ -377,7 +377,7 @@ define /* exported */ function next-file-in-include-path (state,file-path :: <st
       if (skip = #f)
         block ()
           let full-name = concatenate(dir, "/", file-name);
-          if(full-name.file-is-header?) return(full-name) end;
+          if (full-name.file-is-header?) return(full-name) end;
         end block;
       end if;
       if (skip & dir = file-path) skip := #f end if;
@@ -387,8 +387,8 @@ end function next-file-in-include-path;
 
 // Check for a #include<angles.h> file
 //
-define method angle-include( state, contents, angle-start, angle-end )
- =>( tokenizer :: <tokenizer> )
+define method angle-include (state, contents, angle-start, angle-end)
+ => (tokenizer :: <tokenizer>)
   // We've got a '<>' name, so we need to successively try each of the
   // directories in include-path until we find it.  (Of course, if a
   // full pathname is specified, we just use that.)
@@ -404,19 +404,19 @@ define method angle-include( state, contents, angle-start, angle-end )
   end if;
 end;
 
-define method angle-include-next( state, filename )
- =>( tokenizer :: <tokenizer> )
+define method angle-include-next (state, filename)
+ => (tokenizer :: <tokenizer>)
   let name = copy-sequence(state.file-name);
   if (first(filename) == '/')
-    let (found,match-end,path-start,path-end,filename-start,filename-end) 
+    let (found,match-end,path-start,path-end,filename-start,filename-end)
       = regex-position(compile-regex("^(.*)/([^/]+)"), filename);
     filename := copy-sequence(filename,start: filename-start, end: filename-end);
   end if;
   if (first(name) == '/')
-    let (found,match-end,path-start,path-end,filename-start,filename-end) 
+    let (found,match-end,path-start,path-end,filename-start,filename-end)
       = regex-position(compile-regex("^(.*)/([^/]+)"), state.file-name);
-    if(found)
-      let file-path = copy-sequence(name,start: path-start, end: path-end);      
+    if (found)
+      let file-path = copy-sequence(name,start: path-start, end: path-end);
       let full-name = next-file-in-include-path(state,file-path,filename);
       if (full-name)
         state.include-tokenizer
@@ -435,39 +435,39 @@ end;
 // We could just use angle-include for everything
 // but this maintains the original intent.
 //
-define method quote-include( state, contents, quote-start, quote-end )
-=>( tokenizer :: <tokenizer> )
-    // We've got a '""' name, so we should look in the same directory as
-    // the current ".h" file first.  (Of course, if a full pathname is
-    // specified, we just use that.)
-    let name = copy-sequence(contents, start: quote-start + 1,
-                                end: quote-end - 1);
-    let absolute-name = "";
-    // if (name is not an absolute path) [drive/UNC optional on win32 systems]
-    if (regex-position(compile-regex("((.:)|\\\\)?(\\\\|/)"), name))
-        absolute-name := name;
-    else
-        // Turn the a relative pathname into an absolute pathname by
-        // replacing everything after the last path separator with
-        // the new relative path name.  Honestly, no one remembers
-        // why we want to do this, although "gives more useful error
-        // messages" sounds like a good guess.
+define method quote-include (state, contents, quote-start, quote-end)
+ => (tokenizer :: <tokenizer>)
+  // We've got a '""' name, so we should look in the same directory as
+  // the current ".h" file first.  (Of course, if a full pathname is
+  // specified, we just use that.)
+  let name = copy-sequence(contents, start: quote-start + 1,
+                           end: quote-end - 1);
+  let absolute-name = "";
+  // if (name is not an absolute path) [drive/UNC optional on win32 systems]
+  if (regex-position(compile-regex("((.:)|\\\\)?(\\\\|/)"), name))
+    absolute-name := name;
+  else
+    // Turn a relative pathname into an absolute pathname by
+    // replacing everything after the last path separator with
+    // the new relative path name.  Honestly, no one remembers
+    // why we want to do this, although "gives more useful error
+    // messages" sounds like a good guess.
 
-        // ### If we try to absolutize a relative path with a drive
-        // letter, this will do something horribly wrong.  Then
-        // again, I suspect Melange will have crapped out long
-        // before now if a user tried that.
-        absolute-name := regex-replace(state.file-name,
-                                       compile-regex("[^\\\\/]+$"),
-                                       name);
-    end if;
-    
-    if (absolute-name.file-is-header?)
-        state.include-tokenizer
-          := make(<tokenizer>, name: absolute-name, parent: state);
-    else
-        angle-include( state, contents, quote-start, quote-end );
-    end if;
+    // ### If we try to absolutize a relative path with a drive
+    // letter, this will do something horribly wrong.  Then
+    // again, I suspect Melange will have crapped out long
+    // before now if a user tried that.
+    absolute-name := regex-replace(state.file-name,
+                                   compile-regex("[^\\\\/]+$"),
+                                   name);
+  end if;
+
+  if (absolute-name.file-is-header?)
+    state.include-tokenizer
+      := make(<tokenizer>, name: absolute-name, parent: state);
+  else
+    angle-include(state, contents, quote-start, quote-end);
+  end if;
 end;
 
 // Creates a nested tokenizer corresponding to a new file specified by an
@@ -482,7 +482,7 @@ define method cpp-include (state :: <tokenizer>, pos :: <integer>) => ();
   state.position := match-end;
   let generator
     = if (~found)
-	parse-error(state, "Ill formed #include directive.");
+        parse-error(state, "Ill formed #include directive.");
       elseif (angle-start & angle-end)
         angle-include(state, contents, angle-start, angle-end);
       elseif (quote-start & quote-end)
@@ -495,10 +495,10 @@ define method cpp-include (state :: <tokenizer>, pos :: <integer>) => ();
       end if;
   parse-header-progress-report(generator, ">>> entered header >>>");
   unget-token(generator, make(<begin-include-token>, position: pos,
-			      generator: generator,
-			      string: generator.file-name));
+                              generator: generator,
+                              string: generator.file-name));
 end method cpp-include;
-    
+
 define method cpp-include-next (state :: <tokenizer>, pos :: <integer>) => ();
   let contents :: <string> = state.contents;
   let (found, match-end, angle-start, angle-end, quote-start, quote-end)
@@ -506,11 +506,11 @@ define method cpp-include-next (state :: <tokenizer>, pos :: <integer>) => ();
                      start: pos);
   state.position := match-end;
   let filename = "";
-  if (angle-start & angle-end) 
+  if (angle-start & angle-end)
     filename := copy-sequence(contents,
                               start: angle-start + 1,
                               end: angle-end - 1);
-  elseif(quote-start & quote-end)
+  elseif (quote-start & quote-end)
     filename := copy-sequence(contents,
                               start: quote-start + 1,
                               end: quote-end - 1);
@@ -524,8 +524,8 @@ define method cpp-include-next (state :: <tokenizer>, pos :: <integer>) => ();
 
   parse-header-progress-report(generator, ">>> entered header >>>");
   unget-token(generator, make(<begin-include-token>, position: pos,
-			      generator: generator,
-			      string: generator.file-name));
+                              generator: generator,
+                              string: generator.file-name));
 end method cpp-include-next;
 
 // Processes a preprocessor macro definition.  For "simple" macros, this only
@@ -543,14 +543,14 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
 
   // Simply read the rest of the line and build a reversed list of tokens.
   local method grab-tokens (list :: <list>)
-	  let token = get-token(state, cpp-line: #t);
-	  select (token by instance?)
-	    <eof-token> =>
-	      list;
-	    otherwise =>
-	      grab-tokens(pair(token, list));
-	  end select;
-	end method grab-tokens;
+          let token = get-token(state, cpp-line: #t);
+          select (token by instance?)
+            <eof-token> =>
+              list;
+            otherwise =>
+              grab-tokens(pair(token, list));
+          end select;
+        end method grab-tokens;
 
   if (state.contents[state.position] == '(')
     // Check whether this is a parameterized macro.
@@ -558,18 +558,18 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
     // where whitespace between tokens is significant.
     get-token(state, cpp-line: #t);  // Eat the open paren
     local method grab-params (state :: <tokenizer>, param-list :: <list>)
-	    let name = get-token(state, cpp-line: #t);
-	    if (empty?(param-list) & instance?(name, <rparen-token>))
-	      // Parameter lists may be empty, in which case we won't get an
-	      // identifier here.
-	      param-list;
-	    elseif (instance?(name, <name-token>))
-	      let next-token = get-token(state, cpp-line: #t);
-	      select (next-token by instance?)
-		<comma-token> =>
-		  grab-params(state, pair(name.value, param-list));
-		<rparen-token> =>
-		  pair(name.value, param-list);
+            let name = get-token(state, cpp-line: #t);
+            if (empty?(param-list) & instance?(name, <rparen-token>))
+              // Parameter lists may be empty, in which case we won't get an
+              // identifier here.
+              param-list;
+            elseif (instance?(name, <name-token>))
+              let next-token = get-token(state, cpp-line: #t);
+              select (next-token by instance?)
+                <comma-token> =>
+                  grab-params(state, pair(name.value, param-list));
+                <rparen-token> =>
+                  pair(name.value, param-list);
                 <ellipsis-token> =>
                   unless (instance?(get-token(state, cpp-line: #t),
                                     <rparen-token>))
@@ -577,19 +577,19 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
                                   " ellipsis must be last parameter.");
                   end unless;
                   name.value;
-		otherwise =>
-		  parse-error(state,"Badly formed parameter list in #define.");
-	      end select;            
+                otherwise =>
+                  parse-error(state,"Badly formed parameter list in #define.");
+              end select;
             elseif (instance?(name, <ellipsis-token>))
               unless (instance?(get-token(state, cpp-line: #t), <rparen-token>))
                 parse-error(state, "Badly formed parameter list in #define,"
                                    " ellipsis must be last parameter.");
               end unless;
               "__VA_ARGS__"
-	    else
-	      parse-error(state, "Badly formed parameter list in #define.");
-	    end if;
-	  end method grab-params;
+            else
+              parse-error(state, "Badly formed parameter list in #define.");
+            end if;
+          end method grab-params;
     let params = grab-params(state, #());
     state.cpp-table[name.string-value] := pair(params, grab-tokens(#()));
   else
@@ -615,8 +615,8 @@ end method cpp-define;
 
 //define constant preprocessor-match
 //  = curry(regex-position, compile-regex("^#[ \t]*(define|undef|include|ifdef|ifndef|if"
-//			     "|else|elif|line|endif|error|pragma)\\b",
-//			     case-sensitive: #t));
+//                             "|else|elif|line|endif|error|pragma)\\b",
+//                             case-sensitive: #t));
 define multistring-checker preprocessor-match
   ("define", "undef", "include", "include_next", "ifdef", "ifndef", "if",
    "else", "elif", "line", "endif", "error", "warning", "pragma");
@@ -653,12 +653,12 @@ define method try-cpp
   else
     let start-pos
       = for (i from start-pos + 1 below contents.size,
-	     until: contents[i] ~== ' ' & contents[i] ~== '\t')
-	finally i;
-	end for;
-      
+             until: contents[i] ~== ' ' & contents[i] ~== '\t')
+        finally i;
+        end for;
+
     let (word) = preprocessor-match(contents, start: start-pos);
-    
+
 //    if (found)
     if (word)
       // If an #if killed off a region of code, this routine will quickly skip
@@ -669,39 +669,39 @@ define method try-cpp
       // do-skip, even if their conditions would normally evaluate to true.
       //
       local method do-skip(pos, current-stack) => ();
-	      let i = do-skip-matcher(contents, start: pos);
-	      unless (i)
-		parse-error(state, "Unmatched #if in include file.")
-	      end;
-	      let i = skip-whitespace(contents, i);
-	      if (~try-cpp(state, i))
-		// We may get false matches -- if so, just move on
-		do-skip(i + 1, current-stack);
-	      elseif (current-stack == state.cpp-stack)
-		do-skip(state.position, current-stack);
-	      end if;
-	    end method do-skip;
+              let i = do-skip-matcher(contents, start: pos);
+              unless (i)
+                parse-error(state, "Unmatched #if in include file.")
+              end;
+              let i = skip-whitespace(contents, i);
+              if (~try-cpp(state, i))
+                // We may get false matches -- if so, just move on
+                do-skip(i + 1, current-stack);
+              elseif (current-stack == state.cpp-stack)
+                do-skip(state.position, current-stack);
+              end if;
+            end method do-skip;
 
 //      let word = copy-sequence(contents, start: word-start, end: word-end);
 //      let pos = skip-cpp-whitespace(contents, pos);
       let pos = skip-cpp-whitespace(contents, start-pos + word.size);
       state.position := pos;
       select (word by \=)
-	"define" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
-	    cpp-define(state, pos)
-	  end if;
-	"undef" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
-	    let name = try-identifier(state, pos, expand: #f);
-	    if (~name)
-	      parse-error(state, "Ill formed #undef directive.");
-	    end if;
+        "define" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            cpp-define(state, pos)
+          end if;
+        "undef" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            let name = try-identifier(state, pos, expand: #f);
+            if (~name)
+              parse-error(state, "Ill formed #undef directive.");
+            end if;
             parse-progress-report(name, "undef %=", name.string-value);
-	    remove-key!(state.cpp-table, name.string-value);
-	  end if;
-	"ifdef" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            remove-key!(state.cpp-table, name.string-value);
+          end if;
+        "ifdef" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
             let name = try-identifier(state, pos, expand: #f);
             if (~name)
               parse-error(state, "Ill formed #ifdef directive.");
@@ -722,8 +722,8 @@ define method try-cpp
             do-skip(state.position,
                     state.cpp-stack := pair(#"retry", state.cpp-stack));
           end if;
-	"ifndef" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+        "ifndef" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
             let name = try-identifier(state, pos, expand: #f);
             if (~name)
               parse-error(state, "Ill formed #ifndef directive.");
@@ -744,122 +744,122 @@ define method try-cpp
             do-skip(state.position,
                     state.cpp-stack := pair(#"retry", state.cpp-stack));
           end if;
-	"if" =>
-	  let stack = state.cpp-stack;
-	  if ((empty?(stack) | head(stack) == #"accept")
-		& cpp-parse(state) ~= 0)
+        "if" =>
+          let stack = state.cpp-stack;
+          if ((empty?(stack) | head(stack) == #"accept")
+                & cpp-parse(state) ~= 0)
             parse-progress-report(state, "if -- taking true branch");
-	    state.cpp-stack := pair(#"accept", stack);
-	  else
+            state.cpp-stack := pair(#"accept", stack);
+          else
             parse-progress-report(state, "if -- skipping");
-	    do-skip(pos, state.cpp-stack := pair(#"retry", stack));
-	  end if;
-	"else" =>
-	  let stack = state.cpp-stack;
-	  if (empty?(stack))
-	    parse-error(state, "Mismatched #else.");
-	  else
-	    let rest = tail(stack);
-	    if (head(stack) == #"accept")
+            do-skip(pos, state.cpp-stack := pair(#"retry", stack));
+          end if;
+        "else" =>
+          let stack = state.cpp-stack;
+          if (empty?(stack))
+            parse-error(state, "Mismatched #else.");
+          else
+            let rest = tail(stack);
+            if (head(stack) == #"accept")
               parse-progress-report(state, "else -- skipping");
-	      do-skip(pos, state.cpp-stack := pair(#"done", tail(stack)));
-	    elseif (head(stack) == #"retry"
-		  & (empty?(rest) | head(rest) == #"accept"))
+              do-skip(pos, state.cpp-stack := pair(#"done", tail(stack)));
+            elseif (head(stack) == #"retry"
+                  & (empty?(rest) | head(rest) == #"accept"))
               parse-progress-report(state, "else -- processing");
-	      state.cpp-stack := pair(#"accept", rest);
-	    else
+              state.cpp-stack := pair(#"accept", rest);
+            else
               parse-progress-report(state, "else -- skipping");
-	      do-skip(pos, stack);
-	    end if;
-	  end if;
-	  // For SUN4 headers, kill to end of line
-	  for (i from state.position below contents.size,
-	       until: contents[i] == '\n')
-	  finally
-	    state.position := i;
-	  end for;
-	"elif" =>
-	  let stack = state.cpp-stack;
-	  if (empty?(stack))
-	    parse-error(state, "Mismatched #elif.");
-	  else
-	    let rest = tail(stack); 
-	    if (head(stack) == #"accept")
-	      do-skip(pos, state.cpp-stack := pair(#"done", tail(stack)));
-	    elseif (head(stack) == #"retry"
-		  & (empty?(rest) | head(rest) == #"accept")
-		  & cpp-parse(state) ~= 0)
-	      state.cpp-stack := pair(#"accept", rest);
-	    else 
-	      do-skip(pos, stack);
-	    end if;
-	  end if;
-	  // For SUN4 headers, kill to end of line
-	  for (i from state.position below contents.size,
-	       until: contents[i] == '\n')
-	  finally
-	    state.position := i;
-	  end for;
-	"endif" =>
-	  let old-stack = state.cpp-stack;
-	  if (empty?(old-stack))
-	    parse-error(state, "Unmatched #endif.");
-	  end if;
-	  state.cpp-stack := tail(old-stack);
-	  // For SUN4 headers, kill to end of line
-	  for (i from state.position below contents.size,
-	       until: contents[i] == '\n')
-	  finally
-	    state.position := i;
-	  end for;
-	"error" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+              do-skip(pos, stack);
+            end if;
+          end if;
+          // For SUN4 headers, kill to end of line
+          for (i from state.position below contents.size,
+               until: contents[i] == '\n')
+          finally
+            state.position := i;
+          end for;
+        "elif" =>
+          let stack = state.cpp-stack;
+          if (empty?(stack))
+            parse-error(state, "Mismatched #elif.");
+          else
+            let rest = tail(stack);
+            if (head(stack) == #"accept")
+              do-skip(pos, state.cpp-stack := pair(#"done", tail(stack)));
+            elseif (head(stack) == #"retry"
+                  & (empty?(rest) | head(rest) == #"accept")
+                  & cpp-parse(state) ~= 0)
+              state.cpp-stack := pair(#"accept", rest);
+            else
+              do-skip(pos, stack);
+            end if;
+          end if;
+          // For SUN4 headers, kill to end of line
+          for (i from state.position below contents.size,
+               until: contents[i] == '\n')
+          finally
+            state.position := i;
+          end for;
+        "endif" =>
+          let old-stack = state.cpp-stack;
+          if (empty?(old-stack))
+            parse-error(state, "Unmatched #endif.");
+          end if;
+          state.cpp-stack := tail(old-stack);
+          // For SUN4 headers, kill to end of line
+          for (i from state.position below contents.size,
+               until: contents[i] == '\n')
+          finally
+            state.position := i;
+          end for;
+        "error" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
             for (i from pos below contents.size,
                  until: (contents[i] == '\n' | contents[i] == '\r'))
             finally
               parse-error(state, "Encountered #error directive: %s",
                           copy-sequence(contents, start: pos, end: i));
             end for;
-	  end if;
+          end if;
         "warning" =>
           if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
             for (i from pos below contents.size,
                  until: (contents[i] == '\n' | contents[i] == '\r'))
             finally
               parse-warning(state,
-                            "Warning: %s\n", 
+                            "Warning: %s\n",
                             copy-sequence(contents, start: pos, end: i));
               state.position := i;
             end for;
           end if;
-	"line", "pragma" =>
-	  // Kill to end of line
-	  for (i from pos below contents.size,
+        "line", "pragma" =>
+          // Kill to end of line
+          for (i from pos below contents.size,
                until: (contents[i] == '\n' | contents[i] == '\r'))
-	  finally
-	    state.position := i;
-	  end for;
-	"include" =>
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
-	    cpp-include(state, pos);
-	  end if;
-	"include_next" =>
-	  //signal("Warning: doing the wrong thing with #include_next.");
-	  if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
-	    cpp-include-next(state, pos);
-	  end if;
-	otherwise =>
-	  parse-error(state, "Unhandled preprocessor directive.");
+          finally
+            state.position := i;
+          end for;
+        "include" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            cpp-include(state, pos);
+          end if;
+        "include_next" =>
+          //signal("Warning: doing the wrong thing with #include_next.");
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            cpp-include-next(state, pos);
+          end if;
+        otherwise =>
+          parse-error(state, "Unhandled preprocessor directive.");
       end select;
       #t;
     else
       // Certain compilers might accept additional directives.  As long as
       // they are within failed #ifdefs, we can ignore them.
       if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
-	parse-error(state, "Unknown preprocessor directive starting with %=",
-		    // Take a wild guess at how much context is enough
-		    copy-sequence(contents, start: start-pos, 
-				  end: start-pos + 30));
+        parse-error(state, "Unknown preprocessor directive starting with %=",
+                    // Take a wild guess at how much context is enough
+                    copy-sequence(contents, start: start-pos,
+                                  end: start-pos + 30));
       end if;
       #f;
     end if;

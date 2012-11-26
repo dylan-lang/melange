@@ -4,34 +4,34 @@ synopsis: Encapsulates the lexical conventions of the C language.  Along with
           c-lexer-cpp.dylan, this file also incorporates most of the
           functionality of CPP.
 copyright: see below
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
+           This code was produced by the Gwydion Project at Carnegie Mellon
+           University.  If you are interested in using this code, contact
+           "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 //
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -48,7 +48,7 @@ copyright: see below
 //
 // These routines fill an intermediate niche in string matching.  Regular
 // expressions are very general, but tend to be slow.  String searches are
-// fine but not very versatile.  
+// fine but not very versatile.
 //
 // A multistring positioner simultaneously searches for several target
 // strings, and returns the position of the first match.  It also returns the
@@ -70,15 +70,15 @@ copyright: see below
 define macro multistring-checker-definer
   { define ?inline multistring-checker ?:name (?exprs:*) }
     => { begin
-	   define constant "**" ## ?name ## "-dispatch**"
+           define constant "**" ## ?name ## "-dispatch**"
              :: <simple-object-vector> = compile-multistring(?exprs);
            define ?inline function ?name (big :: <string>,
-					  #key start :: <integer> = 0,
-					  end: big-end :: <integer> = big.size)
-	    => (match :: false-or(<byte-string>));
-	     check-multistring(big, "**" ## ?name ## "-dispatch**",
-			       start, big-end);
-	   end function ?name;
+                                          #key start :: <integer> = 0,
+                                          end: big-end :: <integer> = big.size)
+            => (match :: false-or(<byte-string>));
+             check-multistring(big, "**" ## ?name ## "-dispatch**",
+                               start, big-end);
+           end function ?name;
          end; }
   inline:
     { } => { }
@@ -98,17 +98,17 @@ end macro;
 define macro multistring-positioner-definer
   { define ?inline multistring-positioner ?:name (?exprs:*) }
     => { begin
-	   define constant "**" ## ?name ## "-dispatch**"
+           define constant "**" ## ?name ## "-dispatch**"
              :: <simple-object-vector> = compile-multistring(?exprs);
            define ?inline function ?name (big :: <string>,
-					  #key start :: <integer> = 0,
-					  end: big-end :: <integer> = big.size)
-	    => (position :: false-or(<integer>),
-		match-string :: false-or(<byte-string>));
-	     find-multistring(big, "**" ## ?name ## "-dispatch**", 
-			      start, big-end);
-	   end function ?name;
-	 end; }
+                                          #key start :: <integer> = 0,
+                                          end: big-end :: <integer> = big.size)
+            => (position :: false-or(<integer>),
+                match-string :: false-or(<byte-string>));
+             find-multistring(big, "**" ## ?name ## "-dispatch**",
+                              start, big-end);
+           end function ?name;
+         end; }
   inline:
     { } => { }
     { inline } => { inline }
@@ -121,7 +121,7 @@ end macro;
 define /* exported */ function make-multistring-positioner (#rest patterns)
   let dispatch = apply(compile-multistring, patterns);
   method (big :: <string>,
-	  #key start :: <integer> = 0, end: big-end :: <integer> = big.size)
+          #key start :: <integer> = 0, end: big-end :: <integer> = big.size)
    => (position :: false-or(<integer>), match :: false-or(<byte-string>));
     find-multistring(big, dispatch, start, big-end);
   end method;
@@ -134,7 +134,7 @@ end function make-multistring-positioner;
 define /* exported */ function make-multistring-checker (#rest patterns)
   let dispatch = apply(compile-multistring, patterns);
   method (big :: <string>,
-	  #key start :: <integer> = 0, end: big-end :: <integer> = big.size)
+          #key start :: <integer> = 0, end: big-end :: <integer> = big.size)
    => (match :: false-or(<byte-string>));
     check-multistring(big, dispatch, start, big-end);
   end method;
@@ -162,16 +162,16 @@ define method compile-multistring
       dispatch[index] := pair(pattern, old-list);
     else
       block (done)
-	for (prev = old-list then this,
-	     this = old-list.tail then this.tail,
-	     until: this = #())
-	  if (pattern.size >= this.head.size)
-	    prev.tail := pair(pattern, this);
-	    done();
-	  end if;
-	finally
-	  prev.tail := list(pattern);
-	end for;
+        for (prev = old-list then this,
+             this = old-list.tail then this.tail,
+             until: this = #())
+          if (pattern.size >= this.head.size)
+            prev.tail := pair(pattern, this);
+            done();
+          end if;
+        finally
+          prev.tail := list(pattern);
+        end for;
       end block;
     end if;
   end for;
@@ -190,13 +190,13 @@ define method check-multistring
     if (key >= big-end) return(#f) end if;
     let char = big[key];
     let list :: <list> = element(dispatch, as(<integer>, char),
-				 default: #());
+                                 default: #());
     for (pat :: <byte-string> in list)
       for (pat-index from 1 below pat.size,
-	   big-index from key + 1 below big-end,
-	   while: pat[pat-index] == big[big-index])
-      finally 
-	if (pat-index == pat.size) return(pat) end if;
+           big-index from key + 1 below big-end,
+           while: pat[pat-index] == big[big-index])
+      finally
+        if (pat-index == pat.size) return(pat) end if;
       end for;
     end for;
   end block;

@@ -1,34 +1,34 @@
 documented: #t
 module: c-declarations
 copyright: see below
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
+           This code was produced by the Gwydion Project at Carnegie Mellon
+           University.  If you are interested in using this code, contact
+           "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 //
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -55,7 +55,7 @@ copyright: see below
 
 //----------------------------------------------------------------------
 // <Parse-state> definitions
-// 
+//
 // <Parse-state> encapsulates all information required to parse a file or
 // expression, including the tokenizer, and may also stores the "results" of
 // the parse for later processing.
@@ -86,7 +86,7 @@ end class <parse-state>;
 // keep track of recursive includes, and need not be visible at the higher
 // level.
 //
-define class <parse-file-state> (<parse-state>) 
+define class <parse-file-state> (<parse-state>)
   // Declarations is an ordered list of all declarations made within a single
   // ".h" file.
   slot declarations :: <deque> = make(<deque>);
@@ -104,9 +104,9 @@ define method initialize (value :: <parse-file-state>, #key)
   value.pointers := make(<object-table>);
   value.vectors := make(<my-sequence-table>);
   value.pointers[void-type] := make(<pointer-declaration>, referent: void-type,
-				    dylan-name: "<C-void*>",
-				    equated: #t,
-				    name: "statically-typed-pointer");
+                                    dylan-name: "<C-void*>",
+                                    equated: #t,
+                                    name: "statically-typed-pointer");
   exclude-decl(value.pointers[void-type]);
 end method initialize;
 
@@ -208,91 +208,91 @@ define method process-type-list
  => (result :: <type-declaration>);
   // This is just an ad-hoc state machine.  It could have been incorporated
   // into the grammar, but since it wasn't, we have to sort out the mess by
-  // hand. 
+  // hand.
   let type = unknown-type;
   for (specifier in types)
     type := select (specifier by instance?)
 // We are now using the preprocessor to eliminate these tokens before they
 // ever occur.
-//	      <const-token>,
-//	      <volatile-token> =>
-//		// At present we simply ignore these.
-//		type;
-	      <char-token> =>
-		select (type)
-		  unknown-type, signed-type => char-type;
-		  unsigned-type => unsigned-char-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <char-token>, got %=", type);
-		end select;
-	      <short-token> =>
-		select (type)
-		  unknown-type, signed-type => short-type;
-		  unsigned-type => unsigned-short-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <short-token>, got %=", type);
-		end select;
-	      <long-token> =>
-		// "long long" is an idiom supported by gcc, so we'll
-		// recognize it, without actually supporting access.
-		select (type)
-		  long-type => longlong-type;
-		  unsigned-long-type => unsigned-longlong-type;
-		  unknown-type, signed-type => long-type;
-		  unsigned-type => unsigned-long-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <long-token>, got %=", type);
-		end select;
-	      <int-token> =>
-		select (type)
-		  unknown-type, signed-type => int-type;
-		  unsigned-type => unsigned-int-type;
-		  longlong-type, unsigned-longlong-type,
-		  long-type, unsigned-long-type,
-		  short-type, unsigned-short-type => type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <int-token>, got %=", type);
-		end select;
-	      <signed-token> =>
-		select (type)
-		  unknown-type => signed-type;
-		  long-type => long-type;
-		  char-type => char-type;
-		  short-type => short-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <signed-token>, got %=", type);
-		end select;
-	      <unsigned-token> =>
-		select (type)
-		  unknown-type => unsigned-type;
-		  long-type => unsigned-long-type;
-		  char-type => unsigned-char-type;
-		  short-type => unsigned-short-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <unsigned-token>, got %=", type);
-		end select;
-	      <float-token> =>
-		select (type)
-		  unknown-type => float-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <float-token>, got %=", type);
-		end select;
-	      <double-token> =>
-		select (type)
-		  unknown-type => double-type;
-		  long-type => long-double-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <double-token>, got %=", type);
-		end select;
-	      <void-token> =>
-		select (type)
-		  unknown-type => void-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <void-token>, got %=", type);
-		end select;
-	      <bool-token> =>
-		select (type)
-		  unknown-type => bool-type;
-		  otherwise => parse-error(state, "Bad type specifier, expected <bool-token>, got %=", type);
-		end select;
-	      otherwise =>
-		// user defined types are passed on unmodified
-		select (type)
-		  unknown-type => specifier;
-		  otherwise => parse-error(state, "Bad type specifier for user type, got %=", type);
-		end select;
-	    end select;
+//              <const-token>,
+//              <volatile-token> =>
+//                // At present we simply ignore these.
+//                type;
+              <char-token> =>
+                select (type)
+                  unknown-type, signed-type => char-type;
+                  unsigned-type => unsigned-char-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <char-token>, got %=", type);
+                end select;
+              <short-token> =>
+                select (type)
+                  unknown-type, signed-type => short-type;
+                  unsigned-type => unsigned-short-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <short-token>, got %=", type);
+                end select;
+              <long-token> =>
+                // "long long" is an idiom supported by gcc, so we'll
+                // recognize it, without actually supporting access.
+                select (type)
+                  long-type => longlong-type;
+                  unsigned-long-type => unsigned-longlong-type;
+                  unknown-type, signed-type => long-type;
+                  unsigned-type => unsigned-long-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <long-token>, got %=", type);
+                end select;
+              <int-token> =>
+                select (type)
+                  unknown-type, signed-type => int-type;
+                  unsigned-type => unsigned-int-type;
+                  longlong-type, unsigned-longlong-type,
+                  long-type, unsigned-long-type,
+                  short-type, unsigned-short-type => type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <int-token>, got %=", type);
+                end select;
+              <signed-token> =>
+                select (type)
+                  unknown-type => signed-type;
+                  long-type => long-type;
+                  char-type => char-type;
+                  short-type => short-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <signed-token>, got %=", type);
+                end select;
+              <unsigned-token> =>
+                select (type)
+                  unknown-type => unsigned-type;
+                  long-type => unsigned-long-type;
+                  char-type => unsigned-char-type;
+                  short-type => unsigned-short-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <unsigned-token>, got %=", type);
+                end select;
+              <float-token> =>
+                select (type)
+                  unknown-type => float-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <float-token>, got %=", type);
+                end select;
+              <double-token> =>
+                select (type)
+                  unknown-type => double-type;
+                  long-type => long-double-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <double-token>, got %=", type);
+                end select;
+              <void-token> =>
+                select (type)
+                  unknown-type => void-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <void-token>, got %=", type);
+                end select;
+              <bool-token> =>
+                select (type)
+                  unknown-type => bool-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <bool-token>, got %=", type);
+                end select;
+              otherwise =>
+                // user defined types are passed on unmodified
+                select (type)
+                  unknown-type => specifier;
+                  otherwise => parse-error(state, "Bad type specifier for user type, got %=", type);
+                end select;
+            end select;
   end for;
   select (type)
     unknown-type => parse-error(state, "Bad type specifier (unknown type)");
@@ -303,7 +303,7 @@ define method process-type-list
 end method process-type-list;
 
 // Deals with the odd idiomatic data structures which result from the LALR
-// parser generator.  These might take the form of 
+// parser generator.  These might take the form of
 // #((#"pointer", #"pointer", ...) . name) or
 // #(#"function", args . name) or
 // #(#"vector", length . name)
@@ -312,27 +312,27 @@ end method process-type-list;
 define method process-declarator
     (tp :: <type-declaration>, declarator :: <pair>, state :: <parse-state>)
  => (new-type :: <type-declaration>, name :: <object>);
-  case 
+  case
     (instance?(declarator.head, <list>)) =>
       for (tp = tp
-	     then if (ptr ~= #"pointer")
-		    parse-error(state, "unknown type modifier");
-		  else
-		    pointer-to(tp, state);
-		  end if,
-	   ptr in head(declarator))
+             then if (ptr ~= #"pointer")
+                    parse-error(state, "unknown type modifier");
+                  else
+                    pointer-to(tp, state);
+                  end if,
+           ptr in head(declarator))
       finally
-	process-declarator(tp, tail(declarator), state);
+        process-declarator(tp, tail(declarator), state);
       end for;
     (declarator.head == #"bitfield") =>
       if (instance?(tp.true-type, <integer-type-declaration>))
-	let decl = make(<bitfield-declaration>, bits: second(declarator),
-			base: tp, name: anonymous-name(),
-			dylan-name: "<C-int>");
-	process-declarator(decl, declarator.tail.tail, state);
+        let decl = make(<bitfield-declaration>, bits: second(declarator),
+                        base: tp, name: anonymous-name(),
+                        dylan-name: "<C-int>");
+        process-declarator(decl, declarator.tail.tail, state);
       else
-	parse-error(state, "Bit-fields must be of an integral type.  "
-		      "This is of type %=.", tp);
+        parse-error(state, "Bit-fields must be of an integral type.  "
+                      "This is of type %=.", tp);
       end if;
     (declarator.head == #"vector") =>
       let length = second(declarator);
@@ -353,12 +353,12 @@ define method process-declarator
       // cases.
       let params = second(declarator);
       let real-params = if (params.size == 1 & first(params).type == void-type)
-			  #();
-			else
-			  params;
-			end if;
+                          #();
+                        else
+                          params;
+                        end if;
       for (count from 1,
-	   param in params)
+           param in params)
         if (param.simple-name == "")
           param.dylan-name := format-to-string("arg%d", count);
         end if;
@@ -367,21 +367,21 @@ define method process-declarator
       // Force K&R semantics only (see above).
 //      let nested-type = declarator.tail.tail;
 //      unless (instance?(nested-type, <pair>)
-//		& instance?(nested-type.head, <list>)
-//		& nested-type.head.size == 1
-//		& nested-type.head.head == #"pointer"
-//		& instance?(nested-type.tail, <identifier-token>))
-//	parse-error(state, "function types must be of form 'void (*foo)()'");
+//                & instance?(nested-type.head, <list>)
+//                & nested-type.head.size == 1
+//                & nested-type.head.head == #"pointer"
+//                & instance?(nested-type.tail, <identifier-token>))
+//        parse-error(state, "function types must be of form 'void (*foo)()'");
 //      end unless;
-      
+
 //      let new-name = nested-type.tail;
 //      let new-type = make(<function-type-declaration>,
-//			  name: new-name.value,
+//                          name: new-name.value,
 
       let new-type = make(<function-type-declaration>, name: anonymous-name(),
-			  result: make(<result-declaration>,
-				       name: "result", type: tp),
-			  params: real-params);
+                          result: make(<result-declaration>,
+                                       name: "result", type: tp),
+                          params: real-params);
       // XXX - We used to call process declarator here:
       // Instead, we handle the terminal case ourselves. If anyone
       // figures out ANSI C function pointers, we'll need to re-examine
@@ -405,7 +405,7 @@ define method process-declarator
 end method process-declarator;
 
 // Walks through the "parse tree" for a c declaration and adds the
-// declared names and their types into the state's typedef or object table. 
+// declared names and their types into the state's typedef or object table.
 //
 define method declare-objects
     (state :: <parse-state>, new-type :: <type-declaration>, names :: <list>,
@@ -414,18 +414,18 @@ define method declare-objects
   for (name in names)
     let (new-type, name) = process-declarator(new-type, name, state);
     let (nameloc) = if (instance?(name, <token>))
-			    name;
-			  else
-			    state;
-			  end if;
+                            name;
+                          else
+                            state;
+                          end if;
     if (instance?(name, <typedef-declaration>))
       unless (is-typedef? & new-type == name.type)
-	parse-error(state, "illegal redefinition of typedef.");
+        parse-error(state, "illegal redefinition of typedef.");
       end unless;
     elseif (is-typedef?)
       if (element(state.objects, name.value, default: #f) == #f)
-        state.objects[name.value] 
-          := add-declaration(state, make(<typedef-declaration>, 
+        state.objects[name.value]
+          := add-declaration(state, make(<typedef-declaration>,
                                          name: name.value,
                                          type: new-type));
         parse-progress-report(nameloc, "Processed typedef %s", name.value);
@@ -433,19 +433,19 @@ define method declare-objects
       add-typedef(state.tokenizer, name);
     else
       let decl-type = if (instance?(new-type, <function-type-declaration>))
-			<function-declaration>;
-		      else
-			<variable-declaration>;
-		      end if;
+                        <function-declaration>;
+                      else
+                        <variable-declaration>;
+                      end if;
       // If there multiple copies of the same declaration, we simply
       // use the first.  They are most likely identical anyway.
       // rgs: We should probably (eventually) check that they are identical
       //      rather than assuming it.
       if (element(state.objects, name.value, default: #f) == #f)
-	state.objects[name.value]
-	  := add-declaration(state, make(decl-type, name: name.value,
-					 type: new-type));
-	parse-progress-report(nameloc, "Processed declaration %s", name.value);
+        state.objects[name.value]
+          := add-declaration(state, make(decl-type, name: name.value,
+                                         type: new-type));
+        parse-progress-report(nameloc, "Processed declaration %s", name.value);
       end if;
     end if;
   end for;
@@ -490,44 +490,44 @@ define method declaration-closure
       // symbol.
       decl.declared? := #t;
     end for;
-  end for;    
+  end for;
   let ordered-decls = make(<deque>);
   let recursive-files? = (import-mode == #"all-recursive");
   local method declaration-closure-aux
-	    (decls :: <sequence>, file-import-table :: <table>,
-	     subfiles :: <sequence>) => ();
-	  for (decl in decls)
-	    compute-closure(ordered-decls, decl);
-	    let import = (element(imports, decl, default: #f)
-			    | element(file-import-table, decl, default: #f));
-	    if (instance?(import, <string>)) rename(decl, import) end if;
-	  end for;
-	  for (file in subfiles)
-	    unless (element(files-processed, file, default: #f))
-	      files-processed[file] := file;
-	      let sub = if (recursive-files?)
-			  element(state.recursive-include-table, file,
-				  default: #());
-			else
-			  #();
-			end if;
-	      let decls = if (element(file-import-modes, file, default: #"all")
-				== #"all")
-			    state.recursive-declaration-table[file];
-			  else
-			    element(file-imports, file, default: null-table)
-			      .key-sequence;
-			  end if;
-	      declaration-closure-aux(decls, element(file-imports, file,
-						     default: null-table),
-				      sub);
-	    end unless;
-	  end for;
-	end method declaration-closure-aux;
+            (decls :: <sequence>, file-import-table :: <table>,
+             subfiles :: <sequence>) => ();
+          for (decl in decls)
+            compute-closure(ordered-decls, decl);
+            let import = (element(imports, decl, default: #f)
+                            | element(file-import-table, decl, default: #f));
+            if (instance?(import, <string>)) rename(decl, import) end if;
+          end for;
+          for (file in subfiles)
+            unless (element(files-processed, file, default: #f))
+              files-processed[file] := file;
+              let sub = if (recursive-files?)
+                          element(state.recursive-include-table, file,
+                                  default: #());
+                        else
+                          #();
+                        end if;
+              let decls = if (element(file-import-modes, file, default: #"all")
+                                == #"all")
+                            state.recursive-declaration-table[file];
+                          else
+                            element(file-imports, file, default: null-table)
+                              .key-sequence;
+                          end if;
+              declaration-closure-aux(decls, element(file-imports, file,
+                                                     default: null-table),
+                                      sub);
+            end unless;
+          end for;
+        end method declaration-closure-aux;
 
   let subfiles = if (import-mode == #"none") #() else files end if;
   declaration-closure-aux(key-sequence(imports), null-table, subfiles);
-			  
+
   ordered-decls;
 end method declaration-closure;
 

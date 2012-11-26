@@ -7,25 +7,25 @@ copyright: see below
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -55,7 +55,7 @@ define constant $default-defines
       "__restrict", "",
       "__STDC__", "",
 
-      // The following six declarations should be removed someday, as soon as 
+      // The following six declarations should be removed someday, as soon as
       // we fix a bug in MINDY.
       //"__GNUC__", "2",
       //"__GNUC_MINPR__", "7",
@@ -67,8 +67,8 @@ define constant $default-defines
       // Parameterized macros which remove various GCC extensions from our
       // source code. The last item in the list is the right-hand side of
       // the define; all the items preceding it are named parameters.
-      "__attribute__", #(#("x"), ""), 
-      "__signed__", "", 
+      "__attribute__", #(#("x"), ""),
+      "__signed__", "",
       "__inline__", "",
       "inline", "",
       "__inline", "",
@@ -84,7 +84,7 @@ define constant $default-defines
       "__i386", "",
       "__linux", "",
       "__builtin_va_list", "void*"];
-  
+
 define constant linux-include-directories
   = #["/usr/include", "/usr/lib/gcc/i686-pc-linux-gnu/4.1.2/include", "/usr/include/linux", "/usr/include/gtk-2.0", "/usr/lib/gtk-2.0/include",  "/usr/include/atk-1.0", "/usr/include/cairo",  "/usr/include/pango-1.0", "/usr/include/glib-2.0",  "/usr/lib/glib-2.0/include"];
 

@@ -11,25 +11,25 @@ copyright: see below
 // Copyright (c) 1994, 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998 - 2003  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -43,7 +43,7 @@ copyright: see below
 // with assorted operations, subclasses, and constants.
 //
 //   <tokenizer>
-//      Given some input source, produces a stream of tokens.  Tokenizers 
+//      Given some input source, produces a stream of tokens.  Tokenizers
 //      maintain local state.  At present this consists of the current
 //      position in the input stream and the list of "typedefs" which
 //      have been recognized thus far.  (The latter would be unnecessary
@@ -51,7 +51,7 @@ copyright: see below
 //
 //   Tokenizers support the following operations:
 //     make(<tokenizer>, #key source) -- source may either be a file name or a
-//       stream. 
+//       stream.
 //     get-token(tokenizer) -- returns the next token
 //     unget-token(tokenizer, token) -- returns a previously "gotten" token to
 //       the beginning of the sequence of available tokens.
@@ -68,7 +68,7 @@ copyright: see below
 //      string which generated the token; and the typed "value" of the token.
 //      There are numerous subclasses of <token> representing specific
 //      reserved words or semantic types (e.g. <semicolon-token> or
-//      <string-literal-token>). 
+//      <string-literal-token>).
 //
 //    All tokens support the following operations:
 //      value(token) -- returns the abstract "value" of the token.  The
@@ -76,7 +76,7 @@ copyright: see below
 //      string-value(token) -- returns the sequence of characters from which
 //        the token's value was derived
 //      generator(token) -- returns the tokenizer which generated the
-//        token. 
+//        token.
 //      source-location(token) -- translate a token into a source location,
 //        for use with error reporting.
 //======================================================================
@@ -98,7 +98,7 @@ define /* exported */ primary class <tokenizer> (<object>)
   keyword contents:, init-value: #f, type: false-or(<string>);
   keyword parent:, init-value: #f, type: false-or(<tokenizer>);
   keyword typedefs-from:, init-value: #f,
-	type: false-or(<tokenizer>);
+        type: false-or(<tokenizer>);
   slot file-name :: <string> = "<unknown-file>";
   slot contents :: <long-byte-string> = make(<long-byte-string>);
   slot position :: <integer> = 0;
@@ -175,8 +175,8 @@ end class;
 define macro token-definer
   { define token ?:name :: ?super:expression = ?value:expression }
     => { define class ?name (?super)
-	   inherited slot token-id = ?value;
-	 end class ?name;
+           inherited slot token-id = ?value;
+         end class ?name;
        }
 end macro;
 
@@ -205,7 +205,7 @@ define /* exported */ token <float-token> :: <type-specifier-token> = 18;
 define /* exported */ token <double-token> :: <type-specifier-token> = 19;
 // "const" and "volatile" will be preprocessed away by the cpp code.  They
 // were being used in too many different odd places by various different
-// compilers.  
+// compilers.
 //
 // define class <const-token> (<reserved-word-token>) end class;
 // define class <volatile-token> (<reserved-word-token>) end class;
@@ -400,22 +400,22 @@ define method value
           if (char == '\\')
             result := ash(result, 8)
               + as(<integer>, escaped-character(string[position + 1]));
-            if(string[position + 2] ~== '\'')
+            if (string[position + 2] ~== '\'')
               multi? := #t;
               process-char(position + 2);
             end if;
           else
             result := ash(result, 8) + as(<integer>, char);
-            if(string[position + 1] ~== '\'')
+            if (string[position + 1] ~== '\'')
               multi? := #t;
               process-char(position + 1);
             end if;
           end if;
         end method;
   process-char(1);
-  if(multi?) result else as(<character>, result) end;
+  if (multi?) result else as(<character>, result) end;
 end method value;
-  
+
 // String literals evaluate to strings (without the bracketing quotation
 // marks).  Handling is complicated by the possibility that there will be
 // "character escape"s in the string.
@@ -425,16 +425,16 @@ define method value (token :: <string-literal-token>) => (result :: <string>);
   let new = make(<stretchy-vector>);
 
   local method process-char (position :: <integer>) => ();
-	  let char = string[position];
-	  if (char == '\\')
-	    add!(new, escaped-character(string[position + 1]));
-	    process-char(position + 2);
-	  elseif (char ~= '"')
-	    add!(new, char);
-	    process-char(position + 1);
+          let char = string[position];
+          if (char == '\\')
+            add!(new, escaped-character(string[position + 1]));
+            process-char(position + 2);
+          elseif (char ~= '"')
+            add!(new, char);
+            process-char(position + 1);
           // else we're done, so fall through
-	  end if;
-	end method process-char;
+          end if;
+        end method process-char;
   process-char(1);
   as(<string>, new);
 end method value;
@@ -490,7 +490,7 @@ define constant <long-byte-string> = <byte-string>;
 // "source", but this may be either a file name or a stream.  The "name:"
 // keyword can override the file name for the purposes of error reporting.
 // We also accept an optional set of preprocessor definitions (and
-// un-definitions.) 
+// un-definitions.)
 //
 // If "parent:" is specified then we inherit context sensitivities (i.e.
 // typedefs and #defines) from the parent tokenizer.  Note that changes made
@@ -499,10 +499,10 @@ define constant <long-byte-string> = <byte-string>;
 // table.
 //
 define method initialize (value :: <tokenizer>,
-			  #key name :: false-or(<string>),
-			       contents: stuff :: false-or(<string>),
-			       parent, typedefs-from, 
-			       defines :: false-or(<table>))
+                          #key name :: false-or(<string>),
+                               contents: stuff :: false-or(<string>),
+                               parent, typedefs-from,
+                               defines :: false-or(<table>))
   // We just read the entire file into a string for the tokenizer to use.
   // This simplifies things since we can use regex searches to find things,
   // even across line boundaries.
@@ -513,11 +513,11 @@ define method initialize (value :: <tokenizer>,
   else
     let source-stream :: <stream>
       = make(<file-stream>, locator: as(<byte-string>, name),
-	     direction: #"input");
+             direction: #"input");
     let components = make(<stretchy-vector>);
     block ()
       while (#t)
-	add!(components, read(source-stream, $long-string-component-size));
+        add!(components, read(source-stream, $long-string-component-size));
       end;
     exception (err :: <incomplete-read-error>)
       add!(components, err.stream-error-sequence);
@@ -535,32 +535,32 @@ define method initialize (value :: <tokenizer>,
   else
     value.cpp-table := make(<string-table>);
     value.typedefs := if (typedefs-from)
-			typedefs-from.typedefs;
-		      else
-			make(<string-table>);
-		      end if;
+                        typedefs-from.typedefs;
+                      else
+                        make(<string-table>);
+                      end if;
     value.cpp-decls := make(<deque>);
   end if;
 
   local method parse-define-rhs(cpp-value)
-	  if (cpp-value.empty?)
-	    // Work around bug/misfeature in streams
-	    #();
-	  else
-	    let sub-tokenizer
-	      = make(<tokenizer>, contents: cpp-value);
-	    for (list = #() then pair(token, list),
-		 token = get-token(sub-tokenizer, expand: #f)
-		   then get-token(sub-tokenizer, expand: #f),
-		 until: instance?(token, <eof-token>))
-	      if (instance?(token, <error-token>))
-		parse-error(value, "Error in cpp defines");
-	      end if;
-	    finally
-	      list;
-	    end for;
-	  end if;
-	end method parse-define-rhs;
+          if (cpp-value.empty?)
+            // Work around bug/misfeature in streams
+            #();
+          else
+            let sub-tokenizer
+              = make(<tokenizer>, contents: cpp-value);
+            for (list = #() then pair(token, list),
+                 token = get-token(sub-tokenizer, expand: #f)
+                   then get-token(sub-tokenizer, expand: #f),
+                 until: instance?(token, <eof-token>))
+              if (instance?(token, <error-token>))
+                parse-error(value, "Error in cpp defines");
+              end if;
+            finally
+              list;
+            end for;
+          end if;
+        end method parse-define-rhs;
 
   if (defines)
     // We must be able to initialize the cpp-table with user supplied
@@ -572,24 +572,24 @@ define method initialize (value :: <tokenizer>,
       parse-progress-report(value, "Initialize tokenizer defining %= = %=",
                             key,
                             cpp-value);
-      value.cpp-table[key] := 
-	select (cpp-value by instance?)
-	  <integer> =>
-	    list(make(<integer-token>,
-		      string: cpp-value.integer-to-string,
-		      generator: value));
-	  <string> =>
-	    parse-define-rhs(cpp-value);
-	  <list> =>
-	    pair(map(method (param)
-		       let tokenizer = make(<tokenizer>, contents: param);
-		       get-token(tokenizer, expand: #f);
-		       // XXX - Should check for end of stream, but this
-		       // data came from foo-portability.dylan.
-		     end,
-		     head(cpp-value)),
-		 parse-define-rhs(head(tail(cpp-value))));
-	end select;
+      value.cpp-table[key] :=
+        select (cpp-value by instance?)
+          <integer> =>
+            list(make(<integer-token>,
+                      string: cpp-value.integer-to-string,
+                      generator: value));
+          <string> =>
+            parse-define-rhs(cpp-value);
+          <list> =>
+            pair(map(method (param)
+                       let tokenizer = make(<tokenizer>, contents: param);
+                       get-token(tokenizer, expand: #f);
+                       // XXX - Should check for end of stream, but this
+                       // data came from foo-portability.dylan.
+                     end,
+                     head(cpp-value)),
+                 parse-define-rhs(head(tail(cpp-value))));
+        end select;
     end for;
   end if;
 end method initialize;
@@ -630,28 +630,28 @@ end method add-typedef;
 
 // Internal error messages generated by the lexer.  We have to go through some
 // messy stuff to get to the "current" file name.
-// 
+//
 define method source-location (tokenizer :: <tokenizer>)
  => (srcloc :: <source-location>)
   for (gen = tokenizer then gen.include-tokenizer,
        while: gen.include-tokenizer)
-  finally 
+  finally
     let source-string = gen.contents;
     let line-num = 1;
     let last-CR = -1;
-    
+
     for (i from 0 below gen.position | 0)
       if (source-string[i] == '\n')
-	line-num := line-num + 1;
-	last-CR := i;
+        line-num := line-num + 1;
+        last-CR := i;
       end if;
     end for;
 
     let char-num = (gen.position | 0) - last-CR;
     make(<file-source-location>,
-	 file: gen.file-name,
-	 line: line-num,
-	 line-position: char-num);
+         file: gen.file-name,
+         line: line-num,
+         line-position: char-num);
   end for;
 end method;
 
@@ -659,78 +659,78 @@ end method;
 // corresponding to a C reserved word and the token class it belongs to.
 define constant reserved-words
   = vector("struct", <struct-token>,
-	   "typedef", <typedef-token>,
-	   "short", <short-token>,
-	   "long", <long-token>,
-	   "int", <int-token>,
-	   "char", <char-token>,
-	   "signed", <signed-token>,
-	   "unsigned", <unsigned-token>,
-	   "float", <float-token>,
-	   "double", <double-token>,
-//	   "const", <const-token>,
-//	   "volatile", <volatile-token>,
-	   "void", <void-token>,
-	   "inline", <inline-token>,
-	   "__inline__", <inline-token>,
-	   "__inline", <inline-token>,
-	   "extern", <extern-token>,
-	   "static", <static-token>,
-	   "auto", <auto-token>,
-	   "register", <register-token>,
-	   "union", <union-token>,
-	   "enum", <enum-token>,
-	   "...", <ellipsis-token>,
-	   "sizeof", <sizeof-token>,
+           "typedef", <typedef-token>,
+           "short", <short-token>,
+           "long", <long-token>,
+           "int", <int-token>,
+           "char", <char-token>,
+           "signed", <signed-token>,
+           "unsigned", <unsigned-token>,
+           "float", <float-token>,
+           "double", <double-token>,
+//           "const", <const-token>,
+//           "volatile", <volatile-token>,
+           "void", <void-token>,
+           "inline", <inline-token>,
+           "__inline__", <inline-token>,
+           "__inline", <inline-token>,
+           "extern", <extern-token>,
+           "static", <static-token>,
+           "auto", <auto-token>,
+           "register", <register-token>,
+           "union", <union-token>,
+           "enum", <enum-token>,
+           "...", <ellipsis-token>,
+           "sizeof", <sizeof-token>,
 //         There's no C dialect where "constant" is a reserved word...
-//	   "constant", <constant-token>,
-	   "#machine", <machine-token>,
-	   "--", <dec-op-token>,
-	   "++", <inc-op-token>,
-	   "->", <ptr-op-token>,
-	   "*=", <mul-assign-token>,
-	   "/=", <div-assign-token>,
-	   "%=", <mod-assign-token>,
-	   "+=", <add-assign-token>,
-	   "-=", <sub-assign-token>,
-	   "<<=", <left-assign-token>,
-	   ">>=", <right-assign-token>,
-	   "&=", <and-assign-token>,
-	   "^=", <xor-assign-token>,
-	   "|=", <or-assign-token>,
-	   ">=", <ge-op-token>,
-	   "<=", <le-op-token>,
-	   "!=", <ne-op-token>,
-	   "&&", <and-op-token>,
-	   "||", <or-op-token>,
-	   "##", <pound-pound-token>,
-	   ";", <semicolon-token>,
-	   ",", <comma-token>,
-	   ".", <dot-token>,
-	   "*", <star-token>,
-	   "%", <percent-token>,
-	   "+", <plus-token>,
-	   "-", <minus-token>,
-	   "~", <tilde-token>,
-	   "!", <bang-token>,
-	   "/", <slash-token>,
-	   "<", <lt-token>,
-	   ">", <gt-token>,
-	   "^", <carat-token>,
-	   "|", <bar-token>,
-	   "&", <ampersand-token>,
-	   "?", <question-token>,
-	   ":", <colon-token>,
-	   "=", <assign-token>,
-	   "==", <eq-op-token>,
-	   "<<", <left-op-token>,
-	   ">>", <right-op-token>,
-	   "{", <lcurly-token>,
-	   "}", <rcurly-token>,
-	   "[", <lbracket-token>,
-	   "]", <rbracket-token>,
-	   "(", <lparen-token>,
-	   ")", <rparen-token>,
+//           "constant", <constant-token>,
+           "#machine", <machine-token>,
+           "--", <dec-op-token>,
+           "++", <inc-op-token>,
+           "->", <ptr-op-token>,
+           "*=", <mul-assign-token>,
+           "/=", <div-assign-token>,
+           "%=", <mod-assign-token>,
+           "+=", <add-assign-token>,
+           "-=", <sub-assign-token>,
+           "<<=", <left-assign-token>,
+           ">>=", <right-assign-token>,
+           "&=", <and-assign-token>,
+           "^=", <xor-assign-token>,
+           "|=", <or-assign-token>,
+           ">=", <ge-op-token>,
+           "<=", <le-op-token>,
+           "!=", <ne-op-token>,
+           "&&", <and-op-token>,
+           "||", <or-op-token>,
+           "##", <pound-pound-token>,
+           ";", <semicolon-token>,
+           ",", <comma-token>,
+           ".", <dot-token>,
+           "*", <star-token>,
+           "%", <percent-token>,
+           "+", <plus-token>,
+           "-", <minus-token>,
+           "~", <tilde-token>,
+           "!", <bang-token>,
+           "/", <slash-token>,
+           "<", <lt-token>,
+           ">", <gt-token>,
+           "^", <carat-token>,
+           "|", <bar-token>,
+           "&", <ampersand-token>,
+           "?", <question-token>,
+           ":", <colon-token>,
+           "=", <assign-token>,
+           "==", <eq-op-token>,
+           "<<", <left-op-token>,
+           ">>", <right-op-token>,
+           "{", <lcurly-token>,
+           "}", <rcurly-token>,
+           "[", <lbracket-token>,
+           "]", <rbracket-token>,
+           "(", <lparen-token>,
+           ")", <rparen-token>,
      "_Bool", <bool-token>);
 
 // This table maps reserved words (as "symbol" literals) to the corresponding
@@ -757,25 +757,25 @@ define function lex-identifier
  => (token :: <token>);
   case
     expand & check-cpp-expansion(string, tokenizer,
-				 forbidden-expansions: if (instance?(expand, <boolean>))
-							 #()
-						       else
-							 expand
-						       end if)
-	=> get-token(tokenizer);
+                                 forbidden-expansions: if (instance?(expand, <boolean>))
+                                                         #()
+                                                       else
+                                                         expand
+                                                       end if)
+        => get-token(tokenizer);
 
     element(tokenizer.typedefs, string, default: #f) =>
       make(<type-name-token>, string: string, position: position,
-	   generator: tokenizer);
+           generator: tokenizer);
 
     otherwise =>
       let default
-	= if (string.first == '#') <cpp-token> else <identifier-token> end if;
-      let cls = if(~cpp-line)
-		  element(reserved-word-table, string, default: default);
-		else
-		  default;
-		end if;
+        = if (string.first == '#') <cpp-token> else <identifier-token> end if;
+      let cls = if (~cpp-line)
+                  element(reserved-word-table, string, default: default);
+                else
+                  default;
+                end if;
       make(cls, position: position, string: string, generator: tokenizer);
   end case;
 end function lex-identifier;
@@ -791,11 +791,11 @@ define function try-identifier
   let pos = if (contents[position] == '#') position + 1 else position end if;
   if (alphabetic?(contents[pos]) | contents[pos] == '_')
     for (index from pos + 1 below contents.size,
-	 until: ~alphanumeric?(contents[index]) & contents[index] ~= '_')
+         until: ~alphanumeric?(contents[index]) & contents[index] ~= '_')
     finally
       state.position := index;
       let string-value = copy-sequence(contents,
-				       start: position, end: index);
+                                       start: position, end: index);
       lex-identifier(state, position, string-value, expand: expand, cpp-line: cpp-line);
     end for;
   end if;
@@ -803,7 +803,7 @@ end function try-identifier;
 
 define multistring-checker match-punctuation
   ("-=", "*=", "/=", "%=", "+=", "<=", ">=", "&=", "^=", "|=", "==", "!=",
-   "++", "--", "->", "...", ">>", ">>=", "<<", "<<=", "||", "&&", "##", 
+   "++", "--", "->", "...", ">>", ">>=", "<<", "<<=", "||", "&&", "##",
    ";", ",", "(", ")", ".", "&", "*", "+", "~", "!", "/", "%", "<", ">", "^",
    "|", "?", ":", "=", "{", "}", "-", "[", "]");
 
@@ -850,38 +850,38 @@ define method skip-whitespace
   let sz = contents.size;
 
   local method skip-comments (index :: <integer>)
-	 => end-index :: false-or(<integer>);
-	  for (i from index,
-	       until: (i >= sz | ~whitespace?(contents[i])))
-	  finally
-	    select (comment-matcher(contents, start: i) by \=)
-	      "/*" =>
-		let end-index = match-comment-end(contents, start: i + 2);
-		if (~end-index)
-		  error("Incomplete comment in C header file.");
-		end if;
-		skip-comments(end-index + 2);
-	      "//" =>
-                if (*handle-c++-comments*)
-  	          while (i < sz & contents[i] ~== '\n')
-		    i := i + 1;
-		  end while;
-  	          // i points at the newline if it ain't eof, but we need
-	          // to recurse anyway to handle multiple // comments in a
-	          // row, and that'll handle whitespace.
-	          skip-comments(i);
-		else
-		  i;
+         => end-index :: false-or(<integer>);
+          for (i from index,
+               until: (i >= sz | ~whitespace?(contents[i])))
+          finally
+            select (comment-matcher(contents, start: i) by \=)
+              "/*" =>
+                let end-index = match-comment-end(contents, start: i + 2);
+                if (~end-index)
+                  error("Incomplete comment in C header file.");
                 end if;
-	      "\\\n" =>
-		skip-comments(i + 2);
-	      "\\\r\n" =>
-		skip-comments(i + 3);
-	      otherwise => 
-	        i;
-	    end select;
-	  end for;
-	end method skip-comments;
+                skip-comments(end-index + 2);
+              "//" =>
+                if (*handle-c++-comments*)
+                  while (i < sz & contents[i] ~== '\n')
+                    i := i + 1;
+                  end while;
+                  // i points at the newline if it ain't eof, but we need
+                  // to recurse anyway to handle multiple // comments in a
+                  // row, and that'll handle whitespace.
+                  skip-comments(i);
+                else
+                  i;
+                end if;
+              "\\\n" =>
+                skip-comments(i + 2);
+              "\\\r\n" =>
+                skip-comments(i + 3);
+              otherwise =>
+                i;
+            end select;
+          end for;
+        end method skip-comments;
   skip-comments(position);
 end method skip-whitespace;
 
@@ -894,35 +894,35 @@ define method skip-cpp-whitespace
   let sz = contents.size;
 
   local method skip-comments (index :: <integer>)
-	 => end-index :: false-or(<integer>);
-	  for (i from index,
-	       until: (i >= sz 
-			 | ~(whitespace?(contents[i]) & contents[i] ~== '\n')))
-	  finally
-	    select (comment-matcher(contents, start: i) by \=)
-	      "/*" =>
-		let end-index = match-comment-end(contents, start: i + 2);
-		if (~end-index)
-		  error("Incomplete comment in C header file.");
-		end if;
-		skip-comments(end-index + 2);
-	      "//" =>
+         => end-index :: false-or(<integer>);
+          for (i from index,
+               until: (i >= sz
+                         | ~(whitespace?(contents[i]) & contents[i] ~== '\n')))
+          finally
+            select (comment-matcher(contents, start: i) by \=)
+              "/*" =>
+                let end-index = match-comment-end(contents, start: i + 2);
+                if (~end-index)
+                  error("Incomplete comment in C header file.");
+                end if;
+                skip-comments(end-index + 2);
+              "//" =>
                 if (*handle-c++-comments*)
-		  while (i < sz & contents[i] ~== '\n')
-		    i := i + 1;
-		  end while;
-	          // i points at the newline now.
-		end if;
-	        i;
-	      "\\\n" =>
-		skip-comments(i + 2);
-	      "\\\r\n" =>
-		skip-comments(i + 3);
-	      otherwise =>
-		i;
-  	    end select;
-	  end for;
-	end method skip-comments;
+                  while (i < sz & contents[i] ~== '\n')
+                    i := i + 1;
+                  end while;
+                  // i points at the newline now.
+                end if;
+                i;
+              "\\\n" =>
+                skip-comments(i + 2);
+              "\\\r\n" =>
+                skip-comments(i + 3);
+              otherwise =>
+                i;
+              end select;
+          end for;
+        end method skip-comments;
   skip-comments(position);
 end method skip-cpp-whitespace;
 
@@ -935,21 +935,21 @@ end method skip-cpp-whitespace;
 //
 define constant match-literal
   = curry(regex-position, compile-regex("^('(([^\\\\']|\\\\.)*)'|"
-			    "\"(([^\\\\\"]|\\\\.)*)\"|"
-			    "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*))",
-			  case-sensitive: #t));
+                            "\"(([^\\\\\"]|\\\\.)*)\"|"
+                            "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*))",
+                          case-sensitive: #t));
 
 // get-token -- exported function.
 //
 // Returns a <token> object and updates state to reflect the token's
-// consumption. 
+// consumption.
 //
 define /* exported */ method get-token
     (state :: <tokenizer>,
      #key cpp-line, position: init-position, expand = ~cpp-line)
  => (token :: <token>);
   let pos = init-position | state.position;
-    
+
   // If we are recursively including another file, defer to the tokenizer
   // for that file.
   let sub-tokenizer = state.include-tokenizer;
@@ -977,12 +977,12 @@ define /* exported */ method get-token
       // and then get a new token from the resulting string.  If this isn't
       // a single token, we just ignore the rest -- "the results are
       // undefined".
-      pop(stack);		// Get rid of the pound-pound-token
+      pop(stack);                // Get rid of the pound-pound-token
       let new-string = concatenate(token.string-value,
                                    get-token(state).string-value);
       if (new-string = "/" "/" & *handle-c++-comments*)
         // Cruft to handle VC++ 4.2, which attempts to make a comment out of
-        // a boolean declaration.  Don't ask -- you don't wan to know.
+        // a boolean declaration.  Don't ask -- you don't want to know.
         make(<char-token>, position: token.position,
              generator: token.generator, string: "char");
       else
@@ -1002,8 +1002,8 @@ define /* exported */ method get-token
   else
     let contents = state.contents;
     local method string-value(start-index, end-index)
-	    copy-sequence(contents, start: start-index, end: end-index);
-	  end method string-value;
+            copy-sequence(contents, start: start-index, end: end-index);
+          end method string-value;
 
     // There are different whitespace conventions for normal input and for
     // preprocessor directives.

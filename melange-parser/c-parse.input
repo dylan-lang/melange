@@ -53,7 +53,7 @@ copyright: see below
 //     This function tries to evaluate a preprocessor constant in hopes that
 //     it will either evaluate to a type or object name or to a constant
 //     compile time value.  It returns the matched declaration or value, or it
-//     signals an error. 
+//     signals an error.
 //   cpp-parse(tokenizer :: <tokenizer>) => result :: <integer>
 //     This function evaluates a line of CPP input according to a limited set
 //     of C operators and an odd set of evaluation rules which make undefined
@@ -70,7 +70,7 @@ copyright: see below
 //======================================================================
 
 //----------------------------------------------------------------------
-// Simple parser support 
+// Simple parser support
 //----------------------------------------------------------------------
 
 // *HACK*: We temporarily use a global variable to figure out whether a given
@@ -103,7 +103,7 @@ define method int-value (token :: <character-token>, state :: <parse-state>)
 end method;
 
 define method int-value (value :: <object>, state :: <parse-state>)
-  error(value, 
+  error(value,
 	"Value in constant expression must be an integer, but is %=\n.",
 	value);
 end method;
@@ -116,7 +116,7 @@ define method int-value
   let expansion = element(value.generator.cpp-table,
                           value.string-value, default: #f);
   case
-    expansion == #f => 
+    expansion == #f =>
       // The C preprocessor blithely accepts undefined identifiers as "0"
       0;
     empty?(expansion) =>
@@ -138,7 +138,7 @@ define method int-value
   if (instance?(object-decl, <enum-slot-declaration>))
     object-decl.constant-value;
   else
-    parse-error(value, 
+    parse-error(value,
 	"Value in constant expression must be an integer, but isn't.");
   end if;
 end method int-value;
@@ -161,94 +161,94 @@ define constant <source-location> = false-or(<parse-state>);
 
 ;; Magic tokens
 ;; It seems that the end-of-file token must be named "EOF"
-:token EOF <simple-token> 
-:token <error-token> <simple-token> 
-:token <begin-include-token> <simple-token> 
-:token <end-include-token> <ei-token> 
-:token <identifier-token> <name-token> 
-:token <type-name-token>  <name-token> 
+:token EOF <simple-token>
+:token <error-token> <simple-token>
+:token <begin-include-token> <simple-token>
+:token <end-include-token> <ei-token>
+:token <identifier-token> <name-token>
+:token <type-name-token>  <name-token>
 ;; literals
-:token <integer-token> <literal-token> 
-:token <character-token> <literal-token> 
-:token <string-literal-token> <literal-token> 
-:token <cpp-token> <literal-token> 
+:token <integer-token> <literal-token>
+:token <character-token> <literal-token>
+:token <string-literal-token> <literal-token>
+:token <cpp-token> <literal-token>
 ;; A whole bunch of reserved words
-:token <struct-token> <reserved-word-token> 
-:token <typedef-token> <reserved-word-token> 
-:token <short-token> <type-specifier-token> 
-:token <long-token> <type-specifier-token> 
-:token <int-token> <type-specifier-token> 
-:token <char-token> <type-specifier-token> 
-:token <signed-token> <type-specifier-token> 
-:token <unsigned-token> <type-specifier-token> 
-:token <float-token> <type-specifier-token> 
-:token <double-token> <type-specifier-token> 
+:token <struct-token> <reserved-word-token>
+:token <typedef-token> <reserved-word-token>
+:token <short-token> <type-specifier-token>
+:token <long-token> <type-specifier-token>
+:token <int-token> <type-specifier-token>
+:token <char-token> <type-specifier-token>
+:token <signed-token> <type-specifier-token>
+:token <unsigned-token> <type-specifier-token>
+:token <float-token> <type-specifier-token>
+:token <double-token> <type-specifier-token>
 ;; "const" and "volatile" will be preprocessed away by the cpp code.  They
 ;; were being used in too many different odd places by various different
-;; compilers.  
+;; compilers.
 ;;
 ;; define class <const-token> (<reserved-word-token>) end class;
 ;; define class <volatile-token> (<reserved-word-token>) end class;
-:token <void-token> <type-specifier-token> 
+:token <void-token> <type-specifier-token>
 :token <bool-token> <type-specifier-token>
-:token <inline-token> <reserved-word-token> 
-:token <extern-token> <reserved-word-token> 
-:token <static-token> <reserved-word-token> 
-:token <auto-token> <reserved-word-token> 
-:token <register-token> <reserved-word-token> 
-:token <dummy-token> <reserved-word-token> 
-:token <union-token> <reserved-word-token> 
-:token <enum-token> <reserved-word-token> 
-:token <constant-token> <reserved-word-token> 
-:token <mul-assign-token> <reserved-word-token> 
-:token <div-assign-token> <reserved-word-token> 
-:token <mod-assign-token> <reserved-word-token> 
-:token <add-assign-token> <reserved-word-token> 
-:token <sub-assign-token> <reserved-word-token> 
-:token <left-assign-token> <reserved-word-token> 
-:token <right-assign-token> <reserved-word-token> 
-:token <and-assign-token> <reserved-word-token> 
-:token <xor-assign-token> <reserved-word-token> 
-:token <or-assign-token> <reserved-word-token> 
+:token <inline-token> <reserved-word-token>
+:token <extern-token> <reserved-word-token>
+:token <static-token> <reserved-word-token>
+:token <auto-token> <reserved-word-token>
+:token <register-token> <reserved-word-token>
+:token <dummy-token> <reserved-word-token>
+:token <union-token> <reserved-word-token>
+:token <enum-token> <reserved-word-token>
+:token <constant-token> <reserved-word-token>
+:token <mul-assign-token> <reserved-word-token>
+:token <div-assign-token> <reserved-word-token>
+:token <mod-assign-token> <reserved-word-token>
+:token <add-assign-token> <reserved-word-token>
+:token <sub-assign-token> <reserved-word-token>
+:token <left-assign-token> <reserved-word-token>
+:token <right-assign-token> <reserved-word-token>
+:token <and-assign-token> <reserved-word-token>
+:token <xor-assign-token> <reserved-word-token>
+:token <or-assign-token> <reserved-word-token>
 ;; A whole bunch of puctuation
-:token <ellipsis-token> <punctuation-token> 
-:token <sizeof-token> <punctuation-token> 
-:token <dec-op-token> <punctuation-token> 
-:token <inc-op-token> <punctuation-token> 
-:token <ptr-op-token> <punctuation-token> 
-:token <semicolon-token> <punctuation-token> 
-:token <comma-token> <punctuation-token> 
-:token <dot-token> <punctuation-token> 
-:token <lparen-token> <punctuation-token> 
-:token <rparen-token> <punctuation-token> 
-:token <lbracket-token> <punctuation-token> 
-:token <rbracket-token> <punctuation-token> 
-:token <ampersand-token> <punctuation-token> 
-:token <star-token> <punctuation-token> 
-:token <carat-token> <punctuation-token> 
-:token <bar-token> <punctuation-token> 
-:token <percent-token> <punctuation-token> 
-:token <slash-token> <punctuation-token> 
-:token <plus-token> <punctuation-token> 
-:token <minus-token> <punctuation-token> 
-:token <tilde-token> <punctuation-token> 
-:token <bang-token> <punctuation-token> 
-:token <lt-token> <punctuation-token> 
-:token <gt-token> <punctuation-token> 
-:token <question-token> <punctuation-token> 
-:token <colon-token> <punctuation-token> 
-:token <eq-op-token> <punctuation-token> 
-:token <le-op-token> <punctuation-token> 
-:token <ge-op-token> <punctuation-token> 
-:token <ne-op-token> <punctuation-token> 
-:token <and-op-token> <punctuation-token> 
-:token <or-op-token> <punctuation-token> 
-:token <pound-pound-token> <punctuation-token> 
-:token <left-op-token> <punctuation-token> 
-:token <right-op-token> <punctuation-token> 
-:token <assign-token> <punctuation-token> 
-:token <lcurly-token> <punctuation-token> 
-:token <rcurly-token> <punctuation-token> 
+:token <ellipsis-token> <punctuation-token>
+:token <sizeof-token> <punctuation-token>
+:token <dec-op-token> <punctuation-token>
+:token <inc-op-token> <punctuation-token>
+:token <ptr-op-token> <punctuation-token>
+:token <semicolon-token> <punctuation-token>
+:token <comma-token> <punctuation-token>
+:token <dot-token> <punctuation-token>
+:token <lparen-token> <punctuation-token>
+:token <rparen-token> <punctuation-token>
+:token <lbracket-token> <punctuation-token>
+:token <rbracket-token> <punctuation-token>
+:token <ampersand-token> <punctuation-token>
+:token <star-token> <punctuation-token>
+:token <carat-token> <punctuation-token>
+:token <bar-token> <punctuation-token>
+:token <percent-token> <punctuation-token>
+:token <slash-token> <punctuation-token>
+:token <plus-token> <punctuation-token>
+:token <minus-token> <punctuation-token>
+:token <tilde-token> <punctuation-token>
+:token <bang-token> <punctuation-token>
+:token <lt-token> <punctuation-token>
+:token <gt-token> <punctuation-token>
+:token <question-token> <punctuation-token>
+:token <colon-token> <punctuation-token>
+:token <eq-op-token> <punctuation-token>
+:token <le-op-token> <punctuation-token>
+:token <ge-op-token> <punctuation-token>
+:token <ne-op-token> <punctuation-token>
+:token <and-op-token> <punctuation-token>
+:token <or-op-token> <punctuation-token>
+:token <pound-pound-token> <punctuation-token>
+:token <left-op-token> <punctuation-token>
+:token <right-op-token> <punctuation-token>
+:token <assign-token> <punctuation-token>
+:token <lcurly-token> <punctuation-token>
+:token <rcurly-token> <punctuation-token>
 ;; "Magic" tokens which provide alternate entry points to the parser
 :token <alien-name-token> <token>
 :token <macro-parse-token> <token>
@@ -277,7 +277,7 @@ define constant <source-location> = false-or(<parse-state>);
      <pound-pound-token> <left-op-token> <right-op-token> <assign-token>
      <bool-token>)
 
-:union NAME <name-token> 
+:union NAME <name-token>
     (<identifier-token> <type-name-token>)
 
 :union TYPE-SPEC <type-specifier-token>
@@ -381,7 +381,7 @@ primary-expr (identifier identifier)
     1;
   else
     0;
-  end;  
+  end;
 %
 
 postfix-expr (primary-expr)
@@ -860,7 +860,7 @@ extended-declarator-list (declarator)
 ;   list(%2);
 ; %
 
-extended-declarator-list (extended-declarator-list <comma-token> 
+extended-declarator-list (extended-declarator-list <comma-token>
                           declarator)
   // see above.
   pair(%3, %1);
@@ -870,7 +870,7 @@ extended-declarator-list (extended-declarator)
   list(%1);
 %
 
-extended-declarator-list (extended-declarator-list <comma-token> 
+extended-declarator-list (extended-declarator-list <comma-token>
                           extended-declarator)
   // see above.
   pair(%3, %1);
@@ -1060,7 +1060,7 @@ enumerator-list (enumerator-list internal-include-boundary <comma-token>
   // the subtrees left-to-right.
   //
   // We do all of this on the fly because some (i.e. Apple's) C compilers
-  // let later enum values be computed based upon those earlier in the 
+  // let later enum values be computed based upon those earlier in the
   // same enum declaration.
   pair(make-enum-slot(%5.head, %5.tail, %1.head, @0), %1);
 %
@@ -1494,14 +1494,14 @@ define method aux-get-token
 end method aux-get-token;
 
 // The initial size of the parser stacks.
-// 
+//
 define constant $initial-stack-size = 200;
 
 // grow -- internal.
 //
 // Grow a stack.  Make a new vector twice as long, copy the old elements
 // across, and return it.
-// 
+//
 define method grow (vec :: <simple-object-vector>)
     => new :: <simple-object-vector>;
   let old-size = vec.size;
@@ -1523,7 +1523,7 @@ end method;
 //
 // The actual parser loop.  Drive the state machine and maintain the stacks
 // until we hit an accept action or until be hit a bogus token.
-// 
+//
 define method parse-loop
     (parse-state :: <parse-state>, #key debug :: <boolean> = #f)
     => result :: <object>;
@@ -1676,7 +1676,7 @@ end;
 // This function tries to evaluate a preprocessor constant in hopes that
 // it will either evaluate to a type or object name or to a constant
 // compile time value.  It returns the matched declaration or value, or it
-// signals an error. 
+// signals an error.
 //
 define method parse-macro
     (name :: <string>, old-state :: <parse-state>)
@@ -1710,7 +1710,7 @@ define method cpp-parse (tokenizer :: <tokenizer>) => result :: <integer>;
     unget-token(tokenizer, make(<cpp-parse-token>,
 				generator: tokenizer, string: ""));
     parse-loop(parse-state);
-  cleanup 
+  cleanup
     get-token(tokenizer); // un-unget the EOF, since we may want to
                           // continue with this tokenizer using a different
                           // lexer

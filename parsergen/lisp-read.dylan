@@ -6,25 +6,25 @@ copyright: see below
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -54,7 +54,7 @@ end function alphanumeric?;
 //
 define inline function whitespace? (c :: <character>) => answer :: <boolean>;
   select (c)
-    ' ', '\t', '\n', '\f', '\r' => #t;       
+    ' ', '\t', '\n', '\f', '\r' => #t;
                         // Space, tab, newline, formfeed, carriage return
     otherwise => #f;
   end select;
@@ -100,38 +100,38 @@ define method print-object (token :: <identifier>, stream :: <stream>) => ();
   write(stream, token.id-name);
 end method print-object;
 
-define method print-object (token :: <string-literal>, stream :: <stream>) 
+define method print-object (token :: <string-literal>, stream :: <stream>)
  => ();
   write(stream, concatenate("\"", token.string-literal, "\""));
 end method print-object;
 
-define method print-object (token :: <character-literal>, stream :: <stream>) 
+define method print-object (token :: <character-literal>, stream :: <stream>)
  => ();
-  write(stream, 
-	concatenate("'", as(<string>, token.character-literal), "'"));
+  write(stream,
+        concatenate("'", as(<string>, token.character-literal), "'"));
 end method print-object;
 
-define method print-object (token :: <keyword>, stream :: <stream>) 
+define method print-object (token :: <keyword>, stream :: <stream>)
  => ();
   write(stream, concatenate(token.keyword-string, ":"));
 end method print-object;
 
-define method print-object (token :: <macro-thingy>, stream :: <stream>) 
+define method print-object (token :: <macro-thingy>, stream :: <stream>)
  => ();
   write(stream, token.looks-like);
 end method print-object;
 
-define method print-object (token :: <lparen>, stream :: <stream>) 
+define method print-object (token :: <lparen>, stream :: <stream>)
  => ();
   write(stream, "(");
 end method print-object;
 
-define method print-object (token :: <rparen>, stream :: <stream>) 
+define method print-object (token :: <rparen>, stream :: <stream>)
  => ();
   write(stream, ")");
 end method print-object;
 
-define method print-object (token :: <list-start>, stream :: <stream>) 
+define method print-object (token :: <list-start>, stream :: <stream>)
  => ();
   write(stream, "'(");
 end method print-object;
@@ -142,7 +142,7 @@ end method print-object;
 define method get-lex (input :: <stream>) => lexeme :: <token>;
   let c = peek(input);
   if (c.whitespace?)
-    read-element(input); 
+    read-element(input);
     get-lex(input);
   else
     select (c)
@@ -154,41 +154,41 @@ define method get-lex (input :: <stream>) => lexeme :: <token>;
       ',' => read-element(input); make(<macro-thingy>, looks-like: ",");
       '`' => read-element(input); make(<macro-thingy>, looks-like: "`");
       '@' => read-element(input); make(<macro-thingy>, looks-like: "@");
-      '\'' => 
-	read-element(input);  // consume '
-	if (peek(input) == '(')
-	  read-element(input);
-	  $list-start;
-	else
-	  get-lex(input);  // Ignore the '
-	end if;
-      ':' => 
-	read-element(input);  // consume :
-	let fake-identifier = lex-identifier(input);
-	make(<keyword>, keyword: fake-identifier.id-name);
+      '\'' =>
+        read-element(input);  // consume '
+        if (peek(input) == '(')
+          read-element(input);
+          $list-start;
+        else
+          get-lex(input);  // Ignore the '
+        end if;
+      ':' =>
+        read-element(input);  // consume :
+        let fake-identifier = lex-identifier(input);
+        make(<keyword>, keyword: fake-identifier.id-name);
       '#' =>
-	read-element(input);  // consume #
-	let second-char = read-element(input);
-	if (second-char == '\'')
-	  lex(input);   // ignore #'
-	elseif (second-char == '\\')
-	  make(<character-literal>, character: read-element(input));
-	else
-	  error("Unknown lexeme starting with #");
-	end if;
-      '|' => 
-	// quoted identifier
-	read-element(input);
-	let res = lex-quoted-symbol(input);
-	let last-char = read-element(input);
-	assert(last-char == '|');
-	res;
-      otherwise => 
-	if (c.identifier-character?)
-	  lex-identifier(input);
-	else
-	  error("Unknown lexeme starting with char %=", c);
-	end if;
+        read-element(input);  // consume #
+        let second-char = read-element(input);
+        if (second-char == '\'')
+          lex(input);   // ignore #'
+        elseif (second-char == '\\')
+          make(<character-literal>, character: read-element(input));
+        else
+          error("Unknown lexeme starting with #");
+        end if;
+      '|' =>
+        // quoted identifier
+        read-element(input);
+        let res = lex-quoted-symbol(input);
+        let last-char = read-element(input);
+        assert(last-char == '|');
+        res;
+      otherwise =>
+        if (c.identifier-character?)
+          lex-identifier(input);
+        else
+          error("Unknown lexeme starting with char %=", c);
+        end if;
     end select;
   end if;
 end method get-lex;
@@ -207,10 +207,10 @@ end function peek-lex;
 //
 define function lex (input :: <stream>) => lexeme :: <token>;
   let res = block ()
-	      let lexeme = *next-lexeme*;
-	      *next-lexeme* := #f;
-	      lexeme | get-lex(input);
-	    end block;
+              let lexeme = *next-lexeme*;
+              *next-lexeme* := #f;
+              lexeme | get-lex(input);
+            end block;
 //  format(*standard-output*, "%= ", res);
 //  force-output(*standard-output*);
   res;
@@ -218,21 +218,21 @@ end function lex;
 
 define function identifier-character? (c :: <character>)
  => answer :: <boolean>;
-  c.alphanumeric? 
+  c.alphanumeric?
     | c == ':'  // I'm not sure about this one...
     | c == '%'
     | c == '+' | c == '-' | c == '*' | c == '/'
     | c == '=' | c == '<' | c == '>';
 end function identifier-character?;
 
-define method lex-identifier (input :: <stream>) 
+define method lex-identifier (input :: <stream>)
  => id :: <identifier>;
   let res-vector = make(<stretchy-vector>);
   block (break)
     while (#t)
       let c = peek(input);
       if (~c.identifier-character?)
-	break();
+        break();
       end if;
       add!(res-vector, c);
       read-element(input);  // consume what we've already peeked at
@@ -241,14 +241,14 @@ define method lex-identifier (input :: <stream>)
   make(<identifier>, name: as(<string>, res-vector));
 end method lex-identifier;
 
-define method lex-quoted-symbol (input :: <stream>) 
+define method lex-quoted-symbol (input :: <stream>)
  => id :: <identifier>;
   let res-vector = make(<stretchy-vector>);
   block (break)
     while (#t)
       let c = peek(input);
       if (c == '|')
-	break();
+        break();
       end if;
       add!(res-vector, c);
       read-element(input);  // consume what we've already peeked at
@@ -271,7 +271,7 @@ end method lex-comment;
 
 define method lex-string (input :: <stream>) => string :: <string-literal>;
   let quote = read-element(input);
-  if (quote ~== '"') 
+  if (quote ~== '"')
     error("You told me this was a string!\n");
   end if;
   let res-vector = make(<stretchy-vector>);
@@ -279,13 +279,13 @@ define method lex-string (input :: <stream>) => string :: <string-literal>;
     while (#t)
       let c = read-element(input);
       if (c == '"')
-	break();
+        break();
       else
-	add!(res-vector, c);
-	if (c == '\\')
-	  let c2 = read-element(input);
-	  add!(res-vector, c2);
-	end if;
+        add!(res-vector, c);
+        if (c == '\\')
+          let c2 = read-element(input);
+          add!(res-vector, c2);
+        end if;
       end if;
     end while;
   end block;
@@ -300,7 +300,7 @@ define function read-while (input :: <stream>, test :: <function>) => ();
   block (break)
     for (c = peek(input) then peek(input))
       if (~test(c))
-	break();
+        break();
       end if;
       read-element(input);
     end for;
@@ -317,10 +317,10 @@ define function lisp-read (stream :: <stream>) => obj :: <object>;
     <string-literal> => token.string-literal;
     <character-literal> => token.character-literal;
     <keyword> => as(<symbol>, token.keyword-string);
-    <lparen> => 
+    <lparen> =>
       let vec = make(<stretchy-vector>);
       while (peek-lex(stream) ~== $rparen)
-	add!(vec, lisp-read(stream));
+        add!(vec, lisp-read(stream));
       end while;
       assert(lex(stream) == $rparen);
       as(<list>, vec);

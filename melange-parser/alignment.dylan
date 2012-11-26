@@ -10,25 +10,25 @@ copyright: see below
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -75,14 +75,14 @@ define method aligned-slot-position
   else
     let (size, alignment) =
       select (slot-type by instance?)
-	<predefined-type-declaration>, <function-type-declaration>,
-	<pointer-declaration>, <enum-declaration>, <struct-declaration>,
-	<union-declaration>, <vector-declaration> =>
-	  let sz = c-type-size(slot-type);
-	  let align = c-type-alignment(slot-type);
-	  values (sz, align);
-	otherwise =>
-	  error("Unhandled c type in aligned-slot-position");
+        <predefined-type-declaration>, <function-type-declaration>,
+        <pointer-declaration>, <enum-declaration>, <struct-declaration>,
+        <union-declaration>, <vector-declaration> =>
+          let sz = c-type-size(slot-type);
+          let align = c-type-alignment(slot-type);
+          values (sz, align);
+        otherwise =>
+          error("Unhandled c type in aligned-slot-position");
       end select;
     let align-temp = prev-slot-end + alignment - 1;
     let slot-start = align-temp - remainder(align-temp, alignment);
@@ -102,8 +102,8 @@ define method unix-type-alignment (decl :: <union-declaration>)
  => size :: <integer>;
   if (decl.members)
     reduce(method (al :: <integer>, member)
-	     max(al, unix-type-alignment(member.type)) end method,
-	   1, decl.members);
+             max(al, unix-type-alignment(member.type)) end method,
+           1, decl.members);
   else
     1;
   end if;
@@ -112,7 +112,7 @@ end method unix-type-alignment;
 // do-coalesce-members -- internal
 //
 // Initializes the "coalesced-members" field.  See c-decl.dylan for
-// more details. 
+// more details.
 //
 // Assumptions:  Adjacent bitfields are all grouped together so long
 // as they fit within a single word.  This can yield different
@@ -127,27 +127,27 @@ define function do-coalesce-members (decl :: <structured-type-declaration>)
     if (instance?(decl-type, <bitfield-declaration>))
       let composite = first(result, default: #f);
       if (~instance?(composite, <coalesced-bitfields>)
-	    | (composite.bit-size + decl-type.bits-in-field
-		 > $default-alignment * 8))
-		    let name = anonymous-name();
-				composite := make(<coalesced-bitfields>, name: name, dylan-name: name);
-				result := pair(composite, result);
+            | (composite.bit-size + decl-type.bits-in-field
+                 > $default-alignment * 8))
+                    let name = anonymous-name();
+                                composite := make(<coalesced-bitfields>, name: name, dylan-name: name);
+                                result := pair(composite, result);
       end if;
       decl-type.composite-field := composite;
       decl-type.start-bit := composite.bit-size;
       composite.fields := add!(composite.fields, member);
       let size = composite.bit-size + decl-type.bits-in-field;
       if (size > composite.type.unix-type-size)
-	case
-	  (size <= unsigned-char-type.unix-type-size) =>
-	    composite.type := unsigned-char-type;
-	  (size <= unsigned-short-type.unix-type-size) =>
-	    composite.type := unsigned-short-type;
-	  (size <= unsigned-int-type.unix-type-size) =>
-	    composite.type := unsigned-int-type;
-	  (size <= unsigned-long-type.unix-type-size) =>
-	    composite.type := unsigned-long-type;
-	end case;
+        case
+          (size <= unsigned-char-type.unix-type-size) =>
+            composite.type := unsigned-char-type;
+          (size <= unsigned-short-type.unix-type-size) =>
+            composite.type := unsigned-short-type;
+          (size <= unsigned-int-type.unix-type-size) =>
+            composite.type := unsigned-int-type;
+          (size <= unsigned-long-type.unix-type-size) =>
+            composite.type := unsigned-long-type;
+        end case;
       end if;
       composite.bit-size := size;
     else
@@ -161,8 +161,8 @@ define method unix-type-alignment (decl :: <struct-declaration>)
   => size :: <integer>;
   if (decl.members)
     reduce(method (al :: <integer>, member)
-	     max(al, unix-type-alignment(member.type)) end method,
-	   1, decl.coalesced-members);
+             max(al, unix-type-alignment(member.type)) end method,
+           1, decl.coalesced-members);
   else
     1;
   end if;
@@ -182,7 +182,7 @@ end method unix-type-alignment;
 define method unix-type-alignment (vector :: <vector-declaration>)
  => size :: <integer>;
   // The first expression is incorrect.  Change it.
-  if(vector.length)
+  if (vector.length)
     unix-type-alignment(vector.pointer-equiv.referent);
   else
     1;
@@ -217,8 +217,8 @@ define method unix-type-size (decl :: <union-declaration>)
   if (decl.members)
     let base-size =
       reduce(method (sz :: <integer>, member)
-	       max(sz, unix-type-size(member.type)) end method,
-	     0, decl.members);
+               max(sz, unix-type-size(member.type)) end method,
+             0, decl.members);
     let align = unix-type-alignment(decl);
     let rem = remainder(base-size, align);
     if (rem = 0)
@@ -236,8 +236,8 @@ define method unix-type-size (decl :: <struct-declaration>)
   if (decl.members)
     let base-size =
       reduce(method (sz :: <integer>, member)
-	       aligned-slot-position(sz, member.type); end method,
-	     0, decl.coalesced-members);
+               aligned-slot-position(sz, member.type); end method,
+             0, decl.coalesced-members);
     let align = unix-type-alignment(decl);
     let rem = remainder(base-size, align);
     if (rem = 0)

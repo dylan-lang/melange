@@ -1,34 +1,34 @@
 documented: #t
 module: c-declarations
 copyright: see below
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
+           This code was produced by the Gwydion Project at Carnegie Mellon
+           University.  If you are interested in using this code, contact
+           "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 //
 // Copyright (c) 1995, 1996, 1997  Carnegie Mellon University
 // Copyright (c) 1998, 1999, 2000  Gwydion Dylan Maintainers
 // All rights reserved.
-// 
+//
 // Use and copying of this software and preparation of derivative
 // works based on this software are permitted, including commercial
 // use, provided that the following conditions are observed:
-// 
+//
 // 1. This copyright notice must be retained in full on any copies
 //    and on appropriate parts of any derivative works.
 // 2. Documentation (paper or online) accompanying any system that
 //    incorporates this software, or any part of it, must acknowledge
 //    the contribution of the Gwydion Project at Carnegie Mellon
 //    University, and the Gwydion Dylan Maintainers.
-// 
+//
 // This software is made available "as is".  Neither the authors nor
 // Carnegie Mellon University make any warranty about the software,
 // its performance, or its conformity to any specification.
-// 
+//
 // Bug reports should be sent to <gd-bugs@gwydiondylan.org>; questions,
 // comments and suggestions are welcome at <gd-hackers@gwydiondylan.org>.
-// Also, see http://www.gwydiondylan.org/ for updates and documentation. 
+// Also, see http://www.gwydiondylan.org/ for updates and documentation.
 //
 //======================================================================
 
@@ -55,7 +55,7 @@ copyright: see below
 // <declaration>
 //
 // This section contains definitions and functions common to all (or most)
-// declarations. 
+// declarations.
 //------------------------------------------------------------------------
 // The class hierarchy for declarations includes the following:
 //   <declaration>
@@ -126,7 +126,7 @@ define abstract class <declaration> (<object>)
     init-value: #f, init-keyword: #"dylan-name";
   slot map-type :: false-or(<string>), init-value: #f;
   slot declared? :: <boolean>, init-value: #f;
-  constant slot abstract-type? :: <boolean>, 
+  constant slot abstract-type? :: <boolean>,
     init-value: #f, init-keyword: abstract-type?:;
 end class <declaration>;
 
@@ -225,8 +225,8 @@ define generic apply-options
 
 //------------------------------------------------------------------------
 
-define method equated?( decl :: <declaration> ) => ( result :: <boolean> )
-	#f;
+define method equated? (decl :: <declaration>) => (result :: <boolean>)
+  #f;
 end method equated?;
 
 define method mapped-name
@@ -250,7 +250,7 @@ define method find-dylan-name
  => (result :: <string>);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing));
+                                         read-only, sealing));
 end method find-dylan-name;
 
 define method dylan-name (decl :: <declaration>) => (result :: <string>);
@@ -271,11 +271,11 @@ end method rename;
 
 define method canonical-name (decl :: <declaration>) => (result :: <string>);
   // The "canonical name" for most declarations is the same as the "simple
-  // name". 
+  // name".
   decl.c-name | (decl.c-name := decl.simple-name);
 end method canonical-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <declaration>) => (results :: <deque>);
   // For simple declarations, we simply check whether the type has already be
   // "declared" and add it to the result otherwise.  Other methods may call
@@ -302,7 +302,7 @@ end method apply-options;
 define function exclude-decl (decl :: <declaration>)
   decl.declared? := #t;
 end function exclude-decl;
-    
+
 
 //------------------------------------------------------------------------
 // Type declarations
@@ -348,7 +348,7 @@ end method true-type;
 
 //------------------------------------------------------------------------
 
-define abstract class <structured-type-declaration> (<type-declaration>) 
+define abstract class <structured-type-declaration> (<type-declaration>)
   slot members :: false-or(<sequence>), init-value: #f;
   // This slot (initialized lazily by "do-coalesce-members" stores an
   // alternate version of the "members" sequence in which adjacent
@@ -357,7 +357,7 @@ define abstract class <structured-type-declaration> (<type-declaration>)
   slot anonymous? :: <boolean>, required-init-keyword: #"anonymous?";
 end class <structured-type-declaration>;
 
-define method coalesced-members(decl :: <structured-type-declaration>)
+define method coalesced-members (decl :: <structured-type-declaration>)
  => (members :: <sequence>)
   decl.%coalesced-members | do-coalesce-members(decl)
 end;
@@ -375,7 +375,7 @@ define class <enum-declaration> (<structured-type-declaration>) end class;
 // corresponding to its result type.
 //
 define generic find-slot
-    (decl :: <structured-type-declaration>, name :: <string>) 
+    (decl :: <structured-type-declaration>, name :: <string>)
  => (result :: <declaration>);
 
 // Removes any slots which were explicitly excluded or, if import-all? is
@@ -385,7 +385,7 @@ define generic exclude-slots
     (decl :: <structured-type-declaration>,
      imports :: <explicit-key-collection>, import-all? :: <boolean>);
 
-// Operation called by the parser to define a new structured (i.e. struct, 
+// Operation called by the parser to define a new structured (i.e. struct,
 // union, or enum) type.  The appropriate declaration class is computed from
 // the given token.
 //
@@ -406,7 +406,7 @@ define generic apply-container-options
      sealing :: <string>)
  => ();
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>,
      decl :: type-union(<struct-declaration>, <union-declaration>))
  => (results :: <deque>);
@@ -414,7 +414,7 @@ define method compute-closure
     decl.declared? := #t;
     if (decl.members)
       for (elem in decl.members)
-	if (~elem.excluded?) compute-closure(results, elem.type) end if;
+        if (~elem.excluded?) compute-closure(results, elem.type) end if;
       end for;
     end if;
     push-last(results, decl);
@@ -443,17 +443,17 @@ define method make-enum-slot
  => (result :: <enum-slot-declaration>);
   if (element(state.objects, name, default: #f))
     parse-error(state, "Enumeration literal does not have a unique name: %s",
-		name);
+                name);
   else
     let value
       = case
-	  value => value;
-	  prev => prev.constant-value + 1;
-	  otherwise => 0;
-	end case;
+          value => value;
+          prev => prev.constant-value + 1;
+          otherwise => 0;
+        end case;
     state.objects[name] := add-declaration(state,
-					   make(<enum-slot-declaration>,
-						name: name, value: value))
+                                           make(<enum-slot-declaration>,
+                                                name: name, value: value))
   end if;
 end method make-enum-slot;
 
@@ -463,34 +463,34 @@ define method make-struct-type
      decl-token :: <token>, state :: <parse-state>)
  => (result :: <structured-type-declaration>);
   let declaration-class = select (decl-token by instance?)
-			    <enum-token> => <enum-declaration>;
-			    <struct-token> => <struct-declaration>;
-			    <union-token> => <union-declaration>;
-			  end select;
+                            <enum-token> => <enum-declaration>;
+                            <struct-token> => <struct-declaration>;
+                            <union-token> => <union-declaration>;
+                          end select;
 
   let (true-name, anonymous?)
     = if (name)
-	values(name, #f);
+        values(name, #f);
       else
-	values(anonymous-name(), #t);
+        values(anonymous-name(), #t);
       end if;
   let old-type = element(state.structs, true-name, default: #f);
   let type
     = if (old-type)
-	if (object-class(old-type) ~= declaration-class)
-	  parse-error(state,
-		      "Struct or union type doesn't match original "
-			"declaration: %s",
-		      true-name);
-	end if;
-	old-type;
+        if (object-class(old-type) ~= declaration-class)
+          parse-error(state,
+                      "Struct or union type doesn't match original "
+                        "declaration: %s",
+                      true-name);
+        end if;
+        old-type;
       elseif (~instance?(state, <parse-file-state>))
-	parse-error(state, "Type not found: %s.", true-name);
+        parse-error(state, "Type not found: %s.", true-name);
       else
-	state.structs[true-name]
-	  := add-declaration(state, make(declaration-class,
-					 name: true-name,
-					 anonymous?: anonymous?));
+        state.structs[true-name]
+          := add-declaration(state, make(declaration-class,
+                                         name: true-name,
+                                         anonymous?: anonymous?));
       end if;
 
   // "process-member" will make slot or "enum slot" declarations for the raw
@@ -498,17 +498,17 @@ define method make-struct-type
   let last :: <integer> = -1;
   let process-member
     = if (declaration-class == <enum-declaration>)
-	method (elem)
-	  elem.containing-enum-declaration := type;
-	  elem;
-	end method;
+        method (elem)
+          elem.containing-enum-declaration := type;
+          elem;
+        end method;
       else
-	method (elem :: <pair>)
-	  make(<slot-declaration>,
+        method (elem :: <pair>)
+          make(<slot-declaration>,
                name: elem.head | anonymous-name(),
                type: elem.tail,
                excluded?: ~elem.head);
-	end method;
+        end method;
       end if;
 
   if (member-list)
@@ -522,11 +522,11 @@ define method make-struct-type
 end method make-struct-type;
 
 define method find-slot
-    (decl :: <structured-type-declaration>, name :: <string>) 
+    (decl :: <structured-type-declaration>, name :: <string>)
  => (result :: <declaration>);
   decl.members
     & any?(method (member) member.simple-name = name & member end method,
-	   decl.members)
+           decl.members)
     | error("No such slot: %s", name);
 end method find-slot;
 
@@ -571,7 +571,7 @@ define method apply-container-options
   if (decl.members)
     for (elem in decl.members)
       find-dylan-name(elem, map-function, prefix, sub-containers, read-only,
-		      sealing);
+                      sealing);
     end for;
   end if;
 end method apply-container-options;
@@ -621,24 +621,24 @@ define method canonical-name (decl :: <pointer-declaration>)
     decl.c-name;
   else
     for (referent-type = decl.referent then referent-type.referent,
-	 suffix = "*" then concatenate(suffix, "*"),
-	 while: instance?(referent-type, <pointer-declaration>))
+         suffix = "*" then concatenate(suffix, "*"),
+         while: instance?(referent-type, <pointer-declaration>))
     finally
       select (referent-type by instance?)
-	<vector-declaration> =>
-	  let referent-name = referent-type.canonical-name;
-	  let sub-name = referent-type.pointer-equiv.referent.canonical-name;
-	  decl.c-name
-	    := concatenate(sub-name, suffix,
-			   copy-sequence(referent-name, start: sub-name.size));
-	<function-type-declaration> =>
-	  let referent-name = referent-type.canonical-name;
-	  let sub-name = referent-type.result.canonical-name;
-	  decl.c-name := format-to-string("%s (%s)", sub-name,
-					  copy-sequence(referent-name,
-							start: sub-name.size));
-	otherwise =>
-	  decl.c-name := concatenate(referent-type.canonical-name, suffix);
+        <vector-declaration> =>
+          let referent-name = referent-type.canonical-name;
+          let sub-name = referent-type.pointer-equiv.referent.canonical-name;
+          decl.c-name
+            := concatenate(sub-name, suffix,
+                           copy-sequence(referent-name, start: sub-name.size));
+        <function-type-declaration> =>
+          let referent-name = referent-type.canonical-name;
+          let sub-name = referent-type.result.canonical-name;
+          decl.c-name := format-to-string("%s (%s)", sub-name,
+                                          copy-sequence(referent-name,
+                                                        start: sub-name.size));
+        otherwise =>
+          decl.c-name := concatenate(referent-type.canonical-name, suffix);
       end select;
     end for;
   end if;
@@ -648,7 +648,7 @@ define method canonical-name (decl :: <vector-declaration>)
  => (result :: <string>);
   decl.c-name
     | (decl.c-name := concatenate(decl.pointer-equiv.referent.canonical-name,
-				  "[]"));
+                                  "[]"));
 end method canonical-name;
 
 define method compute-dylan-name
@@ -661,8 +661,8 @@ define method compute-dylan-name
     mapper(#"type", prefix, decl.simple-name, containers);
   end if;
 end method compute-dylan-name;
-  
-define method compute-closure 
+
+define method compute-closure
     (results :: <deque>, decl :: <pointer-declaration>)
  => (results :: <deque>);
   if (~decl.declared?)
@@ -680,7 +680,7 @@ define method compute-dylan-name
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <vector-declaration>) => (results :: <deque>);
   if (~decl.declared?)
     decl.declared? := #t;
@@ -691,7 +691,7 @@ define method compute-closure
 end method compute-closure;
 
 // Look up the given pointer type in the state's pointer table, and create it
-// if it doesn't yet exist.  
+// if it doesn't yet exist.
 //
 define method pointer-to
     (target-type :: <type-declaration>, state :: <parse-state>)
@@ -701,7 +701,7 @@ define method pointer-to
     found-type;
   else
     let new-type
-      = make(<pointer-declaration>, 
+      = make(<pointer-declaration>,
              name: concatenate(target-type.simple-name, "*"),
              referent: target-type);
     state.pointers[target-type] := new-type;
@@ -712,16 +712,16 @@ end method pointer-to;
 define method vector-of
     (target-type :: <type-declaration>, state :: <parse-state>, #key length = #f)
  => (vector-type :: <vector-declaration>);
-  let found-type = element(state.vectors, 
-                           vector(target-type, length), 
+  let found-type = element(state.vectors,
+                           vector(target-type, length),
                            default: #f);
   if (found-type)
     found-type;
   else
     let new-type
-      = make(<vector-declaration>, length: length, 
-             name: if(length)
-                     format-to-string("%s<@%=>", 
+      = make(<vector-declaration>, length: length,
+             name: if (length)
+                     format-to-string("%s<@%=>",
                                       target-type.simple-name, length)
                    else
                      format-to-string("%s<@>", target-type.simple-name)
@@ -749,9 +749,9 @@ define method canonical-name (decl :: <function-type-declaration>)
   else
     // We need to include the actual parameters eventually.  This is a stopgap
     // to guarantee that all function declarations will end up in the name
-    // table. 
+    // table.
     format-to-string("%s (%s)", decl.result.canonical-name,
-		     decl.simple-name);
+                     decl.simple-name);
   end if;
 end method canonical-name;
 
@@ -761,16 +761,16 @@ define method find-dylan-name
      sealing :: <string>)
  => (result :: <string>);
   find-dylan-name(decl.result, mapper, prefix, #(), read-only,
-		  sealing);
+                  sealing);
   for (elem in decl.parameters)
     if (~instance?(elem, <varargs-declaration>))
       find-dylan-name(elem, mapper, prefix, #(), read-only, sealing);
-    end if; 
+    end if;
   end for;
 
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing));
+                                         read-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
@@ -781,7 +781,7 @@ define method compute-dylan-name
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <function-type-declaration>)
  => (results :: <deque>);
   if (~decl.declared?)
@@ -790,8 +790,8 @@ define method compute-closure
     compute-closure(results, decl.result);
     for (elem in decl.parameters)
       if (~instance?(elem, <varargs-declaration>))
-	compute-closure(results, elem)
-      end if; 
+        compute-closure(results, elem)
+      end if;
     end for;
 
     push-last(results, decl);
@@ -816,7 +816,7 @@ define method compute-dylan-name
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <typedef-declaration>)
  => (results :: <deque>);
   if (~decl.declared?)
@@ -826,7 +826,7 @@ define method compute-closure
 
     // Propagate the typedef name to anonymous (struct, union, enum) types
     if (instance?(decl.type, <structured-type-declaration>)
-	  & decl.type.anonymous?)
+          & decl.type.anonymous?)
       decl.type.simple-name := decl.simple-name;
       decl.type.c-name := decl.simple-name;
       decl.type.anonymous? := #f;
@@ -843,7 +843,7 @@ end method true-type;
 
 define class <incomplete-type-declaration> (<type-declaration>) end class;
 
-define class <predefined-type-declaration> (<type-declaration>) 
+define class <predefined-type-declaration> (<type-declaration>)
   slot type-size-slot :: <integer>, required-init-keyword: #"size";
 end class;
 
@@ -861,90 +861,90 @@ define class <float-type-declaration> (<predefined-type-declaration>)
 end class;
 
 define constant unknown-type = make(<incomplete-type-declaration>,
-				    name: "machine-pointer");
+                                    name: "machine-pointer");
 define constant unsigned-type = make(<incomplete-type-declaration>,
-				     name: "unknown-type");
+                                     name: "unknown-type");
 define constant signed-type = make(<incomplete-type-declaration>,
-				   name: "unknown-type");
+                                   name: "unknown-type");
 define constant void-type = make(<predefined-type-declaration>,
-				 dylan-name: "<void>",
+                                 dylan-name: "<void>",
                                  abstract-type?: #t,
-				 name: "void-type", size: 0);
+                                 name: "void-type", size: 0);
 
 define constant int-type = make(<signed-integer-type-declaration>,
-				accessor: "signed-long-at",
-				name: "int",
-				dylan-name: "<C-signed-int>",
+                                accessor: "signed-long-at",
+                                name: "int",
+                                dylan-name: "<C-signed-int>",
                                 size: $integer-size);
 define constant unsigned-int-type = make(<unsigned-integer-type-declaration>,
-					 accessor: "unsigned-long-at",
-					 name: "unsigned-int",
-					 dylan-name: "<C-unsigned-int>",
-					 size: $integer-size);
+                                         accessor: "unsigned-long-at",
+                                         name: "unsigned-int",
+                                         dylan-name: "<C-unsigned-int>",
+                                         size: $integer-size);
 define constant short-type = make(<signed-integer-type-declaration>,
-				  accessor: "signed-short-at",
-				  name: "short",
-				  dylan-name: "<C-signed-short>",
-				  size: $short-int-size);
+                                  accessor: "signed-short-at",
+                                  name: "short",
+                                  dylan-name: "<C-signed-short>",
+                                  size: $short-int-size);
 define constant unsigned-short-type = make(<unsigned-integer-type-declaration>,
-					   accessor: "unsigned-short-at",
-					   name: "unsigned-short",
-					   dylan-name: "<C-unsigned-short>",
-					   size: $short-int-size);
+                                           accessor: "unsigned-short-at",
+                                           name: "unsigned-short",
+                                           dylan-name: "<C-unsigned-short>",
+                                           size: $short-int-size);
 define constant long-type = make(<signed-integer-type-declaration>,
-				 accessor: "signed-long-at",
-				 name: "long",
-				 dylan-name: "<C-signed-long>",
-				 size: $long-int-size);
+                                 accessor: "signed-long-at",
+                                 name: "long",
+                                 dylan-name: "<C-signed-long>",
+                                 size: $long-int-size);
 define constant unsigned-long-type = make(<unsigned-integer-type-declaration>,
-					  accessor: "unsigned-long-at",
-					  name: "unsigned-long",
-					  dylan-name: "<C-unsigned-long>",
-					  size: $long-int-size);
+                                          accessor: "unsigned-long-at",
+                                          name: "unsigned-long",
+                                          dylan-name: "<C-unsigned-long>",
+                                          size: $long-int-size);
 // "long long" is an idiom supported by gcc, so we'll recognize it, without
 // actually supporting access.
 define constant longlong-type = make(<signed-integer-type-declaration>,
-				     accessor: "longlong-at",
-				     name: "long-long",
-				     dylan-name: "<C-signed-long>", //XXX: broken!
-				     size: $long-int-size * 2);
+                                     accessor: "longlong-at",
+                                     name: "long-long",
+                                     dylan-name: "<C-signed-long>", //XXX: broken!
+                                     size: $long-int-size * 2);
 define constant unsigned-longlong-type = make(<unsigned-integer-type-declaration>,
-					      accessor: "unsigned-longlong-at",
-					      name: "unsigned-long-long",
-					      dylan-name: "<C-unsigned-long>", // XXX: broken too!
-					      size: $longlong-int-size);
+                                              accessor: "unsigned-longlong-at",
+                                              name: "unsigned-long-long",
+                                              dylan-name: "<C-unsigned-long>", // XXX: broken too!
+                                              size: $longlong-int-size);
 define constant char-type = make(<signed-integer-type-declaration>,
-				 accessor: "signed-byte-at",
-				 name: "char",
-				 dylan-name: "<C-signed-char>",
-				 size: $char-size);
+                                 accessor: "signed-byte-at",
+                                 name: "char",
+                                 dylan-name: "<C-signed-char>",
+                                 size: $char-size);
 define constant unsigned-char-type = make(<unsigned-integer-type-declaration>,
-					  accessor: "unsigned-byte-at",
-					  name: "unsigned-char",
-					  dylan-name: "<C-unsigned-char>",
-					  size: $char-size);
+                                          accessor: "unsigned-byte-at",
+                                          name: "unsigned-char",
+                                          dylan-name: "<C-unsigned-char>",
+                                          size: $char-size);
 define constant float-type = make(<float-type-declaration>,
-				  accessor: "float-at",
-				  name: "float",
-				  dylan-name: "<C-float>",
-				  size: $float-size);
+                                  accessor: "float-at",
+                                  name: "float",
+                                  dylan-name: "<C-float>",
+                                  size: $float-size);
 define constant double-type = make(<float-type-declaration>,
-				   accessor: "double-at",
-				   name: "double",
-				   dylan-name: "<C-double>",
-				   size: $double-float-size);
+                                   accessor: "double-at",
+                                   name: "double",
+                                   dylan-name: "<C-double>",
+                                   size: $double-float-size);
 define constant long-double-type = make(<float-type-declaration>,
-					accessor: "long-double-at",
-					name: "long-double",
-					dylan-name: "<C-extended>", // XXX: more brokenness
-					size: $long-double-size);
+                                        accessor: "long-double-at",
+                                        name: "long-double",
+                                        dylan-name: "<C-extended>", // XXX: more brokenness
+                                        size: $long-double-size);
 define constant bool-type = make(<signed-integer-type-declaration>,
                                  accessor: "unsigned-byte-at",
                                  name: "_Bool",
                                  dylan-name: "<C-boolean>",
                                  size: $char-size);
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <predefined-type-declaration>)
  => (results :: <deque>);
   // We don't need to declare it -- it's predefined.
@@ -967,7 +967,7 @@ define class <bitfield-declaration> (<type-declaration>)
   slot bits-in-field :: <integer>, required-init-keyword: #"bits";
   slot base-type :: <type-declaration>, required-init-keyword: #"base";
   slot composite-field :: false-or(<coalesced-bitfields>) = #f;
-  slot start-bit :: <integer> = 0;	// only meaningful if composite ~= #f
+  slot start-bit :: <integer> = 0;        // only meaningful if composite ~= #f
 end class <bitfield-declaration>;
 
 define class <coalesced-bitfields> (<declaration>)
@@ -977,7 +977,7 @@ define class <coalesced-bitfields> (<declaration>)
   constant slot excluded? :: <boolean> = #f; // defer to each field
 end class <coalesced-bitfields>;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <bitfield-declaration>)
  => (results :: <deque>);
   // We don't need to declare it -- we just use <integer>
@@ -993,7 +993,7 @@ define class <function-declaration> (<value-declaration>) end class;
 define class <object-declaration> (<value-declaration>)
   slot equated :: false-or(<string>), init-value: #f;
   slot read-only :: type-union(<boolean>, <empty-list>), init-value: #();
-end class;  
+end class;
 define class <variable-declaration> (<object-declaration>)
   slot getter :: false-or(<string>), init-value: #f;
   slot setter :: false-or(<string>), init-value: #f;
@@ -1018,13 +1018,13 @@ define generic find-parameter (decl :: <declaration>, param :: <object>)
 // Given a function (or function type) declaration, return the declaration
 // corresponding to its result type.
 //
-define generic find-result (decl :: <declaration>) 
+define generic find-result (decl :: <declaration>)
  => (result :: <result-declaration>);
 
 // Flag a function result so that it will be ignored.
 //
 define generic ignored?-setter
-    (value :: <boolean>, decl :: <result-declaration>) 
+    (value :: <boolean>, decl :: <result-declaration>)
  => (result :: <boolean>);
 
 // Sets the "direction" for the given argument.
@@ -1046,7 +1046,7 @@ define method find-dylan-name
   find-dylan-name(decl.type, mapper, prefix, #(), read-only, sealing);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing));
+                                         read-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
@@ -1057,7 +1057,7 @@ define method compute-dylan-name
   mapper(#"function", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <function-declaration>)
  => (results :: <deque>);
   if (~decl.declared?)
@@ -1067,8 +1067,8 @@ define method compute-closure
     compute-closure(results, decl.type.result);
     for (elem in decl.type.parameters)
       if (~instance?(elem, <varargs-declaration>))
-	compute-closure(results, elem)
-      end if; 
+        compute-closure(results, elem)
+      end if;
     end for;
 
     push-last(results, decl);
@@ -1094,7 +1094,7 @@ define method find-dylan-name
   if (decl.sealed-string = "") decl.sealed-string := sealing end if;
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 read-only, sealing));
+                                         read-only, sealing));
 end method find-dylan-name;
 
 define method find-dylan-name
@@ -1106,7 +1106,7 @@ define method find-dylan-name
   find-dylan-name(decl.type, mapper, prefix, #(), rd-only, sealing);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-					 rd-only, sealing));
+                                         rd-only, sealing));
 end method find-dylan-name;
 
 define method compute-dylan-name
@@ -1127,7 +1127,7 @@ define method find-dylan-name
   decl.d-name;
 end method find-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <object-declaration>) => (results :: <deque>);
   if (~decl.declared?)
     decl.declared? := #t;
@@ -1144,7 +1144,7 @@ define method find-dylan-name
  => (result :: <string>);
   if (decl.original-type)
     find-dylan-name(decl.original-type, mapper, prefix, #(), rd-only,
-		    sealing);
+                    sealing);
   end if;
   next-method();
 end method find-dylan-name;
@@ -1156,7 +1156,7 @@ define method compute-dylan-name
   mapper(#"variable", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <result-declaration>)
  => (results :: <deque>);
   // We don't want to declare the args themselves, but we should make sure we
@@ -1164,7 +1164,7 @@ define method compute-closure
   compute-closure(results, decl.type);
 end method compute-closure;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <arg-declaration>)
  => (results :: <deque>);
   // We don't want to declare the args themselves, but we should make sure we
@@ -1180,14 +1180,14 @@ define method find-parameter
  => (result :: <arg-declaration>);
   find-parameter(decl.type, param);
 end method find-parameter;
-  
+
 define method find-parameter
     (decl :: <function-type-declaration>, param :: <integer>)
  => (result :: <arg-declaration>);
   element(decl.parameters, param - 1, default: #f)
     | error("No such parameter: %d.", param);
 end method find-parameter;
-  
+
 define method find-parameter
     (decl :: <function-type-declaration>, param :: <string>)
  => (result :: <arg-declaration>);
@@ -1205,12 +1205,12 @@ define method find-result
     (decl :: <function-declaration>) => (result :: <result-declaration>);
   find-result(decl.type);
 end method find-result;
-  
+
 define method find-result
     (decl :: <function-type-declaration>) => (result :: <result-declaration>);
   decl.result;
 end method find-result;
-  
+
 define method ignored?-setter (value == #t, decl :: <result-declaration>)
  => (result :: <boolean>);
   decl.type := void-type;
@@ -1244,15 +1244,15 @@ define method compute-dylan-name
     (decl :: <enum-slot-declaration>, mapper :: <function>, prefix :: <string>,
      containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
-  
+
   // (Do not emit container prefixes for enum constants. C semantics
   // put all enums in the global namespace.)
-  
+
   ignore(containers);
   mapper(#"constant", prefix, decl.simple-name, #());
 end method compute-dylan-name;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <enum-slot-declaration>) => (results :: <deque>);
   if (~decl.declared?)
     decl.declared? := #t;
@@ -1284,13 +1284,13 @@ define method add-cpp-declaration
     let value = parse-macro(macro-name, state);
     state.objects[macro-name] :=
       add-declaration(state, make(<macro-declaration>, name: macro-name,
-				  value: value));
+                                  value: value));
   exception (<error>)
     #f;
   end block;
 end method add-cpp-declaration;
 
-define method compute-closure 
+define method compute-closure
     (results :: <deque>, decl :: <macro-declaration>) => (results :: <deque>);
   if (~decl.declared?)
     decl.declared? := #t;
@@ -1310,11 +1310,11 @@ define method compute-dylan-name
   // We should only use #"constant" if we are renaming a constant or have an
   // actual constant value
   let category = select (decl.constant-value by instance?)
-		   <constant-declaration> => #"constant";
-		   <type-declaration> => #"type";
-		   <value-declaration> => #"variable";
-		   otherwise => #"constant";
-		 end select;
+                   <constant-declaration> => #"constant";
+                   <type-declaration> => #"type";
+                   <value-declaration> => #"variable";
+                   otherwise => #"constant";
+                 end select;
   mapper(category, prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 

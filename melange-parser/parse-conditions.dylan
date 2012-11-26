@@ -55,15 +55,15 @@ define abstract class <parse-condition> (<condition>)
 end;
 
 define class <format-string-parse-condition> (<format-string-condition>,
-					      <parse-condition>)
+                                              <parse-condition>)
 end;
 
 define class <simple-parse-error> (<error>,
-				   <format-string-parse-condition>)
+                                   <format-string-parse-condition>)
 end;
 
 define class <simple-parse-warning> (<warning>,
-				     <format-string-parse-condition>)
+                                     <format-string-parse-condition>)
 end;
 
 define class <parse-progress-report> (<format-string-parse-condition>)
@@ -77,11 +77,11 @@ end;
 //======================================================================
 //  Establish a default parse context to use when none is supplied.
 
-define function push-default-parse-context(context) => ()
+define function push-default-parse-context (context) => ()
   push(*default-parse-context*, context);
 end;
 
-define function pop-default-parse-context() => (context);
+define function pop-default-parse-context () => (context);
   pop(*default-parse-context*);
 end;
 
@@ -90,9 +90,9 @@ define macro with-default-parse-context
   { with-default-parse-context (?context:expression) ?:body end }
     => { push-default-parse-context(?context);
          block ()
-	   ?body;
-	 cleanup
-	   pop-default-parse-context();
+           ?body;
+         cleanup
+           pop-default-parse-context();
          end }
 end;
 */
@@ -102,7 +102,7 @@ end;
 //======================================================================
 //  Replacements for error, signal, etc.
 
-define function find-source-location(context)
+define function find-source-location (context)
   => (loc :: <source-location>)
   let effective-context = context | *default-parse-context*[0];
   if (effective-context)
@@ -118,34 +118,34 @@ define function parse-error
   force-output(*standard-output*);
   force-output(*standard-error*);
   error(make(<simple-parse-error>,
-	     source-location: find-source-location(context),
-	     format-string: format-string,
-	     format-arguments: format-args));
+             source-location: find-source-location(context),
+             format-string: format-string,
+             format-arguments: format-args));
 end function parse-error;
 
 define function parse-warning
     (context, format-string, #rest format-args)
   signal(make(<simple-parse-warning>,
-	      source-location: find-source-location(context),
-	      format-string: format-string,
-	      format-arguments: format-args));
+              source-location: find-source-location(context),
+              format-string: format-string,
+              format-arguments: format-args));
 end function;
 
 define function parse-progress-report
     (context, format-string, #rest format-args)
   signal(make(<parse-progress-report>,
-	      source-location: find-source-location(context),
-	      format-string: format-string,
-	      format-arguments: format-args));
+              source-location: find-source-location(context),
+              format-string: format-string,
+              format-arguments: format-args));
 end function;
 
 define function parse-header-progress-report
     (context, format-string, #rest format-args)
   signal(make(<parse-progress-report>,
               level: $parse-progress-level-headers,
-	      source-location: find-source-location(context),
-	      format-string: format-string,
-	      format-arguments: format-args));
+              source-location: find-source-location(context),
+              format-string: format-string,
+              format-arguments: format-args));
 end function;
 
 
@@ -168,12 +168,12 @@ define method print-message
      #next next-method)
  => ();
   describe-source-location(parse-condition.parse-condition-source-location,
-			   stream);
+                           stream);
   apply(format, stream, parse-condition.condition-format-string,
-	parse-condition.condition-format-arguments);
+        parse-condition.condition-format-arguments);
 end method print-message;
 
-define method default-handler(condition :: <parse-progress-report>)
+define method default-handler (condition :: <parse-progress-report>)
   if (*show-parse-progress-level* >= condition.parse-progress-level)
     format(*standard-output*, "%s\n", condition);
   end;
