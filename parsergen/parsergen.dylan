@@ -975,8 +975,6 @@ define function emit-parser
       tokens[token.token-id] := token;
     end for;
     format(ofile, "define constant $action-bits = 2;\n");
-    format(ofile,
-           "define constant $action-mask = ash(1, $action-bits) - 1;\n\n");
     format(ofile, "define constant $error-action = 0;\n");
     format(ofile, "define constant $accept-action = 1;\n");
     format(ofile, "define constant $reduce-action = 2;\n");

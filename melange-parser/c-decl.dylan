@@ -94,6 +94,8 @@ define abstract class <declaration> (<object>)
     init-value: #f, init-keyword: abstract-type?:;
 end class <declaration>;
 
+ignore(abstract-type?);
+
 define abstract class <typed> (<object>)
   slot type :: <type-declaration>, required-init-keyword: #"type";
 end class <typed>;
@@ -547,6 +549,9 @@ define class <pointer-declaration> (<new-static-pointer>, <type-declaration>)
   slot accessors-written?, init-value: #f;
 end class;
 
+ignore(accessors-written?);
+ignore(accessors-written?-setter);
+
 define class <vector-declaration> (<new-static-pointer>, <type-declaration>)
   constant slot pointer-equiv :: <type-declaration>, required-init-keyword: #"equiv";
   constant slot length :: false-or(<integer>),
@@ -817,6 +822,8 @@ define class <integer-type-declaration> (<predefined-type-declaration>)
   constant slot accessor-name :: <string>, required-init-keyword: #"accessor";
 end class;
 
+ignore(accessor-name);
+
 define class <signed-integer-type-declaration>   (<integer-type-declaration>) end class;
 define class <unsigned-integer-type-declaration> (<integer-type-declaration>) end class;
 
@@ -933,6 +940,10 @@ define class <bitfield-declaration> (<type-declaration>)
   slot composite-field :: false-or(<coalesced-bitfields>) = #f;
   slot start-bit :: <integer> = 0;        // only meaningful if composite ~= #f
 end class <bitfield-declaration>;
+
+ignore(base-type);
+ignore(composite-field);
+ignore(start-bit);
 
 define class <coalesced-bitfields> (<declaration>)
   slot type :: <predefined-type-declaration> = unsigned-long-type;
