@@ -57,7 +57,7 @@ define abstract class <grammar-symbol> (<object>)
   slot grammar-symbol-nullable :: <boolean> = #f;
   //
   // The symbol name for this grammar symbol.
-  slot grammar-symbol-name :: <symbol>, required-init-keyword: #"name";
+  constant slot grammar-symbol-name :: <symbol>, required-init-keyword: #"name";
   //
   // The type for this grammar symbol, or #f if not specified.
   slot grammar-symbol-type :: false-or(<symbol>) = #f, init-keyword: #"type";
@@ -113,7 +113,7 @@ end method print-message;
 
 define class <production> (<object>)
   //
-  // Small integer uniquely identifing this production.
+  // Small integer uniquely identifying this production.
   constant slot production-number :: <integer>,
     required-init-keyword: #"number";
   //
@@ -262,11 +262,11 @@ end function item-sets-=;
 
 define class <state> (<object>)
   //
-  // Small integer uniquly identifing this state.
-  slot state-number :: <integer> = 0, init-keyword: #"number";
+  // Small integer uniquely identifying this state.
+  constant slot state-number :: <integer> = 0, required-init-keyword: #"number";
   //
   // List of kernel states.
-  slot state-kernels :: <item-set>, required-init-keyword: #"kernels";
+  constant slot state-kernels :: <item-set>, required-init-keyword: #"kernels";
   //
   // A-list mapping grammar symbols to next states.
   slot state-gotos :: <list> = #();
@@ -420,12 +420,6 @@ define inline function map-items
     grovel(item.item-production, item.item-dot-position);
   end for;
 end function map-items;
-
-define function item-equal (item-1 :: <item>, item-2 :: <item>)
- => answer :: <boolean>;
-  item-1.item-production == item-2.item-production
-     & item-1.item-dot-position = item-2.item-dot-position;
-end function item-equal;
 
 define function find-kernel-item
     (production :: <production>, dot-position :: <integer>)
