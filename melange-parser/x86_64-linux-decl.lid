@@ -1,7 +1,7 @@
 library: melange-c
 unique-id-base: 10000
 target-type: dll
-files: c-exports
+files: library
        source-location
        parse-conditions
        multistring

@@ -1,5 +1,5 @@
 library: melange
-files: exports
+files: library
        int-parse
        interface
        name-map
