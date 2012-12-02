@@ -18,7 +18,7 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
   register-written-name(back-end.written-names, decl.dylan-name, decl);
   if (decl.superclasses)
     format(back-end.stream, "define C-subtype %s (%s) end;\n",
-           decl.dylan-name, apply(join, ", ", decl.superclasses));
+           decl.dylan-name, join(decl.superclasses, ", "));
   else
     let stream = back-end.stream;
     format(stream, "define C-struct %s\n", decl.dylan-name);
@@ -75,7 +75,7 @@ define method write-declaration (decl :: <union-declaration>, back-end :: <c-ffi
   register-written-name(back-end.written-names, decl.dylan-name, decl);
   if (decl.superclasses)
     format(back-end.stream, "define C-subtype %s (%s) end;\n",
-           decl.dylan-name, apply(join, ", ", decl.superclasses));
+           decl.dylan-name, join(decl.superclasses, ", "));
   else
     let stream = back-end.stream;
     format(stream, "define C-union %s\n", decl.dylan-name);
