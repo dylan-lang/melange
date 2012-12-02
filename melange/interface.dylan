@@ -703,10 +703,6 @@ end method show-help;
 // results to *standard-output*.  The user may also specify additional
 // "include" directories by means of a "-Idirectory" switch.
 //
-// If no argument are specified, we drop into the debugger.  This is quite
-// useful for testing purposes, but when we hit the final release we will want
-// to print out a "help" line instead.
-//
 
 define method main (program, args)
   // Describe our arguments and create appropriate parser objects.
