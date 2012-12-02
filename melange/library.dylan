@@ -50,7 +50,7 @@ define library melange
   use command-line-parser;
   use strings;
   use regular-expressions;
-  use melange-c;
+  use melange-core;
   export
     name-mappers;
 end library melange;

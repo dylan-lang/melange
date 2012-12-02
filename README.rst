@@ -14,7 +14,7 @@ the submodules present.
 ::
 
     dylan-compiler -build parsergen
-    _build/bin/parsergen melange-parser/c-parse.input melange-parser/c-parse.dylan
+    _build/bin/parsergen melange-core/c-parse.input melange-core/c-parse.dylan
     _build/bin/parsergen melange/int-parse.input melange/int-parse.dylan
     dylan-compiler -build melange
 

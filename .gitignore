@@ -1,4 +1,4 @@
 *.hdp
 _build
-melange-parser/c-parse.dylan
+melange-core/c-parse.dylan
 melange/int-parse.dylan

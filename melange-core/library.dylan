@@ -4,7 +4,7 @@ copyright: See LICENSE file in this distribution.
            University.  If you are interested in using this code, contact
            "Scott.Fahlman@cs.cmu.edu" (Internet).
 
-define library melange-c
+define library melange-core
   use dylan;
   use common-dylan;
   use collection-extensions;
@@ -24,7 +24,7 @@ define library melange-c
     c-lexer,
     c-declarations,
     portability;
-end library melange-c;
+end library melange-core;
 
 define module source-locations
   use common-dylan, exclude: { format-to-string };
