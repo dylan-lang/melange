@@ -26,7 +26,7 @@ we might use the following interface definition:
        function "ReadInts1",
           output-argument: 1;
        function "ReadInts2" => Read-Integers-Vector,
-       output-argument: Count;
+          output-argument: Count;
     end interface;
 
 This would produce two functions, both of which take 0
@@ -107,7 +107,7 @@ the options, as they might be applied to the functions:
 
 .. code-block:: c
 
-    extern struct object *bar(int first, int *second,struct object **third);
+    extern struct object *bar(int first, int *second, struct object **third);
     extern baz(char first, struct object *second);
 
 .. code-block:: dylan
