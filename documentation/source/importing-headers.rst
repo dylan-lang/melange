@@ -89,7 +89,7 @@ should be used with care, as they can easily result in
 types which are not defined. This could result in errors in the
 generated Dylan code. (The ``import: file => none`` option
 described above is a safer way of achieving an effect similar to
-``exclude-file:``
+``exclude-file:``.)
 
 You may also prevent some type declarations from being
 imported by using the ``equate:`` option (described in a later
