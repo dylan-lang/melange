@@ -28,10 +28,10 @@ Specifying low level transformations
 
 The target Dylan type for "low level" translations is
 typically chosen automatically by Melange. Integer and
-enumeration types are translated into <integer>;
-floating point types are translated to <float>; and all
+enumeration types are translated into ``<integer>``;
+floating point types are translated to ``<float>``; and all
 other types are translated into newly created subclasses of
-<statically-typed-pointer>. However, you may explicitly
+``<statically-typed-pointer>``. However, you may explicitly
 declare the target Dylan type for any C type by means of an
 ``equate:`` option:
 
@@ -65,7 +65,7 @@ below.)
 Note also that two types with identical purposes will
 not necessarily have identical representations. For example,
 C's boolean types are simple integers and are not equivalent
-to Dylan's <boolean>. Again, explicit "mapping" may be
+to Dylan's ``<boolean>``. Again, explicit "mapping" may be
 used to transform between these two representations.
 
 In the current implementation, an ``equate:`` option only
