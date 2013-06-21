@@ -345,7 +345,7 @@ define generic find-slot
  => (result :: <declaration>);
 
 // Removes any slots which were explicitly excluded or, if import-all? is
-// false, which are not explictly imported.
+// false, which are not explicitly imported.
 //
 define generic exclude-slots
     (decl :: <structured-type-declaration>,
