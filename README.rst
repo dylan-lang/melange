@@ -18,11 +18,9 @@ the submodules present.
     _build/bin/parsergen melange/int-parse.input melange/int-parse.dylan
     dylan-compiler -build melange
 
-You should be using a pre-release build of Open Dylan 2012.1 from
-October 15, 2012 or later.
+You should be using Open Dylan 2012.1 or later.
 
 Usage
 -----
 
-The documentation for this tool will be ported in the future.
-
+The documentation for this tool is available at http://opendylan.org/documentation/melange/.
