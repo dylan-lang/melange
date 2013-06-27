@@ -4,3 +4,9 @@
 [submodule "ext/command-line-parser"]
 	path = ext/command-line-parser
 	url = git://github.com/dylan-lang/command-line-parser.git
+[submodule "ext/xml-parser"]
+	path = ext/xml-parser
+	url = https://github.com/dylan-lang/xml-parser.git
+[submodule "ext/meta"]
+	path = ext/meta
+	url = https://github.com/dylan-lang/meta.git
