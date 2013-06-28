@@ -281,6 +281,9 @@ define method process-declarator
       for (tp = tp
              then if (ptr ~= #"pointer")
                     parse-error(state, "unknown type modifier");
+                  elseif (instance?(tp, <function-type-declaration>))
+                    // We don't want this pointer when it is a function pointer.
+                    tp;
                   else
                     pointer-to(tp, state);
                   end if,
@@ -342,7 +345,17 @@ define method process-declarator
 //      let new-type = make(<function-type-declaration>,
 //                          name: new-name.value,
 
-      let new-type = make(<function-type-declaration>, name: anonymous-name(),
+      let nested-type = declarator.tail.tail;
+      let new-name = if (instance?(nested-type, <pair>) &
+                         instance?(nested-type.head, <list>) &
+                         nested-type.head.size == 1 &
+                         nested-type.head.head == #"pointer" &
+                         instance?(nested-type.tail, <identifier-token>))
+                       nested-type.tail.value
+                     else
+                       anonymous-name()
+                     end if;
+      let new-type = make(<function-type-declaration>, name: new-name,
                           result: make(<result-declaration>,
                                        name: "result", type: tp),
                           params: real-params);
