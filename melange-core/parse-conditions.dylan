@@ -176,5 +176,6 @@ end method print-message;
 define method default-handler (condition :: <parse-progress-report>)
   if (*show-parse-progress-level* >= condition.parse-progress-level)
     format(*standard-output*, "%s\n", condition);
+    force-output(*standard-output*);
   end;
 end method default-handler;
