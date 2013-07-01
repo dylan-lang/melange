@@ -114,7 +114,7 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   format(stream, "define C-function %s\n", decl.dylan-name);
   for (param in decl.type.parameters)
     unless (instance?(param, <varargs-declaration>))
-      format(stream, "  %s parameter %s :: %s;\n",
+      format(stream, "  %s parameter %s_ :: %s;\n",
              select (param.direction)
                #"default", #"in" => "input";
                #"out" => "output";
