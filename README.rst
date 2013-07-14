@@ -14,11 +14,11 @@ the submodules present.
 ::
 
     dylan-compiler -build parsergen
-    _build/bin/parsergen melange-core/c-parse.input melange-core/c-parse.dylan
-    _build/bin/parsergen melange/int-parse.input melange/int-parse.dylan
+    bin/parsergen melange-core/c-parse.input melange-core/c-parse.dylan
+    bin/parsergen melange/int-parse.input melange/int-parse.dylan
     dylan-compiler -build melange
 
-You should be using Open Dylan 2012.1 or later.
+You should be using Open Dylan 2013.1 or later.
 
 Usage
 -----
