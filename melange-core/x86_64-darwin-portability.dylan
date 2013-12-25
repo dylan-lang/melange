@@ -33,7 +33,6 @@ define constant $default-defines
 
       "__APPLE_CC__", "5621",
       "__APPLE__", "1",
-      "__BLOCKS__", "1",
       "__DYNAMIC__", "1",
       "__GNUC_MINOR__", "2",
       "__GNUC_PATCHLEVEL__", "1",
