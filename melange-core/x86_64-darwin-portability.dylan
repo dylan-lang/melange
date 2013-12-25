@@ -15,40 +15,28 @@ copyright: See LICENSE file in this distribution.
 //======================================================================
 
 // Many of these can be found from
-// cpp -dM /dev/null
+// clang -dM -E -x c /dev/null
 
 define constant $default-defines
   = #[
-      // Basics
-      "const", "",
-      "volatile", "",
-      "restrict", "",
-      "__restrict", "",
-
-      "__APPLE__", "1",
       "__APPLE_CC__", "5621",
+      "__APPLE__", "1",
+      "__BLOCKS__", "1",
       "__DYNAMIC__", "1",
       "__GNUC_MINOR__", "2",
       "__GNUC_PATCHLEVEL__", "1",
       "__GNUC__", "4",
-      "__i386", "1",
-      "__i386__", "1",
       "__LITTLE_ENDIAN__", "1",
+      "__LP64__", "1",
       "__MACH__", "1",
       "__STDC__", "1",
       "__STDC_VERSION__", "199901L",
-      "i386", "1",
-      "__signed__", "",
-      "__signed", "",
-      "__inline__", "",
-      "__inline", "",
-      "__builtin_va_list", "void*",
-
-      // Parameterized macros which remove various GCC extensions from our
-      // source code. The last item in the list is the right-hand side of
-      // the define; all the items preceding it are named parameters.
-      "__attribute__", #(#("x"), ""),
-      "__asm", #(#("x"), "")
+      "__apple_build_version__", "5000279",
+      "__clang__", "1",
+      "__clang_major__", "5",
+      "__clang_minor__", "0",
+      "__x86_64", "1",
+      "__x86_64__", "1"
       ];
 
 // Set up the search path for .h files
