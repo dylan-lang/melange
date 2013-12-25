@@ -19,6 +19,18 @@ copyright: See LICENSE file in this distribution.
 
 define constant $default-defines
   = #[
+      // Basics
+      "const", "",
+      "volatile", "",
+      "restrict", "",
+      "__restrict", "",
+      "__signed__", "",
+      "__signed", "",
+      "__inline__", "",
+      "__inline", "",
+      "__builtin_va_list", "void*",
+      "__global", "",
+
       "__APPLE_CC__", "5621",
       "__APPLE__", "1",
       "__BLOCKS__", "1",
@@ -36,7 +48,14 @@ define constant $default-defines
       "__clang_major__", "5",
       "__clang_minor__", "0",
       "__x86_64", "1",
-      "__x86_64__", "1"
+      "__x86_64__", "1",
+
+      // Parameterized macros which remove various GCC extensions from our
+      // source code. The last item in the list is the right-hand side of
+      // the define; all the items preceding it are named parameters.
+      "__declspec", #(#("x"), ""),
+      "__attribute__", #(#("x"), ""),
+      "__asm", #(#("x"), "")
       ];
 
 // Set up the search path for .h files
