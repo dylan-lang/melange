@@ -1,4 +1,4 @@
-library: melange-c
+library: melange-core
 unique-id-base: 10000
 target-type: dll
 files: library
