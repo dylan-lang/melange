@@ -224,6 +224,7 @@ define method process-type-list
               <unsigned-token> =>
                 select (type)
                   unknown-type => unsigned-type;
+                  longlong-type => unsigned-longlong-type;
                   long-type => unsigned-long-type;
                   char-type => unsigned-char-type;
                   short-type => unsigned-short-type;
