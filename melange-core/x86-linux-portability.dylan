@@ -54,7 +54,6 @@ define constant $default-defines
 
 define constant linux-include-directories
   = #["/usr/local/include",
-      "/usr/include/linux",
       "/usr/include"];
 
 add-to-include-path(linux-include-directories);
