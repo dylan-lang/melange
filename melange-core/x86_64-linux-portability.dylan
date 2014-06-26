@@ -12,7 +12,7 @@ copyright: See LICENSE file in this distribution.
 // compilation environment for an Intel x86 running Linux 2.x.x.
 //======================================================================
 
-define constant $default-defines
+define constant $melange-defines
   = #["const", "",
       "volatile", "",
       "restrict", "",
@@ -49,9 +49,11 @@ define constant $default-defines
       "__linux", "",
       "__builtin_va_list", "void*"];
 
+define constant $default-defines
+  = concatenate($melange-defines, get-compiler-defines("gcc -dM -E - < /dev/null"));
+
 define constant linux-include-directories
   = #["/usr/local/include",
-      "/usr/include/linux",
       "/usr/include"];
 
 add-to-include-path(linux-include-directories);
