@@ -85,6 +85,14 @@ define constant hyphenate-case-breaks =
 // "Standard" methods for map-name
 //----------------------------------------------------------------------
 
+define function append-dylan-name!
+    (buffer :: <stretchy-vector>, name :: <string>)
+  for (non-underline = #f then non-underline | char ~= '_',
+       char in name)
+    add!(buffer, if (non-underline & char == '_') '-' else char end if);
+  end for;
+end function;
+
 define method map-name
     (selector == #"minimal-name-mapping-with-structure-prefix",
      category :: <symbol>, prefix :: <string>, name :: <string>,
@@ -100,14 +108,11 @@ define method map-name
 
   append!(buffer, prefix);
   for (cls in sequence-of-classes)
-    append!(buffer, cls);
+    append-dylan-name!(buffer, cls);
     add!(buffer, '$');
   end for;
 
-  for (non-underline = #f then non-underline | char ~= '_',
-       char in name)
-    add!(buffer, if (non-underline & char == '_') '-' else char end if);
-  end for;
+  append-dylan-name!(buffer, name);
 
   if (category == #"type") add!(buffer, '>') end if;
   as(<byte-string>, buffer);
@@ -128,10 +133,7 @@ define method map-name
 
   append!(buffer, prefix);
 
-  for (non-underline = #f then non-underline | char ~= '_',
-       char in name)
-    add!(buffer, if (non-underline & char == '_') '-' else char end if);
-  end for;
+  append-dylan-name!(buffer, name);
 
   if (category == #"type") add!(buffer, '>') end if;
   as(<byte-string>, buffer);
@@ -156,10 +158,7 @@ define method map-name
     append!(buffer, "get-");
   end if;
 
-  for (non-underline = #f then non-underline | char ~= '_',
-       char in hyphenate-case-breaks(name))
-    add!(buffer, if (non-underline & char == '_') '-' else char end if);
-  end for;
+  append-dylan-name!(buffer, hyphenate-case-breaks(name));
 
   if (category == #"type") add!(buffer, '>') end if;
   as(<byte-string>, buffer);
