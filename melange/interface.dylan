@@ -251,6 +251,9 @@ define method process-clause
         equate(decl.find-result, body);
       #"map-result" =>
         remap(decl.find-result, body);
+      #"map-error-result" =>
+        if (body) decl.find-result.error-result? := #t end if;
+        remap(decl.find-result, body);
       #"ignore-result" =>
         if (body) decl.find-result.ignored? := #t end if;
       #"equate-arg" =>

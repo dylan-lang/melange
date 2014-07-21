@@ -277,6 +277,8 @@ define constant <source-location> = false-or(<parse-state>);
 :token <rbrace-token> <punctuation-token>
 :token <arrow-token> <punctuation-token>
 
+:token <map-error-result-token> <reserved-word-token>
+
 :union LITERAL <literal-token>
     (<integer-token> <character-token> <string-literal-token>
      <symbol-literal-token> <true-token> <false-token>)
@@ -559,6 +561,10 @@ function-option (<map-result-token> <identifier-token>)
 
 function-option (<equate-result-token> <identifier-token>)
   pair(#"equate-result", %2.string-value);
+%
+
+function-option (<map-error-result-token> <identifier-token>)
+  pair(#"map-error-result", %2.string-value);
 %
 
 function-option (<ignore-result-token> BOOLEAN)
