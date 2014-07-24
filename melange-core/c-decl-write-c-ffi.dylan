@@ -101,8 +101,22 @@ define method write-declaration (decl :: <pointer-declaration>, back-end :: <c-f
  => ();
   unless (decl.dylan-name = decl.referent.dylan-name)
     register-written-name(back-end.written-names, decl.dylan-name, decl);
-    format(back-end.stream, "define C-pointer-type %s => %s;\n",
-           decl.dylan-name, decl.referent.dylan-name);
+
+    let stream = back-end.stream;
+
+    if (decl.superclasses)
+      let dylan-temp-name = concatenate("<_", decl.simple-name, ">");
+      format(stream, "define C-pointer-type %s => %s;\n", dylan-temp-name, decl.referent.dylan-name);
+
+      let supers = remove!(decl.superclasses, "<statically-typed-pointer>", test: \=);
+      supers := add!(supers, dylan-temp-name);
+      format(stream, "define C-subtype %s (%s) end;\n\n",
+             decl.dylan-name, join(supers, ", "));
+
+    else
+      format(stream, "define C-pointer-type %s => %s;\n",
+             decl.dylan-name, decl.referent.dylan-name);
+    end if;
   end;
 end;
 
