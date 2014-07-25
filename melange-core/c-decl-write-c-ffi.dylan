@@ -139,7 +139,11 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   end;
   let result = decl.type.result;
   if (result.type ~= void-type)
-    format(stream, "  result res :: %s;\n", result.mapped-name);
+    if (~result.error-result?)
+      format(stream, "  result res :: %s;\n", result.mapped-name);
+    else
+      format(stream, "  error-result res :: %s;\n", result.mapped-name);
+    end if;
   end;
   format(stream, "  c-name: \"%s\";\n", decl.simple-name);
   format(stream, "end;\n\n");

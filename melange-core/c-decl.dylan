@@ -976,7 +976,9 @@ end class;
 define class <slot-declaration> (<object-declaration>)
   slot excluded? :: <boolean>, init-value: #f, init-keyword: #"excluded?";
 end class;
-define class <result-declaration> (<object-declaration>) end class;
+define class <result-declaration> (<object-declaration>)
+  slot error-result? :: <boolean>, init-value: #f, init-keyword: #"error-result?";
+end class;
 define class <arg-declaration> (<object-declaration>)
   slot direction :: <symbol>, init-value: #"default";
   constant slot original-type :: false-or(<type-declaration>),

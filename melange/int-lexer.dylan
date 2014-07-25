@@ -192,6 +192,8 @@ define token <lbrace-token> :: <punctuation-token> = 55;
 define token <rbrace-token> :: <punctuation-token> = 56;
 define token <arrow-token> :: <punctuation-token> = 57;
 
+define token <map-error-result-token> :: <reserved-word-token> = 58;
+
 define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
 define sealed generic parse-error
@@ -373,6 +375,7 @@ define constant reserved-words
            "function", <function-token>,
            "map-result:", <map-result-token>,
            "equate-result:", <equate-result-token>,
+           "map-error-result:", <map-error-result-token>,
            "ignore-result:", <ignore-result-token>,
            "map-argument:", <map-argument-token>,
            "equate-argument:", <equate-argument-token>,
@@ -696,6 +699,8 @@ define sealed domain make(singleton(<function-token>));
 define sealed domain make(singleton(<map-result-token>));
 // <equate-result-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<equate-result-token>));
+// <map-error-result-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<map-error-result-token>));
 // <ignore-result-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<ignore-result-token>));
 // <map-argument-token> -- subclass of <reserved-word-token>

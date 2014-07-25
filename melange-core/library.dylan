@@ -203,7 +203,7 @@ define module c-declarations
     write-declaration,
 
     // Miscellaneous
-    getter, setter, sealed-string, excluded?,
+    getter, setter, sealed-string, excluded?, error-result?, error-result?-setter,
     declarations, *inhibit-struct-accessors?*,
     make-backend-for-target, written-names;
 end module c-declarations;

@@ -75,7 +75,7 @@ define module int-lexer
     <name-mapper-token>, <import-token>, <prefix-token>, <exclude-token>,
     <exclude-file-token>, <rename-token>, <mapping-token>, <equate-token>,
     <superclass-token>, <all-token>, <all-recursive-token>, <none-token>,
-    <function-token>, <map-result-token>, <equate-result-token>,
+    <function-token>, <map-result-token>, <equate-result-token>, <map-error-result-token>,
     <ignore-result-token>, <map-argument-token>, <equate-argument-token>,
     <input-argument-token>, <output-argument-token>,
     <input-output-argument-token>, <struct-token>, <union-token>,
