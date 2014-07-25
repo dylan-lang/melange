@@ -68,6 +68,13 @@ following:
    ``void``. Although you may specify any boolean literal, the
    only meaningful value is ``#t``.
 
+``map-error-result:``
+   specifies that ``import-value`` should be called to map the result value to
+   the named type, but the actual result value should be ignored. This is
+   useful for wrapping C APIs which return error codes that should signal
+   conditions when an error occurs.
+
+
 ``equate-argument:``
    overrides the default interpretation of some
    argument's type. The argument may be specified by name or
