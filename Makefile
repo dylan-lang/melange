@@ -1,5 +1,7 @@
 PARSERGEN = _build/bin/parsergen
 MELANGE = _build/bin/melange
+DESTDIR ?= /usr/local
+INSTALLDIR = $(DESTDIR)/libexec/melange
 
 .PHONY: parsergen melange check clean all
 
@@ -27,3 +29,9 @@ clean:
 	rm -f melange-core/c-parse.dylan
 	rm -f melange/int-parse.dylan
 
+install:
+	install -d $(INSTALLDIR) $(INSTALLDIR)/bin $(INSTALLDIR)/lib
+	cp -rp _build/bin/melange* $(INSTALLDIR)/bin
+	cp -rp _build/lib/* $(INSTALLDIR)/lib
+	install -d $(DESTDIR)/bin
+	ln -s $(INSTALLDIR)/bin/melange $(DESTDIR)/bin/melange
