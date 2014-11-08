@@ -29,9 +29,9 @@ clean:
 	rm -f melange-core/c-parse.dylan
 	rm -f melange/int-parse.dylan
 
-install:
+install: melange
 	install -d $(INSTALLDIR) $(INSTALLDIR)/bin $(INSTALLDIR)/lib
 	cp -rp _build/bin/melange* $(INSTALLDIR)/bin
 	cp -rp _build/lib/* $(INSTALLDIR)/lib
 	install -d $(DESTDIR)/bin
-	ln -s $(INSTALLDIR)/bin/melange $(DESTDIR)/bin/melange
+	ln -sf $(INSTALLDIR)/bin/melange $(DESTDIR)/bin/melange
