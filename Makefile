@@ -2,6 +2,7 @@ PARSERGEN = _build/bin/parsergen
 MELANGE = _build/bin/melange
 DESTDIR ?= /usr/local
 INSTALLDIR = $(DESTDIR)/libexec/melange
+GENERATED_PARSERS=melange-core/c-parse.dylan melange/int-parse.dylan
 
 .PHONY: parsergen melange check clean all
 
@@ -9,7 +10,7 @@ all: melange
 parsergen: $(PARSERGEN)
 melange: $(MELANGE)
 
-$(PARSERGEN):
+$(PARSERGEN): $(wildcard parsergen/*.dylan)
 	dylan-compiler -build parsergen
 
 melange-core/c-parse.dylan: melange-core/c-parse.input $(PARSERGEN)
@@ -18,7 +19,7 @@ melange-core/c-parse.dylan: melange-core/c-parse.input $(PARSERGEN)
 melange/int-parse.dylan: melange/int-parse.input $(PARSERGEN)
 	$(PARSERGEN) melange/int-parse.input melange/int-parse.dylan
 
-$(MELANGE): melange-core/c-parse.dylan melange/int-parse.dylan
+$(MELANGE): $(GENERATED_PARSERS) $(wildcard melange/*.dylan) $(wildcard melange-core/*.dylan)
 	dylan-compiler -build melange
 
 check: $(MELANGE)
