@@ -297,5 +297,6 @@ define function lisp-read (stream :: <stream>) => obj :: <object>;
       end while;
       assert(lex(stream) == $rparen);
       as(<list>, vec);
+    <macro-thingy> => error("Unexpected token: '%='", looks-like(token));
   end select;
 end function lisp-read;
