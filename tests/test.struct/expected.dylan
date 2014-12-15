@@ -10,3 +10,8 @@ define C-struct <c-b>
   slot b-d :: <C-double>;
 end;
 
+define C-struct <read-only>
+  constant slot read-only$a :: <C-signed-int>;
+  constant slot read-only$b :: <C-float>;
+end;
+
