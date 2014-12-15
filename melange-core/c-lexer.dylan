@@ -183,69 +183,71 @@ define /* exported */ token <double-token> :: <type-specifier-token> = 19;
 // define class <volatile-token> (<reserved-word-token>) end class;
 define /* exported */ token <void-token> :: <type-specifier-token> = 20;
 define /* exported */ token <bool-token> :: <type-specifier-token> = 21;
-define token <inline-token> :: <reserved-word-token> = 22;
-define token <extern-token> :: <reserved-word-token> = 23;
-define token <static-token> :: <reserved-word-token> = 24;
-define token <auto-token> :: <reserved-word-token> = 25;
-define token <register-token> :: <reserved-word-token> = 26;
-define token <dummy-token> :: <reserved-word-token> = 27;
-define /* exported */ token <union-token> :: <reserved-word-token> = 28;
-define /* exported */ token <enum-token> :: <reserved-word-token> = 29;
-define token <constant-token> :: <reserved-word-token> = 30;
-define token <mul-assign-token> :: <reserved-word-token> = 31;
-define token <div-assign-token> :: <reserved-word-token> = 32;
-define token <mod-assign-token> :: <reserved-word-token> = 33;
-define token <add-assign-token> :: <reserved-word-token> = 34;
-define token <sub-assign-token> :: <reserved-word-token> = 35;
-define token <left-assign-token> :: <reserved-word-token> = 36;
-define token <right-assign-token> :: <reserved-word-token> = 37;
-define token <and-assign-token> :: <reserved-word-token> = 38;
-define token <xor-assign-token> :: <reserved-word-token> = 39;
-define token <or-assign-token> :: <reserved-word-token> = 40;
+define /* exported */ token <size-t-token> :: <type-specifier-token> = 22;
+define /* exported */ token <ssize-t-token> :: <type-specifier-token> = 23;
+define token <inline-token> :: <reserved-word-token> = 24;
+define token <extern-token> :: <reserved-word-token> = 25;
+define token <static-token> :: <reserved-word-token> = 26;
+define token <auto-token> :: <reserved-word-token> = 27;
+define token <register-token> :: <reserved-word-token> = 28;
+define token <dummy-token> :: <reserved-word-token> = 29;
+define /* exported */ token <union-token> :: <reserved-word-token> = 30;
+define /* exported */ token <enum-token> :: <reserved-word-token> = 31;
+define token <constant-token> :: <reserved-word-token> = 32;
+define token <mul-assign-token> :: <reserved-word-token> = 33;
+define token <div-assign-token> :: <reserved-word-token> = 34;
+define token <mod-assign-token> :: <reserved-word-token> = 35;
+define token <add-assign-token> :: <reserved-word-token> = 36;
+define token <sub-assign-token> :: <reserved-word-token> = 37;
+define token <left-assign-token> :: <reserved-word-token> = 38;
+define token <right-assign-token> :: <reserved-word-token> = 39;
+define token <and-assign-token> :: <reserved-word-token> = 40;
+define token <xor-assign-token> :: <reserved-word-token> = 41;
+define token <or-assign-token> :: <reserved-word-token> = 42;
 // A whole bunch of puctuation
-define token <ellipsis-token> :: <punctuation-token> = 41;
-define token <sizeof-token> :: <punctuation-token> = 42;
-define token <dec-op-token> :: <punctuation-token> = 43;
-define token <inc-op-token> :: <punctuation-token> = 44;
-define token <ptr-op-token> :: <punctuation-token> = 45;
-define token <semicolon-token> :: <punctuation-token> = 46;
-define token <comma-token> :: <punctuation-token> = 47;
-define token <dot-token> :: <punctuation-token> = 48;
-define token <lparen-token> :: <punctuation-token> = 49;
-define token <rparen-token> :: <punctuation-token> = 50;
-define token <lbracket-token> :: <punctuation-token> = 51;
-define token <rbracket-token> :: <punctuation-token> = 52;
-define token <ampersand-token> :: <punctuation-token> = 53;
-define token <star-token> :: <punctuation-token> = 54;
-define token <carat-token> :: <punctuation-token> = 55;
-define token <bar-token> :: <punctuation-token> = 56;
-define token <percent-token> :: <punctuation-token> = 57;
-define token <slash-token> :: <punctuation-token> = 58;
-define token <plus-token> :: <punctuation-token> = 59;
-define /* exported */ token <minus-token> :: <punctuation-token> = 60;
-define /* exported */ token <tilde-token> :: <punctuation-token> = 61;
-define /* exported */ token <bang-token> :: <punctuation-token> = 62;
-define token <lt-token> :: <punctuation-token> = 63;
-define token <gt-token> :: <punctuation-token> = 64;
-define token <question-token> :: <punctuation-token> = 65;
-define token <colon-token> :: <punctuation-token> = 66;
-define token <eq-op-token> :: <punctuation-token> = 67;
-define token <le-op-token> :: <punctuation-token> = 68;
-define token <ge-op-token> :: <punctuation-token> = 69;
-define token <ne-op-token> :: <punctuation-token> = 70;
-define token <and-op-token> :: <punctuation-token> = 71;
-define token <or-op-token> :: <punctuation-token> = 72;
-define token <pound-pound-token> :: <punctuation-token> = 73;
-define token <left-op-token> :: <punctuation-token> = 74;
-define token <right-op-token> :: <punctuation-token> = 75;
-define token <assign-token> :: <punctuation-token> = 76;
-define token <lcurly-token> :: <punctuation-token> = 77;
-define token <rcurly-token> :: <punctuation-token> = 78;
+define token <ellipsis-token> :: <punctuation-token> = 43;
+define token <sizeof-token> :: <punctuation-token> = 44;
+define token <dec-op-token> :: <punctuation-token> = 45;
+define token <inc-op-token> :: <punctuation-token> = 46;
+define token <ptr-op-token> :: <punctuation-token> = 47;
+define token <semicolon-token> :: <punctuation-token> = 48;
+define token <comma-token> :: <punctuation-token> = 49;
+define token <dot-token> :: <punctuation-token> = 50;
+define token <lparen-token> :: <punctuation-token> = 51;
+define token <rparen-token> :: <punctuation-token> = 52;
+define token <lbracket-token> :: <punctuation-token> = 53;
+define token <rbracket-token> :: <punctuation-token> = 54;
+define token <ampersand-token> :: <punctuation-token> = 55;
+define token <star-token> :: <punctuation-token> = 56;
+define token <carat-token> :: <punctuation-token> = 57;
+define token <bar-token> :: <punctuation-token> = 58;
+define token <percent-token> :: <punctuation-token> = 59;
+define token <slash-token> :: <punctuation-token> = 60;
+define token <plus-token> :: <punctuation-token> = 61;
+define /* exported */ token <minus-token> :: <punctuation-token> = 62;
+define /* exported */ token <tilde-token> :: <punctuation-token> = 63;
+define /* exported */ token <bang-token> :: <punctuation-token> = 64;
+define token <lt-token> :: <punctuation-token> = 65;
+define token <gt-token> :: <punctuation-token> = 66;
+define token <question-token> :: <punctuation-token> = 67;
+define token <colon-token> :: <punctuation-token> = 68;
+define token <eq-op-token> :: <punctuation-token> = 69;
+define token <le-op-token> :: <punctuation-token> = 70;
+define token <ge-op-token> :: <punctuation-token> = 71;
+define token <ne-op-token> :: <punctuation-token> = 72;
+define token <and-op-token> :: <punctuation-token> = 73;
+define token <or-op-token> :: <punctuation-token> = 74;
+define token <pound-pound-token> :: <punctuation-token> = 75;
+define token <left-op-token> :: <punctuation-token> = 76;
+define token <right-op-token> :: <punctuation-token> = 77;
+define token <assign-token> :: <punctuation-token> = 78;
+define token <lcurly-token> :: <punctuation-token> = 79;
+define token <rcurly-token> :: <punctuation-token> = 80;
 // "Magic" tokens which provide alternate entry points to the parser
-define /* exported */ token <alien-name-token> :: <token> = 79;
-define /* exported */ token <macro-parse-token> :: <token> = 80;
-define /* exported */ token <cpp-parse-token> :: <token> = 81;
-define /* exported */ token <machine-token> :: <token> = 82;
+define /* exported */ token <alien-name-token> :: <token> = 81;
+define /* exported */ token <macro-parse-token> :: <token> = 82;
+define /* exported */ token <cpp-parse-token> :: <token> = 83;
+define /* exported */ token <machine-token> :: <token> = 84;
 
 //----------------------------------------------------------------------
 // Support code
@@ -643,6 +645,8 @@ define constant reserved-words
 //           "const", <const-token>,
 //           "volatile", <volatile-token>,
            "void", <void-token>,
+           "size_t", <size-t-token>,
+           "ssize_t", <ssize-t-token>,
            "inline", <inline-token>,
            "__inline__", <inline-token>,
            "__inline", <inline-token>,
@@ -1093,6 +1097,10 @@ define sealed domain make(singleton(<double-token>));
 define sealed domain make(singleton(<void-token>));
 // <bool-token> -- subclass of <type-specifier-token>
 define sealed domain make(singleton(<bool-token>));
+// <size-t-token> -- subclass of <type-specifier-token>
+define sealed domain make(singleton(<size-t-token>));
+// <ssize-t-token> -- subclass of <type-specifier-token>
+define sealed domain make(singleton(<ssize-t-token>));
 // <inline-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<inline-token>));
 // <extern-token> -- subclass of <reserved-word-token>

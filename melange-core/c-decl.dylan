@@ -914,6 +914,17 @@ define constant bool-type = make(<signed-integer-type-declaration>,
                                  name: "_Bool",
                                  dylan-name: "<C-boolean>",
                                  size: $char-size);
+define constant size-t-type = make(<unsigned-integer-type-declaration>,
+                                   accessor: "size-t-at",
+                                   name: "size-t",
+                                   c-name: "size_t",
+                                   dylan-name: "<C-size-t>",
+                                   size: $long-int-size);
+define constant ssize-t-type = make(<signed-integer-type-declaration>,
+                                    accessor: "ssize-t-at",
+                                    name: "ssize-t",
+                                    dylan-name: "<C-ssize-t>",
+                                    size: $long-int-size);
 
 define method compute-closure
     (results :: <deque>, decl :: <predefined-type-declaration>)

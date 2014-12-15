@@ -251,6 +251,16 @@ define method process-type-list
                   unknown-type => bool-type;
                   otherwise => parse-error(state, "Bad type specifier, expected <bool-token>, got %=", type);
                 end select;
+              <size-t-token> =>
+                select (type)
+                  unknown-type => size-t-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <size-t-token>, got %=", type);
+                end select;
+              <ssize-t-token> =>
+                select (type)
+                  unknown-type => ssize-t-type;
+                  otherwise => parse-error(state, "Bad type specifier, expected <ssize-t-token>, got %=", type);
+                end select;
               otherwise =>
                 // user defined types are passed on unmodified
                 select (type)
@@ -401,14 +411,18 @@ define method declare-objects
         parse-error(state, "illegal redefinition of typedef.");
       end unless;
     elseif (is-typedef?)
-      if (element(state.objects, name.value, default: #f) == #f)
-        state.objects[name.value]
-          := add-declaration(state, make(<typedef-declaration>,
-                                         name: name.value,
-                                         type: new-type));
-        parse-progress-report(nameloc, "Processed typedef %s", name.value);
-      end if;
-      add-typedef(state.tokenizer, name);
+      // Special handling for size_t / ssize_t as these aren't reserved words,
+      // but we want to ignore typedefs that try to establish a type for them.
+      unless (instance?(name, <size-t-token>) | instance?(name, <ssize-t-token>))
+        if (element(state.objects, name.value, default: #f) == #f)
+          state.objects[name.value]
+            := add-declaration(state, make(<typedef-declaration>,
+                                           name: name.value,
+                                           type: new-type));
+          parse-progress-report(nameloc, "Processed typedef %s", name.value);
+        end if;
+        add-typedef(state.tokenizer, name);
+      end unless;
     else
       let decl-type = if (instance?(new-type, <function-type-declaration>))
                         <function-declaration>;
