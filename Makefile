@@ -23,7 +23,7 @@ $(MELANGE): $(GENERATED_PARSERS) $(wildcard melange/*.dylan) $(wildcard melange-
 	dylan-compiler -build melange
 
 check: $(MELANGE)
-	@echo "All is well."
+	@cd tests && ./run.sh
 
 clean:
 	rm -rf _build
