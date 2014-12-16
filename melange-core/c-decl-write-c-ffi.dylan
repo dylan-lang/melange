@@ -25,15 +25,16 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
 
     decl.members
       & do(method(slot)
+             let adjectives = if (slot.read-only) "constant " else "" end;
              if (instance?(slot.type, <bitfield-declaration>))
-               format(stream, "  bitfield slot %s :: %s, width: %d;\n",
-                      slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)
+               format(stream, "  %sbitfield slot %s :: %s, width: %d;\n",
+                      adjectives, slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)
              elseif (instance?(slot.type, <vector-declaration>))
-               format(stream, "  array slot %s :: %s, length: %d;\n",
-                      slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)
+               format(stream, "  %sarray slot %s :: %s, length: %d;\n",
+                      adjectives, slot.dylan-name, slot.type.pointer-equiv.referent.type-name, slot.type.length)
              else
-               format(stream, "  slot %s :: %s;\n",
-                      slot.dylan-name, slot.type.true-type.type-name)
+               format(stream, "  %sslot %s :: %s;\n",
+                      adjectives, slot.dylan-name, slot.type.true-type.type-name)
              end;
              register-written-name(back-end.written-names, slot.dylan-name, decl);
              register-written-name(back-end.written-names,
