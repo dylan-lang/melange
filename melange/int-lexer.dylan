@@ -80,8 +80,6 @@ define generic unget-token
 //       <punctuation-token>
 //         ... -- lots of different tokens, distinguished via the
 //                "reserved-words" table.
-//       <true-eof-token> -- "<eof-token>" is an alias for "<token>", so that
-//                           the parser can stip in the middle....
 //       <error-token>
 //     <name-token> -- value the token string taken as a symbol.
 //       <identifier-token>
@@ -102,13 +100,6 @@ define abstract primary class <token> (<object>)
   constant slot generator, required-init-keyword: #"generator";
   slot position, init-value: #f, init-keyword: #"position";
 end;
-
-// This should no longer be necessary -- rgs.
-// The parser generator wires in "<eof-token>" as the only permissible
-// stopping point.  Since we want to be able to stop in the middle of a file,
-// we define it to be identical to "<token>".  If you really want the "end of
-// file", use "<true-eof-token>".
-//define constant <eof-token> = <token>;
 
 define abstract class <simple-token> (<token>) end class;
 define abstract class <reserved-word-token> (<simple-token>) end class;
