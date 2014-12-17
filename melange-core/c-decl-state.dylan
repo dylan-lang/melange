@@ -353,6 +353,8 @@ define method process-declarator
                          nested-type.head.head == #"pointer" &
                          instance?(nested-type.tail, <identifier-token>))
                        nested-type.tail.value
+                     elseif (instance?(nested-type, <identifier-token>))
+                       nested-type.value
                      else
                        anonymous-name()
                      end if;
