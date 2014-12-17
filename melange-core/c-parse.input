@@ -202,7 +202,7 @@ define constant <source-location> = false-or(<parse-state>);
 :token <and-assign-token> <reserved-word-token>
 :token <xor-assign-token> <reserved-word-token>
 :token <or-assign-token> <reserved-word-token>
-;; A whole bunch of puctuation
+;; A whole bunch of punctuation
 :token <ellipsis-token> <punctuation-token>
 :token <sizeof-token> <punctuation-token>
 :token <dec-op-token> <punctuation-token>
@@ -245,7 +245,7 @@ define constant <source-location> = false-or(<parse-state>);
 :token <alien-name-token> <token>
 :token <macro-parse-token> <token>
 :token <cpp-parse-token> <token>
-;; #machine -- hack to suport solaris
+;; #machine -- hack to support solaris
 :token <machine-token> <token>
 
 :union NON-CURLY <token>

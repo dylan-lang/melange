@@ -136,7 +136,7 @@ define generic compute-dylan-name
      containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
  => (result :: <string>);
 
-// Find-dylan-name provlides low level support for "apply-options".  It checks
+// Find-dylan-name provides low level support for "apply-options".  It checks
 // whether various attributes need to be computed and calls the computation
 // functions as required and can be called recursively to deal with nested
 // components.

@@ -202,7 +202,7 @@ define token <right-assign-token> :: <reserved-word-token> = 37;
 define token <and-assign-token> :: <reserved-word-token> = 38;
 define token <xor-assign-token> :: <reserved-word-token> = 39;
 define token <or-assign-token> :: <reserved-word-token> = 40;
-// A whole bunch of puctuation
+// A whole bunch of punctuation
 define token <ellipsis-token> :: <punctuation-token> = 41;
 define token <sizeof-token> :: <punctuation-token> = 42;
 define token <dec-op-token> :: <punctuation-token> = 43;
