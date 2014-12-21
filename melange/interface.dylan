@@ -617,7 +617,7 @@ end method show-copyright;
 define method show-usage (stream :: <stream>) => ()
   format(stream,
 "Usage: melange [-v] [--headers]\n"
-"               [--c-ffi|--debug|--Ttarget] [--no-struct-accessors]\n"
+"               [--c-ffi|--debug|--Ttarget]\n"
 "               [-Ddef[=val]...] [-Uundef...]\n"
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
@@ -673,8 +673,6 @@ define method show-help (stream :: <stream>) => ()
 "  --c-ffi                Generate output for use only with Open Dylan.\n"
 "  --debug                Generate a debug dump of the parsed C declarations.\n"
 "  -T, --target           Generate output for use only with the named target.\n"
-"  --no-struct-accessors  Do not generate accessor functions for C struct\n"
-"                         members.\n"
 "  -D, --define           Define a C preprocessor macro for use by C headers.\n"
 "                         If no value is given, defaults to 1.\n"
 "  -U, --undefine         Prevent definition of a default preprocessor macro.\n"
@@ -752,9 +750,6 @@ define method main (program, args)
   add-option(*argp*,
              make(<repeated-parameter-option>,
                   names: #("framework")));
-  add-option(*argp*,
-             make(<flag-option>,
-                  names: #("no-struct-accessors")));
 
   // Parse our command-line arguments.
   block ()
@@ -793,7 +788,6 @@ define method main (program, args)
   let undefines = get-option-value(*argp*, "undefine");
   let regular-args = positional-options(*argp*);
   let framework-dirs = get-option-value(*argp*, "framework");
-  let no-struct-accessors? = get-option-value(*argp*, "no-struct-accessors");
 
   // Handle --headers.
   if (headers?)
@@ -803,11 +797,6 @@ define method main (program, args)
   // Handle --verbose; overrides --headers.
   if (verbose?)
     *show-parse-progress-level* := $parse-progress-level-all;
-  end if;
-
-  // Handle --no-struct-accessors
-  if (no-struct-accessors?)
-    *inhibit-struct-accessors?* := #t;
   end if;
 
   // Handle --c-ffi, --debug, -T.

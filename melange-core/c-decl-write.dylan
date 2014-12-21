@@ -117,8 +117,6 @@ end method anonymous-name;
 // the structure.
 //
 
-define variable *inhibit-struct-accessors?* = #f;
-
 // Typedefs are just aliases.  Define a constant which is initialized to the
 // original type.  Because "typedef struct foo foo" is such a common case and
 // would lead to conflicts, we check for it specially and ignore the typedef
