@@ -72,7 +72,7 @@ define /* exported */ primary class <tokenizer> (<object>)
   keyword typedefs-from:, init-value: #f,
         type: false-or(<tokenizer>);
   slot file-name :: <string> = "<unknown-file>";
-  slot contents :: <long-byte-string> = make(<long-byte-string>);
+  slot contents :: <byte-string> = make(<byte-string>);
   slot position :: <integer> = 0;
   constant slot unget-stack :: <deque>, init-function: curry(make, <deque>);
   /* exported */ slot cpp-table :: <table>;
@@ -441,20 +441,6 @@ define method source-location (token :: <token>)
 end method;
 
 //========================================================================
-// Support type -- <long-byte-string>
-//========================================================================
-
-// $long-string-component-size -- private constant.
-//
-// The size of each substring in a <long-byte-string>.  Useful even if we use
-// normal <byte-string>s, cause it gives us an idea of the max chunk we can
-// read in on any architecture.
-//
-define constant $long-string-component-size = 16384;
-
-define constant <long-byte-string> = <byte-string>;
-
-//========================================================================
 // "Simple" operations on tokenizers
 //========================================================================
 
@@ -481,7 +467,7 @@ define method initialize (value :: <tokenizer>,
   if (name) value.file-name := name end if;
 
   if (stuff)
-    value.contents := as(<long-byte-string>, stuff);
+    value.contents := as(<byte-string>, stuff);
   else
     let source-stream :: <stream>
       = make(<file-stream>, locator: as(<byte-string>, name),
@@ -489,14 +475,14 @@ define method initialize (value :: <tokenizer>,
     let components = make(<stretchy-vector>);
     block ()
       while (#t)
-        add!(components, read(source-stream, $long-string-component-size));
+        add!(components, read(source-stream, 16384));
       end;
     exception (err :: <incomplete-read-error>)
       add!(components, err.stream-error-sequence);
     exception (err :: <end-of-stream-error>)
       #t;
     end block;
-    value.contents := apply(concatenate-as, <long-byte-string>, components);
+    value.contents := apply(concatenate-as, <byte-string>, components);
     close(source-stream);
   end if;
 
@@ -758,7 +744,7 @@ end function lex-identifier;
 define function try-identifier
     (state :: <tokenizer>, position :: <integer>, #key expand = #t, cpp-line = #f)
  => (result :: false-or(<token>));
-  let contents :: <long-byte-string> = state.contents;
+  let contents :: <byte-string> = state.contents;
 
   let pos = if (contents[position] == '#') position + 1 else position end if;
   if (alphabetic?(contents[pos]) | contents[pos] == '_')
@@ -795,7 +781,7 @@ end function punctuation?;
 //
 define method try-punctuation (state :: <tokenizer>, position :: <integer>)
  => result :: false-or(<token>);
-  let contents :: <long-byte-string> = state.contents;
+  let contents :: <byte-string> = state.contents;
 
   if (punctuation?(contents[position]))
     let match = match-punctuation(contents, start: position);
@@ -817,7 +803,7 @@ define multistring-checker comment-matcher("/*", "//", "\\\n", "\\\r\n");
 // Skip over whitespace characters (including newlines) and comments.
 //
 define method skip-whitespace
-    (contents :: <long-byte-string>, position :: <integer>)
+    (contents :: <byte-string>, position :: <integer>)
  => (position :: <integer>);
   let sz = contents.size;
 
@@ -861,7 +847,7 @@ end method skip-whitespace;
 // "#preprocessor" lines.  Handles the "\\\n" special case.
 //
 define method skip-cpp-whitespace
-    (contents :: <long-byte-string>, position :: <integer>)
+    (contents :: <byte-string>, position :: <integer>)
  => (position :: <integer>);
   let sz = contents.size;
 
