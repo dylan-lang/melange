@@ -47,6 +47,12 @@ a string), an optional renaming (as illustrated above), and an
 optional sequence of "options". The options include the
 following:
 
+``inline:``
+   specifies whether or not the resulting method should be
+   inlined. Possible values are ``inline``, ``inline-only``,
+   ``may-inline`` and ``not-inline``. The default is to not
+   specify an inlining adjective.
+
 ``seal:``
    specifies whether the resulting method should be
    sealed. Possible values are sealed or open, and the
@@ -73,7 +79,6 @@ following:
    the named type, but the actual result value should be ignored. This is
    useful for wrapping C APIs which return error codes that should signal
    conditions when an error occurs.
-
 
 ``equate-argument:``
    overrides the default interpretation of some

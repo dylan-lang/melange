@@ -211,16 +211,18 @@ end method process-imports;
 define method merge-container-options
     (first :: <container-options>, #rest rest)
  => (mapper :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>);
+     sealing :: <string>, inline :: <string>);
   let mapper = first.name-mapper;
   let pre = first.prefix;
   let rd-only = first.read-only;
   let sealing = first.seal-string;
+  let inline = first.inline-string;
   for (next in rest)
     if (mapper == undefined) mapper := next.name-mapper end if;
     if (pre == undefined) pre := next.prefix end if;
     if (rd-only == undefined) rd-only := next.read-only end if;
     if (sealing == undefined) sealing := next.seal-string end if;
+    if (inline == undefined) inline := next.inline-string end if;
   end for;
   if (mapper == undefined)
     mapper := #"minimal-name-mapping-with-structure-prefix";
@@ -228,7 +230,8 @@ define method merge-container-options
   if (pre == undefined) pre := "" end if;
   if (rd-only == undefined) rd-only := #f end if;
   if (sealing == undefined) sealing := "sealed" end if;
-  values(curry(map-name, mapper), pre, rd-only, sealing);
+  if (inline == undefined) inline := "" end if;
+  values(curry(map-name, mapper), pre, rd-only, sealing, inline);
 end method merge-container-options;
 
 //----------------------------------------------------------------------
@@ -260,6 +263,8 @@ define method process-clause
         equate(find-parameter(decl, body.head), body.tail);
       #"map-arg" =>
         remap(find-parameter(decl, body.head), body.tail);
+      #"inline" =>
+        decl.inlined-string := body;
       otherwise =>
         find-parameter(decl, body).argument-direction := tag;
     end select;

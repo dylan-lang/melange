@@ -99,10 +99,10 @@ define module int-parse
     container-options, macro-defines, macro-undefines, clauses,
     <container-options>, name-mapper, global-imports, global-import-mode,
     file-imports, file-import-modes, prefix, exclude, excluded-files, rename,
-    mappings, equates, read-only, seal-string, <clause>, <function-clause>,
-    <struct-clause>, <union-clause>, <pointer-clause>, <constant-clause>,
-    <variable-clause>, <function-type-clause>, name, options, <undefined>,
-    undefined;
+    mappings, equates, read-only, seal-string, inline-string, <clause>,
+    <function-clause>, <struct-clause>, <union-clause>, <pointer-clause>,
+    <constant-clause>, <variable-clause>, <function-type-clause>, name,
+    options, <undefined>, undefined;
 end module int-parse;
 
 define module name-mappers

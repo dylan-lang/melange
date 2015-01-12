@@ -126,7 +126,8 @@ define method write-declaration (decl :: <function-declaration>, back-end :: <c-
   let stream = back-end.stream;
   register-written-name(back-end.written-names, decl.dylan-name, decl);
 
-  format(stream, "define C-function %s\n", decl.dylan-name);
+  format(stream, "define %s%sC-function %s\n", decl.inlined-string,
+         if (~empty?(decl.inlined-string)) " " else "" end, decl.dylan-name);
   for (param in decl.type.parameters)
     unless (instance?(param, <varargs-declaration>))
       format(stream, "  %s parameter %s_ :: %s;\n",

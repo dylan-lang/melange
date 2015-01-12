@@ -169,21 +169,26 @@ define token <seal-token> :: <reserved-word-token> = 44;
 define token <seal-functions-token> :: <reserved-word-token> = 45;
 define token <sealed-token> :: <reserved-word-token> = 46;
 define token <open-token> :: <reserved-word-token> = 47;
-define token <inline-token> :: <reserved-word-token> = 48;
-define token <value-token> :: <reserved-word-token> = 49;
-define token <function-type-token> :: <reserved-word-token> = 50;
-define token <callback-maker-token> :: <reserved-word-token> = 51;
-define token <callout-function-token> :: <reserved-word-token> = 52;
+define token <inline-function-token> :: <reserved-word-token> = 48;
+define token <inline-functions-token> :: <reserved-word-token> = 49;
+define token <inline-token> :: <reserved-word-token> = 50;
+define token <inline-only-token> :: <reserved-word-token> = 51;
+define token <may-inline-token> :: <reserved-word-token> = 52;
+define token <not-inline-token> :: <reserved-word-token> = 53;
+define token <value-token> :: <reserved-word-token> = 54;
+define token <function-type-token> :: <reserved-word-token> = 55;
+define token <callback-maker-token> :: <reserved-word-token> = 56;
+define token <callout-function-token> :: <reserved-word-token> = 57;
 
 // A whole bunch of punctuation
 
-define token <semicolon-token> :: <punctuation-token> = 53;
-define token <comma-token> :: <punctuation-token> = 54;
-define token <lbrace-token> :: <punctuation-token> = 55;
-define token <rbrace-token> :: <punctuation-token> = 56;
-define token <arrow-token> :: <punctuation-token> = 57;
+define token <semicolon-token> :: <punctuation-token> = 58;
+define token <comma-token> :: <punctuation-token> = 59;
+define token <lbrace-token> :: <punctuation-token> = 60;
+define token <rbrace-token> :: <punctuation-token> = 61;
+define token <arrow-token> :: <punctuation-token> = 62;
 
-define token <map-error-result-token> :: <reserved-word-token> = 58;
+define token <map-error-result-token> :: <reserved-word-token> = 63;
 
 define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
@@ -386,7 +391,12 @@ define constant reserved-words
            "seal-functions:", <seal-functions-token>,
            "sealed", <sealed-token>,
            "open", <open-token>,
+           "inline:", <inline-function-token>,
+           "inline-functions:", <inline-functions-token>,
            "inline", <inline-token>,
+           "inline-only", <inline-only-token>,
+           "may-inline", <may-inline-token>,
+           "not-inline", <not-inline-token>,
            "value:", <value-token>,
            "function-type", <function-type-token>,
            "callback-maker:", <callback-maker-token>,
@@ -728,8 +738,18 @@ define sealed domain make(singleton(<seal-functions-token>));
 define sealed domain make(singleton(<sealed-token>));
 // <open-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<open-token>));
+// <inline-function-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<inline-function-token>));
+// <inline-functions-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<inline-functions-token>));
 // <inline-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<inline-token>));
+// <inline-only-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<inline-only-token>));
+// <may-inline-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<may-inline-token>));
+// <not-inline-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<not-inline-token>));
 // <value-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<value-token>));
 // <function-type-token> -- subclass of <reserved-word-token>

@@ -51,7 +51,7 @@ copyright: See LICENSE file in this distribution.
 //       <bitfield-declaration>
 //           operations include bits-in-field, base-type
 //     <value-declaration> (includes <typed> mixin)
-//         operations include sealed-string
+//         operations include sealed-string, inlined-string,
 //       <function-declaration>
 //           operations include find-parameter, find-result
 //       <object-declaration>
@@ -133,7 +133,8 @@ define generic dylan-name-setter
 //
 define generic compute-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
 
 // Find-dylan-name provides low level support for "apply-options".  It checks
@@ -143,7 +144,8 @@ define generic compute-dylan-name
 //
 define generic find-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
 
 // Sets the dylan name for this object or type.  (External interface.)
@@ -186,7 +188,7 @@ define generic pointer-to
 //
 define generic apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>)
+     read-only :: <boolean>, sealing :: <string>, inlining :: <string>)
  => ();
 
 //------------------------------------------------------------------------
@@ -212,11 +214,12 @@ end method remap;
 //
 define method find-dylan-name
     (decl :: <declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                         read-only, sealing));
+                                         read-only, sealing, inlining));
 end method find-dylan-name;
 
 define method dylan-name (decl :: <declaration>) => (result :: <string>);
@@ -255,9 +258,9 @@ end method compute-closure;
 
 define method apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>)
+     read-only :: <boolean>, sealing :: <string>, inlining :: <string>)
  => ();
-  find-dylan-name(decl, map-function, prefix, #(), read-only, sealing);
+  find-dylan-name(decl, map-function, prefix, #(), read-only, sealing, inlining);
 end method apply-options;
 
 // Exclude-decl -- exported.
@@ -299,7 +302,8 @@ end method equate;
 
 define method compute-dylan-name
     (decl :: <type-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -369,7 +373,7 @@ define generic make-struct-type
 define generic apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>)
+     sealing :: <string>, inlining :: <string>)
  => ();
 
 define method compute-closure
@@ -510,18 +514,18 @@ end method exclude-slots;
 define method find-dylan-name
     (decl :: <structured-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, read-only :: <boolean>,
-     sealing :: <string>)
+     sealing :: <string>, inlining :: <string>)
  => (result :: <string>);
   unless (decl.d-name)
     decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                      read-only, sealing);
+                                      read-only, sealing, inlining);
     // Take care of the contained objects as well.  Some of these may
     // already have been handled by "container" declarations.
     let sub-containers = list(decl.simple-name);
     if (decl.members)
       for (sub-decl in decl.members)
         find-dylan-name(sub-decl, mapper, prefix, sub-containers,
-                        read-only, sealing);
+                        read-only, sealing, inlining);
       end for;
     end if;
   end;
@@ -531,13 +535,13 @@ end method find-dylan-name;
 define method apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>)
+     sealing :: <string>, inlining :: <string>)
  => ();
   let sub-containers = list(decl.simple-name);
   if (decl.members)
     for (elem in decl.members)
       find-dylan-name(elem, map-function, prefix, sub-containers, read-only,
-                      sealing);
+                      sealing, inlining);
     end for;
   end if;
 end method apply-container-options;
@@ -622,10 +626,11 @@ end method canonical-name;
 
 define method compute-dylan-name
     (decl :: <pointer-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   if (decl.simple-name = decl.referent.simple-name)
-    find-dylan-name(decl.referent, mapper, prefix, #(), rd-only, sealing);
+    find-dylan-name(decl.referent, mapper, prefix, #(), rd-only, sealing, inlining);
   else
     mapper(#"type", prefix, decl.simple-name, containers);
   end if;
@@ -644,7 +649,8 @@ end method compute-closure;
 
 define method compute-dylan-name
     (decl :: <vector-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -727,25 +733,25 @@ end method canonical-name;
 define method find-dylan-name
     (decl :: <function-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, read-only :: <boolean>,
-     sealing :: <string>)
+     sealing :: <string>, inlining :: <string>)
  => (result :: <string>);
   find-dylan-name(decl.result, mapper, prefix, #(), read-only,
-                  sealing);
+                  sealing, inlining);
   for (elem in decl.parameters)
     if (~instance?(elem, <varargs-declaration>))
-      find-dylan-name(elem, mapper, prefix, #(), read-only, sealing);
+      find-dylan-name(elem, mapper, prefix, #(), read-only, sealing, inlining);
     end if;
   end for;
 
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                         read-only, sealing));
+                                         read-only, sealing, inlining));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <function-type-declaration>, mapper :: <function>,
      prefix :: <string>, containers :: <sequence>, rd-only :: <boolean>,
-     sealing :: <string>)
+     sealing :: <string>, inlining :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -780,7 +786,8 @@ end method mapped-name;
 
 define method compute-dylan-name
     (decl :: <typedef-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"type", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -963,6 +970,7 @@ end method compute-closure;
 
 define abstract class <value-declaration> (<declaration>, <typed>)
   slot sealed-string :: <string>, init-value: "";
+  slot inlined-string :: <string>, init-value: "";
 end class;
 define class <function-declaration> (<value-declaration>) end class;
 define class <object-declaration> (<value-declaration>)
@@ -1018,19 +1026,22 @@ end method equate;
 
 define method find-dylan-name
     (decl :: <function-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
-  find-dylan-name(decl.type, mapper, prefix, #(), read-only, sealing);
+  if (decl.inlined-string = "") decl.inlined-string := inlining end if;
+  find-dylan-name(decl.type, mapper, prefix, #(), read-only, sealing, inlining);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                         read-only, sealing));
+                                         read-only, sealing, inlining));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <function-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
-  find-dylan-name(decl.type, mapper, prefix, containers, rd-only, sealing);
+  find-dylan-name(decl.type, mapper, prefix, containers, rd-only, sealing, inlining);
   mapper(#"function", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
 
@@ -1066,29 +1077,32 @@ end method type-name;
 
 define method find-dylan-name
     (decl :: <value-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, read-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   if (decl.sealed-string = "") decl.sealed-string := sealing end if;
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                         read-only, sealing));
+                                         read-only, sealing, inlining));
 end method find-dylan-name;
 
 define method find-dylan-name
     (decl :: <object-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   if (decl.sealed-string = "") decl.sealed-string := sealing end if;
   if (decl.read-only == #()) decl.read-only := rd-only end if;
-  find-dylan-name(decl.type, mapper, prefix, #(), rd-only, sealing);
+  find-dylan-name(decl.type, mapper, prefix, #(), rd-only, sealing, inlining);
   decl.d-name
     | (decl.d-name := compute-dylan-name(decl, mapper, prefix, containers,
-                                         rd-only, sealing));
+                                         rd-only, sealing, inlining));
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <object-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"variable", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -1096,7 +1110,7 @@ end method compute-dylan-name;
 define method find-dylan-name
     (decl :: <variable-declaration>, mapper :: <function>, prefix :: <string>,
      containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
-     #next next-method)
+     inlining :: <string>, #next next-method)
  => (result :: <string>);
   next-method();
   decl.getter := decl.getter | decl.d-name;
@@ -1117,18 +1131,19 @@ end method compute-closure;
 define method find-dylan-name
     (decl :: <arg-declaration>, mapper :: <function>, prefix :: <string>,
      containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
-     #next next-method)
+     inlining :: <string>, #next next-method)
  => (result :: <string>);
   if (decl.original-type)
     find-dylan-name(decl.original-type, mapper, prefix, #(), rd-only,
-                    sealing);
+                    sealing, inlining);
   end if;
   next-method();
 end method find-dylan-name;
 
 define method compute-dylan-name
     (decl :: <arg-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"variable", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -1219,7 +1234,8 @@ end class;
 
 define method compute-dylan-name
     (decl :: <enum-slot-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
 
   // (Do not emit container prefixes for enum constants. C semantics
@@ -1250,7 +1266,8 @@ define generic add-cpp-declaration
 
 define method compute-dylan-name
     (decl :: <constant-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   mapper(#"constant", prefix, decl.simple-name, containers);
 end method compute-dylan-name;
@@ -1281,7 +1298,8 @@ end method compute-closure;
 
 define method compute-dylan-name
     (decl :: <macro-declaration>, mapper :: <function>, prefix :: <string>,
-     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>)
+     containers :: <sequence>, rd-only :: <boolean>, sealing :: <string>,
+     inlining :: <string>)
  => (result :: <string>);
   // If we are aliasing another declaration, we should use the same category.
   // We should only use #"constant" if we are renaming a constant or have an

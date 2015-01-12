@@ -67,6 +67,7 @@ define class <container-options> (<object>)
   slot equates :: <sequence>, init-value: #();
   slot read-only :: type-union(<boolean>, <undefined>), init-value: undefined;
   slot seal-string :: type-union(<string>, <undefined>), init-value: undefined;
+  slot inline-string :: type-union(<string>, <undefined>), init-value: undefined;
 end class <container-options>;
 
 // This structure contains the tokenizer which defines the input to the
@@ -167,6 +168,8 @@ define method process-container-options
         result.read-only := item.second;
       #"seal" =>
         result.seal-string := item.second;
+      #"inline" =>
+        result.inline-string := item.second;
       otherwise =>
         left := pair(item, left);
     end select;
@@ -263,7 +266,12 @@ define constant <source-location> = false-or(<parse-state>);
 :token <seal-functions-token> <reserved-word-token>
 :token <sealed-token> <reserved-word-token>
 :token <open-token> <reserved-word-token>
+:token <inline-function-token> <reserved-word-token>
+:token <inline-functions-token> <reserved-word-token>
 :token <inline-token> <reserved-word-token>
+:token <inline-only-token> <reserved-word-token>
+:token <may-inline-token> <reserved-word-token>
+:token <not-inline-token> <reserved-word-token>
 :token <value-token> <reserved-word-token>
 :token <function-type-token> <reserved-word-token>
 :token <callback-maker-token> <reserved-word-token>
@@ -519,12 +527,28 @@ sealing (<open-token>)
   %1.string-value
 %
 
-sealing (<inline-token>)
-  parse-error(%1, "'inline' not handled at present.")
-%
-
 container-option (<seal-functions-token> sealing)
   list(#"seal", %2);
+%
+
+inlining (<inline-token>)
+  %1.string-value
+%
+
+inlining (<inline-only-token>)
+  %1.string-value
+%
+
+inlining (<may-inline-token>)
+  %1.string-value
+%
+
+inlining (<not-inline-token>)
+  %1.string-value
+%
+
+container-option (<inline-functions-token> inlining)
+  list(#"inline", %2);
 %
 
 container-option (<read-only-token> BOOLEAN)
@@ -591,6 +615,10 @@ function-option (<input-output-argument-token> argument)
 
 function-option (<output-argument-token> argument)
   pair(#"out", %2.value);
+%
+
+function-option (<inline-function-token> inlining)
+  pair(#"inline", %2);
 %
 
 argument (<integer-token>)

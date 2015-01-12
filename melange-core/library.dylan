@@ -186,9 +186,9 @@ define module c-declarations
     // Preliminary "set declaration properties phase"
     ignored?-setter, find-result, find-parameter, find-slot,
     argument-direction-setter, constant-value-setter, getter-setter,
-    setter-setter, read-only-setter, sealed-string-setter, excluded?-setter,
-    exclude-slots, equate, remap, rename, superclasses-setter, pointer-equiv,
-    dylan-name, exclude-decl,
+    setter-setter, read-only-setter, sealed-string-setter, inlined-string-setter,
+    excluded?-setter, exclude-slots, equate, remap, rename, superclasses-setter,
+    pointer-equiv, dylan-name, exclude-decl,
 
     // "Import declarations phase"
     declaration-closure, // also calls compute-closure
@@ -203,6 +203,7 @@ define module c-declarations
     write-declaration,
 
     // Miscellaneous
-    getter, setter, sealed-string, excluded?, error-result?, error-result?-setter,
-    declarations, make-backend-for-target, written-names;
+    getter, setter, sealed-string, inlined-string, excluded?,
+    error-result?, error-result?-setter, declarations,
+    make-backend-for-target, written-names;
 end module c-declarations;

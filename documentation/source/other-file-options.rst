@@ -31,13 +31,18 @@ imported functions and slot accessors will be sealed or open. By
 default, functions are sealed, but you may explicitly specify
 this by using ``seal-functions: sealed`` or reverse it by using
 ``seal-functions: open``. Melange does not support the Creole's
-``inline`` sealing option.
+``inline`` sealing option as this is handled with the
+``inline-functions:`` option instead.
+
+The ``inline-functions:`` option specifies how functions
+should be inlined. It may have values of ``inline``, ``inline-only``,
+``may-inline`` or ``not-inline``.
 
 The ``read-only:`` option specifies whether setter functions
 should be defined for slot and object accessors. They will be
 defined by default, but if you specify ``read-only: #t``, no
 setters will be defined.
 
-The effects of the ``seal-functions:`` and ``read-only:``
-options can be modified for particular container types. We will
-explain how to do this in a later section.
+The effects of the ``seal-functions:``, ``inline-functions:`` and
+``read-only:`` options can be modified for particular container
+types. We will explain how to do this in a later section.

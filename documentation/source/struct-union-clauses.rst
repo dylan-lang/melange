@@ -33,10 +33,10 @@ we could use the following interface definition:
 
 Valid options for container clauses include: ``import:``,
 ``prefix:``, ``exclude:``, ``rename:``, ``seal-functions:``,
-``read-only:``, ``equate:``, and ``map:``. These options act
-like the equivalent options which may be specified in a file
-clause, but they apply to the slots of a single "class" rather
-than to globally defined objects. Options specified within a
+``inline-functions:``, ``read-only:``, ``equate:``, and ``map:``.
+These options act like the equivalent options which may be specified
+in a file clause, but they apply to the slots of a single "class"
+rather than to globally defined objects. Options specified within a
 container clause override any global defaults that might have
 been specified in the ``#include`` clause.  Container clauses
 also permit the ``superclasses:`` option described in
