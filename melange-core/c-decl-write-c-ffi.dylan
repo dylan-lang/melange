@@ -25,7 +25,10 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
 
     decl.members
       & do(method(slot)
-             let adjectives = if (slot.read-only) "constant " else "" end;
+             let adjectives
+               = concatenate(if (slot.read-only) "constant " else "" end,
+                             slot.sealed-string,
+                             if (~empty?(slot.sealed-string)) " " else "" end);
              if (instance?(slot.type, <bitfield-declaration>))
                format(stream, "  %sbitfield slot %s :: %s, width: %d;\n",
                       adjectives, slot.dylan-name, slot.type.true-type.type-name, slot.type.bits-in-field)
