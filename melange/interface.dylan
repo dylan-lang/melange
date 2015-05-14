@@ -211,18 +211,21 @@ end method process-imports;
 define method merge-container-options
     (first :: <container-options>, #rest rest)
  => (mapper :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, inline :: <string>);
+     sealing :: <string>, inline :: <string>,
+     ptr-type-name :: false-or(<symbol>));
   let mapper = first.name-mapper;
   let pre = first.prefix;
   let rd-only = first.read-only;
   let sealing = first.seal-string;
   let inline = first.inline-string;
+  let ptr-type-name = first.pointer-type-name;
   for (next in rest)
     if (mapper == undefined) mapper := next.name-mapper end if;
     if (pre == undefined) pre := next.prefix end if;
     if (rd-only == undefined) rd-only := next.read-only end if;
     if (sealing == undefined) sealing := next.seal-string end if;
     if (inline == undefined) inline := next.inline-string end if;
+    if (ptr-type-name == undefined) ptr-type-name := next.pointer-type-name end if;
   end for;
   if (mapper == undefined)
     mapper := #"minimal-name-mapping-with-structure-prefix";
@@ -231,7 +234,8 @@ define method merge-container-options
   if (rd-only == undefined) rd-only := #f end if;
   if (sealing == undefined) sealing := "sealed" end if;
   if (inline == undefined) inline := "" end if;
-  values(curry(map-name, mapper), pre, rd-only, sealing, inline);
+  if (ptr-type-name == undefined) ptr-type-name := #f end if;
+  values(curry(map-name, mapper), pre, rd-only, sealing, inline, ptr-type-name);
 end method merge-container-options;
 
 //----------------------------------------------------------------------

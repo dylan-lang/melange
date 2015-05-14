@@ -43,6 +43,11 @@ define method write-declaration (decl :: <struct-declaration>, back-end :: <c-ff
              register-written-name(back-end.written-names,
                                    concatenate(slot.dylan-name, "-setter"), decl);
            end, decl.members);
+    if (decl.pointer-type-name)
+      let name = as(<string>, decl.pointer-type-name);
+      format(stream, "  pointer-type-name: %s;\n", name);
+      register-written-name(back-end.written-names, name, decl);
+    end if;
     format(stream, "end;\n\n");
   end;
 end;
@@ -97,6 +102,11 @@ define method write-declaration (decl :: <union-declaration>, back-end :: <c-ffi
              register-written-name(back-end.written-names,
                                    concatenate(slot.dylan-name, "-setter"), decl);
            end, decl.members);
+    if (decl.pointer-type-name)
+      let name = as(<string>, decl.pointer-type-name);
+      format(stream, "  pointer-type-name: %s;\n", name);
+      register-written-name(back-end.written-names, name, decl);
+    end if;
     format(stream, "end;\n\n");
   end;
 end;

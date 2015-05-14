@@ -42,6 +42,22 @@ been specified in the ``#include`` clause.  Container clauses
 also permit the ``superclasses:`` option described in
 :ref:`melange-class-inheritance`.
 
+When a pointer type needs to be created for a struct, this can be
+done with the ``pointer-type-name:`` option in the struct clause:
+
+.. code-block:: dylan
+
+    define interface
+       #include "event.h";
+       struct "struct event",
+          pointer-type-name: <event*>;
+    end interface;
+
+.. note:: This will not currently change the name of generated pointer
+   types due to using a pointer type in the header file. It will only
+   add a ``pointer-type-name:`` option to the generated ``C-struct``
+   or ``C-union`` definition.
+
 Although the recommended method for specifying a container type is to
 use the full C name (i.e. ``struct foo``), you may also use an alias
 defined by a typedef. Thus, in the above example, you could have specified

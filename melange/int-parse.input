@@ -68,6 +68,7 @@ define class <container-options> (<object>)
   slot read-only :: type-union(<boolean>, <undefined>), init-value: undefined;
   slot seal-string :: type-union(<string>, <undefined>), init-value: undefined;
   slot inline-string :: type-union(<string>, <undefined>), init-value: undefined;
+  slot pointer-type-name :: type-union(<symbol>, <undefined>), init-value: undefined;
 end class <container-options>;
 
 // This structure contains the tokenizer which defines the input to the
@@ -170,6 +171,8 @@ define method process-container-options
         result.seal-string := item.second;
       #"inline" =>
         result.inline-string := item.second;
+      #"pointer-type-name" =>
+        result.pointer-type-name := item.second;
       otherwise =>
         left := pair(item, left);
     end select;
@@ -276,6 +279,7 @@ define constant <source-location> = false-or(<parse-state>);
 :token <function-type-token> <reserved-word-token>
 :token <callback-maker-token> <reserved-word-token>
 :token <callout-function-token> <reserved-word-token>
+:token <pointer-type-name-token> <reserved-word-token>
 
 ;; A whole bunch of punctuation
 
@@ -463,6 +467,10 @@ import (renaming)
 
 renaming (<string-literal-token> <arrow-token> <identifier-token>)
   pair(%1.value, %3.value);
+%
+
+container-option (<pointer-type-name-token> <identifier-token>)
+  list(#"pointer-type-name", %2.value);
 %
 
 container-option (<prefix-token> <string-literal-token>)

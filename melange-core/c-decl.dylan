@@ -188,7 +188,8 @@ define generic pointer-to
 //
 define generic apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>, inlining :: <string>)
+     read-only :: <boolean>, sealing :: <string>, inlining :: <string>,
+     pointer-type :: false-or(<string>))
  => ();
 
 //------------------------------------------------------------------------
@@ -258,7 +259,8 @@ end method compute-closure;
 
 define method apply-options
     (decl :: <declaration>, map-function :: <function>, prefix :: <string>,
-     read-only :: <boolean>, sealing :: <string>, inlining :: <string>)
+     read-only :: <boolean>, sealing :: <string>, inlining :: <string>,
+     pointer-type :: false-or(<string>))
  => ();
   find-dylan-name(decl, map-function, prefix, #(), read-only, sealing, inlining);
 end method apply-options;
@@ -325,6 +327,8 @@ define abstract class <structured-type-declaration> (<type-declaration>)
   // bitfields are combined into a <coalesced-bitfields> pseudo-slot.
   slot %coalesced-members :: false-or(<sequence>) = #f;
   slot anonymous? :: <boolean>, required-init-keyword: #"anonymous?";
+  // This is used for structs and unions, but not enums:
+  slot pointer-type-name :: false-or(<symbol>) = #f;
 end class <structured-type-declaration>;
 
 define method coalesced-members (decl :: <structured-type-declaration>)
@@ -339,7 +343,9 @@ end class;
 define class <union-declaration>
     (<new-static-pointer>, <structured-type-declaration>)
 end class;
-define class <enum-declaration> (<structured-type-declaration>) end class;
+
+define class <enum-declaration> (<structured-type-declaration>)
+end class;
 
 // Given a function (or function type) declaration, return the declaration
 // corresponding to its result type.
@@ -373,7 +379,8 @@ define generic make-struct-type
 define generic apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, inlining :: <string>)
+     sealing :: <string>, inlining :: <string>,
+     pointer-type-name :: false-or(<symbol>))
  => ();
 
 define method compute-closure
@@ -535,7 +542,7 @@ end method find-dylan-name;
 define method apply-container-options
     (decl :: <structured-type-declaration>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
-     sealing :: <string>, inlining :: <string>)
+     sealing :: <string>, inlining :: <string>, ptr-type-name :: false-or(<symbol>))
  => ();
   let sub-containers = list(decl.simple-name);
   if (decl.members)
@@ -543,6 +550,9 @@ define method apply-container-options
       find-dylan-name(elem, map-function, prefix, sub-containers, read-only,
                       sealing, inlining);
     end for;
+  end if;
+  if (ptr-type-name & ~decl.pointer-type-name)
+    decl.pointer-type-name := ptr-type-name;
   end if;
 end method apply-container-options;
 
