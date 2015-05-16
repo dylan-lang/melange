@@ -422,11 +422,11 @@ end method value;
 //
 define method source-location (token :: <token>)
  => (srcloc :: <source-location>)
-  let source-string = token.generator.contents;
-  let line-num = 1;
-  let last-CR = -1;
+  let source-string :: <byte-string> = token.generator.contents;
+  let line-num :: <integer> = 1;
+  let last-CR :: <integer> = -1;
 
-  for (i from 0 below token.position | 0)
+  for (i :: <integer> from 0 below token.position | 0)
     if (source-string[i] == '\n')
       line-num := line-num + 1;
       last-CR := i;
@@ -594,11 +594,11 @@ define method source-location (tokenizer :: <tokenizer>)
   for (gen = tokenizer then gen.include-tokenizer,
        while: gen.include-tokenizer)
   finally
-    let source-string = gen.contents;
-    let line-num = 1;
-    let last-CR = -1;
+    let source-string :: <byte-string> = gen.contents;
+    let line-num :: <integer> = 1;
+    let last-CR :: <integer> = -1;
 
-    for (i from 0 below gen.position | 0)
+    for (i :: <integer> from 0 below gen.position | 0)
       if (source-string[i] == '\n')
         line-num := line-num + 1;
         last-CR := i;
