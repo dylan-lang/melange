@@ -426,14 +426,15 @@ define method source-location (token :: <token>)
   let line-num :: <integer> = 1;
   let last-CR :: <integer> = -1;
 
-  for (i :: <integer> from 0 below token.position | 0)
+  let pos = token.position | 0;
+  for (i :: <integer> from 0 below pos)
     if (source-string[i] == '\n')
       line-num := line-num + 1;
       last-CR := i;
     end if;
   end for;
 
-  let char-num = (token.position | 0) - last-CR;
+  let char-num = pos - last-CR;
   make(<file-source-location>,
        file: token.generator.file-name,
        line: line-num,
@@ -598,14 +599,15 @@ define method source-location (tokenizer :: <tokenizer>)
     let line-num :: <integer> = 1;
     let last-CR :: <integer> = -1;
 
-    for (i :: <integer> from 0 below gen.position | 0)
+    let pos :: <integer> = gen.position | 0;
+    for (i :: <integer> from 0 below pos)
       if (source-string[i] == '\n')
         line-num := line-num + 1;
         last-CR := i;
       end if;
     end for;
 
-    let char-num = (gen.position | 0) - last-CR;
+    let char-num = pos - last-CR;
     make(<file-source-location>,
          file: gen.file-name,
          line: line-num,
