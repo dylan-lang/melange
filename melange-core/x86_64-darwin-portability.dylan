@@ -49,6 +49,9 @@ define constant $default-defines
       "__x86_64", "1",
       "__x86_64__", "1",
 
+      "_POSIX_C_SOURCE", "200809L",
+      "MAC_OS_X_VERSION_MIN_REQUIRED", "1080",
+
       // Parameterized macros which remove various GCC extensions from our
       // source code. The last item in the list is the right-hand side of
       // the define; all the items preceding it are named parameters.
