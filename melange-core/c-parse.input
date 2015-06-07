@@ -1,9 +1,9 @@
 module: c-parse
 author:  Robert Stockton (rgs@cs.cmu.edu)
 copyright: See LICENSE file in this distribution.
-	   This code was produced by the Gwydion Project at Carnegie Mellon
-	   University.  If you are interested in using this code, contact
-	   "Scott.Fahlman@cs.cmu.edu" (Internet).
+           This code was produced by the Gwydion Project at Carnegie Mellon
+           University.  If you are interested in using this code, contact
+           "Scott.Fahlman@cs.cmu.edu" (Internet).
 
 //======================================================================
 // Module c-parse handles parsing of native C header files.  Theoretically, we
@@ -96,8 +96,8 @@ end method;
 
 define method int-value (value :: <object>, state :: <parse-state>)
   error(value,
-	"Value in constant expression must be an integer, but is %=\n.",
-	value);
+        "Value in constant expression must be an integer, but is %=\n.",
+        value);
 end method;
 
 // This method will only be called if we are evaluating an expression in a CPP
@@ -131,7 +131,7 @@ define method int-value
     object-decl.constant-value;
   else
     parse-error(value,
-	"Value in constant expression must be an integer, but isn't.");
+        "Value in constant expression must be an integer, but isn't.");
   end if;
 end method int-value;
 
@@ -397,23 +397,23 @@ postfix-expr (postfix-expr <lparen-token> argument-expr-list <rparen-token>)
   //if (~instance?(@0, <parse-cpp-state>) | %1.string-value ~= "defined")
   if (%1.string-value ~= "defined")
     let definition = element(%1.generator.cpp-table, %1.string-value,
-			  default: #f);
+                          default: #f);
     if (definition ~= #f)
-      if (instance?(definition.head, <token>))	
-	parse-error(@0,concatenate(%1.string-value, " isn't a parameterized macro."));
+      if (instance?(definition.head, <token>))
+        parse-error(@0,concatenate(%1.string-value, " isn't a parameterized macro."));
       else
-	// XXX: We don't actually substitute here like we should, but
-	// it'll handle "#define __GNUC_PREREQ(maj,min) 0" correctly...
-//	for (token in definition.tail)
-/*	  for (count from 0, param in definition.head)
-	    if (token.string-value = param.string-value)
-	      token := %3[count];
-	    end if;
-	  end for;
+        // XXX: We don't actually substitute here like we should, but
+        // it'll handle "#define __GNUC_PREREQ(maj,min) 0" correctly...
+//        for (token in definition.tail)
+/*          for (count from 0, param in definition.head)
+            if (token.string-value = param.string-value)
+              token := %3[count];
+            end if;
+          end for;
 */
-//	  unget-token(%1.generator, token);
-//	end for;
-//	cpp-parse(%1.generator);
+//          unget-token(%1.generator, token);
+//        end for;
+//        cpp-parse(%1.generator);
         0; // yeah, chickening out.
       end if;
     else
@@ -1540,80 +1540,80 @@ define method parse-loop
       let state :: <integer> = state-stack[top - 1];
 
       if (debug)
-	dformat("top = %d, state = %d, lookahead = %s\n",
-		top, state, lookahead.string-value);
+        dformat("top = %d, state = %d, lookahead = %s\n",
+                top, state, lookahead.string-value);
       end if;
 
       let actions :: <simple-object-vector> = $action-table[state];
       let action :: <integer> = actions[lookahead.token-id];
       let (action-datum, action-kind)
-	= truncate/(action, ash(1, $action-bits));
+        = truncate/(action, ash(1, $action-bits));
       select (action-kind)
-	$error-action =>
-	  parse-error(parse-state, "Parse error at or before %s",
+        $error-action =>
+          parse-error(parse-state, "Parse error at or before %s",
                       lookahead.string-value);
 
-	$accept-action =>
-	  if (debug)
-	    dformat("  accepting.\n");
-	  end if;
-	  unget-token(tokenizer, lookahead);
-	  if (top ~== 2)
-	    error("stack didn't get reduced all the way?");
-	  end if;
-	  return(symbol-stack[1]);
+        $accept-action =>
+          if (debug)
+            dformat("  accepting.\n");
+          end if;
+          unget-token(tokenizer, lookahead);
+          if (top ~== 2)
+            error("stack didn't get reduced all the way?");
+          end if;
+          return(symbol-stack[1]);
 
-	$shift-action =>
-	  if (top == state-stack.size)
-	    state-stack := grow(state-stack);
-	    symbol-stack := grow(symbol-stack);
-	    srcloc-stack := grow(srcloc-stack);
-	  end if;
-	  if (debug)
-	    dformat("  shifting to state %d.\n", action-datum);
-	  end if;
-	  state-stack[top] := action-datum;
-	  symbol-stack[top] := lookahead;
-	  srcloc-stack[top] := lookahead-srcloc;
-	  top := top + 1;
-	  let (new-lookahead, new-srcloc) = aux-get-token(parse-state);
-	  lookahead := new-lookahead;
-	  lookahead-srcloc := new-srcloc;
+        $shift-action =>
+          if (top == state-stack.size)
+            state-stack := grow(state-stack);
+            symbol-stack := grow(symbol-stack);
+            srcloc-stack := grow(srcloc-stack);
+          end if;
+          if (debug)
+            dformat("  shifting to state %d.\n", action-datum);
+          end if;
+          state-stack[top] := action-datum;
+          symbol-stack[top] := lookahead;
+          srcloc-stack[top] := lookahead-srcloc;
+          top := top + 1;
+          let (new-lookahead, new-srcloc) = aux-get-token(parse-state);
+          lookahead := new-lookahead;
+          lookahead-srcloc := new-srcloc;
 
-	  unless (lookahead.token-id == $eof-token)
-	    let actions :: <simple-object-vector>
-	      = $action-table[action-datum];
-	    let action :: <integer> = actions[$eof-token];
-	  end unless;
+          unless (lookahead.token-id == $eof-token)
+            let actions :: <simple-object-vector>
+              = $action-table[action-datum];
+            let action :: <integer> = actions[$eof-token];
+          end unless;
 
-	$reduce-action =>
-	  let semantic-action :: <function>
-	    = $production-table[action-datum];
-	  let number-pops :: <integer>
-	    = $number-of-pops[action-datum];
-	  if (debug)
-	    dformat("  reducing by production %d, num pops = %d\n",
-		    action-datum, number-pops);
-	  end if;
-	  let old-top = top - number-pops;
-	  let extra-args = make(<simple-object-vector>, size: number-pops * 2);
-	  for (index from 0 below number-pops)
-	    extra-args[index * 2] := symbol-stack[old-top + index];
-	    extra-args[index * 2 + 1] := srcloc-stack[old-top + index];
-	  end for;
-	  let new-srcloc = parse-state;
-	  let (new-state :: <integer>, new-symbol)
-	    = apply(semantic-action, state-stack[old-top - 1], new-srcloc,
-		    extra-args);
-	  if (old-top == state-stack.size)
-	    state-stack := grow(state-stack);
-	    symbol-stack := grow(symbol-stack);
-	    srcloc-stack := grow(srcloc-stack);
-	  end if;
-	  state-stack[old-top] := new-state;
-	  symbol-stack[old-top] := new-symbol;
-	  srcloc-stack[old-top] := new-srcloc;
-	  top := old-top + 1;
+        $reduce-action =>
+          let semantic-action :: <function>
+            = $production-table[action-datum];
+          let number-pops :: <integer>
+            = $number-of-pops[action-datum];
+          if (debug)
+            dformat("  reducing by production %d, num pops = %d\n",
+                    action-datum, number-pops);
+          end if;
+          let old-top = top - number-pops;
+          let extra-args = make(<simple-object-vector>, size: number-pops * 2);
+          for (index from 0 below number-pops)
+            extra-args[index * 2] := symbol-stack[old-top + index];
+            extra-args[index * 2 + 1] := srcloc-stack[old-top + index];
+          end for;
+          let new-srcloc = parse-state;
+          let (new-state :: <integer>, new-symbol)
+            = apply(semantic-action, state-stack[old-top - 1], new-srcloc,
+                    extra-args);
+          if (old-top == state-stack.size)
+            state-stack := grow(state-stack);
+            symbol-stack := grow(symbol-stack);
+            srcloc-stack := grow(srcloc-stack);
+          end if;
+          state-stack[old-top] := new-state;
+          symbol-stack[old-top] := new-symbol;
+          srcloc-stack[old-top] := new-srcloc;
+          top := old-top + 1;
 
       end select;
     end while;
@@ -1657,9 +1657,9 @@ define method parse-type
     (type :: <string>, old-state :: <parse-file-state>)
  => (result :: <declaration>);
   let tokenizer = make(<tokenizer>, name: concatenate("Type name: ", type),
-		       typedefs-from: old-state.tokenizer, contents: type);
+                       typedefs-from: old-state.tokenizer, contents: type);
   unget-token(tokenizer, make(<alien-name-token>,
-			      generator: tokenizer, string: ""));
+                              generator: tokenizer, string: ""));
   let parse-state
     = make(<parse-value-state>, tokenizer: tokenizer, parent: old-state);
   parse-loop(parse-state);
@@ -1678,7 +1678,7 @@ define method parse-macro
                        parent: old-tokenizer, contents: "");
   if (check-cpp-expansion(name, tokenizer))
     unget-token(tokenizer, make(<macro-parse-token>,
-				generator: tokenizer, string: ""));
+                                generator: tokenizer, string: ""));
     let parse-state
       = make(<parse-macro-state>, tokenizer: tokenizer, parent: old-state);
     parse-loop(parse-state);
@@ -1700,7 +1700,7 @@ define method cpp-parse (tokenizer :: <tokenizer>) => result :: <integer>;
     let parse-state
       = make(<parse-cpp-state>, tokenizer: tokenizer);
     unget-token(tokenizer, make(<cpp-parse-token>,
-				generator: tokenizer, string: ""));
+                                generator: tokenizer, string: ""));
     parse-loop(parse-state);
   cleanup
     get-token(tokenizer); // un-unget the EOF, since we may want to
