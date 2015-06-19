@@ -52,6 +52,8 @@ define constant $melange-defines
 define constant $default-defines
   = concatenate($melange-defines, get-compiler-defines("gcc -dM -E - < /dev/null"));
 
+define constant $default-undefines = #[];
+
 define constant linux-include-directories
   = #["/usr/local/include",
       "/usr/include"];

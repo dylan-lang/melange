@@ -117,6 +117,7 @@ define module portability
   use strings;
   export
     $default-defines,
+    $default-undefines,
     $enum-size,
     $pointer-size, $function-pointer-size,
     $integer-size, $short-int-size,

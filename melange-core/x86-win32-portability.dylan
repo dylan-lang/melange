@@ -42,6 +42,8 @@ define constant $default-defines
       "__extension__", "",
       "__builtin_va_list", "void*"];
 
+define constant $default-undefines = #[];
+
 // Set up the search path for .h files
 begin
   let include-env-variable = environment-variable("include") | "";

@@ -60,6 +60,8 @@ define constant $default-defines
       "__asm", #(#("x"), "")
       ];
 
+define constant $default-undefines = #[];
+
 // Set up the search path for .h files
 // cc -E -v /dev/null
 define constant macos-include-directories

@@ -495,6 +495,9 @@ define method process-parse-state
       defines[name] := value
     end;
   end for;
+  for (def in $default-undefines)
+    remove-key!(defines, def);
+  end for;
   for (def in cmd-undefines)
     remove-key!(defines, def);
   end for;
@@ -631,6 +634,7 @@ define method show-usage (stream :: <stream>) => ()
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
 "       melange --defines\n"
+"       melange --undefines\n"
 "       melange --includes\n"
 "       melange --help\n"
 "       melange --version\n");
@@ -663,6 +667,12 @@ define method show-default-defines (stream :: <stream>) => ()
   end for;
 end method show-default-defines;
 
+define method show-default-undefines (stream :: <stream>) => ()
+  for (undef in $default-undefines)
+    format(stream, "%s\n", undef);
+  end for;
+end method show-default-undefines;
+
 define method show-default-includes (stream :: <stream>) => ()
   for (i from 0 below include-path.size)
     let name = include-path[i];
@@ -685,7 +695,8 @@ define method show-help (stream :: <stream>) => ()
 "  -D, --define           Define a C preprocessor macro for use by C headers.\n"
 "                         If no value is given, defaults to 1.\n"
 "  -U, --undefine         Prevent definition of a default preprocessor macro.\n"
-"                         (Use --defines to see the defaults.)\n"
+"                         (Use --defines to see the defaults. Use --undefines to"
+"                         see the default undefines.)\n"
 "  -I, --includedir       Extra directories to search for C headers.\n"
 "  --framework            The name of a framework bundle to search for C headers\n"
 "                         and child frameworks. Required when a child framework\n"
@@ -698,6 +709,7 @@ define method show-help (stream :: <stream>) => ()
 "  -m, --module-file      Create a Dylan interchange file with a module\n"
 "                         definition that exports the interface names.\n"
 "  --defines              Show the default C preprocessor definitions.\n"
+"  --undefines            Show the default platform undefinitions.\n"
 "  --includes             Show the default C preprocessor include directories.\n"
 "  --help                 Show this help text.\n"
 "  --version              Show version number.\n"
@@ -726,6 +738,9 @@ define method main (program, args)
   add-option(*argp*,
              make(<flag-option>,
                   names: #("defines")));
+  add-option(*argp*,
+             make(<flag-option>,
+                  names: #("undefines")));
   add-option(*argp*,
              make(<flag-option>,
                   names: #("includes")));
@@ -770,6 +785,10 @@ define method main (program, args)
   // Handle our informational options.
   if (get-option-value(*argp*, "defines"))
     show-default-defines(*standard-output*);
+    exit-application(0);
+  end if;
+  if (get-option-value(*argp*, "undefines"))
+    show-default-undefines(*standard-output*);
     exit-application(0);
   end if;
   if (get-option-value(*argp*, "includes"))

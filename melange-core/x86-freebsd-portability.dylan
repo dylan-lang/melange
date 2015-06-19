@@ -48,6 +48,8 @@ define constant $default-defines
       "__ELF__", "1",
       "unix", "1"];
 
+define constant $default-undefines = #[];
+
 define constant FreeBSD-include-directories
   = #["/usr/local/include",
       "/usr/include"];
