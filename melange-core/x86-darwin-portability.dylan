@@ -14,47 +14,20 @@ copyright: See LICENSE file in this distribution.
 // the compilation environment for a MacOS X Macintosh using the Darwin BSD layer.
 //======================================================================
 
-// Many of these can be found from
-// cpp -dM /dev/null
+define constant $melange-defines
+  = #["_POSIX_C_SOURCE", "200809L",
+      "MAC_OS_X_VERSION_MIN_REQUIRED", "1080"];
 
 define constant $default-defines
-  = #[
-      // Basics
-      "const", "",
-      "volatile", "",
-      "restrict", "",
-      "__restrict", "",
+  = concatenate($melange-defines,
+                $gcc-or-clang-defines,
+                get-compiler-defines("clang -arch i386 -dM -E - < /dev/null"));
 
-      "__APPLE__", "1",
-      "__APPLE_CC__", "5621",
-      "__DYNAMIC__", "1",
-      "__GNUC_MINOR__", "2",
-      "__GNUC_PATCHLEVEL__", "1",
-      "__GNUC__", "4",
-      "__i386", "1",
-      "__i386__", "1",
-      "__LITTLE_ENDIAN__", "1",
-      "__MACH__", "1",
-      "__STDC__", "1",
-      "__STDC_VERSION__", "199901L",
-      "i386", "1",
-      "__signed__", "",
-      "__signed", "",
-      "__inline__", "",
-      "__inline", "",
-      "__builtin_va_list", "void*",
-
-      "_POSIX_C_SOURCE", "200809L",
-      "MAC_OS_X_VERSION_MIN_REQUIRED", "1080",
-
-      // Parameterized macros which remove various GCC extensions from our
-      // source code. The last item in the list is the right-hand side of
-      // the define; all the items preceding it are named parameters.
-      "__attribute__", #(#("x"), ""),
-      "__asm", #(#("x"), "")
-      ];
-
-define constant $default-undefines = #[];
+// The undefinition of __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ is
+// to work around an issue that otherwise happens when parsing the API availability
+// header definitions.
+define constant $default-undefines
+  = #["__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__"];
 
 // Set up the search path for .h files
 // cc -E -v /dev/null

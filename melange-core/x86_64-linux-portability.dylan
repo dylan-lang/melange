@@ -9,48 +9,15 @@ copyright: See LICENSE file in this distribution.
 // of different sorts of numbers.
 //
 // This particular implementation of module portability corresponds to the
-// compilation environment for an Intel x86 running Linux 2.x.x.
+// compilation environment for an Intel x86 running Linux.
 //======================================================================
 
-define constant $melange-defines
-  = #["const", "",
-      "volatile", "",
-      "restrict", "",
-      "__restrict", "",
-      "__STDC__", "",
-
-      // The following six declarations should be removed someday, as soon as
-      // we fix a bug in MINDY.
-      //"__GNUC__", "2",
-      //"__GNUC_MINPR__", "7",
-      //"__signed__", "",
-      //"__const", "",
-      //"__CONSTVALUE", "",
-      //"__CONSTVALUE2", "",
-
-      // Parameterized macros which remove various GCC extensions from our
-      // source code. The last item in the list is the right-hand side of
-      // the define; all the items preceding it are named parameters.
-      "__attribute__", #(#("x"), ""),
-      "__signed__", "",
-      "__inline__", "",
-      "inline", "",
-      "__inline", "",
-
-      "__ELF__", "",
-      "unix", "",
-      "i386", "",
-      "linux", "",
-      "__unix__", "",
-      "__i386__", "",
-      "__linux__", "",
-      "__unix", "",
-      "__i386", "",
-      "__linux", "",
-      "__builtin_va_list", "void*"];
+define constant $melange-defines = #[];
 
 define constant $default-defines
-  = concatenate($melange-defines, get-compiler-defines("gcc -dM -E - < /dev/null"));
+  = concatenate($melange-defines,
+                $gcc-or-clang-defines,
+                get-compiler-defines("gcc -dM -E - < /dev/null"));
 
 define constant $default-undefines = #[];
 

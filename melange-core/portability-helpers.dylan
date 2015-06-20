@@ -36,3 +36,26 @@ define function get-compiler-defines (cmd :: <string>)
     defines
   end;
 end function;
+
+define constant $gcc-or-clang-defines
+  = #[
+      // Basics
+      "const", "",
+      "volatile", "",
+      "restrict", "",
+      "__restrict", "",
+
+      "__signed__", "",
+      "__signed", "",
+      "__inline__", "",
+      "__inline", "",
+      "inline", "",
+      "__builtin_va_list", "void*",
+
+      // Parameterized macros which remove various GCC extensions from our
+      // source code. The last item in the list is the right-hand side of
+      // the define; all the items preceding it are named parameters.
+      "__attribute__", #(#("x"), ""),
+      "__asm__", #(#("x"), ""),
+      "__asm", #(#("x"), "")
+      ];
