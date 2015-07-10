@@ -112,6 +112,14 @@ define function find-source-location (context)
   end if;
 end function find-source-location;
 
+define method condition-to-string
+    (condition :: <format-string-parse-condition>) => (string :: <string>)
+  let location-desc = with-output-to-string(stream)
+        describe-source-location(parse-condition-source-location(condition), stream)
+      end with-output-to-string;
+  concatenate(location-desc, next-method())
+end method condition-to-string;
+
 define function parse-error
     (context, format-string, #rest format-args)
  => does-not-return :: <bottom>;
