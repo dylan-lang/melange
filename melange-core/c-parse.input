@@ -217,7 +217,7 @@ define constant <source-location> = false-or(<parse-state>);
 :token <rbracket-token> <punctuation-token>
 :token <ampersand-token> <punctuation-token>
 :token <star-token> <punctuation-token>
-:token <carat-token> <punctuation-token>
+:token <caret-token> <punctuation-token>
 :token <bar-token> <punctuation-token>
 :token <percent-token> <punctuation-token>
 :token <slash-token> <punctuation-token>
@@ -262,7 +262,7 @@ define constant <source-location> = false-or(<parse-state>);
      <dec-op-token> <inc-op-token> <ptr-op-token> <semicolon-token>
      <comma-token> <dot-token> <lparen-token> <rparen-token>
      <lbracket-token> <rbracket-token> <ampersand-token> <star-token>
-     <carat-token> <bar-token> <percent-token> <slash-token> <plus-token>
+     <caret-token> <bar-token> <percent-token> <slash-token> <plus-token>
      <minus-token> <tilde-token> <bang-token> <lt-token> <gt-token>
      <question-token> <colon-token> <eq-op-token> <le-op-token>
      <ge-op-token> <ne-op-token> <and-op-token> <or-op-token>
@@ -615,7 +615,7 @@ exclusive-or-expr (and-expr)
   %1;
 %
 
-exclusive-or-expr (exclusive-or-expr <carat-token> and-expr)
+exclusive-or-expr (exclusive-or-expr <caret-token> and-expr)
   logxor(int-value(%1, @0), int-value(%3, @0));
 %
 

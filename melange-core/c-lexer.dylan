@@ -217,7 +217,7 @@ define token <lbracket-token> :: <punctuation-token> = 51;
 define token <rbracket-token> :: <punctuation-token> = 52;
 define token <ampersand-token> :: <punctuation-token> = 53;
 define token <star-token> :: <punctuation-token> = 54;
-define token <carat-token> :: <punctuation-token> = 55;
+define token <caret-token> :: <punctuation-token> = 55;
 define token <bar-token> :: <punctuation-token> = 56;
 define token <percent-token> :: <punctuation-token> = 57;
 define token <slash-token> :: <punctuation-token> = 58;
@@ -676,7 +676,7 @@ define constant reserved-words
            "/", <slash-token>,
            "<", <lt-token>,
            ">", <gt-token>,
-           "^", <carat-token>,
+           "^", <caret-token>,
            "|", <bar-token>,
            "&", <ampersand-token>,
            "?", <question-token>,
@@ -1147,8 +1147,8 @@ define sealed domain make(singleton(<rbracket-token>));
 define sealed domain make(singleton(<ampersand-token>));
 // <star-token> -- subclass of <punctuation-token>
 define sealed domain make(singleton(<star-token>));
-// <carat-token> -- subclass of <punctuation-token>
-define sealed domain make(singleton(<carat-token>));
+// <caret-token> -- subclass of <punctuation-token>
+define sealed domain make(singleton(<caret-token>));
 // <bar-token> -- subclass of <punctuation-token>
 define sealed domain make(singleton(<bar-token>));
 // <percent-token> -- subclass of <punctuation-token>
