@@ -544,7 +544,7 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
                   end unless;
                   name.value;
                 otherwise =>
-                  parse-error(state,"Badly formed parameter list in #define.");
+                  parse-error(state, "Badly formed parameter list in #define.");
               end select;
             elseif (instance?(name, <ellipsis-token>))
               unless (instance?(get-token(state, cpp-line: #t), <rparen-token>))

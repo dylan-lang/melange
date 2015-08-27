@@ -397,7 +397,7 @@ postfix-expr (postfix-expr <lparen-token> argument-expr-list <rparen-token>)
   //if (~instance?(@0, <parse-cpp-state>) | %1.string-value ~= "defined")
   if (%1.string-value ~= "defined")
     let definition = element(%1.generator.cpp-table, %1.string-value,
-                          default: #f);
+                             default: #f);
     if (definition ~= #f)
       if (instance?(definition.head, <token>))
         parse-error(@0,concatenate(%1.string-value, " isn't a parameterized macro."));
@@ -417,7 +417,7 @@ postfix-expr (postfix-expr <lparen-token> argument-expr-list <rparen-token>)
         0; // yeah, chickening out.
       end if;
     else
-      parse-error(@0,"Function calls not allowed in constant expressions.");
+      parse-error(@0, "Function calls not allowed in constant expressions.");
     end if;
   elseif (element(%3.generator.cpp-table, %3.string-value, default: #f))
     1;
