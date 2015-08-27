@@ -29,3 +29,10 @@ define C-function non-typedef-function-pointer
   c-name: "non_typedef_function_pointer";
 end;
 
+define constant <block-syntax-cb> = <C-void*>;
+define C-function block-syntax
+  input parameter callback_ :: <block-syntax-cb>;
+  result res :: <C-signed-int>;
+  c-name: "block_syntax";
+end;
+

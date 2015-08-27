@@ -172,6 +172,14 @@ define method write-declaration (decl :: <function-type-declaration>, back-end :
   format(stream, "define constant %s = <C-function-pointer>;\n", decl.dylan-name);
 end;
 
+define method write-declaration (decl :: <block-type-declaration>, back-end :: <c-ffi-back-end>)
+ => ();
+  let stream = back-end.stream;
+  register-written-name(back-end.written-names, decl.dylan-name, decl);
+
+  format(stream, "define constant %s = <C-void*>;\n", decl.dylan-name);
+end;
+
 define method write-declaration (decl :: <vector-declaration>, back-end :: <c-ffi-back-end>)
  => ();
   let stream = back-end.stream;

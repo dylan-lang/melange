@@ -6,3 +6,6 @@ int new_style_syntax(new_style_syntax_cb *callback);
 
 int anonymous_non_typedef_function_pointer(int (*)(void *payload));
 int non_typedef_function_pointer(int (*old)(void *payload));
+
+typedef int (^block_syntax_cb)(void *payload);
+int block_syntax(block_syntax_cb callback);

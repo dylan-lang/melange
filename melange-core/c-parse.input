@@ -1073,6 +1073,10 @@ declarator (pointer declarator2)
   pair(%1, %2);
 %
 
+declarator (block declarator2)
+  pair(%1, %2);
+%
+
 declarator2 (identifier)
   %1;
 %
@@ -1104,6 +1108,10 @@ declarator2 (declarator2 <lparen-token> parameter-type-list <rparen-token>)
 
 declarator2 (declarator2 <lparen-token> parameter-identifier-list <rparen-token>)
   pair(#"function", pair(reverse!(%3), %1));
+%
+
+block (<caret-token>)
+  list(#"block");
 %
 
 pointer (<star-token>)

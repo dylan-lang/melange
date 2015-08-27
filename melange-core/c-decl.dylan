@@ -40,6 +40,7 @@ copyright: See LICENSE file in this distribution.
 //            operations include length, pointer-equiv
 //       <function-type-declaration>
 //           operations include find-parameter, find-result
+//         <block-type-declaration>
 //       <typedef-declaration> (uses <typed> mixin)
 //       <incomplete-type-declaration>
 //       <predefined-type-declaration>
@@ -614,6 +615,12 @@ define method canonical-name (decl :: <pointer-declaration>)
           decl.c-name
             := concatenate(sub-name, suffix,
                            copy-sequence(referent-name, start: sub-name.size));
+        <block-type-declaration> =>
+          let referent-name = referent-type.canonical-name;
+          let sub-name = referent-type.result.canonical-name;
+          decl.c-name := format-to-string("%s (^%s)", sub-name,
+                                          copy-sequence(referent-name,
+                                                        start: sub-name.size));
         <function-type-declaration> =>
           let referent-name = referent-type.canonical-name;
           let sub-name = referent-type.result.canonical-name;
@@ -783,6 +790,24 @@ define method compute-closure
   end if;
   results;
 end method compute-closure;
+
+//------------------------------------------------------------------------
+
+define class <block-type-declaration> (<function-type-declaration>)
+end class <block-type-declaration>;
+
+define method canonical-name (decl :: <block-type-declaration>)
+ => (result :: <string>);
+  if (decl.c-name)
+    decl.c-name
+  else
+    // We need to include the actual parameters eventually.  This is a stopgap
+    // to guarantee that all block declarations will end up in the name
+    // table.
+    format-to-string("%s (^%s)", decl.result.canonical-name,
+                     decl.simple-name);
+  end if;
+end method canonical-name;
 
 //------------------------------------------------------------------------
 
@@ -1337,6 +1362,8 @@ define sealed domain make(singleton(<pointer-declaration>));
 define sealed domain make(singleton(<vector-declaration>));
 // <function-type-declaration> -- subclass of <type-declaration>
 define sealed domain make(singleton(<function-type-declaration>));
+// <block-type-declaration> -- subclass of <function-type-declaration>
+define sealed domain make(singleton(<block-type-declaration>));
 // <typedef-declaration> -- subclass of <type-declaration>, <typed>
 define sealed domain make(singleton(<typedef-declaration>));
 // <incomplete-type-declaration> -- subclass of <type-declaration>

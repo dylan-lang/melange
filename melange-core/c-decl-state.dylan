@@ -280,13 +280,15 @@ define method process-declarator
   case
     (instance?(declarator.head, <list>)) =>
       for (tp = tp
-             then if (ptr ~= #"pointer")
+             then if (ptr ~= #"pointer" & ptr ~= #"block")
                     parse-error(state, "unknown type modifier");
                   elseif (instance?(tp, <function-type-declaration>))
                     // We don't want this pointer when it is a function pointer.
                     tp;
-                  else
+                  elseif (ptr = #"pointer")
                     pointer-to(tp, state);
+                  elseif (ptr = #"block")
+                    parse-error(state, "invalid use of ^");
                   end if,
            ptr in head(declarator))
       finally
@@ -347,18 +349,28 @@ define method process-declarator
 //                          name: new-name.value,
 
       let nested-type = declarator.tail.tail;
-      let new-name = if (instance?(nested-type, <pair>) &
+      let qual = if (instance?(nested-type, <pair>) &
                          instance?(nested-type.head, <list>) &
                          nested-type.head.size == 1 &
-                         nested-type.head.head == #"pointer" &
+                         (nested-type.head.head == #"pointer" | nested-type.head.head = #"block") &
                          instance?(nested-type.tail, <identifier-token>))
+                       nested-type.head.head
+                 else
+                   #f
+                 end if;
+      let new-name = if (qual)
                        nested-type.tail.value
                      elseif (instance?(nested-type, <identifier-token>))
                        nested-type.value
                      else
                        anonymous-name()
                      end if;
-      let new-type = make(<function-type-declaration>, name: new-name,
+      let decl-class = if (qual = #"block")
+                         <block-type-declaration>
+                       else
+                         <function-type-declaration>
+                       end if;
+      let new-type = make(decl-class, name: new-name,
                           result: make(<result-declaration>,
                                        name: "result", type: tp),
                           params: real-params);
