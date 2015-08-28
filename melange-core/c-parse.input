@@ -400,7 +400,7 @@ postfix-expr (postfix-expr <lparen-token> argument-expr-list <rparen-token>)
                              default: #f);
     if (definition ~= #f)
       if (instance?(definition.head, <token>))
-        parse-error(@0,concatenate(%1.string-value, " isn't a parameterized macro."));
+        parse-error(@0, concatenate(%1.string-value, " isn't a parameterized macro."));
       else
         // XXX: We don't actually substitute here like we should, but
         // it'll handle "#define __GNUC_PREREQ(maj,min) 0" correctly...
