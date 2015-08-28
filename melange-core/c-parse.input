@@ -247,6 +247,9 @@ define constant <source-location> = false-or(<parse-state>);
 :token <cpp-parse-token> <token>
 ;; #machine -- hack to support solaris
 :token <machine-token> <token>
+:token <has-cpp-attribute-token> <token>
+:token <has-include-token> <token>
+:token <has-include-next-token> <token>
 
 :union NON-CURLY <token>
     (<identifier-token> <type-name-token>  <integer-token>
@@ -387,6 +390,42 @@ postfix-expr (primary-expr)
 ;postfix-expr (postfix-expr <lparen-token> <rparen-token>)
 ;  error("postfix-expr not yet handled.");
 ;%
+
+cpp-attribute (identifier <colon-token> <colon-token> identifier)
+  concatenate(%1.string-value, "::", %4.string-value);
+%
+
+postfix-expr (<has-cpp-attribute-token> <lparen-token> cpp-attribute <rparen-token>)
+  0;
+%
+
+file-name (identifier)
+  %1.string-value
+%
+
+file-name (file-name <slash-token> identifier)
+  concatenate(%1, "/", %3.string-value);
+%
+
+file-name (file-name <minus-token> identifier)
+  concatenate(%1, "-", %3.string-value);
+%
+
+file-name (file-name <dot-token> identifier)
+  concatenate(%1, ".", %3.string-value);
+%
+
+include-name (<lt-token> file-name <gt-token>)
+  %2;
+%
+
+postfix-expr (<has-include-token> <lparen-token> include-name <rparen-token>)
+  0;
+%
+
+postfix-expr (<has-include-next-token> <lparen-token> include-name <rparen-token>)
+  0;
+%
 
 postfix-expr (postfix-expr <lparen-token> argument-expr-list <rparen-token>)
   // There aren't any compile-time functions which we are prepared to

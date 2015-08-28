@@ -57,5 +57,17 @@ define constant $gcc-or-clang-defines
       // the define; all the items preceding it are named parameters.
       "__attribute__", #(#("x"), ""),
       "__asm__", #(#("x"), ""),
-      "__asm", #(#("x"), "")
+      "__asm", #(#("x"), ""),
+
+      // These are various feature check macros that clang uses and are
+      // used in Apple headers among other places.
+      // They are documented here:
+      // http://clang.llvm.org/docs/LanguageExtensions.html#feature-checking-macros
+      "__has_attribute", #(#("x"), "0"),
+      "__has_builtin", #(#("x"), "0"),
+      "__has_declspec_attribute", #(#("x"), "0"),
+      "__has_extension", #(#("x"), "0"),
+      "__has_feature", #(#("x"), "0"),
+      "__has_warning", #(#("x"), "0"),
+      "__is_identifier", #(#("x"), "0")
       ];

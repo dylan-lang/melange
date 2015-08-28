@@ -246,6 +246,9 @@ define /* exported */ token <alien-name-token> :: <token> = 79;
 define /* exported */ token <macro-parse-token> :: <token> = 80;
 define /* exported */ token <cpp-parse-token> :: <token> = 81;
 define /* exported */ token <machine-token> :: <token> = 82;
+define token <has-cpp-attribute-token> :: <token> = 83;
+define token <has-include-token> :: <token> = 84;
+define token <has-include-next-token> :: <token> = 85;
 
 //----------------------------------------------------------------------
 // Support code
@@ -734,7 +737,12 @@ define function lex-identifier
       let cls = if (~cpp-line)
                   element(reserved-word-table, string, default: default);
                 else
-                  default;
+                  select (string by \=)
+                    "__has_cpp_attribute" => <has-cpp-attribute-token>;
+                    "__has_include" => <has-include-token>;
+                    "__has_include_next" => <has-include-next-token>;
+                    otherwise => default;
+                  end select;
                 end if;
       make(cls, position: position, string: string, generator: tokenizer);
   end case;
@@ -1194,3 +1202,9 @@ define sealed domain initialize(<macro-parse-token>);
 // <cpp-parse-token> -- subclass of <token>
 define sealed domain make(singleton(<cpp-parse-token>));
 define sealed domain initialize(<cpp-parse-token>);
+// <has-cpp-attribute-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<has-cpp-attribute-token>));
+// <has-include-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<has-include-token>));
+// <has-include-next-token> -- subclass of <reserved-word-token>
+define sealed domain make(singleton(<has-include-next-token>));
