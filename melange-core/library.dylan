@@ -94,7 +94,6 @@ define module c-lexer
   use multistring-match;
   create cpp-parse;
   export
-    *handle-c++-comments*,
     *framework-paths*, find-frameworks,
     <tokenizer>, cpp-table, cpp-decls, <token>, token-id, generator,
     <simple-token>, <reserved-word-token>, <punctuation-token>,
@@ -110,7 +109,7 @@ end module c-lexer;
 
 define module portability
   use dylan;
-  use c-lexer, import: {include-path, *handle-c++-comments*, *framework-paths*};
+  use c-lexer, import: {include-path, *framework-paths*};
   use operating-system, import: {with-application-output, environment-variable};  // win32 only
   use common-extensions;
   use streams;

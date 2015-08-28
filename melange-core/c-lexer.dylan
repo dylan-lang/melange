@@ -796,10 +796,6 @@ end method try-punctuation;
 
 define constant match-comment-end = make-substring-positioner("*/", #t);
 
-// *handle-c++-comments* -- xported variable.
-//
-define /* xported */ variable *handle-c++-comments* :: <boolean> = #t;
-
 define multistring-checker comment-matcher("/*", "//", "\\\n", "\\\r\n");
 
 // Skip over whitespace characters (including newlines) and comments.
@@ -822,17 +818,13 @@ define method skip-whitespace
                 end if;
                 skip-comments(end-index + 2);
               "//" =>
-                if (*handle-c++-comments*)
-                  while (i < sz & contents[i] ~== '\n')
-                    i := i + 1;
-                  end while;
-                  // i points at the newline if it ain't eof, but we need
-                  // to recurse anyway to handle multiple // comments in a
-                  // row, and that'll handle whitespace.
-                  skip-comments(i);
-                else
-                  i;
-                end if;
+                while (i < sz & contents[i] ~== '\n')
+                  i := i + 1;
+                end while;
+                // i points at the newline if it ain't eof, but we need
+                // to recurse anyway to handle multiple // comments in a
+                // row, and that'll handle whitespace.
+                skip-comments(i);
               "\\\n" =>
                 skip-comments(i + 2);
               "\\\r\n" =>
@@ -867,12 +859,10 @@ define method skip-cpp-whitespace
                 end if;
                 skip-comments(end-index + 2);
               "//" =>
-                if (*handle-c++-comments*)
-                  while (i < sz & contents[i] ~== '\n')
-                    i := i + 1;
-                  end while;
-                  // i points at the newline now.
-                end if;
+                while (i < sz & contents[i] ~== '\n')
+                  i := i + 1;
+                end while;
+                // i points at the newline now.
                 i;
               "\\\n" =>
                 skip-comments(i + 2);
@@ -940,7 +930,7 @@ define /* exported */ method get-token
       pop(stack);                // Get rid of the pound-pound-token
       let new-string = concatenate(token.string-value,
                                    get-token(state).string-value);
-      if (new-string = "/" "/" & *handle-c++-comments*)
+      if (new-string = "/" "/")
         // Cruft to handle VC++ 4.2, which attempts to make a comment out of
         // a boolean declaration.  Don't ask -- you don't want to know.
         make(<char-token>, position: token.position,
