@@ -350,7 +350,7 @@ primary-expr (<integer-token>)
 
 primary-expr (<character-token>)
   // C evaluates characters as integers in expressions, so we try to parse
-  // them as well. This helps particularly with #definies and enums.
+  // them as well. This helps particularly with #defines and enums.
   %1.value;
 %
 
