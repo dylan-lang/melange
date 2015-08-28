@@ -691,7 +691,7 @@ define constant reserved-words
            "]", <rbracket-token>,
            "(", <lparen-token>,
            ")", <rparen-token>,
-     "_Bool", <bool-token>);
+           "_Bool", <bool-token>);
 
 // This table maps reserved words (as "symbol" literals) to the corresponding
 // token class.  It is initialized from the "reserved-words" vector defined
