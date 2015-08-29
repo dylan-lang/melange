@@ -109,13 +109,20 @@ end method find-framework;
 define function get-macro-params
     (state :: <tokenizer>,
      params :: <list>,
-     #key expand)
+     #key expand,
+          varargs-index :: false-or(<integer>) = #f)
  => (params :: <list>);
   let paren-count = 0;
+  let terminating-token-type
+    = if (varargs-index = 0)
+        <rparen-token>
+      else
+        type-union(<rparen-token>, <comma-token>)
+      end if;
   for (token = get-token(state) then get-token(state, expand: expand),
        list = #() then pair(token, list),
        until: (paren-count == 0
-                & instance?(token, type-union(<rparen-token>, <comma-token>))))
+                & instance?(token, terminating-token-type)))
     select (token by instance?)
       <eof-token>, <error-token> =>
         parse-error(state, "Badly formed macro use.");
@@ -124,8 +131,9 @@ define function get-macro-params
       otherwise => #f;
     end select;
   finally
-    if (instance?(token, <comma-token>))
-      get-macro-params(state, pair(list, params));
+    if (instance?(token, <comma-token>) & varargs-index ~= 0)
+      get-macro-params(state, pair(list, params),
+                       varargs-index: if (varargs-index) varargs-index - 1 else #f end if);
     else
       pair(list, params);
     end if;
@@ -250,8 +258,15 @@ define /* exported */ function check-cpp-expansion
         push(tokenizer.unget-stack, lparen-token);
         #f;
       else
-        let params = get-macro-params(tokenizer, #(), expand: forbidden-expansions);
         let formal-params = token-list.head;
+        let varargs-index
+          = if (formal-params.head = "__VA_ARGS__")
+              formal-params.size - 1
+            else
+              #f
+            end if;
+        let params = get-macro-params(tokenizer, #(), expand: forbidden-expansions,
+                                      varargs-index: varargs-index);
         if (params.size ~= formal-params.size)
           parse-error(tokenizer, "Wrong number of parameters in macro use.")
         end if;
@@ -551,7 +566,7 @@ define method cpp-define (state :: <tokenizer>, pos :: <integer>) => ();
                 parse-error(state, "Badly formed parameter list in #define,"
                                    " ellipsis must be last parameter.");
               end unless;
-              "__VA_ARGS__"
+              pair("__VA_ARGS__", param-list)
             else
               parse-error(state, "Badly formed parameter list in #define.");
             end if;
