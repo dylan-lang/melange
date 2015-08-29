@@ -187,28 +187,28 @@ define /* exported */ function check-cpp-expansion
 
   local method expand-inner(token-list :: <sequence>, #key parameters = empty-table)
           let forbidden = pair(string, forbidden-expansions);
-        for (token in token-list)
-          unless (check-cpp-expansion(token.string-value, tokenizer,
-                                      parameters: parameters,
-                                      current-depth: current-depth + 1,
-                                      forbidden-expansions: forbidden))
-            // Successful call will have already pushed the expanded tokens
-            let cls = element(reserved-word-table,
-                              token.string-value, default: #f);
-            if (cls)
-              let reserved-word-token = make(cls,
-                                             position: tokenizer.position,
-                                             string: string-value(token),
-                                             generator: tokenizer);
-              push(tokenizer.unget-stack, reserved-word-token);
-            else
-              push(tokenizer.unget-stack, copy-token(token, tokenizer));
-            end if;
-          end unless;
-        finally
-          #t;
-        end for;
-      end method expand-inner;
+          for (token in token-list)
+            unless (check-cpp-expansion(token.string-value, tokenizer,
+                                        parameters: parameters,
+                                        current-depth: current-depth + 1,
+                                        forbidden-expansions: forbidden))
+              // Successful call will have already pushed the expanded tokens
+              let cls = element(reserved-word-table,
+                                token.string-value, default: #f);
+              if (cls)
+                let reserved-word-token = make(cls,
+                                               position: tokenizer.position,
+                                               string: string-value(token),
+                                               generator: tokenizer);
+                push(tokenizer.unget-stack, reserved-word-token);
+              else
+                push(tokenizer.unget-stack, copy-token(token, tokenizer));
+              end if;
+            end unless;
+          finally
+            #t;
+          end for;
+        end method expand-inner;
 
   case
     current-depth >= $maximum-cpp-expansion-depth =>
