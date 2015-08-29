@@ -246,9 +246,10 @@ define /* exported */ token <alien-name-token> :: <token> = 79;
 define /* exported */ token <macro-parse-token> :: <token> = 80;
 define /* exported */ token <cpp-parse-token> :: <token> = 81;
 define /* exported */ token <machine-token> :: <token> = 82;
-define token <has-cpp-attribute-token> :: <token> = 83;
-define token <has-include-token> :: <token> = 84;
-define token <has-include-next-token> :: <token> = 85;
+// These are identifier tokens so that defined(__has__...) will work.
+define token <has-cpp-attribute-token> :: <identifier-token> = 83;
+define token <has-include-token> :: <identifier-token> = 84;
+define token <has-include-next-token> :: <identifier-token> = 85;
 
 //----------------------------------------------------------------------
 // Support code
@@ -1202,9 +1203,9 @@ define sealed domain initialize(<macro-parse-token>);
 // <cpp-parse-token> -- subclass of <token>
 define sealed domain make(singleton(<cpp-parse-token>));
 define sealed domain initialize(<cpp-parse-token>);
-// <has-cpp-attribute-token> -- subclass of <reserved-word-token>
+// <has-cpp-attribute-token> -- subclass of <identifier-token>
 define sealed domain make(singleton(<has-cpp-attribute-token>));
-// <has-include-token> -- subclass of <reserved-word-token>
+// <has-include-token> -- subclass of <identifier-token>
 define sealed domain make(singleton(<has-include-token>));
-// <has-include-next-token> -- subclass of <reserved-word-token>
+// <has-include-next-token> -- subclass of <identifier-token>
 define sealed domain make(singleton(<has-include-next-token>));

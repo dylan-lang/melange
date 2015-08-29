@@ -1,3 +1,15 @@
+#if defined(__has_cpp_attribute)
+  int defined_has_cpp_attribute(void);
+#endif
+
+#if defined(__has_include)
+  int defined_has_include(void);
+#endif
+
+#if defined(__has_include_next)
+  int defined_has_include_next(void);
+#endif
+
 #if __has_builtin(__builtin_trap)
   int builtin(void);
 #endif

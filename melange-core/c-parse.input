@@ -247,9 +247,9 @@ define constant <source-location> = false-or(<parse-state>);
 :token <cpp-parse-token> <token>
 ;; #machine -- hack to support solaris
 :token <machine-token> <token>
-:token <has-cpp-attribute-token> <token>
-:token <has-include-token> <token>
-:token <has-include-next-token> <token>
+:token <has-cpp-attribute-token> <identifier-token>
+:token <has-include-token> <identifier-token>
+:token <has-include-next-token> <identifier-token>
 
 :union NON-CURLY <token>
     (<identifier-token> <type-name-token>  <integer-token>
@@ -424,6 +424,21 @@ postfix-expr (<has-include-token> <lparen-token> include-name <rparen-token>)
 %
 
 postfix-expr (<has-include-next-token> <lparen-token> include-name <rparen-token>)
+  0;
+%
+
+postfix-expr (postfix-expr <lparen-token> <has-cpp-attribute-token> <rparen-token>)
+  // This catches the case of "defined(__has_cpp_attribute)".
+  0;
+%
+
+postfix-expr (postfix-expr <lparen-token> <has-include-token> <rparen-token>)
+  // This catches the case of "defined(__has_include)".
+  0;
+%
+
+postfix-expr (postfix-expr <lparen-token> <has-include-next-token> <rparen-token>)
+  // This catches the case of "defined(__has_include_next)".
   0;
 %
 
