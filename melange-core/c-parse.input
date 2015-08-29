@@ -114,7 +114,7 @@ define method int-value
     empty?(expansion) =>
       1;
     expansion.size > 1 =>
-      parse-warning(value, "Parsing odd macro: %= %=", value.string-value, expansion);
+      parse-warning(value, "Parsing odd macro: %=", value.string-value);
       int-value(parse-macro(value.string-value, state), state);
     otherwise =>
       int-value(head(expansion), state);
