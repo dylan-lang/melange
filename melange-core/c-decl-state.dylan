@@ -416,10 +416,15 @@ define method declare-objects
       end unless;
     elseif (is-typedef?)
       if (element(state.objects, name.value, default: #f) == #f)
-        state.objects[name.value]
-          := add-declaration(state, make(<typedef-declaration>,
-                                         name: name.value,
-                                         type: new-type));
+        let declaration
+          = select (name.value by \=)
+              "size_t" => size-t-type;
+              "ssize_t" => ssize-t-type;
+              otherwise => make(<typedef-declaration>,
+                                name: name.value,
+                                type: new-type);
+            end select;
+        state.objects[name.value] := add-declaration(state, declaration);
         parse-progress-report(nameloc, "Processed typedef %s", name.value);
       end if;
       add-typedef(state.tokenizer, name);
