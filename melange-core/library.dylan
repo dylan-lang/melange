@@ -92,6 +92,11 @@ define module c-lexer
   use %strings,
     import: { make-substring-positioner };
   use multistring-match;
+
+  use print;
+  use format-out;
+  use dylan-extensions;
+
   create cpp-parse;
   export
     *framework-paths*, find-frameworks,

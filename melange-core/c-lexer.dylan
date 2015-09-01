@@ -930,127 +930,138 @@ define constant match-literal
 //
 define /* exported */ method get-token
     (state :: <tokenizer>,
-     #key cpp-line, position: init-position, expand = ~cpp-line)
+     #key cpp-line, position: init-position, expand = ~cpp-line, skip-empty-tokens = #t)
  => (token :: <token>);
   let pos = init-position | state.position;
-
-  // If we are recursively including another file, defer to the tokenizer
-  // for that file.
-  let sub-tokenizer = state.include-tokenizer;
-  if (sub-tokenizer)
-    let token = get-token(sub-tokenizer, expand: expand,
-                          cpp-line: cpp-line, position: init-position);
-    if (instance?(token, <eof-token>))
-      let macros = sub-tokenizer.cpp-decls;
-      let old-file = sub-tokenizer.file-name;
-      state.include-tokenizer := #f;
-      let ei-token = make(<end-include-token>, position: pos,
-                          generator: state, string: old-file,
-                          value: macros);
-      parse-header-progress-report(ei-token, "<<< exiting header <<<");
-      ei-token
-    else
-      token
-    end if
-  elseif (~state.unget-stack.empty?)
-    // If we have old tokens, just pop them from the stack and return them
-    let stack = state.unget-stack;
-    let token = pop(stack);
-    if (~stack.empty? & instance?(stack.first, <pound-pound-token>))
-      // The pound-pound construct is nasty.  We must concatenate two tokens
-      // and then get a new token from the resulting string.  If this isn't
-      // a single token, we just ignore the rest -- "the results are
-      // undefined".
-      pop(stack);                // Get rid of the pound-pound-token
-      let new-string = concatenate(token.string-value,
-                                   get-token(state).string-value);
-      if (new-string = "/" "/")
-        // Cruft to handle VC++ 4.2, which attempts to make a comment out of
-        // a boolean declaration.  Don't ask -- you don't want to know.
-        make(<char-token>, position: token.position,
-             generator: token.generator, string: "char");
+  let return-value = #f;
+         
+  while (~return-value |
+           (skip-empty-tokens & instance?(return-value, <identifier-token>) & return-value.string-value.empty?))
+    // If we are recursively including another file, defer to the tokenizer
+    // for that file.
+    let sub-tokenizer = state.include-tokenizer;
+    return-value := if (sub-tokenizer)
+      let token = get-token(sub-tokenizer, expand: expand,
+                            cpp-line: cpp-line, position: init-position);
+      if (instance?(token, <eof-token>))
+        let macros = sub-tokenizer.cpp-decls;
+        let old-file = sub-tokenizer.file-name;
+        state.include-tokenizer := #f;
+        let ei-token = make(<end-include-token>, position: pos,
+                            generator: state, string: old-file,
+                            value: macros);
+        parse-header-progress-report(ei-token, "<<< exiting header <<<");
+        ei-token
       else
-        let sub-tokenizer
-          = make(<tokenizer>, contents: new-string);
-        get-token(sub-tokenizer);
+        token
       end if
-    elseif (instance?(token, <identifier-token>)
-              & element(state.typedefs, token.value, default: #f))
-      // This is our last chance to deal with recently declared typedefs, so
-      // we check one more time.
-      make(<type-name-token>, position: token.position,
-           generator: token.generator, string: token.string-value);
-    else
-      token
-    end if
-  else
-    let contents = state.contents;
-    local method string-value(start-index, end-index)
-            copy-sequence(contents, start: start-index, end: end-index);
-          end method string-value;
-
-    // There are different whitespace conventions for normal input and for
-    // preprocessor directives.
-    let pos = if (cpp-line)
-                skip-cpp-whitespace(contents, pos);
-              else
-                skip-whitespace(contents, pos);
-              end if;
-    if (pos = contents.size | (cpp-line & contents[pos] == '\n'))
-      state.position := pos;
-      make(<eof-token>, position: pos, generator: state,
-                  string: "");
-    else
-      // Deal with preprocessor lines.  Since these may change the state, we
-      // will simply re-call "get-token" after invoking the appropriate
-      // processing.  We don't look for preprocessor lines in the middle of
-      // other preprocessor lines.
-      if (~cpp-line & try-cpp(state, pos))
-        get-token(state)
-      else
-        // Do the appropriate matching, and return an <error-token> if we don't
-        // find a match.
-        let token?
-          = try-identifier(state, pos, expand: expand, cpp-line: cpp-line)
-          | try-punctuation(state, pos);
-        if (token?)
-          token?
+    elseif (~state.unget-stack.empty?)
+      // If we have old tokens, just pop them from the stack and return them
+      let stack = state.unget-stack;
+      let token = pop(stack);
+      if (~stack.empty? & instance?(stack.first, <pound-pound-token>))
+        // The pound-pound construct is nasty.  We must concatenate two tokens
+        // and then get a new token from the resulting string.  If this isn't
+        // a single token, we just ignore the rest -- "the results are
+        // undefined".
+        pop(stack);                // Get rid of the pound-pound-token
+        let new-string = concatenate(token.string-value,
+                                     get-token(state, skip-empty-tokens: #f).string-value);
+        if (new-string = "/" "/")
+          // Cruft to handle VC++ 4.2, which attempts to make a comment out of
+          // a boolean declaration.  Don't ask -- you don't want to know.
+          make(<char-token>, position: token.position,
+               generator: token.generator, string: "char");
         else
-          let (start-index, end-index, dummy1, dummy2,
-               char-start, char-end, dummy3, dummy4,
-               string-start, string-end, dummy5, dummy6,
-               float-start, float-end, dummy7, dummy8,
-               int-start, int-end)
-            = match-literal(contents, start: pos);
-
-          if (start-index)
-            // At most one of the specialized start indices will be
-            // non-false.  Look for that one and build the appropriate
-            // token.
-            state.position := end-index;
-            let token-type
-              = case
-                  char-start => <character-literal-token>;
-                  string-start => <string-literal-token>;
-                  float-start => <float-literal-token>;
-                  int-start => <integer-literal-token>;
-                end case;
-            // Some handy debugging code.
-            /*
-              format(*standard-error*, "Literal: `%s` Token type: %=\n",
-              copy-sequence(contents, start: pos, end: end-index), token-type);
-              */
-            make(token-type, position: pos,
-                 string: string-value(pos, end-index), generator: state);
+          let sub-tokenizer
+            = make(<tokenizer>, contents: new-string);
+          get-token(sub-tokenizer);
+        end if
+      elseif (instance?(token, <identifier-token>)
+              & element(state.typedefs, token.value, default: #f))
+        // This is our last chance to deal with recently declared typedefs, so
+        // we check one more time.
+        if (token.string-value.empty?)
+          get-token(state, cpp-line: cpp-line, position: pos, expand: expand)
+        else
+          make(<type-name-token>, position: token.position,
+               generator: token.generator, string: token.string-value);
+        end if
+      else
+        token
+      end if
+    else
+      let contents = state.contents;
+      local method string-value(start-index, end-index)
+              copy-sequence(contents, start: start-index, end: end-index);
+            end method string-value;
+      
+      // There are different whitespace conventions for normal input and for
+      // preprocessor directives.
+      let pos = if (cpp-line)
+                  skip-cpp-whitespace(contents, pos);
+                else
+                  skip-whitespace(contents, pos);
+                end if;
+      if (pos = contents.size | (cpp-line & contents[pos] == '\n'))
+        state.position := pos;
+        make(<eof-token>, position: pos, generator: state,
+             string: "");
+      else
+        // Deal with preprocessor lines.  Since these may change the state, we
+        // will simply re-call "get-token" after invoking the appropriate
+        // processing.  We don't look for preprocessor lines in the middle of
+        // other preprocessor lines.
+        if (~cpp-line & try-cpp(state, pos))
+          get-token(state)
+        else
+          // Do the appropriate matching, and return an <error-token> if we don't
+          // find a match.
+          let token?
+            = try-identifier(state, pos, expand: expand, cpp-line: cpp-line)
+            | try-punctuation(state, pos);
+          if (token?)
+            token?
           else
-            // None of our searches matched, so we haven't the
-            // foggiest what this is.
-            parse-error(state, "Major botch in get-token.");
+            let (start-index, end-index, dummy1, dummy2,
+                 char-start, char-end, dummy3, dummy4,
+                 string-start, string-end, dummy5, dummy6,
+                 float-start, float-end, dummy7, dummy8,
+                 int-start, int-end)
+              = match-literal(contents, start: pos);
+            
+            if (start-index)
+              // At most one of the specialized start indices will be
+              // non-false.  Look for that one and build the appropriate
+              // token.
+              state.position := end-index;
+              let token-type
+                = case
+                    char-start => <character-literal-token>;
+                    string-start => <string-literal-token>;
+                    float-start => <float-literal-token>;
+                    int-start => <integer-literal-token>;
+                  end case;
+              // Some handy debugging code.
+              /*
+                format(*standard-error*, "Literal: `%s` Token type: %=\n",
+                copy-sequence(contents, start: pos, end: end-index), token-type);
+                */
+              make(token-type, position: pos,
+                   string: string-value(pos, end-index), generator: state);
+            else
+              // None of our searches matched, so we haven't the
+              // foggiest what this is.
+              parse-error(state, "Major botch in get-token.");
+            end if
           end if
         end if
       end if
     end if
-  end if
+  end while;
+  //format-out("get-token(skip-empty-tokens = %=) ->  %=\n", skip-empty-tokens, return-value);
+
+  return-value
 end method get-token;
 
 // Seals for file c-lexer.dylan

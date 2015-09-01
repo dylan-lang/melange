@@ -119,6 +119,7 @@ define function get-macro-params
       else
         type-union(<rparen-token>, <comma-token>)
       end if;
+  let empty-token = #t;
   for (token = get-token(state) then get-token(state, expand: expand),
        list = #() then pair(token, list),
        until: (paren-count == 0
@@ -130,15 +131,26 @@ define function get-macro-params
       <rparen-token> => paren-count := paren-count - 1;
       otherwise => #f;
     end select;
+    empty-token := #f
   finally
-    if (instance?(token, <comma-token>) & varargs-index ~= 0)
-      get-macro-params(state, pair(list, params),
-                       varargs-index: if (varargs-index) varargs-index - 1 else #f end if);
-    else
-      pair(list, params);
+    if (empty-token) // Insert an empty token.
+      list := pair(make(<identifier-token>, string: "", generator: state), list);
     end if;
+    let result =
+      if (instance?(token, <comma-token>) & varargs-index ~= 0)
+        get-macro-params(state, pair(list, params),
+                         varargs-index: if (varargs-index) varargs-index - 1 else #f end if);
+      else
+        pair(list, params);
+      end if;
+    //format-out("Return value: %=\n", result);
+    result;
   end for;
 end function get-macro-params;
+
+define method print-object ( token :: <token>, stream :: <stream> ) => ()
+  write(stream, concatenate("{", token.object-class.debug-name, " string: \"", token.string-value, "\"}"));
+end method;
 
 // When we are generating expansions, we wish to make copies of the token
 // rather than return the original.  This will put the right character
@@ -188,7 +200,7 @@ define /* exported */ function check-cpp-expansion
      current-depth = 0)
  => (result :: <boolean>);
   let headless-string
-    = if (string.first == '#') copy-sequence(string, start: 1) else string end;
+    = if (~string.empty? & string.first == '#') copy-sequence(string, start: 1) else string end;
   let token-list :: false-or(<sequence>)
     = (element(parameter-table, headless-string, default: #f)
          | element(tokenizer.cpp-table, string, default: #f));
@@ -224,7 +236,7 @@ define /* exported */ function check-cpp-expansion
                   string);
     member?(string, forbidden-expansions, test: \=) =>
       #f;
-    string.first == '#' =>
+    ~string.empty? & string.first == '#' =>
       if (string = "##")
         // Special case for <pound-pound-token>
         #f;
