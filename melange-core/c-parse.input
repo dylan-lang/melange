@@ -333,6 +333,14 @@ file1 (file1 external-definition)
   %1;
 %
 
+semicolons (<semicolon-token>)
+  %1
+%
+
+semicolons (semicolons <semicolon-token>)
+  %2
+%
+
 primary-expr (identifier)
   // We allow arbitrary identifiers only because they are occasionally
   // permitted by CPP (and treated as integers).  This will also allow a
@@ -787,7 +795,7 @@ curly-list (curly-list lcurly-element)
   #f;
 %
 
-declaration (declaration-specifiers <semicolon-token>)
+declaration (declaration-specifiers semicolons)
   *typedef-flag* := #f;
   process-type-list(%1, @0);
 %
@@ -797,7 +805,7 @@ declaration (inline-declaration)
 %
 
 inline-declaration (inline-specifiers declaration-specifiers
-                    extended-declarator-list <semicolon-token>)
+                    extended-declarator-list semicolons)
   let type = process-type-list(%2, @0);
   let names = reverse!(%3);
   declare-objects(@0, type, names, *typedef-flag*);
@@ -846,7 +854,7 @@ inline-specifiers (<inline-token> <static-token>)
   %1;
 %
 
-declaration (declaration-aux <semicolon-token>)
+declaration (declaration-aux semicolons)
   // We use an auxiliary production so that it can be reduced and
   // the add-typedef function called before the first token of the following
   // declaration is read.
@@ -1024,7 +1032,7 @@ struct-declaration-list (struct-declaration-list struct-declaration)
   concatenate(%1, %2);
 %
 
-struct-declaration (type-specifier-list struct-declarator-list <semicolon-token>)
+struct-declaration (type-specifier-list struct-declarator-list semicolons)
   let type = process-type-list(reverse!(%1), @0);
   let return = #();
   for (declarator in %2)
@@ -1034,7 +1042,7 @@ struct-declaration (type-specifier-list struct-declarator-list <semicolon-token>
   return;
 %
 
-struct-declaration (type-specifier-list <semicolon-token>)
+struct-declaration (type-specifier-list semicolons)
   let type = process-type-list(reverse!(%1), @0);
   list(pair("_anon_field", type));
 %
