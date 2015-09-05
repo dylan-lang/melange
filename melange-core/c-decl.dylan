@@ -1324,7 +1324,8 @@ define method add-cpp-declaration
     state.objects[macro-name] :=
       add-declaration(state, make(<macro-declaration>, name: macro-name,
                                   value: value));
-  exception (<error>)
+  exception (err :: <error>)
+    parse-progress-report(state, "Error: %s", err);
     #f;
   end block;
 end method add-cpp-declaration;
