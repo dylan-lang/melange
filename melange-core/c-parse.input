@@ -82,7 +82,7 @@ define method int-value (value :: <integer>, state :: <parse-state>)
   value;
 end method;
 
-define method int-value (token :: <integer-token>, state :: <parse-state>)
+define method int-value (token :: <integer-literal-token>, state :: <parse-state>)
   token.value;
 end method;
 
@@ -90,7 +90,7 @@ define method int-value (value :: <character>, state :: <parse-state>)
   as(<integer>, value);
 end method;
 
-define method int-value (token :: <character-token>, state :: <parse-state>)
+define method int-value (token :: <character-literal-token>, state :: <parse-state>)
   as(<integer>, token.value);
 end method;
 
@@ -160,8 +160,8 @@ define constant <source-location> = false-or(<parse-state>);
 :token <identifier-token> <name-token>
 :token <type-name-token>  <name-token>
 ;; literals
-:token <integer-token> <literal-token>
-:token <character-token> <literal-token>
+:token <integer-literal-token> <literal-token>
+:token <character-literal-token> <literal-token>
 :token <string-literal-token> <literal-token>
 :token <cpp-token> <literal-token>
 ;; A whole bunch of reserved words
@@ -252,8 +252,8 @@ define constant <source-location> = false-or(<parse-state>);
 :token <has-include-next-token> <identifier-token>
 
 :union NON-CURLY <token>
-    (<identifier-token> <type-name-token>  <integer-token>
-     <character-token> <string-literal-token> <cpp-token> <struct-token>
+    (<identifier-token> <type-name-token>  <integer-literal-token>
+     <character-literal-token> <string-literal-token> <cpp-token> <struct-token>
      <typedef-token> <short-token> <long-token> <int-token> <char-token>
      <signed-token> <unsigned-token> <float-token> <double-token>
      <void-token> <inline-token> <extern-token> <static-token> <auto-token>
@@ -355,17 +355,17 @@ primary-expr (identifier)
 ;  Error("Primary-Expr Not Yet Handled.");
 ;%
 
-primary-expr (<integer-token>)
+primary-expr (<integer-literal-token>)
   %1.value;
 %
 
-primary-expr (<character-token>)
+primary-expr (<character-literal-token>)
   // C evaluates characters as integers in expressions, so we try to parse
   // them as well. This helps particularly with #defines and enums.
   %1.value;
 %
 
-;Primary-Expr (<STRING-LITERAL-Token>)
+;primary-expr (<string-literal-token>)
 ;  %1.value;
 ;%
 

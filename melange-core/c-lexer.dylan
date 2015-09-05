@@ -102,10 +102,10 @@ end class <tokenizer>;
 //       <identifier-token>
 //       <type-name-token> -- distinguished via the "typedefs" table
 //     <literal-token>
-//        <integer-token> -- value is an integer
+//        <integer-literal-token> -- value is an integer
 //        <string-literal-token> -- value is the token string, minus
 //                                  bracketing '"'s and character escapes
-//        <character-token> -- value is a single character
+//        <character-literal-token> -- value is a single character
 //        <cpp-token> -- value is the token string minus the initial "#".
 //                       This is only used internally.
 //======================================================================
@@ -160,8 +160,8 @@ define token <end-include-token> :: <ei-token> = 3;
 define /* exported */ token <identifier-token> :: <name-token> = 4;
 define token <type-name-token>  :: <name-token> = 5;
 // literals
-define /* exported */ token <integer-token> :: <literal-token> = 6;
-define /* exported */ token <character-token> :: <literal-token> = 7;
+define /* exported */ token <integer-literal-token> :: <literal-token> = 6;
+define /* exported */ token <character-literal-token> :: <literal-token> = 7;
 define token <string-literal-token> :: <literal-token> = 8;
 define token <cpp-token> :: <literal-token> = 9;
 // A whole bunch of reserved words
@@ -286,7 +286,7 @@ end method value;
 // Integer tokens can be in one of three different radices.  Figure out which
 // and then compute an integer value.
 //
-define method value (token :: <integer-token>) => (result :: <integer>);
+define method value (token :: <integer-literal-token>) => (result :: <integer>);
   let string = token.string-value;
   // Strip trailing markers from string.
   while (member?(string.last, "uUlL"))
@@ -364,7 +364,7 @@ end method escaped-character;
 // They evaluate to integers.
 //
 define method value
-    (token :: <character-token>)
+    (token :: <character-literal-token>)
  => (result :: type-union(<character>, <integer>));
   let string = token.string-value;
 
@@ -538,7 +538,7 @@ define method initialize (value :: <tokenizer>,
       value.cpp-table[key] :=
         select (cpp-value by instance?)
           <integer> =>
-            list(make(<integer-token>,
+            list(make(<integer-literal-token>,
                       string: cpp-value.integer-to-string,
                       generator: value));
           <string> =>
@@ -1003,9 +1003,9 @@ define /* exported */ method get-token
             state.position := end-index;
             let token-type
               = case
-                  char-start => <character-token>;
+                  char-start => <character-literal-token>;
                   string-start => <string-literal-token>;
-                  int-start => <integer-token>;
+                  int-start => <integer-literal-token>;
                 end case;
             // Some handy debugging code.
             /*
@@ -1042,10 +1042,10 @@ define sealed domain make(singleton(<end-include-token>));
 define sealed domain make(singleton(<identifier-token>));
 // <type-name-token> -- subclass of <name-token>
 define sealed domain make(singleton(<type-name-token>));
-// <integer-token> -- subclass of <literal-token>
-define sealed domain make(singleton(<integer-token>));
-// <character-token> -- subclass of <literal-token>
-define sealed domain make(singleton(<character-token>));
+// <integer-literal-token> -- subclass of <literal-token>
+define sealed domain make(singleton(<integer-literal-token>));
+// <character-literal-token> -- subclass of <literal-token>
+define sealed domain make(singleton(<character-literal-token>));
 // <string-literal-token> -- subclass of <literal-token>
 define sealed domain make(singleton(<string-literal-token>));
 // <cpp-token> -- subclass of <literal-token>
