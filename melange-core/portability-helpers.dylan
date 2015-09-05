@@ -52,6 +52,8 @@ define constant $gcc-or-clang-defines
       "inline", "",
       "__builtin_va_list", "void*",
 
+      "__extension__", "",
+
       // Parameterized macros which remove various GCC extensions from our
       // source code. The last item in the list is the right-hand side of
       // the define; all the items preceding it are named parameters.
