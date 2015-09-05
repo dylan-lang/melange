@@ -250,7 +250,7 @@ define method write-declaration
                 <string> => format-to-string("\"%s\"",
                                              escape-characters(raw-value));
                 <token> => raw-value.string-value;
-                <character> => "1"; // for #define FOO\n, suggested by dauclair
+                <character> => format-to-string("'%c'", raw-value);
               end select;
   unless (decl.dylan-name = value)
     unless (register-written-name(back-end.written-names, decl.dylan-name, decl))

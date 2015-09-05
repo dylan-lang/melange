@@ -22,3 +22,7 @@ define constant $UINT8-CONSTANT = 3;
 
 define constant $STRING = "help!";
 
+define constant $EMPTY-WAS-DEFINED = 1;
+
+define constant $CHARACTER = 'a';
+

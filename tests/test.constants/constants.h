@@ -21,3 +21,11 @@
 #define UINT8_CONSTANT UINT8_C(3)
 
 #define STRING "help!"
+
+#define EMPTY
+
+#ifdef EMPTY
+#define EMPTY_WAS_DEFINED 1
+#endif
+
+#define CHARACTER 'a'
