@@ -249,6 +249,7 @@ define method write-declaration
                 <integer>, <float> => format-to-string("%=", raw-value);
                 <string> => format-to-string("\"%s\"",
                                              escape-characters(raw-value));
+                <float-literal-token> => raw-value.as-dylan-float;
                 <token> => raw-value.string-value;
                 <character> => format-to-string("'%c'", raw-value);
               end select;

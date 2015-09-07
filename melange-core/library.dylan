@@ -104,7 +104,8 @@ define module c-lexer
     <void-token>, <bool-token>, <union-token>, <enum-token>, <minus-token>,
     <tilde-token>, <bang-token>, <alien-name-token>, <macro-parse-token>,
     <cpp-parse-token>, string-value, value, unget-token, add-typedef,
-    get-token, include-path, check-cpp-expansion, file-in-include-path
+    get-token, include-path, check-cpp-expansion, file-in-include-path,
+    <float-literal-token>, as-dylan-float;
 end module c-lexer;
 
 define module portability

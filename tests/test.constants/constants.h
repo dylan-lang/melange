@@ -29,3 +29,6 @@
 #endif
 
 #define CHARACTER 'a'
+
+#define FLOAT 0.3f
+#define DOUBLE 7.9

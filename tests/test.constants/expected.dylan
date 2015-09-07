@@ -26,3 +26,7 @@ define constant $EMPTY-WAS-DEFINED = 1;
 
 define constant $CHARACTER = 'a';
 
+define constant $FLOAT = 0.3s0;
+
+define constant $DOUBLE = 7.9d0;
+

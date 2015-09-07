@@ -103,6 +103,7 @@ end class <tokenizer>;
 //       <type-name-token> -- distinguished via the "typedefs" table
 //     <literal-token>
 //        <integer-literal-token> -- value is an integer
+//        <float-literal-token> -- value is a float
 //        <string-literal-token> -- value is the token string, minus
 //                                  bracketing '"'s and character escapes
 //        <character-literal-token> -- value is a single character
@@ -251,6 +252,8 @@ define token <has-cpp-attribute-token> :: <identifier-token> = 83;
 define token <has-include-token> :: <identifier-token> = 84;
 define token <has-include-next-token> :: <identifier-token> = 85;
 
+define /* exported */ token <float-literal-token> :: <literal-token> = 86;
+
 //----------------------------------------------------------------------
 // Support code
 //----------------------------------------------------------------------
@@ -339,6 +342,21 @@ define method my-string-to-integer (string :: <sequence>, #key base = 10)
   sign * number;
 end method my-string-to-integer;
 
+// For now, we don't support floats using exponents.
+// We just convert the C float to a Dylan float and
+// don't attempt to actually parse the value.
+define method as-dylan-float
+    (token :: <float-literal-token>)
+ => (result :: <string>)
+  let string = token.string-value;
+  // Strip trailing markers from string.
+  if (member?(string.last, "fF"))
+    string := copy-sequence(string, end: string.size - 1);
+    concatenate(string, "s0")
+  else
+    concatenate(string, "d0")
+  end if;
+end method as-dylan-float;
 
 // Both string and character literals allow you to use '\\' to get certain
 // non-alphanumeric characters.  This routine translates the second character
@@ -890,13 +908,18 @@ end method skip-cpp-whitespace;
 //   [0, 1] and [2, 3] -- start and end of the entire match
 //   [4, 5] -- start and end of character literal contents
 //   [8, 9] -- start and end of string literal contents
-//   [13, 14] -- start and end of integer literal
+//   [12, 13] -- start and end of float literal
+//   [16, 17] -- start and end of integer literal
 //
 define constant match-literal
-  = curry(regex-position, compile-regex("^('(([^\\\\']|\\\\.)*)'|"
-                            "\"(([^\\\\\"]|\\\\.)*)\"|"
-                            "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*))",
-                          case-sensitive: #t));
+  = curry(regex-position,
+          compile-regex("^("
+                          "'(([^\\\\']|\\\\.)*)'|"
+                          "\"(([^\\\\\"]|\\\\.)*)\"|"
+                          "(([-+]?[0-9]*\\.[0-9]+[fF]?))|"
+                          "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*)"
+                        ")",
+                        case-sensitive: #t));
 
 // get-token -- exported function.
 //
@@ -993,7 +1016,9 @@ define /* exported */ method get-token
         else
           let (start-index, end-index, dummy1, dummy2,
                char-start, char-end, dummy3, dummy4,
-               string-start, string-end, dummy5, dummy6, int-start, int-end)
+               string-start, string-end, dummy5, dummy6,
+               float-start, float-end, dummy7, dummy8,
+               int-start, int-end)
             = match-literal(contents, start: pos);
 
           if (start-index)
@@ -1005,6 +1030,7 @@ define /* exported */ method get-token
               = case
                   char-start => <character-literal-token>;
                   string-start => <string-literal-token>;
+                  float-start => <float-literal-token>;
                   int-start => <integer-literal-token>;
                 end case;
             // Some handy debugging code.
@@ -1209,3 +1235,5 @@ define sealed domain make(singleton(<has-cpp-attribute-token>));
 define sealed domain make(singleton(<has-include-token>));
 // <has-include-next-token> -- subclass of <identifier-token>
 define sealed domain make(singleton(<has-include-next-token>));
+// <float-literal-token> -- subclass of <literal-token>
+define sealed domain make(singleton(<float-literal-token>));

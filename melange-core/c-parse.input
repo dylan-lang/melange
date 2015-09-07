@@ -250,6 +250,7 @@ define constant <source-location> = false-or(<parse-state>);
 :token <has-cpp-attribute-token> <identifier-token>
 :token <has-include-token> <identifier-token>
 :token <has-include-next-token> <identifier-token>
+:token <float-literal-token> <literal-token>
 
 :union NON-CURLY <token>
     (<identifier-token> <type-name-token>  <integer-literal-token>
@@ -270,7 +271,7 @@ define constant <source-location> = false-or(<parse-state>);
      <question-token> <colon-token> <eq-op-token> <le-op-token>
      <ge-op-token> <ne-op-token> <and-op-token> <or-op-token>
      <pound-pound-token> <left-op-token> <right-op-token> <assign-token>
-     <bool-token>)
+     <bool-token> <float-literal-token>)
 
 :union NAME <name-token>
     (<identifier-token> <type-name-token>)
@@ -357,6 +358,11 @@ primary-expr (identifier)
 
 primary-expr (<integer-literal-token>)
   %1.value;
+%
+
+primary-expr (<float-literal-token>)
+  // We return the token as itself so that we can print it easier.
+  %1;
 %
 
 primary-expr (<character-literal-token>)
