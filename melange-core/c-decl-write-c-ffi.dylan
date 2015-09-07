@@ -246,7 +246,8 @@ define method write-declaration
   let raw-value = decl.constant-value;
   let value = select (raw-value by instance?)
                 <declaration> => raw-value.dylan-name;
-                <integer>, <float> => format-to-string("%=", raw-value);
+                <integer> => integer-to-string(raw-value);
+                <float> => float-to-string(raw-value);
                 <string> => format-to-string("\"%s\"",
                                              escape-characters(raw-value));
                 <float-literal-token> => raw-value.as-dylan-float;
