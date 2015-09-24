@@ -177,19 +177,17 @@ define token <may-inline-token> :: <reserved-word-token> = 52;
 define token <not-inline-token> :: <reserved-word-token> = 53;
 define token <value-token> :: <reserved-word-token> = 54;
 define token <function-type-token> :: <reserved-word-token> = 55;
-define token <callback-maker-token> :: <reserved-word-token> = 56;
-define token <callout-function-token> :: <reserved-word-token> = 57;
-define token <pointer-type-name-token> :: <reserved-word-token> = 58;
+define token <pointer-type-name-token> :: <reserved-word-token> = 56;
 
 // A whole bunch of punctuation
 
-define token <semicolon-token> :: <punctuation-token> = 59;
-define token <comma-token> :: <punctuation-token> = 60;
-define token <lbrace-token> :: <punctuation-token> = 61;
-define token <rbrace-token> :: <punctuation-token> = 62;
-define token <arrow-token> :: <punctuation-token> = 63;
+define token <semicolon-token> :: <punctuation-token> = 57;
+define token <comma-token> :: <punctuation-token> = 58;
+define token <lbrace-token> :: <punctuation-token> = 59;
+define token <rbrace-token> :: <punctuation-token> = 60;
+define token <arrow-token> :: <punctuation-token> = 61;
 
-define token <map-error-result-token> :: <reserved-word-token> = 64;
+define token <map-error-result-token> :: <reserved-word-token> = 62;
 
 define sealed generic string-value (token :: <token>) => (result :: <string>);
 define sealed generic value (token :: <token>) => (result :: <object>);
@@ -400,8 +398,6 @@ define constant reserved-words
            "not-inline", <not-inline-token>,
            "value:", <value-token>,
            "function-type", <function-type-token>,
-           "callback-maker:", <callback-maker-token>,
-           "callout-function:", <callout-function-token>,
            "pointer-type-name:", <pointer-type-name-token>,
            "#t", <true-token>,
            "#f", <false-token>,
@@ -756,10 +752,6 @@ define sealed domain make(singleton(<not-inline-token>));
 define sealed domain make(singleton(<value-token>));
 // <function-type-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<function-type-token>));
-// <callback-maker-token> -- subclass of <reserved-word-token>
-define sealed domain make(singleton(<callback-maker-token>));
-// <callout-function-token> -- subclass of <reserved-word-token>
-define sealed domain make(singleton(<callout-function-token>));
 // <pointer-type-name-token> -- subclass of <reserved-word-token>
 define sealed domain make(singleton(<pointer-type-name-token>));
 // <semicolon-token> -- subclass of <punctuation-token>

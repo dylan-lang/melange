@@ -441,15 +441,11 @@ define method process-clause
                   mapper(#"function", prefix, name, #()));
     end;
 
-  // Process our options.
+  // Process our options, once we have some.
   for (option in clause.options)
     let tag = option.head;
     let body = option.tail;
     select (tag)
-      #"callback-maker" =>
-        decl.callback-maker-name := body;
-      #"callout-function" =>
-        decl.callout-function-name := body;
       otherwise => #f;
     end select;
   end for;

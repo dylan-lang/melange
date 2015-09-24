@@ -181,8 +181,6 @@ define module c-declarations
     <constant-declaration>, <typedef-declaration>, <pointer-declaration>,
     <vector-declaration>, <function-type-declaration>,
     local-name-mapper, local-name-mapper-setter,
-    callback-maker-name, callback-maker-name-setter,
-    callout-function-name, callout-function-name-setter,
 
     // Preliminary "set declaration properties phase"
     ignored?-setter, find-result, find-parameter, find-slot,

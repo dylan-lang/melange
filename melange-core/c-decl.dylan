@@ -736,8 +736,6 @@ define class <function-type-declaration> (<type-declaration>)
   constant slot result :: <result-declaration>, required-init-keyword: #"result";
   constant slot parameters :: <sequence>, required-init-keyword: #"params";
   slot local-name-mapper :: false-or(<function>) = #f;
-  slot callback-maker-name :: false-or(<symbol>) = #f;
-  slot callout-function-name :: false-or(<symbol>) = #f;
 end class <function-type-declaration>;
 
 define method canonical-name (decl :: <function-type-declaration>)

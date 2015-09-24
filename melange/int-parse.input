@@ -277,8 +277,6 @@ define constant <source-location> = false-or(<parse-state>);
 :token <not-inline-token> <reserved-word-token>
 :token <value-token> <reserved-word-token>
 :token <function-type-token> <reserved-word-token>
-:token <callback-maker-token> <reserved-word-token>
-:token <callout-function-token> <reserved-word-token>
 :token <pointer-type-name-token> <reserved-word-token>
 
 ;; A whole bunch of punctuation
@@ -826,14 +824,6 @@ function-type-option-list (function-type-option-list <comma-token>
 
 function-type-option (function-option)
   %1;
-%
-
-function-type-option (<callback-maker-token> <identifier-token>)
-  pair(#"callback-maker", %2.value);
-%
-
-function-type-option (<callout-function-token> <identifier-token>)
-  pair(#"callout-function", %2.value);
 %
 
 %%

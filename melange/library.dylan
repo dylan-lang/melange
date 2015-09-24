@@ -82,8 +82,8 @@ define module int-lexer
     <pointer-token>, <constant-token>, <variable-token>, <getter-token>,
     <setter-token>, <read-only-token>, <seal-token>, <seal-functions-token>,
     <boolean-token>, <sealed-token>, <open-token>, <inline-token>,
-    <value-token>, <function-type-token>, <callback-maker-token>,
-    <callout-function-token>, <literal-token>, <pointer-type-name-token>;
+    <value-token>, <function-type-token>, <literal-token>,
+    <pointer-type-name-token>;
 end module int-lexer;
 
 define module int-parse
