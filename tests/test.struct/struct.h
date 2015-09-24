@@ -12,3 +12,8 @@ struct read_only {
   int a;
   float b;
 };
+
+#include "def_tni.h"
+struct invisible_typedef {
+  tni a;
+};

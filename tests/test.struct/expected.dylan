@@ -15,3 +15,7 @@ define C-struct <read-only>
   constant sealed slot read-only$b :: <C-float>;
 end;
 
+define C-struct <invisible-typedef>
+  sealed slot invisible-typedef$a :: <C-signed-int>;
+end;
+
