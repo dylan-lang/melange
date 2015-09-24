@@ -39,7 +39,7 @@ second would return the ``<int-vector>`` first and the
 
     let (count :: <integer>, values :: <int-vector>)
        = Read-Ints1();
-    let (values :: <int-vector>, count :: <integer>) 
+    let (values :: <int-vector>, count :: <integer>)
        = Read-Integers-Vector();
 
 The function clause consists of a function name (which is
@@ -133,7 +133,7 @@ the options, as they might be applied to the functions:
           input-argument: first,   // passed normally
           output-argument: 2,      // nothing passed in, second result value
                 // will be <integer>
-          input-output-argument: third;   // passed in as second argument, 
+          input-output-argument: third;   // passed in as second argument,
                 // returned as third result
        function "baz" => arbitrary-function-name,
           seal: sealed,      // default
