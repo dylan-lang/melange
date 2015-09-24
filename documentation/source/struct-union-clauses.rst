@@ -27,12 +27,11 @@ we could use the following interface definition:
        struct "struct cons" => <c-list>,
           superclasses: {<sequence>},
           prefix: "c-list-",
-          name-mapper: identity-name-mapping,
-          exclude: {"index"};
+          name-mapper: identity-name-mapping;
     end interface;
 
 Valid options for container clauses include: ``import:``,
-``prefix:``, ``exclude:``, ``rename:``, ``seal-functions:``,
+``prefix:``, ``rename:``, ``seal-functions:``,
 ``inline-functions:``, ``read-only:``, ``equate:``, and ``map:``.
 These options act like the equivalent options which may be specified
 in a file clause, but they apply to the slots of a single "class"
