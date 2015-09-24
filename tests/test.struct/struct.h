@@ -17,3 +17,8 @@ struct read_only {
 struct invisible_typedef {
   tni a;
 };
+
+struct array_slot {
+  tni a[2];
+};
+

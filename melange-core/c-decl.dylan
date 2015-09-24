@@ -395,7 +395,12 @@ define method compute-closure
         // When writing the struct out, we use the true-type, so
         // use it here so that typedefs can disappear as needed
         // if they aren't otherwise referenced.
-        if (~elem.excluded?) compute-closure(results, elem.type.true-type) end if;
+        let elem-type
+          = select (elem.type by instance?)
+              <vector-declaration> => elem.type.pointer-equiv.referent;
+              otherwise => elem.type.true-type;
+            end select;
+        if (~elem.excluded?) compute-closure(results, elem-type) end if;
       end for;
     end if;
     push-last(results, decl);

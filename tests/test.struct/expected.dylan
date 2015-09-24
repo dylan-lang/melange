@@ -19,3 +19,7 @@ define C-struct <invisible-typedef>
   sealed slot invisible-typedef$a :: <C-signed-int>;
 end;
 
+define C-struct <array-slot>
+  sealed array slot array-slot$a :: <C-signed-int>, length: 2;
+end;
+
