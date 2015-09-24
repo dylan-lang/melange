@@ -12,6 +12,9 @@ define constant $multiple-valued-elements-1 = 1;
 define constant $multiple-valued-elements-2 = 3;
 define constant $multiple-valued-elements-3 = 4;
 
+define constant $include-this-value = 0;
+define constant $also-include-this-value = 2;
+
 define constant $trailing-comma = 0;
 
 define constant $trailing-comma-with-value = 3;

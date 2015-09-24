@@ -201,15 +201,21 @@ define method write-declaration
       register-written-name(back-end.written-names, decl.dylan-name, decl);
     end if;
     if (decl.members)
+      let wrote-some? = #f;
       for (literal in decl.members)
-        let name = literal.dylan-name;
-        let int-value = literal.constant-value;
-        unless (instance?(int-value, <double-integer>))
-          format(stream, "define constant %s = %d;\n", name, int-value);
-          register-written-name(back-end.written-names, name, decl, subname?: #t);
-        end;
+        if (~literal.excluded?)
+          let name = literal.dylan-name;
+          let int-value = literal.constant-value;
+          unless (instance?(int-value, <double-integer>))
+            format(stream, "define constant %s = %d;\n", name, int-value);
+            register-written-name(back-end.written-names, name, decl, subname?: #t);
+            wrote-some? := #t;
+          end;
+        end if;
       finally
-        new-line(stream);
+        if (wrote-some?)
+          new-line(stream);
+        end if;
       end for;
     end if;
   end if;

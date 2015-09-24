@@ -271,9 +271,9 @@ end method apply-options;
 // By pretending that this declaration has already been processed, we
 // effectively exclude it from the generation process.
 //
-define function exclude-decl (decl :: <declaration>)
+define method exclude-decl (decl :: <declaration>)
   decl.declared? := #t;
-end function exclude-decl;
+end method exclude-decl;
 
 
 //------------------------------------------------------------------------
@@ -1281,7 +1281,13 @@ end class;
 
 define class <enum-slot-declaration> (<constant-declaration>)
   slot containing-enum-declaration :: <enum-declaration>;
+  slot excluded? :: <boolean> = #f;
 end class;
+
+define method exclude-decl (decl :: <enum-slot-declaration>)
+  decl.declared? := #t;
+  decl.excluded? := #t;
+end method exclude-decl;
 
 define method compute-dylan-name
     (decl :: <enum-slot-declaration>, mapper :: <function>, prefix :: <string>,

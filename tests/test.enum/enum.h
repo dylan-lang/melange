@@ -18,6 +18,16 @@ enum {
 };
 
 enum {
+  deprecated_excluded_value
+};
+
+enum {
+  include_this_value,
+  no_no_no_not_this_value,
+  also_include_this_value
+};
+
+enum {
   trailing_comma,
 };
 
