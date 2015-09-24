@@ -378,7 +378,7 @@ define generic make-struct-type
 // options that might have been set by earlier calls.
 //
 define generic apply-container-options
-    (decl :: <structured-type-declaration>,
+    (decl :: <structured-type-declaration>, state :: <parse-state>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
      sealing :: <string>, inlining :: <string>,
      pointer-type-name :: false-or(<symbol>))
@@ -549,7 +549,7 @@ define method find-dylan-name
 end method find-dylan-name;
 
 define method apply-container-options
-    (decl :: <structured-type-declaration>,
+    (decl :: <structured-type-declaration>, state :: <parse-state>,
      map-function :: <function>, prefix :: <string>, read-only :: <boolean>,
      sealing :: <string>, inlining :: <string>, ptr-type-name :: false-or(<symbol>))
  => ();
@@ -562,6 +562,11 @@ define method apply-container-options
   end if;
   if (ptr-type-name & ~decl.pointer-type-name)
     decl.pointer-type-name := ptr-type-name;
+    let pointer-type = element(state.pointers, decl.true-type, default: #f);
+    if (pointer-type)
+      pointer-type.simple-name := as(<string>, ptr-type-name);
+      pointer-type.d-name := as(<string>, ptr-type-name);
+    end if;
   end if;
 end method apply-container-options;
 
@@ -666,8 +671,13 @@ define method compute-closure
  => (results :: <deque>);
   if (~decl.declared?)
     decl.declared? := #t;
-    compute-closure(results, decl.referent);
-    push-last(results, decl);
+    let have-pointer-type-name?
+      = instance?(decl.referent, <structured-type-declaration>) &
+        decl.referent.pointer-type-name;
+    if (~have-pointer-type-name?)
+      compute-closure(results, decl.referent);
+      push-last(results, decl);
+    end if;
   end if;
   results;
 end method compute-closure;

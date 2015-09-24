@@ -12,6 +12,11 @@ define C-struct <c-b>
   pointer-type-name: <yep>;
 end;
 
+define C-function foo
+  input parameter arg1_ :: <yep>;
+  c-name: "foo";
+end;
+
 define C-struct <read-only>
   constant sealed slot read-only$a :: <C-signed-int>;
   constant sealed slot read-only$b :: <C-float>;

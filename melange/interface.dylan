@@ -326,7 +326,7 @@ define method process-clause
 
   let (#rest opts) = merge-container-options(clause.container-options,
                                              state.container-options);
-  apply(apply-container-options, decl, opts);
+  apply(apply-container-options, decl, c-state, opts);
 
   let find-decl = protect(curry(find-slot, decl));
   process-mappings(clause.container-options, find-decl);
@@ -361,7 +361,7 @@ define method process-clause
   end if;
   let (#rest opts) = merge-container-options(clause.container-options,
                                              state.container-options);
-  apply(apply-container-options, decl, opts);
+  apply(apply-container-options, decl, c-state, opts);
 
   let find-decl = protect(curry(find-slot, decl));
   process-mappings(clause.container-options, find-decl);
