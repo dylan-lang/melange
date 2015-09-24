@@ -686,14 +686,9 @@ end method compute-closure;
 // if it doesn't yet exist.
 //
 define method pointer-to
-    (target-type :: <typedef-declaration>, state :: <parse-state>)
- => (ptr-type :: <pointer-declaration>)
-  pointer-to(target-type.type, state)
-end method pointer-to;
-
-define method pointer-to
     (target-type :: <type-declaration>, state :: <parse-state>)
  => (ptr-type :: <pointer-declaration>);
+  let target-type = target-type.true-type;
   let found-type = element(state.pointers, target-type, default: #f);
   if (found-type)
     found-type;
