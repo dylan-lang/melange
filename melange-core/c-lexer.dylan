@@ -301,6 +301,8 @@ define method value (token :: <integer-literal-token>) => (result :: <integer>);
     string.size == 1 => 0;
     decimal-digit?(string.second) =>
       my-string-to-integer(copy-sequence(string, start: 1), base: 8);
+    string.second = 'b' | string.second = 'B' =>
+      my-string-to-integer(copy-sequence(string, start: 2), base: 2);
     otherwise =>
       my-string-to-integer(copy-sequence(string, start: 2), base: 16);
   end case;
@@ -917,7 +919,7 @@ define constant match-literal
                           "'(([^\\\\']|\\\\.)*)'|"
                           "\"(([^\\\\\"]|\\\\.)*)\"|"
                           "(([-+]?[0-9]*\\.[0-9]+[fF]?))|"
-                          "((([1-9][0-9]*)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*)"
+                          "((([1-9][0-9]*)|(0[bB][0-1]+)|(0[xX][0-9a-fA-F]+)|(0[0-7]*))[lLuU]*)"
                         ")",
                         case-sensitive: #t));
 

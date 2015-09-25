@@ -3,6 +3,7 @@
 #define NEGATIVE -1
 
 #define UNSIGNED 17U
+#define BINARY 0b111
 #define HEX 0x30
 
 #define MACRO_EQUAL NEGATIVE

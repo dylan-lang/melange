@@ -8,6 +8,8 @@ define constant $NEGATIVE = -1;
 
 define constant $UNSIGNED = 17;
 
+define constant $BINARY = 7;
+
 define constant $HEX = 48;
 
 define constant $MACRO-EQUAL = -1;
