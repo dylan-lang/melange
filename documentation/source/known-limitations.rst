@@ -6,7 +6,6 @@ Melange is missing a few elements which might be required for
 some applications. The following capabilities probably should be
 present, but are not yet supported:
 
-- Floating point numbers.
 - Callbacks.
 - Function types. (It is, however, possible to import a
   function as a simple ``<statically-typed-pointer>`` and
