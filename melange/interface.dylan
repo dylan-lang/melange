@@ -619,7 +619,7 @@ define method show-copyright (stream :: <stream>) => ()
   format(stream, "Turns C headers into Dylan libraries.\n");
   format(stream, "Copyright 1994-1997 Carnegie Mellon University\n");
   format(stream, "Copyright 1998-2004 Gwydion Dylan Maintainers\n");
-  format(stream, "Copyright 2005-2012 Dylan Hackers\n");
+  format(stream, "Copyright 2005-2015 Dylan Hackers\n");
 end method show-copyright;
 
 define method show-usage (stream :: <stream>) => ()

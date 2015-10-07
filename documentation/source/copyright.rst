@@ -3,7 +3,7 @@ Copyright
 
 Copyright (c) 1997  Robert Stockton / Carnegie Mellon University
 
-Copyright (c) 2012  Dylan Hackers
+Copyright (c) 2012 - 2015  Dylan Hackers
 
 All rights reserved.
 
