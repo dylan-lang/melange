@@ -24,6 +24,8 @@ define constant match-define = make-substring-positioner("define", #f);
 define constant match-module = make-substring-positioner("module: ", #f);
 define constant match-newline = make-substring-positioner("\n", #t);
 
+define constant <melange-target> = one-of(#"c-ffi", #"mindy");
+
 // Check to see whether the specified "long" (sub-)string begins with the
 // short string.  This routine should probably be in string-extensions
 // somewhere, but it isn't yet.
@@ -62,7 +64,7 @@ end method count-whitespace;
 // the interesting work.
 //
 define method process-interface-file
-    (in-file :: <string>, out-stream :: <stream>,
+    (in-file :: <string>, target :: <melange-target>, out-stream :: <stream>,
      #key verbose, structs, module-stream :: false-or(<stream>),
           defines, undefines) => ();
   let in-stream = make(<file-stream>, locator: in-file);
@@ -93,7 +95,7 @@ define method process-interface-file
                                start: index + space-count))
               let newer-position
                 = process-define-interface(in-file, input-string,
-                                           new-position, out-stream,
+                                           new-position, target, out-stream,
                                            verbose: verbose,
                                            module-stream: module-stream,
                                            module-line: module-line,
@@ -455,8 +457,6 @@ end method process-clause;
 // High level processing routines for interface definitions
 //----------------------------------------------------------------------
 
-define variable target-switch :: <symbol> = #"c-ffi";
-
 // Process-parse-state does all necessary processing for the required
 // "#include" clause and invokes process clause for all other clauses in the
 // interface definition.
@@ -466,9 +466,10 @@ define variable target-switch :: <symbol> = #"c-ffi";
 // write-declaration for final processing.
 //
 define method process-parse-state
-    (state :: <parse-state>, out-stream :: <stream>,
+    (state :: <parse-state>, target :: <melange-target>,
+     out-stream :: <stream>,
      #key verbose, structs, module-stream :: false-or(<stream>),
-     module-line, defines: cmd-defines, undefines: cmd-undefines)
+          module-line, defines: cmd-defines, undefines: cmd-undefines)
  => ();
   if (~state.include-files)
     error("Missing #include in 'define interface'");
@@ -530,16 +531,17 @@ define method process-parse-state
   for (decl in decls)
     apply(apply-options, decl, opts)
   end for;
-  let back-end = make-backend-for-target(target-switch, out-stream);
+  let back-end = make-backend-for-target(target, out-stream);
   do(rcurry(write-declaration, back-end), decls);
-  write-module-stream(back-end.written-names, module-stream, module-line);
+  write-module-stream(back-end.written-names, module-stream, module-line, target);
 end method process-parse-state;
 
 // Write an export module file
 
 define method write-module-stream
     (written-name-record :: <written-name-record>, module-stream :: false-or(<stream>),
-     module-line :: false-or(<string>)) => ()
+     module-line :: false-or(<string>), target :: <melange-target>)
+ => ()
   let names :: <sequence> = all-written-names(written-name-record);
   if (module-stream & names.size > 0)
     format(module-stream, "module: dylan-user\n\n");
@@ -548,9 +550,12 @@ define method write-module-stream
     else
       format(module-stream, "define module foo", module-line)
     end if;
+    if (target = #"c-ffi")
+      format(module-stream,
+             "  use common-dylan;\n"
+             "  use c-ffi;\n");
+    end if;
     format(module-stream,
-           "  use common-dylan;\n"
-           "  use c-ffi;\n"
            "  export");
                 // The names are returned in hash order, so we sort them before writing them
                 names := sort!(names, test: method(a, b) as(<string>, a) < as(<string>, b) end);
@@ -571,16 +576,16 @@ end method write-module-stream;
 //
 define method process-define-interface
     (file-name :: <string>, string :: <string>, start :: <integer>,
-     out-stream :: <stream>,
+     target :: <melange-target>, out-stream :: <stream>,
      #key verbose, module-stream :: false-or(<stream>),
-     module-line, defines, undefines)
+          module-line, defines, undefines)
  => (end-position :: <integer>);
   let tokenizer = make(<tokenizer>, source-string: string,
                        source-file: file-name, start: start);
   let state = make(<parse-state>, tokenizer: tokenizer);
   // If there is a problem with the parse, it will simply signal an error
   parse(state);
-  process-parse-state(state, out-stream,
+  process-parse-state(state, target, out-stream,
                       verbose: verbose,
                       module-stream: module-stream,
                       module-line: module-line,
@@ -799,7 +804,7 @@ define method main (program, args)
   // Retrieve our regular options.
   let verbose? = get-option-value(*argp*, "verbose");
   let headers? = get-option-value(*argp*, "headers");
-  let target = get-option-value(*argp*, "target");
+  let target = as(<symbol>, get-option-value(*argp*, "target"));
   let module-file = get-option-value(*argp*, "module-file");
   let include-dirs = get-option-value(*argp*, "includedir");
   let defines = get-option-value(*argp*, "define");
@@ -816,9 +821,6 @@ define method main (program, args)
   if (verbose?)
     *show-parse-progress-level* := $parse-progress-level-all;
   end if;
-
-  // Handle -T.
-  target-switch := as(<symbol>, target);
 
   // Handle -I.
   // translate \ to /, because \ does bad things when inside a
@@ -856,7 +858,7 @@ define method main (program, args)
 
 
   // Do our real work.
-  process-interface-file(in-file, out-file | *standard-output*,
+  process-interface-file(in-file, target, out-file | *standard-output*,
                          verbose: verbose?,
                          module-stream: module-stream,
                          defines: defines,
