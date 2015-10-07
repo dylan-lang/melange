@@ -625,7 +625,7 @@ end method show-copyright;
 define method show-usage (stream :: <stream>) => ()
   format(stream,
 "Usage: melange [-v] [--headers]\n"
-"               [--c-ffi|--debug|--Ttarget]\n"
+"               [--Ttarget]\n"
 "               [-Ddef[=val]...] [-Uundef...]\n"
 "               [-Iincdir...] [--framework name...]\n"
 "               [-m modulefile] infile [outfile]\n"
@@ -685,9 +685,8 @@ define method show-help (stream :: <stream>) => ()
 "  -v, --verbose          Print progress messages while parsing.\n"
 "                         (Includes --headers.)\n"
 "  --headers              Print each header file included while parsing.\n"
-"  --c-ffi                Generate output for use only with Open Dylan.\n"
-"  --debug                Generate a debug dump of the parsed C declarations.\n"
 "  -T, --target           Generate output for use only with the named target.\n"
+"                         Target can be one of: c-ffi, mindy. Defaults to c-ffi.\n"
 "  -D, --define           Define a C preprocessor macro for use by C headers.\n"
 "                         If no value is given, defaults to 1.\n"
 "  -U, --undefine         Prevent definition of a default preprocessor macro.\n"
@@ -747,14 +746,11 @@ define method main (program, args)
              make(<flag-option>,
                   names: #("headers")));
   add-option(*argp*,
-             make(<flag-option>,
-                  names: #("debug")));
-  add-option(*argp*,
-             make(<flag-option>,
-                  names: #("c-ffi")));
-  add-option(*argp*,
-             make(<parameter-option>,
-                  names: #("target", "T")));
+             make(<choice-option>,
+                  names: #("target", "T"),
+                  choices: #("c-ffi", "mindy"),
+                  test: string-equal-ic?,
+                  default: "c-ffi"));
   add-option(*argp*,
              make(<parameter-option>,
                   names: #("module-file", "m")));
@@ -803,8 +799,6 @@ define method main (program, args)
   // Retrieve our regular options.
   let verbose? = get-option-value(*argp*, "verbose");
   let headers? = get-option-value(*argp*, "headers");
-  let debug? = get-option-value(*argp*, "debug");
-  let c-ffi? = get-option-value(*argp*, "c-ffi");
   let target = get-option-value(*argp*, "target");
   let module-file = get-option-value(*argp*, "module-file");
   let include-dirs = get-option-value(*argp*, "includedir");
@@ -823,19 +817,8 @@ define method main (program, args)
     *show-parse-progress-level* := $parse-progress-level-all;
   end if;
 
-  // Handle --c-ffi, --debug, -T.
-  if (size(choose(identity, list(c-ffi?, debug?, target))) > 1)
-    format(*standard-error*,
-           "melange: only one of --c-ffi, --debug or -T may be specified.\n");
-    show-usage-and-exit();
-  end if;
-  target-switch :=
-    case
-      c-ffi? => #"c-ffi";
-      debug? => #"debug";
-      target => as(<symbol>, target);
-      otherwise => target-switch;
-    end case;
+  // Handle -T.
+  target-switch := as(<symbol>, target);
 
   // Handle -I.
   // translate \ to /, because \ does bad things when inside a
