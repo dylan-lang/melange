@@ -14,4 +14,5 @@ files: library
        c-decl-write
        c-decl-write-c-ffi
        c-decl-write-debug
+       c-decl-write-mindy
        c-decl
