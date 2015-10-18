@@ -497,17 +497,7 @@ define method initialize (value :: <tokenizer>,
     let source-stream :: <stream>
       = make(<file-stream>, locator: as(<byte-string>, name),
              direction: #"input");
-    let components = make(<stretchy-vector>);
-    block ()
-      while (#t)
-        add!(components, read(source-stream, 16384));
-      end;
-    exception (err :: <incomplete-read-error>)
-      add!(components, err.stream-error-sequence);
-    exception (err :: <end-of-stream-error>)
-      #t;
-    end block;
-    value.contents := apply(concatenate-as, <byte-string>, components);
+    value.contents := read-to-end(source-stream);
     close(source-stream);
   end if;
 
