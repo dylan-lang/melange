@@ -11,7 +11,7 @@ enum {
   multiple_elements_2
 };
 
-enum {
+enum mv_enum {
   multiple_valued_elements_1 = 1,
   multiple_valued_elements_2 = 3,
   multiple_valued_elements_3
