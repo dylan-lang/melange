@@ -78,6 +78,7 @@ define /* exported */ primary class <tokenizer> (<object>)
   /* exported */ slot cpp-table :: <table>;
   slot cpp-stack :: <list> = #();
   /* exported */ slot cpp-decls :: false-or(<deque>) = #f;
+  slot included-files :: <stretchy-vector>;
   slot include-tokenizer :: false-or(<tokenizer>) = #f;
   slot typedefs :: <table>;
 end class <tokenizer>;
@@ -505,6 +506,7 @@ define method initialize (value :: <tokenizer>,
     value.typedefs := (typedefs-from | parent).typedefs;
     value.cpp-table := parent.cpp-table;
     value.cpp-decls := make(<deque>);
+    value.included-files := parent.included-files;
   else
     value.cpp-table := make(<string-table>);
     value.typedefs := if (typedefs-from)
@@ -513,6 +515,7 @@ define method initialize (value :: <tokenizer>,
                         make(<string-table>);
                       end if;
     value.cpp-decls := make(<deque>);
+    value.included-files := make(<stretchy-vector>);
   end if;
 
   local method parse-define-rhs(cpp-value)
@@ -937,6 +940,7 @@ define /* exported */ method get-token
         let macros = sub-tokenizer.cpp-decls;
         let old-file = sub-tokenizer.file-name;
         state.include-tokenizer := #f;
+        add!(state.included-files, old-file);
         let ei-token = make(<end-include-token>, position: pos,
                             generator: state, string: old-file,
                             value: macros);

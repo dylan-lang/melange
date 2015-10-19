@@ -825,7 +825,22 @@ define method try-cpp
               state.position := i;
             end for;
           end if;
-        "line", "pragma" =>
+        "pragma" =>
+          if (empty?(state.cpp-stack) | head(state.cpp-stack) == #"accept")
+            for (i from pos below contents.size,
+                 until: (contents[i] == '\n' | contents[i] == '\r'))
+            finally
+              if (("once" = copy-sequence(contents, start: pos, end: i)) &
+                  (member?(state.file-name, state.included-files, test: \=)))
+                // Kill to end of file
+                state.position := contents.size;
+              else
+                // Kill to end of line
+                state.position := i;
+              end if;
+            end for;
+          end if;
+        "line" =>
           // Kill to end of line
           for (i from pos below contents.size,
                until: (contents[i] == '\n' | contents[i] == '\r'))
