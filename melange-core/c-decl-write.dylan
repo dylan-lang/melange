@@ -108,6 +108,21 @@ define method anonymous-name () => (name :: <string>);
   name;
 end method anonymous-name;
 
+define method escape-characters (s :: <string>) => (s* :: <string>)
+  let new = make(<stretchy-vector>);
+
+  for (char in s)
+    select (char)
+      '\\'      => do(curry(add!, new), "\\\\");
+      '"'       => do(curry(add!, new), "\\\"");
+      '\n'      => do(curry(add!, new), "\\n\"\n\"");
+      '\r'      => do(curry(add!, new), "\\r");
+      otherwise => add!(new, char);
+    end select;
+  end for;
+  as(<string>, new);
+end method escape-characters;
+
 //------------------------------------------------------------------------
 // Methods definitions for exported functions
 //------------------------------------------------------------------------
