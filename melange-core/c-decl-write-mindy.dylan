@@ -66,3 +66,41 @@ define method write-declaration
   // need do nothing.
   #f;
 end method write-declaration;
+
+// Only "simple" macros will appear amongst the declarations, and even those
+// are not guaranteed to be compile time values.  None-the-less, we run them
+// through the parser and see if it can come up with either a single specific
+// declaration (in which case we treat it as an alias) or with a compile time
+// value, which we will declare as a constant.  In other words,
+//   #define foo 3
+// will yield
+//   define constant $foo 3
+// and
+//   #define bar "char *"
+// might yield
+//   define constant <bar> = <c-string>
+// (but only if the user had equated "char *" to <c-string>).  Some other
+// routine has the task of figuring out what sort of a declaration we are
+// aliasing and compute the appropriate sort of name.
+//
+define method write-declaration
+    (decl :: <macro-declaration>, back-end :: <mindy-back-end>)
+ => ();
+  let stream = back-end.stream;
+  let raw-value = decl.constant-value;
+  let value = select (raw-value by instance?)
+                <declaration> => raw-value.dylan-name;
+                <integer> => integer-to-string(raw-value);
+                <float> => float-to-string(raw-value);
+                <string> => format-to-string("\"%s\"",
+                                             escape-characters(raw-value));
+                <float-literal-token> => raw-value.as-dylan-float;
+                <token> => raw-value.string-value;
+                <character> => format-to-string("'%c'", raw-value);
+              end select;
+  unless (decl.dylan-name = value)
+    unless (register-written-name(back-end.written-names, decl.dylan-name, decl))
+      format(stream, "define constant %s = %s;\n\n", decl.dylan-name, value);
+    end unless;
+  end unless;
+end method write-declaration;
