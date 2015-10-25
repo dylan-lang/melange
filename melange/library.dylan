@@ -43,6 +43,7 @@ copyright: See LICENSE file in this distribution.
 //======================================================================
 
 define library melange
+  use dylan;
   use common-dylan;
   use collection-extensions;
   use io;
@@ -88,11 +89,13 @@ end module int-lexer;
 
 define module int-parse
   use common-dylan, exclude: { format-to-string, position };
+  use dylan-extensions;
   use self-organizing-list;
   use c-lexer, import: {include-path, file-in-include-path};
   use streams;
   use standard-io;
   use format;
+  use print;
   use int-lexer;
   export
     parse, <parse-state>, include-files,

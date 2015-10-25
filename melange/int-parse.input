@@ -205,6 +205,13 @@ end class <container-clause>;
 define class <struct-clause> (<container-clause>) end class;
 define class <union-clause> (<container-clause>) end class;
 
+define method print-object (clause :: <clause>, stream :: <stream>) => ()
+  write-element(stream, '{');
+  write(stream, clause.object-class.debug-name);
+  write(stream, " name: ");
+  write(stream, clause.name);
+  write-element(stream, '}');
+end method;
 
 define constant <source-location> = false-or(<parse-state>);
 
