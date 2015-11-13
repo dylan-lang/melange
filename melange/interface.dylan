@@ -81,7 +81,7 @@ define method process-interface-file
     & module-line-end
     & copy-sequence(input-string,
                     start: module-line-start + 8,
-                    end: module-line-end + 1);
+                    end: module-line-end);
 
   local method try-define (position :: <integer>) => ();
           let new-position = match-define(input-string, start: position);
@@ -543,13 +543,10 @@ define method write-module-stream
      module-line :: false-or(<string>), target :: <melange-target>)
  => ()
   let names :: <sequence> = all-written-names(written-name-record);
+  let module-line = module-line | "unknown-module";
   if (module-stream & names.size > 0)
     format(module-stream, "module: dylan-user\n\n");
-    if (module-line)
-      format(module-stream, "define module %s", module-line)
-    else
-      format(module-stream, "define module foo", module-line)
-    end if;
+    format(module-stream, "define module %s\n", module-line);
     if (target = #"c-ffi")
       format(module-stream,
              "  use common-dylan;\n"
@@ -564,7 +561,7 @@ define method write-module-stream
       format(module-stream, concatenate(separator, "\n    %s"), name);
       force-output(module-stream);
     end for;
-    format(module-stream, ";\nend module;\n");
+    format(module-stream, ";\nend module %s;\n", module-line);
     force-output(module-stream);
   end if;
 end method write-module-stream;
