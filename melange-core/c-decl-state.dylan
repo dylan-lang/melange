@@ -72,6 +72,11 @@ define method initialize (value :: <parse-file-state>, #key)
                                     equated: #t,
                                     name: "statically-typed-pointer");
   exclude-decl(value.pointers[void-type]);
+  value.pointers[char-type] := make(<pointer-declaration>, referent: char-type,
+                                    dylan-name: "<C-string>",
+                                    equated: #t,
+                                    name: "statically-typed-pointer");
+  exclude-decl(value.pointers[char-type]);
 end method initialize;
 
 // table that chains the elements of a sequence as key
