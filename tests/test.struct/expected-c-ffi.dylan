@@ -23,3 +23,11 @@ define C-struct <array-slot>
   sealed array slot array-slot$a :: <C-signed-int>, length: 2;
 end;
 
+define C-struct <d>
+  sealed slot d$f :: <C-float>;
+end;
+
+define C-struct <pqNotify>
+  sealed slot pqNotify$f :: <C-float>;
+end;
+

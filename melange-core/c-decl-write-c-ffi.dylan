@@ -59,7 +59,7 @@ define method write-declaration
   // We must special case this one since there are so many declarations of the
   // form "typedef struct foo foo".
   if (~decl.equated?
-        & (decl.simple-name ~= decl.type.simple-name))
+        & ~string-equal-ic?(decl.simple-name, decl.type.simple-name))
     if (instance?(decl.type, <struct-declaration>)
         & decl.type.superclasses
         & (copy-sequence(decl.dylan-name, start: 1) ~= copy-sequence(decl.type.dylan-name, start: 2)))

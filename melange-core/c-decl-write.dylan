@@ -144,7 +144,7 @@ define method write-declaration
   // We must special case this one since there are so many declarations of the
   // form "typedef struct foo foo".
   if (~decl.equated?
-        & decl.simple-name ~= decl.type.simple-name)
+        & ~string-equal-ic?(decl.simple-name, decl.type.simple-name))
     format(stream, "define constant %s = %s;\n\n",
            decl.dylan-name, decl.type.dylan-name);
     register-written-name(back-end.written-names, decl.dylan-name, decl);

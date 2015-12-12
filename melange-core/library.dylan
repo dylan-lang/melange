@@ -165,6 +165,7 @@ define module c-declarations
   use format;
   use standard-io;
   use pprint;
+  use strings;
 
   // We completely encapsulate "c-parse" and only pass out the very few
   // objects that will be needed by "define-interface".  Note that the

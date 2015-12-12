@@ -22,3 +22,10 @@ struct array_slot {
   tni a[2];
 };
 
+typedef struct d {
+  float f;
+} d;
+
+typedef struct pqNotify {
+  float f;
+} PQnotify;
