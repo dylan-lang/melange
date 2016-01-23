@@ -121,6 +121,8 @@ define module portability
   use streams;
   use strings;
   export
+    get-compiler-include-directories,
+    get-gcc-compiler-include-directories,
     $default-defines,
     $default-undefines,
     $enum-size,

@@ -14,6 +14,22 @@ define function get-compiler-include-directories (cmd :: <string>)
   end;
 end function;
 
+define function get-gcc-compiler-include-directories ()
+  let cmd = "echo | gcc -Wp,-v -x c - -fsyntax-only 2>&1";
+  with-application-output (stream = cmd)
+    let output = read-to-end(stream);
+    let lines = split(strip(output), "\n");
+    let includes = make(<stretchy-vector>);
+    do(method(line)
+         let line = strip(line);
+         if (~empty?(line) & line[0] = '/')
+           add!(includes, line);
+         end if;
+       end, lines);
+    includes
+  end;
+end function;
+
 define function get-compiler-defines (cmd :: <string>)
   local method parse-define (line :: <string>)
           let define-start = size("#define ");

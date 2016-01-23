@@ -24,12 +24,7 @@ define constant $default-defines
 
 define constant $default-undefines = #[];
 
-define constant FreeBSD-include-directories
-  = #["/usr/local/include",
-      "/usr/include"];
-
-add-to-include-path(FreeBSD-include-directories);
-add-to-include-path(get-compiler-include-directories("gcc -print-file-name=include"));
+add-to-include-path(get-gcc-compiler-include-directories());
 
 
 // These constants should be moved here in the future.  Until the module
