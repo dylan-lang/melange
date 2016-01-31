@@ -47,7 +47,7 @@ any values declared in C as ``char *`` are identical in form to
 the predefined type ``<c-string>`` (which is described in
 Appendix I). The system will therefore not define a distinct
 type for ``char *`` and will ignore any structural information
-provided in the header file. You migh also use an ``equate:``
+provided in the header file. You might also use an ``equate:``
 option to equate a type mentioned in one interface definition
 with an identically named type which was defined in an earlier
 interface definition.
