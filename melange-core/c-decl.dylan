@@ -1277,8 +1277,10 @@ define method argument-direction-setter
     error("Parameter direction cannot be respecified.");
   end if;
   if (dir ~= #"in")
-    if (~instance?(decl.type.true-type, <pointer-declaration>))
-      error("'Out' parameter is not an instance of a pointer type.");
+    let ptype = decl.type.true-type;
+    if (~instance?(ptype, <pointer-declaration>))
+      error("Output parameter '%s' is %s (%s), but a pointer type was expected.",
+            decl.simple-name, ptype.simple-name, ptype.dylan-name);
     end if;
   end if;
   decl.direction := dir;
