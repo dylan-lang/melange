@@ -1239,14 +1239,15 @@ define method find-parameter
     (decl :: <function-type-declaration>, param :: <integer>)
  => (result :: <arg-declaration>);
   element(decl.parameters, param - 1, default: #f)
-    | error("No such parameter: %d.", param);
+    | error("%s: No such parameter: %d. (There are only %d parameters.)",
+            decl.simple-name, param, size(decl.parameters));
 end method find-parameter;
 
 define method find-parameter
     (decl :: <function-type-declaration>, param :: <string>)
  => (result :: <arg-declaration>);
   any?(method (arg) arg.simple-name = param & arg end, decl.parameters)
-    | error("No such parameter: %s.", param);
+    | error("%s: No such parameter: %s.", decl.simple-name, param);
 end method find-parameter;
 
 define method find-parameter
