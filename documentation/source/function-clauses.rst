@@ -103,8 +103,7 @@ following:
    parameter will have been declared as a "pointer" type, and
    will strip one ``*`` off of the argument type. Thus, if the
    parameter declaration specifies ``int **``, the actual value
-   returned will have the Dylan type corresponding to ``int
-   *``.
+   returned will have the Dylan type corresponding to ``int *``.
 
 ``input-output-argument:``
    indicates that the specified argument should be
