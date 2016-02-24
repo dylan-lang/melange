@@ -1134,7 +1134,7 @@ define method mapped-name
 end method mapped-name;
 
 define method type-name (decl :: <object-declaration>) => (result :: <string>);
-  decl.equated | decl.type.dylan-name;
+  decl.equated | decl.type.type-name;
 end method type-name;
 
 define method find-dylan-name
