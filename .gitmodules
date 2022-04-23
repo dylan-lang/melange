@@ -7,3 +7,6 @@
 [submodule "ext/meta"]
 	path = ext/meta
 	url = https://github.com/dylan-lang/meta.git
+[submodule "ext/sphinx-extensions"]
+	path = ext/sphinx-extensions
+	url = https://github.com/dylan-lang/sphinx-extensions
