@@ -1,0 +1,17 @@
+{
+    "name": "melange",
+    "category": "development tools",
+    "contact": "dylan-lang@googlegroups.com",
+    "description": "Generates C-FFI bindings by parsing C header files",
+    "dependencies": [
+        "command-line-parser@3.1.1",
+        "meta@0.1",
+        "sphinx-extensions@0.1",
+        "xml-parser@0.1"
+    ],
+    "dev-dependencies": [
+        "testworks@2.1"
+    ],
+    "url": "https://github.com/dylan-lang/melange",
+    "version": "0.1.1"
+}
