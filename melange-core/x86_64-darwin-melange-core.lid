@@ -16,3 +16,4 @@ files: library
        c-decl-write-debug
        c-decl-write-mindy
        c-decl
+Platforms: x86_64-darwin
