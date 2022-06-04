@@ -138,6 +138,8 @@ define module define-interface
 
   // From command-line-parser
   use command-line-parser;
+  use option-parser-protocol,
+    import: { positional-options };
 
   // local packages
   use int-lexer;
