@@ -30,10 +30,12 @@ define constant $default-undefines
   = #["__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__"];
 
 // Set up the search path for .h files
-// cc -E -v /dev/null
+let sdk-root
+  = with-application-output (stream = "xcrun --show-sdk-path")
+      strip(read-to-end(stream))
+    end;
 define constant macos-include-directories
-  = #["/usr/local/include",
-      "/usr/include"];
+  = list(concatenate(sdk-root, "/usr/include"));
 
 add-to-include-path(macos-include-directories);
 add-to-include-path(get-compiler-include-directories("clang -print-file-name=include"));
