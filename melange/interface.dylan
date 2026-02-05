@@ -624,25 +624,6 @@ define method show-copyright (stream :: <stream>) => ()
   format(stream, "Copyright 2005-2015 Dylan Hackers\n");
 end method show-copyright;
 
-define method show-usage (stream :: <stream>) => ()
-  format(stream,
-"Usage: melange [-v] [--headers]\n"
-"               [--Ttarget]\n"
-"               [-Ddef[=val]...] [-Uundef...]\n"
-"               [-Iincdir...] [--framework name...]\n"
-"               [-m modulefile] infile [outfile]\n"
-"       melange --defines\n"
-"       melange --undefines\n"
-"       melange --includes\n"
-"       melange --help\n"
-"       melange --version\n");
-end method show-usage;
-
-define method show-usage-and-exit () => ()
-  show-usage(*standard-error*);
-  exit-application(1);
-end method show-usage-and-exit;
-
 define method show-default-defines (stream :: <stream>) => ()
   for (i from 0 below $default-defines.size by 2)
     let name = $default-defines[i];
@@ -678,41 +659,6 @@ define method show-default-includes (stream :: <stream>) => ()
   end for;
 end method show-default-includes;
 
-define method show-help (stream :: <stream>) => ()
-  show-copyright(stream);
-  format(stream, "\n");
-  show-usage(stream);
-  format(stream, "\n"
-"Options:\n"
-"  -v, --verbose          Print progress messages while parsing.\n"
-"                         (Includes --headers.)\n"
-"  --headers              Print each header file included while parsing.\n"
-"  -T, --target           Generate output for use only with the named target.\n"
-"                         Target can be one of: c-ffi, mindy. Defaults to c-ffi.\n"
-"  -D, --define           Define a C preprocessor macro for use by C headers.\n"
-"                         If no value is given, defaults to 1.\n"
-"  -U, --undefine         Prevent definition of a default preprocessor macro.\n"
-"                         (Use --defines to see the defaults. Use --undefines to"
-"                         see the default undefines.)\n"
-"  -I, --includedir       Extra directories to search for C headers.\n"
-"  --framework            The name of a framework bundle to search for C headers\n"
-"                         and child frameworks. Required when a child framework\n"
-"                         is directly referred to in an interface definition\n"
-"                         with no previous references to its parent; once a\n"
-"                         parent is seen,either via this option or in a clause\n"
-"                          of the interface definition, its children will be\n"
-"                         found automatically. (Note: Parent --framework\n"
-"                         options must be given before child framework options.)\n"
-"  -m, --module-file      Create a Dylan interchange file with a module\n"
-"                         definition that exports the interface names.\n"
-"  --defines              Show the default C preprocessor definitions.\n"
-"  --undefines            Show the default platform undefinitions.\n"
-"  --includes             Show the default C preprocessor include directories.\n"
-"  --help                 Show this help text.\n"
-"  --version              Show version number.\n"
-);
-end method show-help;
-
 
 //----------------------------------------------------------------------
 // The main program
@@ -725,89 +671,114 @@ end method show-help;
 
 define method main (program, args)
   // Describe our arguments and create appropriate parser objects.
-  let *argp* = make(<command-line-parser>);
-  add-option(*argp*,
+  let argp = make(<command-line-parser>,
+                  help: "Melange");
+  add-option(argp,
              make(<flag-option>,
-                  names: #("help", "h")));
-  add-option(*argp*,
-             make(<flag-option>,
+                  help: "Show copyright info.",
                   names: #("version")));
-  add-option(*argp*,
+  add-option(argp,
              make(<flag-option>,
+                  help: "Show the default C preprocessor definitions.",
                   names: #("defines")));
-  add-option(*argp*,
+  add-option(argp,
              make(<flag-option>,
+                  help: "Show the default platform undefinitions.",
                   names: #("undefines")));
-  add-option(*argp*,
+  add-option(argp,
              make(<flag-option>,
+                  help: "Show the default C preprocessor include directories.",
                   names: #("includes")));
-  add-option(*argp*,
+  add-option(argp,
              make(<flag-option>,
+                  help: "Print progress messages while parsing (includes --headers).",
                   names: #("verbose", "v")));
-  add-option(*argp*,
+  add-option(argp,
              make(<flag-option>,
+                  help: "Print each header file included while parsing.",
                   names: #("headers")));
-  add-option(*argp*,
+  add-option(argp,
              make(<choice-option>,
+                  help: "Generate output for use only with the named target. "
+                    "Target can be one of: c-ffi, mindy. [%default%]",
                   names: #("target", "T"),
                   choices: #("c-ffi", "mindy"),
                   test: string-equal-ic?,
                   default: "c-ffi"));
-  add-option(*argp*,
+  add-option(argp,
              make(<parameter-option>,
+                  help: "Create a Dylan interchange file with a module definition "
+                    "that exports the interface names.",
                   names: #("module-file", "m")));
-  add-option(*argp*,
+  add-option(argp,
              make(<repeated-parameter-option>,
+                  help: "Extra directories to search for C headers.",
                   names: #("includedir", "I")));
-  add-option(*argp*,
+  add-option(argp,
              make(<keyed-option>,
+                  help: "Define a C preprocessor macro for use by C headers. "
+                    "If no value is given, defaults to 1.",
                   names: #("define", "D")));
-  add-option(*argp*,
+  add-option(argp,
              make(<repeated-parameter-option>,
+                  help: "Prevent definition of a default preprocessor macro. "
+                    "(Use --defines to see the defaults. Use --undefines to "
+                    "see the default undefines.)",
                   names: #("undefine", "U")));
-  add-option(*argp*,
+  add-option(argp,
              make(<repeated-parameter-option>,
+                  help: "The name of a framework bundle to search for C headers "
+                    "and child frameworks. Required when a child framework is directly "
+                    "referred to in an interface definition with no previous references "
+                    "to its parent; once a parent is seen, either via this option or in "
+                    "a clause of the interface definition, its children will be found "
+                    "automatically. (Note: Parent --framework options must be given "
+                    "before child framework options.)",
                   names: #("framework")));
+  add-option(argp,
+             make(<positional-option>,
+                  help: "Input file with interface specification.",
+                  names: #("infile")));
+  add-option(argp,
+             make(<positional-option>,
+                  help: "Output file for generated Dylan code.",
+                  names: #("outfile"),
+                  required?: #f));
 
   // Parse our command-line arguments.
   block ()
-    parse-command-line(*argp*, args);
-  exception (ex :: <usage-error>)
-    show-usage-and-exit();
+    parse-command-line(argp, args);
+  exception (ex :: <abort-command-error>)
+    exit-application(1);
   end;
 
   // Handle our informational options.
-  if (get-option-value(*argp*, "defines"))
+  if (get-option-value(argp, "defines"))
     show-default-defines(*standard-output*);
     exit-application(0);
   end if;
-  if (get-option-value(*argp*, "undefines"))
+  if (get-option-value(argp, "undefines"))
     show-default-undefines(*standard-output*);
     exit-application(0);
   end if;
-  if (get-option-value(*argp*, "includes"))
+  if (get-option-value(argp, "includes"))
     show-default-includes(*standard-output*);
     exit-application(0);
   end if;
-  if (get-option-value(*argp*, "help"))
-    show-help(*standard-output*);
-    exit-application(0);
-  end if;
-  if (get-option-value(*argp*, "version"))
+  if (get-option-value(argp, "version"))
     show-copyright(*standard-output*);
     exit-application(0);
   end if;
 
   // Retrieve our regular options.
-  let verbose? = get-option-value(*argp*, "verbose");
-  let headers? = get-option-value(*argp*, "headers");
-  let target = as(<symbol>, get-option-value(*argp*, "target"));
-  let module-file = get-option-value(*argp*, "module-file");
-  let include-dirs = get-option-value(*argp*, "includedir");
-  let defines = get-option-value(*argp*, "define");
-  let undefines = get-option-value(*argp*, "undefine");
-  let regular-args = positional-options(*argp*);
-  let framework-dirs = get-option-value(*argp*, "framework");
+  let verbose? = get-option-value(argp, "verbose");
+  let headers? = get-option-value(argp, "headers");
+  let target = as(<symbol>, get-option-value(argp, "target"));
+  let module-file = get-option-value(argp, "module-file");
+  let include-dirs = get-option-value(argp, "includedir");
+  let defines = get-option-value(argp, "define");
+  let undefines = get-option-value(argp, "undefine");
+  let framework-dirs = get-option-value(argp, "framework");
 
   // Handle --headers.
   if (headers?)
@@ -834,21 +805,13 @@ define method main (program, args)
   end for;
   find-frameworks(*framework-paths*);
 
-  // Handle regular arguments.
-  let in-file = #f;
-  let out-file = #f;
-  select (regular-args.size)
-    1 =>
-      in-file := regular-args[0];
-    2 =>
-      in-file := regular-args[0];
-      out-file := make(<file-stream>,
-                       locator: regular-args[1],
-                       direction: #"output");
-    otherwise =>
-      show-usage-and-exit();
-  end select;
-
+  let in-file = get-option-value(argp, "infile");
+  let out-file = get-option-value(argp, "outfile");
+  if (out-file)
+    out-file := make(<file-stream>,
+                     locator: out-file,
+                     direction: #"output");
+  end;
   let module-stream = module-file & make(<file-stream>,
                                          locator: module-file,
                                          direction: #"output");
